@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:SupportTool"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="0,6,0,2"/>
+        </Style>
     </Application.Resources>
 </Application>
