@@ -106,12 +106,12 @@ namespace SupportTool.ViewModels
 
 
 
-        private void ApplicationActionRequestImpl(ApplicationActionRequest a)
+        private async void ApplicationActionRequestImpl(ApplicationActionRequest a)
         {
             switch (a)
             {
                 case ApplicationActionRequest.RefreshUser:
-                    FindUser.Execute();
+                    await FindUser.Execute();
                     break;
                 default:
                     break;
