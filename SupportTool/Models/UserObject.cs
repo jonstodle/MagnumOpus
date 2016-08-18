@@ -14,5 +14,7 @@ namespace SupportTool.Models
         public UserObject(UserPrincipal principal) : base(principal) { }
 
         public string Company => directoryEntry.Properties.Get<string>("company");
+
+        public PropertyValueCollection MemberOf => directoryEntry.Properties["memberof"];
     }
 }

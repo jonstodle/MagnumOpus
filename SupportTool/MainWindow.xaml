@@ -35,6 +35,8 @@
                         <controls:UserDetails x:Name="UserDetails"/>
 
                         <controls:PasswordPanel x:Name="UserPasswordPanel"/>
+
+                        <controls:UserGroups x:Name="UserGroups"/>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

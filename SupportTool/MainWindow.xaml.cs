@@ -47,7 +47,8 @@ namespace SupportTool
 
             Observable.Merge(
                 ViewModel.Messages,
-                UserPasswordPanel.Messages)
+                UserPasswordPanel.Messages,
+                UserGroups.Messages)
                 .Subscribe(x => MessageBox.Show(x.Text, x.Caption, x.Button, x.Icon));
 
 
@@ -56,6 +57,7 @@ namespace SupportTool
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserPasswordPanel.User);
+            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
 
             this.Bind(ViewModel, vm => vm.ComputerQueryString, v => v.ComputerQueryStringTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);

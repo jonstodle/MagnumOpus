@@ -101,6 +101,9 @@
     <Compile Include="Controls\UserDetails.xaml.cs">
       <DependentUpon>UserDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserGroups.xaml.cs">
+      <DependentUpon>UserGroups.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\Extensions.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Computer.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Constants.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.cs" />
+    <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Group.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
@@ -118,6 +122,11 @@
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PasswordPanelViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
+    <Compile Include="ViewModels\UserGroupsViewModel.cs" />
+    <Compile Include="ViewModels\UserGroupsWindowViewModel.cs" />
+    <Compile Include="Views\UserGroupsWindow.xaml.cs">
+      <DependentUpon>UserGroupsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\ComputerDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -127,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UserDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UserGroups.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -142,6 +155,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\UserGroupsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -171,9 +188,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>
