@@ -22,14 +22,12 @@ namespace SupportTool.ViewModels
         // User
         private readonly ReactiveCommand<Unit, string> userPaste;
         private readonly ReactiveCommand<Unit, UserObject> findUser;
-        private readonly ObservableAsPropertyHelper<bool> findUserIsExecuting;
         private readonly ObservableAsPropertyHelper<UserObject> user;
         private string userQueryString;
 
         // Computer
         private readonly ReactiveCommand<Unit, string> computerPaste;
         private readonly ReactiveCommand<Unit, ComputerObject> findComputer;
-        private readonly ObservableAsPropertyHelper<bool> findComputerIsExecuting;
         private readonly ObservableAsPropertyHelper<ComputerObject> computer;
         private string computerQueryString;
 
@@ -51,9 +49,6 @@ namespace SupportTool.ViewModels
                 this.WhenAnyValue(x => x.UserQueryString, x => x.HasValue()));
             findUser
                 .ToProperty(this, x => x.User, out user);
-            findUser
-                .IsExecuting
-                .ToProperty(this, x => x.FindUserIsExecuting, out findUserIsExecuting);
 
             // Computer
             computerPaste = ReactiveCommand.Create(() => Clipboard.GetText());
@@ -65,9 +60,6 @@ namespace SupportTool.ViewModels
                 this.WhenAnyValue(x => x.ComputerQueryString, x => x.HasValue()));
             findComputer
                 .ToProperty(this, x => x.Computer, out computer);
-            findComputer
-                .IsExecuting
-                .ToProperty(this, x => x.FindComputerIsExecuting, out findComputerIsExecuting);
         }
 
 
@@ -78,8 +70,6 @@ namespace SupportTool.ViewModels
         public ReactiveCommand UserPaste => userPaste;
 
         public ReactiveCommand<Unit, UserObject> FindUser => findUser;
-
-        public bool FindUserIsExecuting => findUserIsExecuting.Value;
 
         public UserObject User => user.Value;
 
@@ -93,8 +83,6 @@ namespace SupportTool.ViewModels
         public ReactiveCommand<Unit, string> ComputerPaste => computerPaste;
 
         public ReactiveCommand<Unit, ComputerObject> FindComputer => findComputer;
-
-        public bool FindComputerIsExecuting => findComputerIsExecuting.Value;
 
         public ComputerObject Computer => computer.Value;
 

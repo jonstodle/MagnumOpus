@@ -36,14 +36,6 @@
 
                         <controls:PasswordPanel x:Name="UserPasswordPanel"/>
                     </StackPanel>
-
-                    <Grid x:Name="UserSearchingGrid" Grid.RowSpan="2">
-                        <Grid.Background>
-                            <SolidColorBrush Color="White" Opacity=".8"/>
-                        </Grid.Background>
-
-                        <TextBlock Text="SEARCHING" TextAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
-                    </Grid>
                 </Grid>
             </ScrollViewer>
         </TabItem>
@@ -73,14 +65,6 @@
                     <StackPanel x:Name="ComputerDetailsStackPanel" Grid.Row="1">
                         <controls:ComputerDetails x:Name="ComputerDetails"/>
                     </StackPanel>
-
-                    <Grid x:Name="ComputerSearchingGrid" Grid.RowSpan="2">
-                        <Grid.Background>
-                            <SolidColorBrush Color="White" Opacity=".8"/>
-                        </Grid.Background>
-
-                        <TextBlock Text="SEARCHING" TextAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
-                    </Grid>
                 </Grid>
             </ScrollViewer>
         </TabItem>
