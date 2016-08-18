@@ -36,11 +36,13 @@ namespace SupportTool
                 .Select(_ => MainTabControl.SelectedIndex)
                 .Subscribe(idx =>
                 {
-                    if (idx == 0)
-                    {
-                        UserQueryStringTextBox.Focus();
-                        UserQueryStringTextBox.SelectAll();
-                    }
+                    TextBox tbx = null;
+
+                    if (idx == 0) tbx = UserQueryStringTextBox;
+                    else if (idx == 1) tbx = ComputerQueryStringTextBox;
+
+                    tbx?.Focus();
+                    tbx?.SelectAll();
                 });
 
             Observable.Merge(
