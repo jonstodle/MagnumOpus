@@ -73,6 +73,10 @@ namespace SupportTool.ViewModels
             unlockAccount
                 .ThrownExceptions
                 .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+
+            this
+                .WhenAnyValue(x => x.User)
+                .Subscribe(x => IsShowingNewPasswordOptions = false);
         }
 
 
