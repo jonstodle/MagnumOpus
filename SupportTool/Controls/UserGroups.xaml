@@ -40,7 +40,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <TextBlock Grid.Row="3">
+            <TextBlock Grid.Row="3" Margin="2">
                 <Run Text="Showing "/>
                 <Run x:Name="ShowingCountRun"/>
                 <Run Text=" of "/>
