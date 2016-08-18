@@ -9,12 +9,14 @@
     <StackPanel>
         <TextBlock x:Name="DisplayNameTextBlock" FontSize="20" Margin="2"/>
 
-        <TextBlock Opacity=".5" Margin="2">
-            <Run x:Name="CompanyRun"/>
-            <Run Text=" | "/>
-            <Run x:Name="ExpirationRun"/>
-            <Run Text=" | "/>
-            <Run x:Name="AccountLockedRun"/>
-        </TextBlock>
+        <WrapPanel Opacity=".5" Margin="2">
+            <TextBlock x:Name="CompanyTextBlock"/>
+            <TextBlock Text=" | "/>
+            <TextBlock x:Name="ExpirationTextBlock"/>
+            <TextBlock Text=" | "/>
+            <TextBlock x:Name="AccountLockedTextBlock"/>
+            <TextBlock Text=" | "/>
+            <TextBlock x:Name="PasswordAgeTextBlock"/>
+        </WrapPanel>
     </StackPanel>
 </UserControl>

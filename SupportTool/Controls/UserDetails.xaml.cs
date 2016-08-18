@@ -28,9 +28,10 @@ namespace SupportTool.Controls
             InitializeComponent();
 
             this.OneWayBind(ViewModel, vm => vm.User.Principal.DisplayName, v => v.DisplayNameTextBlock.Text);
-            this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyRun.Text);
-            this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationRun.Text, x => x != null ? $"Expires {((DateTime)x).ToShortDateString()}" : "Never expires");
-            this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedRun.Text, x => x ? "Locked" : "Not locked");
+            this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"Expires {((DateTime)x).ToShortDateString()}" : "Never expires");
+            this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked");
+            this.OneWayBind(ViewModel, vm => vm.PasswordAge, v => v.PasswordAgeTextBlock.Text, x => $"Password age: {x.Days}d {x.Hours}h {x.Minutes}m");
 
         }
 
