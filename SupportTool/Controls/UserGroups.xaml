@@ -11,7 +11,7 @@
         <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <StackPanel Orientation="Horizontal">
-            <ToggleButton x:Name="IsShowingUserGroupsToggleButton" Content="User groups" Margin="2"/>
+            <ToggleButton x:Name="IsShowingUserGroupsToggleButton" Content="User groups..." Margin="2"/>
         </StackPanel>
 
         <Grid x:Name="GroupsGrid" Height="200" Background="{StaticResource SubSectionBackgroundBrush}">
