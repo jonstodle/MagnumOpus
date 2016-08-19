@@ -40,7 +40,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(newPass => messages.OnNext(Message.PasswordSet(newPass)));
             setNewPassword
                 .ThrownExceptions
-                .Subscribe(_ => messages.OnNext(Message.PasswordSetError()));
+                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Couldn't set password")));
 
             setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
             setNewSimplePassword
