@@ -43,8 +43,9 @@ namespace SupportTool.ViewModels
                 .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
                 .Subscribe(_ => CollectionView?.Refresh());
 
-            getGroups = ReactiveCommand.CreateFromTask(
-                () => GetGroupsImpl(User.Principal.SamAccountName),
+            getGroups = ReactiveCommand.CreateFromObservable(
+                () => GetGroupsImpl(User.Principal.SamAccountName)
+                        .TakeUntil(this.WhenAnyValue(x => x.IsShowingUserGroups).Where(x => !x)),
                 this.WhenAnyValue(x => x.IsShowingUserGroups, y => y.Groups.Count, (x,y) => x && y == 0));
             getGroups
                 .Subscribe(x =>
@@ -112,7 +113,7 @@ namespace SupportTool.ViewModels
             GroupFilter = "";
         }
 
-        private async Task<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName)
+        private IObservable<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName) => Observable.StartAsync(async () =>
         {
             var result = new List<DirectoryEntry>();
 
@@ -123,7 +124,7 @@ namespace SupportTool.ViewModels
             }
 
             return result;
-        }
+        });
 
         bool TextFilter(object item)
         {

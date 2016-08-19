@@ -123,10 +123,6 @@
     <Compile Include="ViewModels\PasswordPanelViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
-    <Compile Include="ViewModels\UserGroupsWindowViewModel.cs" />
-    <Compile Include="Views\UserGroupsWindow.xaml.cs">
-      <DependentUpon>UserGroupsWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="Controls\ComputerDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -155,10 +151,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\UserGroupsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -188,7 +180,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>
