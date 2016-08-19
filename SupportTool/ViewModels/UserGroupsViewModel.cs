@@ -109,6 +109,7 @@ namespace SupportTool.ViewModels
         {
             Groups.Clear();
             IsShowingUserGroups = false;
+            GroupFilter = "";
         }
 
         private async Task<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName)
