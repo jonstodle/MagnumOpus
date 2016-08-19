@@ -76,7 +76,7 @@ namespace SupportTool.ViewModels
 
             this
                 .WhenAnyValue(x => x.User)
-                .Subscribe(x => IsShowingNewPasswordOptions = false);
+                .Subscribe(_ => ResetValues());
         }
 
 
@@ -145,5 +145,11 @@ namespace SupportTool.ViewModels
 
             return password;
         });
+
+        private void ResetValues()
+        {
+            IsShowingNewPasswordOptions = false;
+            NewPassword = "";
+        }
     }
 }
