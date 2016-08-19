@@ -67,8 +67,8 @@ namespace SupportTool.ViewModels
             unlockAccount
                 .Subscribe(_ => 
                 {
-                    messages.OnNext(Message.Info("Account unlocked"));
                     MessageBus.Current.SendMessage(ApplicationActionRequest.RefreshUser);
+                    messages.OnNext(Message.Info("Account unlocked"));
                 });
             unlockAccount
                 .ThrownExceptions
