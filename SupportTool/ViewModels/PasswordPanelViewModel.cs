@@ -113,27 +113,27 @@ namespace SupportTool.ViewModels
 
 
 
-        private IObservable<string> SetNewPasswordImpl() => Observable.Start(() =>
+        private IObservable<string> SetNewPasswordImpl() => Observable.StartAsync(async () =>
         {
             var password = new string(NewPassword.ToArray());
 
-            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
+            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password);
 
             NewPassword = "";
 
             return password;
         });
 
-        private IObservable<string> SetNewSimplePasswordImpl() => Observable.Start(() =>
+        private IObservable<string> SetNewSimplePasswordImpl() => Observable.StartAsync(async () =>
         {
             var password = $"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute.ToString("00")}";
 
-            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
+            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password);
 
             return password;
         });
 
-        private IObservable<string> SetNewComplexPasswordImpl() => Observable.Start(() =>
+        private IObservable<string> SetNewComplexPasswordImpl() => Observable.StartAsync(async () =>
         {
             var possibleChars = "abcdefgijkmnopqrstwxyzABCDEFGHJKLMNPQRSTWXYZ23456789*$-+?_&=!%{}/";
             var randGen = new Random(DateTime.Now.Second);
@@ -141,7 +141,7 @@ namespace SupportTool.ViewModels
 
             for (int i = 0; i < 16; i++) password += possibleChars[randGen.Next(possibleChars.Length)];
 
-            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
+            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password);
 
             return password;
         });
