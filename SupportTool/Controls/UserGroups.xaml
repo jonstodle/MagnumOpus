@@ -11,41 +11,56 @@
         <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <StackPanel Orientation="Horizontal">
-            <ToggleButton x:Name="IsShowingUserGroupsToggleButton" Content="User groups..." Margin="2"/>
         </StackPanel>
 
-        <Grid x:Name="GroupsGrid" Height="200" Background="{StaticResource SubSectionBackgroundBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <TabControl x:Name="GroupsTabControl" Height="250" Background="{StaticResource SubSectionBackgroundBrush}">
+            <TabItem Header="Direct groups">
+                <Grid>
+                    <ListView x:Name="DirectGroupsListView">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="All groups">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <TextBox x:Name="GroupFilterTextBox" Margin="2"/>
+                    <TextBox x:Name="GroupFilterTextBox" Margin="2"/>
 
-            <ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1" Margin="2"/>
+                    <ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1" Margin="2"/>
 
-            <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
+                    <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
 
-            <ListView x:Name="GroupsListView" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Properties[cn][0]}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                    <ListView x:Name="AllGroupsListView" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Properties[cn][0]}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-            <TextBlock Grid.Row="3" Margin="2">
-                <Run Text="Showing "/>
-                <Run x:Name="ShowingCountRun"/>
-                <Run Text=" of "/>
-                <Run x:Name="TotalCountRun"/>
-            </TextBlock>
-        </Grid>
+                    <TextBlock Grid.Row="3" Margin="2">
+                        <Run Text="Showing "/>
+                        <Run x:Name="ShowingCountRun"/>
+                        <Run Text=" of "/>
+                        <Run x:Name="TotalCountRun"/>
+                    </TextBlock>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </StackPanel>
 </UserControl>

@@ -29,15 +29,20 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
-            this.Bind(ViewModel, vm => vm.IsShowingUserGroups, v => v.IsShowingUserGroupsToggleButton.IsChecked);
+            this.Events()
+                .PreviewMouseDown
+                .Subscribe(_ => ViewModel.IsTabsClicked = true);
+
+            this.Bind(ViewModel, vm => vm.SelectedTabIndex, v => v.GroupsTabControl.SelectedIndex);
+            this.OneWayBind(ViewModel, vm => vm.IsTabsClicked, v => v.GroupsTabControl.Height, x => x ? 250 : 22);
+            this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.GroupFilter, v => v.GroupFilterTextBox.Text);
             this.Bind(ViewModel, vm => vm.UseFuzzy, v => v.UseFuzzyToggleButton.IsChecked);
-            this.OneWayBind(ViewModel, vm => vm.IsShowingUserGroups, v => v.GroupsGrid.Visibility);
-            this.OneWayBind(ViewModel, vm => vm.CollectionView, v => v.GroupsListView.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.CollectionView, v => v.AllGroupsListView.ItemsSource);
             this.OneWayBind(ViewModel, vm => vm.IsLoadingGroups, v => v.IsLoadingGroupsProgressBar.Visibility);
             this.OneWayBind(ViewModel, vm => vm.IsLoadingGroups, v => v.IsLoadingGroupsProgressBar.IsIndeterminate);
             this.OneWayBind(ViewModel, vm => vm.CollectionView.Count, v => v.ShowingCountRun.Text);
-            this.OneWayBind(ViewModel, vm => vm.Groups.Count, v => v.TotalCountRun.Text);
+            this.OneWayBind(ViewModel, vm => vm.AllGroups.Count, v => v.TotalCountRun.Text);
 
             this.WhenActivated(d =>
             {
@@ -46,9 +51,10 @@ namespace SupportTool.Controls
 
 
             ViewModel
-                .WhenAnyValue(x => x.IsShowingUserGroups)
+                .WhenAnyValue(x => x.IsTabsClicked)
+                .Where(x => x)
                 .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel, x => x.GetGroups);
+                .InvokeCommand(ViewModel, x => x.GetAllGroups);
         }
 
         public IObservable<Message> Messages => ViewModel.Messages;

@@ -21,12 +21,14 @@ namespace SupportTool.ViewModels
     {
         private readonly Subject<Message> messages;
 
-        private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getGroups;
-        private readonly ReactiveList<DirectoryEntry> groups;
+        private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
+        private readonly ReactiveList<DirectoryEntry> allGroups;
+        private readonly ReactiveList<string> directGroups;
         private readonly ListCollectionView collectionView;
         private readonly ObservableAsPropertyHelper<bool> isLoadingGroups;
         private UserObject user;
-        private bool isShowingUserGroups;
+        private int selectedTabIndex;
+        private bool isTabsClicked;
         private string groupFitler;
         private bool useFuzzy;
 
@@ -35,46 +37,56 @@ namespace SupportTool.ViewModels
         public UserGroupsViewModel()
         {
             messages = new Subject<Message>();
-            groups = new ReactiveList<DirectoryEntry>();
+            allGroups = new ReactiveList<DirectoryEntry>();
+            directGroups = new ReactiveList<string>();
 
-            collectionView = new ListCollectionView(groups);
+            collectionView = new ListCollectionView(allGroups);
             collectionView.Filter = TextFilter;
             this
                 .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
                 .Subscribe(_ => CollectionView?.Refresh());
 
-            getGroups = ReactiveCommand.CreateFromObservable(
+            getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
-                        .TakeUntil(this.WhenAnyValue(x => x.IsShowingUserGroups).Where(x => !x)),
-                this.WhenAnyValue(x => x.IsShowingUserGroups, y => y.Groups.Count, (x,y) => x && y == 0));
-            getGroups
+                        .TakeUntil(this.WhenAnyValue(x => x.IsTabsClicked).Where(x => !x)),
+                this.WhenAnyValue(x => x.IsTabsClicked, y => y.AllGroups.Count, (x,y) => x && y == 0));
+            getAllGroups
                 .Subscribe(x =>
                 {
-                    using (Groups.SuppressChangeNotifications())
+                    using (AllGroups.SuppressChangeNotifications())
                     {
-                        Groups.Clear();
-                        Groups.AddRange(x.OrderBy(y => y.Path));
+                        AllGroups.Clear();
+                        AllGroups.AddRange(x.OrderBy(y => y.Path));
                     }
                 });
-            getGroups
+            getAllGroups
                 .ThrownExceptions
                 .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Couldn't get groups")));
-            getGroups
+            getAllGroups
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups, out isLoadingGroups);
 
             this
                 .WhenAnyValue(x => x.User)
                 .Subscribe(_ => ResetValues());
+
+            this
+                .WhenAnyValue(x => x.User)
+                .Where(x => x != null)
+                .Do(_ => DirectGroups.Clear())
+                .SelectMany(x => GetDirectGroups(x))
+                .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
         }
 
 
 
         public IObservable<Message> Messages => messages;
 
-        public ReactiveCommand GetGroups => getGroups;
+        public ReactiveCommand GetAllGroups => getAllGroups;
 
-        public ReactiveList<DirectoryEntry> Groups => groups;
+        public ReactiveList<DirectoryEntry> AllGroups => allGroups;
+
+        public ReactiveList<string> DirectGroups => directGroups;
 
         public ListCollectionView CollectionView => collectionView;
 
@@ -86,10 +98,16 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref user, value); }
         }
 
-        public bool IsShowingUserGroups
+        public int SelectedTabIndex
         {
-            get { return isShowingUserGroups; }
-            set { this.RaiseAndSetIfChanged(ref isShowingUserGroups, value); }
+            get { return selectedTabIndex; }
+            set { this.RaiseAndSetIfChanged(ref selectedTabIndex, value); }
+        }
+
+        public bool IsTabsClicked
+        {
+            get { return isTabsClicked; }
+            set { this.RaiseAndSetIfChanged(ref isTabsClicked, value); }
         }
 
         public string GroupFilter
@@ -108,10 +126,29 @@ namespace SupportTool.ViewModels
 
         private void ResetValues()
         {
-            Groups.Clear();
-            IsShowingUserGroups = false;
+            AllGroups.Clear();
+            DirectGroups.Clear();
+            SelectedTabIndex = 0;
+            IsTabsClicked = false;
             GroupFilter = "";
         }
+
+        private IObservable<DirectoryEntry> GetDirectGroups(UserObject user) => Observable.Create<DirectoryEntry>(async observer =>
+        {
+            var disposed = false;
+
+            foreach (string item in user.MemberOf)
+            {
+                var de = (await ActiveDirectoryService.Current.GetGroups("group", "distinguishedname", item)).First().GetDirectoryEntry();
+
+                if (disposed) break;
+                observer.OnNext(de);
+            }
+
+            observer.OnCompleted();
+
+            return () => disposed = true;
+        });
 
         private IObservable<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName) => Observable.StartAsync(async () =>
         {

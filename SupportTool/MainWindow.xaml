@@ -11,7 +11,7 @@
     <TabControl x:Name="MainTabControl">
         <TabItem Header="User">
             <ScrollViewer>
-                <Grid>
+                <Grid Margin="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
@@ -44,7 +44,7 @@
 
         <TabItem Header="Computer">
             <ScrollViewer>
-                <Grid>
+                <Grid Margin="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition/>
@@ -66,6 +66,8 @@
 
                     <StackPanel x:Name="ComputerDetailsStackPanel" Grid.Row="1">
                         <controls:ComputerDetails x:Name="ComputerDetails"/>
+
+                        <controls:PingPanel x:Name="PingPanel"/>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

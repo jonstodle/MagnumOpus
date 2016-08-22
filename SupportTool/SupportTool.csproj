@@ -98,6 +98,9 @@
     <Compile Include="Controls\PasswordPanel.xaml.cs">
       <DependentUpon>PasswordPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PingPanel.xaml.cs">
+      <DependentUpon>PingPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserDetails.xaml.cs">
       <DependentUpon>UserDetails.xaml</DependentUpon>
     </Compile>
@@ -121,6 +124,7 @@
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PasswordPanelViewModel.cs" />
+    <Compile Include="ViewModels\PingPanelViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Page Include="Controls\ComputerDetails.xaml">
@@ -128,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PasswordPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PingPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
