@@ -21,7 +21,7 @@ namespace SupportTool.Models
         public static Message Error(string text, string caption = "An error occured") => new Message { Text = text, Caption = caption, Button = MessageBoxButton.OK, Icon = MessageBoxImage.Error };
 
 
-        public static Message PasswordSet(string password) => Info($"New password is: {password}", "Password set");
+        public static Message PasswordSet(string password) => Info($"New password is: {password}\nMust be changed at next logon", "Password set");
 
         public static Message PasswordSetError() => Error($"Could not set password", "Password not set");
     }

@@ -20,13 +20,13 @@ namespace SupportTool.Services.ActiveDirectoryServices
             return up != null ? new UserObject(up) : null;
         });
 
-        public IObservable<Unit> SetPassword(string identity, string password) => Observable.Start(() =>
+        public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true) => Observable.Start(() =>
         {
             var user = GetUser(identity).Wait();
             if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
             user.Principal.SetPassword(password);
-            user.Principal.ExpirePasswordNow();
+            if(expirePassword) user.Principal.ExpirePasswordNow();
             UnlockUser(user.Principal.SamAccountName);
         });
 

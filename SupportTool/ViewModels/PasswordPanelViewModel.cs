@@ -37,7 +37,7 @@ namespace SupportTool.ViewModels
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
             setNewPassword
-                .Subscribe(newPass => messages.OnNext(Message.PasswordSet(newPass)));
+                .Subscribe(newPass => messages.OnNext(Message.Info($"New password is: {newPass}", "Password set")));
             setNewPassword
                 .ThrownExceptions
                 .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Couldn't set password")));
@@ -117,7 +117,7 @@ namespace SupportTool.ViewModels
         {
             var password = new string(NewPassword.ToArray());
 
-            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password);
+            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false);
 
             NewPassword = "";
 
