@@ -8,9 +8,5 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
         <TextBlock x:Name="CNTextBlock" FontSize="20" Margin="2"/>
-
-        <TextBlock Opacity=".5" Margin="2">
-            <Run x:Name="CompanyRun"/>
-        </TextBlock>
     </StackPanel>
 </UserControl>
