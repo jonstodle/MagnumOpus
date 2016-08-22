@@ -28,7 +28,7 @@ namespace SupportTool.ViewModels
             this
                 .WhenAnyValue(x => x.User)
                 .Where(x => x != null && x.Principal.LastPasswordSet != null)
-                .Select(x => (TimeSpan)(DateTime.Now - x.Principal.LastPasswordSet))
+                .Select(x => (TimeSpan)(DateTime.Now - x.Principal.LastPasswordSet.Value.ToLocalTime()))
                 .ToProperty(this, x => x.PasswordAge, out passwordAge);
         }
 
