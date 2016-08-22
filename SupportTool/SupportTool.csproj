@@ -203,6 +203,11 @@
     <Resource Include="Assets\Icon-96.png" />
     <Resource Include="Assets\Icon.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Executables\LockoutStatus.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">
     <ItemGroup>

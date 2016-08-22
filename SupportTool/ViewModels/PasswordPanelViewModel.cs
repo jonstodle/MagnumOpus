@@ -4,6 +4,8 @@ using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -23,6 +25,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, string> setNewComplexPassword;
         private readonly ReactiveCommand<Unit, Unit> expirePassword;
         private readonly ReactiveCommand<Unit, Unit> unlockAccount;
+        private readonly ReactiveCommand<Unit, Unit> runLockoutStatus;
         private UserObject user;
         private bool isShowingNewPasswordOptions;
         private string newPassword;
@@ -74,6 +77,15 @@ namespace SupportTool.ViewModels
                 .ThrownExceptions
                 .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
 
+            runLockoutStatus = ReactiveCommand.Create(() =>
+            {
+                if (!File.Exists("LockoutStatus.exe"))
+                {
+                    Application.GetResourceStream(new Uri("pack://application:,,,/Executables/LockoutStatus.exe")).WriteToDisk("LockoutStatus.exe");
+                }
+                Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
+            });
+
             this
                 .WhenAnyValue(x => x.User)
                 .Subscribe(_ => ResetValues());
@@ -92,6 +104,8 @@ namespace SupportTool.ViewModels
         public ReactiveCommand ExpirePassword => expirePassword;
 
         public ReactiveCommand UnlockAccount => unlockAccount;
+
+        public ReactiveCommand RunLockoutStatus => runLockoutStatus;
 
         public UserObject User
         {

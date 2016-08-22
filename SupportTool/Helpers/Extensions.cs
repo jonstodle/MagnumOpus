@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Resources;
 
 namespace SupportTool.Helpers
 {
@@ -58,5 +60,16 @@ namespace SupportTool.Helpers
         }
 
         public static bool HasValue(this string s) => !string.IsNullOrWhiteSpace(s);
+
+        public static void WriteToDisk(this StreamResourceInfo sri, string file)
+        {
+            using (var fs = new FileStream(file, FileMode.Create, FileAccess.Write))
+            using (var stream = new MemoryStream())
+            using (var writer = new BinaryWriter(fs))
+            {
+                sri.Stream.CopyTo(stream);
+                writer.Write(stream.ToArray());
+            }
+        }
     }
 }
