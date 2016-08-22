@@ -37,6 +37,9 @@
   <PropertyGroup>
     <StartupObject>SupportTool.Launch</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ReactiveUI, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\reactiveui-core.7.0.0.1467261023\lib\Net45\ReactiveUI.dll</HintPath>
@@ -190,6 +193,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Icon-128.png" />
+    <Resource Include="Assets\Icon-16.png" />
+    <Resource Include="Assets\Icon-256.png" />
+    <Resource Include="Assets\Icon-32.png" />
+    <Resource Include="Assets\Icon-64.png" />
+    <Resource Include="Assets\Icon-96.png" />
+    <Resource Include="Assets\Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterResolveReferences">

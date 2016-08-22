@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:SupportTool"
         xmlns:controls="clr-namespace:SupportTool.Controls"
         mc:Ignorable="d"
+        Icon="Assets/Icon.ico"
         Title="Support Tool by Jon Stødle" MinHeight="300" MinWidth="200" Height="600" Width="525">
     
     <TabControl x:Name="MainTabControl">
