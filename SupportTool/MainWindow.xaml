@@ -27,7 +27,7 @@
 
                         <TextBox x:Name="UserQueryStringTextBox" CharacterCasing="Upper" Margin="2"/>
 
-                        <Button x:Name="UserPasteButton" Content="Paste" Grid.Column="1" Padding="10,0" Margin="2"/>
+                        <Button x:Name="UserPasteButton" Content="Paste&amp;Find" Grid.Column="1" Padding="10,0" Margin="2"/>
 
                         <Button x:Name="FindUserButton" Content="Find" IsDefault="True" Grid.Column="2" Padding="10,0" Margin="2"/>
                     </Grid>
@@ -60,7 +60,7 @@
 
                         <TextBox x:Name="ComputerQueryStringTextBox" CharacterCasing="Upper" Margin="2"/>
 
-                        <Button x:Name="ComputerPasteButton" Content="Paste" Grid.Column="1" Padding="10,0" Margin="2"/>
+                        <Button x:Name="ComputerPasteButton" Content="Paste&amp;Find" Grid.Column="1" Padding="10,0" Margin="2"/>
 
                         <Button x:Name="FindComputerButton" Content="Find" IsDefault="True" Grid.Column="2" Padding="10,0" Margin="2"/>
                     </Grid>

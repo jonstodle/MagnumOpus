@@ -69,10 +69,10 @@ namespace SupportTool
 
             this.WhenActivated(d =>
             {
-                d(this.BindCommand(ViewModel, vm => vm.UserPaste, v => v.UserPasteButton));
+                d(this.BindCommand(ViewModel, vm => vm.UserPasteAndFind, v => v.UserPasteButton));
                 d(this.BindCommand(ViewModel, vm => vm.FindUser, v => v.FindUserButton));
 
-                d(this.BindCommand(ViewModel, vm => vm.ComputerPaste, v => v.ComputerPasteButton));
+                d(this.BindCommand(ViewModel, vm => vm.ComputerPasteAndFind, v => v.ComputerPasteButton));
                 d(this.BindCommand(ViewModel, vm => vm.FindComputer, v => v.FindComputerButton));
             });
         }
