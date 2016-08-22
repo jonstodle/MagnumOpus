@@ -27,7 +27,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
             user.Principal.SetPassword(password);
             user.Principal.ExpirePasswordNow();
-            user.Principal.UnlockAccount();
+            UnlockUser(user.Principal.SamAccountName);
         });
 
         public IObservable<Unit> ExpirePassword(string identity) => Observable.Start(() =>
