@@ -40,13 +40,18 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
         public IObservable<Unit> UnlockUser(string identity) => Observable.Start(() =>
         {
-            foreach (DomainController dc in Domain.GetCurrentDomain().DomainControllers)
+            var dcs = new List<string>();
+            foreach (DomainController dc in Domain.GetCurrentDomain().DomainControllers) dcs.Add(dc.Name);
+
+            dcs.Select((x, i) =>
             {
-                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, dc.Name), identity);
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x), identity);
                 if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
                 user.UnlockAccount();
-            }
+
+                return i;
+            }).AsParallel().Sum();
         });
     }
 }
