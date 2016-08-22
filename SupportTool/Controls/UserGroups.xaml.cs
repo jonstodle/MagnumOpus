@@ -29,12 +29,10 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
-            this.Events()
-                .PreviewMouseDown
-                .Subscribe(_ => ViewModel.IsTabsClicked = true);
-
-            this.Bind(ViewModel, vm => vm.SelectedTabIndex, v => v.GroupsTabControl.SelectedIndex);
-            this.OneWayBind(ViewModel, vm => vm.IsTabsClicked, v => v.GroupsTabControl.Height, x => x ? 250 : 22);
+            this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked);
+            this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsGrid.Visibility);
+            this.Bind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsToggleButton.IsChecked);
+            this.OneWayBind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsGrid.Visibility);
             this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.GroupFilter, v => v.GroupFilterTextBox.Text);
             this.Bind(ViewModel, vm => vm.UseFuzzy, v => v.UseFuzzyToggleButton.IsChecked);
@@ -48,10 +46,8 @@ namespace SupportTool.Controls
             {
             });
 
-
-
             ViewModel
-                .WhenAnyValue(x => x.IsTabsClicked)
+                .WhenAnyValue(x => x.IsShowingAllGroups)
                 .Where(x => x)
                 .Select(_ => Unit.Default)
                 .InvokeCommand(ViewModel, x => x.GetAllGroups);

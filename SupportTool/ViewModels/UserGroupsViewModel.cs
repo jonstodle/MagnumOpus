@@ -27,8 +27,8 @@ namespace SupportTool.ViewModels
         private readonly ListCollectionView collectionView;
         private readonly ObservableAsPropertyHelper<bool> isLoadingGroups;
         private UserObject user;
-        private int selectedTabIndex;
-        private bool isTabsClicked;
+        private bool isShowingDirectGroups;
+        private bool isShowingAllGroups;
         private string groupFitler;
         private bool useFuzzy;
 
@@ -48,8 +48,8 @@ namespace SupportTool.ViewModels
 
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
-                        .TakeUntil(this.WhenAnyValue(x => x.IsTabsClicked).Where(x => !x)),
-                this.WhenAnyValue(x => x.IsTabsClicked, y => y.AllGroups.Count, (x,y) => x && y == 0));
+                        .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x)),
+                this.WhenAnyValue(x => x.IsShowingAllGroups, y => y.AllGroups.Count, (x,y) => x && y == 0));
             getAllGroups
                 .Subscribe(x =>
                 {
@@ -76,6 +76,16 @@ namespace SupportTool.ViewModels
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x))
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
+
+            this
+                .WhenAnyValue(x => x.IsShowingDirectGroups)
+                .Where(x => x)
+                .Subscribe(_ => IsShowingAllGroups = false);
+
+            this
+                .WhenAnyValue(x => x.IsShowingAllGroups)
+                .Where(x => x)
+                .Subscribe(_ => IsShowingDirectGroups = false);
         }
 
 
@@ -98,16 +108,16 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref user, value); }
         }
 
-        public int SelectedTabIndex
+        public bool IsShowingDirectGroups
         {
-            get { return selectedTabIndex; }
-            set { this.RaiseAndSetIfChanged(ref selectedTabIndex, value); }
+            get { return isShowingDirectGroups; }
+            set { this.RaiseAndSetIfChanged(ref isShowingDirectGroups, value); }
         }
 
-        public bool IsTabsClicked
+        public bool IsShowingAllGroups
         {
-            get { return isTabsClicked; }
-            set { this.RaiseAndSetIfChanged(ref isTabsClicked, value); }
+            get { return isShowingAllGroups; }
+            set { this.RaiseAndSetIfChanged(ref isShowingAllGroups, value); }
         }
 
         public string GroupFilter
@@ -128,8 +138,8 @@ namespace SupportTool.ViewModels
         {
             AllGroups.Clear();
             DirectGroups.Clear();
-            SelectedTabIndex = 0;
-            IsTabsClicked = false;
+            IsShowingDirectGroups = false;
+            IsShowingAllGroups = false;
             GroupFilter = "";
         }
 
