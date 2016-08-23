@@ -5,6 +5,7 @@ using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
@@ -24,7 +25,8 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
         private readonly ReactiveList<DirectoryEntry> allGroups;
         private readonly ReactiveList<string> directGroups;
-        private readonly ListCollectionView collectionView;
+        private readonly ListCollectionView allGroupsCollectionView;
+        private readonly ListCollectionView directGroupsCollectionView;
         private readonly ObservableAsPropertyHelper<bool> isLoadingGroups;
         private UserObject user;
         private bool isShowingDirectGroups;
@@ -40,11 +42,14 @@ namespace SupportTool.ViewModels
             allGroups = new ReactiveList<DirectoryEntry>();
             directGroups = new ReactiveList<string>();
 
-            collectionView = new ListCollectionView(allGroups);
-            collectionView.Filter = TextFilter;
+            allGroupsCollectionView = new ListCollectionView(allGroups);
+            allGroupsCollectionView.Filter = TextFilter;
             this
                 .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
-                .Subscribe(_ => CollectionView?.Refresh());
+                .Subscribe(_ => AllGroupsCollectionView?.Refresh());
+
+            directGroupsCollectionView = new ListCollectionView(directGroups);
+            directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
@@ -98,7 +103,9 @@ namespace SupportTool.ViewModels
 
         public ReactiveList<string> DirectGroups => directGroups;
 
-        public ListCollectionView CollectionView => collectionView;
+        public ListCollectionView AllGroupsCollectionView => allGroupsCollectionView;
+
+        public ListCollectionView DirectGroupsCollectionView => directGroupsCollectionView;
 
         public bool IsLoadingGroups => isLoadingGroups.Value;
 
