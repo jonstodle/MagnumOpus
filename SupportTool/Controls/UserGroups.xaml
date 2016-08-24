@@ -10,11 +10,11 @@
     <StackPanel>
         <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
-        <StackPanel Orientation="Horizontal">
+        <WrapPanel>
             <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups..." Margin="2"/>
 
             <ToggleButton x:Name="AllGroupsToggleButton" Content="All groups..." Margin="2"/>
-        </StackPanel>
+        </WrapPanel>
 
         <Grid x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
             <ListView x:Name="DirectGroupsListView" Height="200" Margin="2">
