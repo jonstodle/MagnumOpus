@@ -69,7 +69,7 @@ namespace SupportTool.ViewModels
                 resetMessages.Clear();
                 return ResetLocalProfileImpl(user, computerName);
             },
-            this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
+            this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()).Merge(resetGlobalProfile.IsExecuting.Select(x => !x)));
             resetLocalProfile
                 .Subscribe(x => resetMessages.Add(x));
             resetLocalProfile
