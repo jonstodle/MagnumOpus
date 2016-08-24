@@ -15,8 +15,6 @@ namespace SupportTool.Models
 
         public string Company => directoryEntry.Properties.Get<string>("company");
 
-        public PropertyValueCollection MemberOf => directoryEntry.Properties["memberof"];
-
         public string ProfilePath => directoryEntry.Properties.Get<string>("profilepath");
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SupportTool.Helpers;
+using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
@@ -24,5 +25,9 @@ namespace SupportTool.Models
 
 
         public T Principal => principal;
+
+        public PropertyValueCollection MemberOf => directoryEntry.Properties["memberof"];
+
+        public string CN => directoryEntry.Properties.Get<string>("cn");
     }
 }

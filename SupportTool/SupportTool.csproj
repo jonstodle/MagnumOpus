@@ -99,6 +99,9 @@
     <Compile Include="Controls\ComputerDetails.xaml.cs">
       <DependentUpon>ComputerDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ComputerGroups.xaml.cs">
+      <DependentUpon>ComputerGroups.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PasswordPanel.xaml.cs">
       <DependentUpon>PasswordPanel.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,7 @@
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
+    <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\PasswordPanelViewModel.cs" />
     <Compile Include="ViewModels\PingPanelViewModel.cs" />
@@ -136,6 +140,10 @@
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Page Include="Controls\ComputerDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ComputerGroups.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

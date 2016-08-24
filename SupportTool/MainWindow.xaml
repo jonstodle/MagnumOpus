@@ -71,6 +71,8 @@
                         <controls:ComputerDetails x:Name="ComputerDetails"/>
 
                         <controls:PingPanel x:Name="PingPanel"/>
+
+                        <controls:ComputerGroups x:Name="ComputerGroups"/>
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

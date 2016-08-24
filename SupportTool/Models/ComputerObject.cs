@@ -11,7 +11,5 @@ namespace SupportTool.Models
     public class ComputerObject : ActiveDirectoryObject<ComputerPrincipal>
     {
         public ComputerObject(ComputerPrincipal principal) : base(principal) { }
-
-        public string CN => directoryEntry.Properties.Get<string>("cn");
     }
 }
