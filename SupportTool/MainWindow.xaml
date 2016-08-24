@@ -37,6 +37,8 @@
 
                         <controls:PasswordPanel x:Name="UserPasswordPanel"/>
 
+                        <controls:ProfilePanel x:Name="UserProfilePanel"/>
+
                         <controls:UserGroups x:Name="UserGroups"/>
                     </StackPanel>
                 </Grid>

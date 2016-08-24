@@ -59,7 +59,7 @@ namespace SupportTool.Helpers
             return (T)propCollection[index];
         }
 
-        public static bool HasValue(this string s) => !string.IsNullOrWhiteSpace(s);
+        public static bool HasValue(this string s, int minLength = 1) => !string.IsNullOrWhiteSpace(s) && s.Length >= minLength;
 
         public static void WriteToDisk(this StreamResourceInfo sri, string file)
         {
