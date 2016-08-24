@@ -27,9 +27,9 @@
 
                         <TextBox x:Name="UserQueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Margin="2"/>
 
-                        <Button x:Name="UserPasteButton" Content="Paste&amp;Find" Grid.Column="1" Padding="10,0" Margin="2"/>
+                        <Button x:Name="FindUserButton" Content="Find" IsDefault="True" Grid.Column="1" Padding="10,0" Margin="2"/>
 
-                        <Button x:Name="FindUserButton" Content="Find" IsDefault="True" Grid.Column="2" Padding="10,0" Margin="2"/>
+                        <Button x:Name="UserPasteButton" Content="Paste&amp;Find" Grid.Column="2" Padding="10,0" Margin="2"/>
                     </Grid>
 
                     <StackPanel x:Name="UserDetailsStackPanel" Grid.Row="1">
@@ -62,9 +62,9 @@
 
                         <TextBox x:Name="ComputerQueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Margin="2"/>
 
-                        <Button x:Name="ComputerPasteButton" Content="Paste&amp;Find" Grid.Column="1" Padding="10,0" Margin="2"/>
+                        <Button x:Name="FindComputerButton" Content="Find" IsDefault="True" Grid.Column="1" Padding="10,0" Margin="2"/>
 
-                        <Button x:Name="FindComputerButton" Content="Find" IsDefault="True" Grid.Column="2" Padding="10,0" Margin="2"/>
+                        <Button x:Name="ComputerPasteButton" Content="Paste&amp;Find" Grid.Column="2" Padding="10,0" Margin="2"/>
                     </Grid>
 
                     <StackPanel x:Name="ComputerDetailsStackPanel" Grid.Row="1">
