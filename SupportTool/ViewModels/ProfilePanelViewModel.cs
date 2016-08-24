@@ -62,7 +62,7 @@ namespace SupportTool.ViewModels
 
             resetLocalProfile = ReactiveCommand.CreateFromObservable(
                 () => ResetLocalProfileImpl(user, computerName),
-                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
+                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
             resetLocalProfile
                 .Subscribe(x => resetMessages.Insert(0, x));
             resetLocalProfile
