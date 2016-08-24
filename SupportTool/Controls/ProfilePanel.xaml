@@ -25,6 +25,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <TextBlock Text="Computer name" FontSize="10" VerticalAlignment="Bottom" Margin="2"/>
@@ -43,15 +44,15 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Grid>
+            <Grid Grid.Row="4" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="OpenLocalProfileDirectoryButton" Content="Open local profile folder"/>
+                <Button x:Name="OpenGlobalProfileDirectoryButton" Content="Open global profile folder" Margin="2"/>
 
-                <Button x:Name="OpenGlobalProfileDirectoryButton" Content="Open global profile folder"/>
+                <Button x:Name="OpenLocalProfileDirectoryButton" Content="Open local profile folder" Grid.Column="1" Margin="2"/>
             </Grid>
         </Grid>
 
