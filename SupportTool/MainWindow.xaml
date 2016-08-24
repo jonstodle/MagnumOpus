@@ -10,7 +10,7 @@
         Title="Support Tool by Jon Stødle" MinHeight="300" MinWidth="200" Height="900" Width="525">
     
     <TabControl x:Name="MainTabControl">
-        <TabItem Header="User">
+        <TabItem Header="Users">
             <ScrollViewer>
                 <Grid Margin="2">
                     <Grid.RowDefinitions>
@@ -45,7 +45,7 @@
             </ScrollViewer>
         </TabItem>
 
-        <TabItem Header="Computer">
+        <TabItem Header="Computers">
             <ScrollViewer>
                 <Grid Margin="2">
                     <Grid.RowDefinitions>
