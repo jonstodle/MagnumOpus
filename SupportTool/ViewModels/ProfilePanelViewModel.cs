@@ -49,34 +49,27 @@ namespace SupportTool.ViewModels
             resetMessages = new ReactiveList<string>();
             profiles = new ReactiveList<DirectoryInfo>();
 
-            resetGlobalProfile = ReactiveCommand.CreateFromObservable(() =>
-            {
-                resetMessages.Clear();
-                return ResetGlobalProfileImpl(user);
-            });
+            resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(user));
             resetGlobalProfile
-                .Subscribe(x => resetMessages.Add(x));
+                .Subscribe(x => resetMessages.Insert(0, x));
             resetGlobalProfile
                 .ThrownExceptions
                 .Subscribe(ex =>
                 {
-                    resetMessages.Add(CreateLogString("Could not reset global profile"));
+                    resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
                     messages.OnNext(Message.Error(ex.Message));
                 });
 
-            resetLocalProfile = ReactiveCommand.CreateFromObservable(() =>
-            {
-                resetMessages.Clear();
-                return ResetLocalProfileImpl(user, computerName);
-            },
-            this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()).Merge(resetGlobalProfile.IsExecuting.Select(x => !x)));
+            resetLocalProfile = ReactiveCommand.CreateFromObservable(
+                () => ResetLocalProfileImpl(user, computerName),
+                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
             resetLocalProfile
-                .Subscribe(x => resetMessages.Add(x));
+                .Subscribe(x => resetMessages.Insert(0, x));
             resetLocalProfile
                 .ThrownExceptions
                 .Subscribe(ex =>
                 {
-                    resetMessages.Add(CreateLogString("Could not reset local profile"));
+                    resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
                     messages.OnNext(Message.Error(ex.Message));
                 });
 
