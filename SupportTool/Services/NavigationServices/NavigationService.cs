@@ -36,8 +36,8 @@ namespace SupportTool.Services.NavigationServices
             var newWindow = new TWindow();
             await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
-            newWindow.ShowDialog();
             navigationStack.Add(newWindow as Window);
+            newWindow.ShowDialog();
         }
 
         public async Task GoBack(object parameter = null)
