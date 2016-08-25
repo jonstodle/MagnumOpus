@@ -1,7 +1,10 @@
-﻿using System;
+﻿using SupportTool.Models;
+using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,35 +14,41 @@ namespace SupportTool.Services.ActiveDirectoryServices
     {
         private DirectoryEntry directoryEntry = new DirectoryEntry("LDAP://sikt.sykehuspartner.no");
 
-        public Task<IEnumerable<SearchResult>> GetGroupsForUser(string searchTerm, params string[] propertiesToLoad) => GetGroups("user", "samaccountname", searchTerm, propertiesToLoad);
-
-        public Task<IEnumerable<SearchResult>> GetGroups(string objectCategory, string searchProperty, string searchTerm, params string[] propertiesToLoad)
+        public IObservable<GroupObject> GetGroup(string identity) => Observable.Start(() =>
         {
-            return Task.Run<IEnumerable<SearchResult>>(() =>
+            var up = GroupPrincipal.FindByIdentity(principalContext, identity);
+            return up != null ? new GroupObject(up) : null;
+        });
+
+        public IObservable<DirectoryEntry> GetGroupsForUser(string searchTerm, params string[] propertiesToLoad) => GetGroups("user", "samaccountname", searchTerm, propertiesToLoad);
+
+        public IObservable<DirectoryEntry> GetGroups(string objectCategory, string searchProperty, string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
+        {
+            var disposed = false;
+
+            using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory={objectCategory})({searchProperty}={searchTerm}))", propertiesToLoad))
             {
-                using (var searcher = new DirectorySearcher(directoryEntry))
+                searcher.PageSize = 1000;
+
+                using (var results = searcher.FindAll())
                 {
-                    searcher.PageSize = 1000;
-                    searcher.Filter = $"(&(objectCategory={objectCategory})({searchProperty}={searchTerm}))";
-
-                    foreach (var prop in propertiesToLoad) { searcher.PropertiesToLoad.Add(prop); }
-
-                    var returnValue = new List<SearchResult>();
-                    using (var results = searcher.FindAll())
+                    foreach (SearchResult result in results)
                     {
-                        foreach (var result in results) { returnValue.Add((SearchResult)result); }
+                        if (disposed) break;
+                        observer.OnNext(result.GetDirectoryEntry());
                     }
-
-                    return returnValue;
                 }
-            });
-        }
+
+                observer.OnCompleted();
+                return () => disposed = true;
+            }
+        });
 
         public async Task<IEnumerable<DirectoryEntry>> GetParents(string name, string path, IEnumerable<DirectoryEntry> collection)
         {
             var result = new List<DirectoryEntry>();
 
-            var group = (await GetGroups("group", "distinguishedname", name)).ElementAt(0).GetDirectoryEntry();
+            var group = await GetGroups("group", "distinguishedname", name).Take(1);
             result.Add(group);
             var memberof = group.Properties["memberof"];
 

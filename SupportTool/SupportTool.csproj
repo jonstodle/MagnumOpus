@@ -122,6 +122,7 @@
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
     <Compile Include="Models\ComputerObject.cs" />
+    <Compile Include="Models\GroupObject.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\UserObject.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Computer.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
+    <Compile Include="ViewModels\AddGroupsWindowViewModel.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -139,6 +141,9 @@
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
+    <Compile Include="Views\AddGroupsWindow.xaml.cs">
+      <DependentUpon>AddGroupsWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\ComputerDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -179,6 +184,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\AddGroupsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -208,9 +217,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Assets\Icon-128.png" />
     <Resource Include="Assets\Icon-16.png" />

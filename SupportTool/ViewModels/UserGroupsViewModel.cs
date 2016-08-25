@@ -22,6 +22,7 @@ namespace SupportTool.ViewModels
     {
         private readonly Subject<Message> messages;
 
+        private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
         private readonly ReactiveList<DirectoryEntry> allGroups;
         private readonly ReactiveList<string> directGroups;
@@ -51,6 +52,8 @@ namespace SupportTool.ViewModels
             directGroupsCollectionView = new ListCollectionView(directGroups);
             directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
+            openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddGroupsWindow>(user.Principal.SamAccountName));
+
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
                         .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x)),
@@ -78,6 +81,7 @@ namespace SupportTool.ViewModels
             this
                 .WhenAnyValue(x => x.User)
                 .Where(x => x != null)
+                .Merge(MessageBus.Current.Listen<ApplicationActionRequest>().Where(x => x == ApplicationActionRequest.LoadDirectGroupsForUser).Select(_ => User))
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x))
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
@@ -96,6 +100,8 @@ namespace SupportTool.ViewModels
 
 
         public IObservable<Message> Messages => messages;
+
+        public ReactiveCommand OpenAddGroups => openAddGroups;
 
         public ReactiveCommand GetAllGroups => getAllGroups;
 
@@ -156,7 +162,7 @@ namespace SupportTool.ViewModels
 
             foreach (string item in user.MemberOf)
             {
-                var de = (await ActiveDirectoryService.Current.GetGroups("group", "distinguishedname", item)).First().GetDirectoryEntry();
+                var de = await ActiveDirectoryService.Current.GetGroups("group", "distinguishedname", item).Take(1);
 
                 if (disposed) break;
                 observer.OnNext(de);

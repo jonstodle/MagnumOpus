@@ -44,6 +44,7 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+                d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddGroupsButton));
             });
 
             ViewModel

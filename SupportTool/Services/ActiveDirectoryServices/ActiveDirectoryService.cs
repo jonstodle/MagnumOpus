@@ -22,5 +22,9 @@ namespace SupportTool.Services.ActiveDirectoryServices
         {
             principalContext = new PrincipalContext(ContextType.Domain);
         }
+
+
+
+        public IObservable<Principal> GetPrincipal(string identity) => Observable.Start(() => Principal.FindByIdentity(principalContext, identity));
     }
 }

@@ -8,6 +8,7 @@ namespace SupportTool.Models
 {
     public enum ApplicationActionRequest
     {
-        RefreshUser
+        RefreshUser,
+        LoadDirectGroupsForUser
     }
 }
