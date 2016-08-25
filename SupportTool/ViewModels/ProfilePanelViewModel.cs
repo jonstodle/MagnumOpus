@@ -228,7 +228,7 @@ namespace SupportTool.ViewModels
 
         private IObservable<string> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Create<string>(observer =>
         {
-            if (PingNameOrAddressAsync(cpr).Result < 0) throw new Exception($"Could not connect to {cpr}");
+            if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
             observer.OnNext(CreateLogString("Computer found"));
 
             if (GetLoggedInUsers(cpr).Select(x => x.ToLowerInvariant()).Contains(usr.Principal.SamAccountName)) throw new Exception("User is logged in");
@@ -304,7 +304,7 @@ namespace SupportTool.ViewModels
 
         private IObservable<Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
-            if (PingNameOrAddressAsync(cpr).Result < 0) throw new Exception($"Could not connect to {cpr}");
+            if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
 
             var profilesDirectory = new DirectoryInfo($@"\\{cpr}\C$\Users");
             var profileDirectories = profilesDirectory.GetDirectories($"*{usr.Principal.SamAccountName}*").ToList();
@@ -365,10 +365,13 @@ namespace SupportTool.ViewModels
             return returnCollection;
         }
 
-        private async Task<long> PingNameOrAddressAsync(string nameOrAddress)
+        private long PingNameOrAddressAsync(string nameOrAddress)
         {
             var pinger = new Ping();
-            var reply = await pinger.SendPingAsync(nameOrAddress);
+            PingReply reply = null;
+
+            try { reply = pinger.Send(nameOrAddress, 1000); }
+            catch { /* Do nothing */ }
 
             if (reply.Status == IPStatus.Success) return reply.RoundtripTime;
             else return -1L;
