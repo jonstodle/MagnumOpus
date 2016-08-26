@@ -61,6 +61,7 @@ namespace SupportTool.ViewModels
                 var group = ActiveDirectoryService.Current.GetGroup(selectedDirectGroup as string).Wait();
                 group.Principal.Members.Remove(user.Principal);
                 group.Principal.Save();
+                MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
             }),
             this.WhenAnyValue(x => x.SelectedDirectGroup).Select(x => x != null));
             removeGroup
