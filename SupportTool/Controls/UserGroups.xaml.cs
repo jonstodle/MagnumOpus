@@ -34,6 +34,7 @@ namespace SupportTool.Controls
             this.Bind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsGrid.Visibility);
             this.OneWayBind(ViewModel, vm => vm.DirectGroupsCollectionView, v => v.DirectGroupsListView.ItemsSource);
+            this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem);
             this.Bind(ViewModel, vm => vm.GroupFilter, v => v.GroupFilterTextBox.Text);
             this.Bind(ViewModel, vm => vm.UseFuzzy, v => v.UseFuzzyToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.AllGroupsCollectionView, v => v.AllGroupsListView.ItemsSource);
@@ -45,6 +46,7 @@ namespace SupportTool.Controls
             this.WhenActivated(d =>
             {
                 d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddGroupsButton));
+                d(this.BindCommand(ViewModel, vm => vm.RemoveGroup, v => v.RemoveGroupsButton));
             });
 
             ViewModel

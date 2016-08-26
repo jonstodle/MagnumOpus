@@ -23,6 +23,7 @@ namespace SupportTool.ViewModels
         private readonly Subject<Message> messages;
 
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
+        private readonly ReactiveCommand<Unit, Unit> removeGroup;
         private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
         private readonly ReactiveList<DirectoryEntry> allGroups;
         private readonly ReactiveList<string> directGroups;
@@ -32,6 +33,7 @@ namespace SupportTool.ViewModels
         private UserObject user;
         private bool isShowingDirectGroups;
         private bool isShowingAllGroups;
+        private object selectedDirectGroup;
         private string groupFitler;
         private bool useFuzzy;
 
@@ -53,6 +55,17 @@ namespace SupportTool.ViewModels
             directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
             openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddGroupsWindow>(user.Principal.SamAccountName));
+
+            removeGroup = ReactiveCommand.CreateFromObservable(() => Observable.Start(() =>
+            {
+                var group = ActiveDirectoryService.Current.GetGroup(selectedDirectGroup as string).Wait();
+                group.Principal.Members.Remove(user.Principal);
+                group.Principal.Save();
+            }),
+            this.WhenAnyValue(x => x.SelectedDirectGroup).Select(x => x != null));
+            removeGroup
+                .ThrownExceptions
+                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Could not remove group")));
 
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
@@ -103,6 +116,8 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenAddGroups => openAddGroups;
 
+        public ReactiveCommand RemoveGroup => removeGroup;
+
         public ReactiveCommand GetAllGroups => getAllGroups;
 
         public ReactiveList<DirectoryEntry> AllGroups => allGroups;
@@ -131,6 +146,12 @@ namespace SupportTool.ViewModels
         {
             get { return isShowingAllGroups; }
             set { this.RaiseAndSetIfChanged(ref isShowingAllGroups, value); }
+        }
+
+        public object SelectedDirectGroup
+        {
+            get { return selectedDirectGroup; }
+            set { this.RaiseAndSetIfChanged(ref selectedDirectGroup, value); }
         }
 
         public string GroupFilter
