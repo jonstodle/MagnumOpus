@@ -2,6 +2,7 @@
 using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
+using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -58,10 +59,13 @@ namespace SupportTool.ViewModels
 
             removeGroup = ReactiveCommand.CreateFromObservable(() => Observable.Start(() =>
             {
-                var group = ActiveDirectoryService.Current.GetGroup(selectedDirectGroup as string).Wait();
-                group.Principal.Members.Remove(user.Principal);
-                group.Principal.Save();
-                MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
+                if (DialogService.ShowPrompt($"Remove {SelectedDirectGroup as string} from {user.Principal.DisplayName}?"))
+                {
+                    var group = ActiveDirectoryService.Current.GetGroup(selectedDirectGroup as string).Wait();
+                    group.Principal.Members.Remove(user.Principal);
+                    group.Principal.Save();
+                    MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
+                }
             }),
             this.WhenAnyValue(x => x.SelectedDirectGroup).Select(x => x != null));
             removeGroup
@@ -71,7 +75,7 @@ namespace SupportTool.ViewModels
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
                         .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x)),
-                this.WhenAnyValue(x => x.IsShowingAllGroups, y => y.AllGroups.Count, (x,y) => x && y == 0));
+                this.WhenAnyValue(x => x.IsShowingAllGroups, y => y.AllGroups.Count, (x, y) => x && y == 0));
             getAllGroups
                 .Subscribe(x =>
                 {
