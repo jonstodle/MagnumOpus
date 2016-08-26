@@ -2,6 +2,7 @@
 using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
+using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections;
@@ -21,8 +22,6 @@ namespace SupportTool.ViewModels
 {
     public class AddGroupsWindowViewModel : ReactiveObject, INavigable
     {
-        private readonly Subject<Message> messages;
-
         private readonly ReactiveCommand<Unit, DirectoryEntry> searchForGroups;
         private readonly ReactiveCommand<Unit, Unit> addToGroupsToAdd;
         private readonly ReactiveCommand<Unit, bool> removeFromGroupsToAdd;
@@ -42,8 +41,6 @@ namespace SupportTool.ViewModels
 
         public AddGroupsWindowViewModel()
         {
-            messages = new Subject<Message>();
-
             searchResults = new ReactiveList<DirectoryEntry>();
             groupsToAdd = new ReactiveList<DirectoryEntry>();
 
@@ -62,7 +59,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(x => searchResults.Add(x));
             searchForGroups
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+                .Subscribe(ex => DialogService.ShowError(ex.Message));
             searchForGroups
                 .IsExecuting
                 .ToProperty(this, x => x.IsSearchingForGroups, out isSearchingForGroups);
@@ -72,14 +69,14 @@ namespace SupportTool.ViewModels
                 this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
             addToGroupsToAdd
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Could not add group")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not add group"));
 
             removeFromGroupsToAdd = ReactiveCommand.Create(
                 () => groupsToAdd.Remove(SelectedSearchResult as DirectoryEntry),
                 this.WhenAnyValue(x => x.SelectedGroupToAdd).Select(x => x != null));
             removeFromGroupsToAdd
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Could not remove group")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove group"));
 
             addPrincipalToGroups = ReactiveCommand.CreateFromObservable(
                 () => AddPrincipalToGroupsImpl(groupsToAdd, principal),
@@ -93,7 +90,7 @@ namespace SupportTool.ViewModels
                         var builder = new StringBuilder();
                         builder.AppendLine("The follwoing group(s) are already present and will not be added:");
                         foreach (var group in x) builder.AppendLine(group);
-                        messages.OnNext(Message.Info(builder.ToString(), "Some groups were not added"));
+                        DialogService.ShowInfo(builder.ToString(), "Some groups were not added");
                     }
 
 
@@ -101,7 +98,7 @@ namespace SupportTool.ViewModels
                 });
             addPrincipalToGroups
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Could not add groups")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not add groups"));
 
             this
                 .WhenAnyValue(x => x.Principal)
@@ -111,8 +108,6 @@ namespace SupportTool.ViewModels
         }
 
 
-
-        public IObservable<Message> Messages => messages;
 
         public ReactiveCommand SearchForGroups => searchForGroups;
 

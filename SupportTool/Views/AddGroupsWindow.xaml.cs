@@ -33,10 +33,6 @@ namespace SupportTool.Views
                 .Activated
                 .Subscribe(_ => SearchTextBox.Focus());
 
-            ViewModel
-                .Messages
-                .Subscribe(x => MessageBox.Show(x.Text, x.Caption, x.Button, x.Icon));
-
             this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title, x => x ?? "");
             this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.IsSearchingForGroups, v => v.SearchingProgressBar.Visibility);

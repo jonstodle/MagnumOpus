@@ -2,6 +2,7 @@
 using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
+using SupportTool.Services.DialogServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,8 +19,6 @@ namespace SupportTool.ViewModels
 {
     public class PasswordPanelViewModel : ReactiveObject
     {
-        private readonly Subject<Message> messages;
-
         private readonly ReactiveCommand<Unit, string> setNewPassword;
         private readonly ReactiveCommand<Unit, string> setNewSimplePassword;
         private readonly ReactiveCommand<Unit, string> setNewComplexPassword;
@@ -34,48 +33,46 @@ namespace SupportTool.ViewModels
 
         public PasswordPanelViewModel()
         {
-            messages = new Subject<Message>();
-
             setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
             setNewPassword
-                .Subscribe(newPass => messages.OnNext(Message.Info($"New password is: {newPass}", "Password set")));
+                .Subscribe(newPass => DialogService.ShowInfo($"New password is: {newPass}", "Password set"));
             setNewPassword
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Couldn't set password")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't set password"));
 
             setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
             setNewSimplePassword
-                .Subscribe(newPass => messages.OnNext(Message.PasswordSet(newPass)));
+                .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
             setNewSimplePassword
                 .ThrownExceptions
-                .Subscribe(_ => messages.OnNext(Message.PasswordSetError()));
+                .Subscribe(_ => DialogService.ShowPasswordSetErrorMessage());
 
             setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
             setNewComplexPassword
-                .Subscribe(newPass => messages.OnNext(Message.PasswordSet(newPass)));
+                .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
             setNewComplexPassword
                 .ThrownExceptions
-                .Subscribe(_ => messages.OnNext(Message.PasswordSetError()));
+                .Subscribe(_ => DialogService.ShowPasswordSetErrorMessage());
 
             expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
             expirePassword
-                .Subscribe(_ => messages.OnNext(Message.Info("User must change password at next login", "Password expired")));
+                .Subscribe(_ => DialogService.ShowInfo("User must change password at next login", "Password expired"));
             expirePassword
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+                .Subscribe(ex => DialogService.ShowError(ex.Message));
 
             unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
             unlockAccount
                 .Subscribe(_ => 
                 {
                     MessageBus.Current.SendMessage(ApplicationActionRequest.RefreshUser);
-                    messages.OnNext(Message.Info("Account unlocked"));
+                    DialogService.ShowInfo("Account unlocked");
                 });
             unlockAccount
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+                .Subscribe(ex => DialogService.ShowError(ex.Message));
 
             runLockoutStatus = ReactiveCommand.Create(() =>
             {
@@ -92,8 +89,6 @@ namespace SupportTool.ViewModels
         }
 
 
-
-        public IObservable<Message> Messages => messages;
 
         public ReactiveCommand SetNewPassword => setNewPassword;
 

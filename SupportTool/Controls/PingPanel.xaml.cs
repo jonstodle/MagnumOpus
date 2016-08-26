@@ -45,8 +45,6 @@ namespace SupportTool.Controls
             });
         }
 
-        public IObservable<Message> Messages => ViewModel.Messages;
-
         public ComputerObject Computer
         {
             get { return (ComputerObject)GetValue(ComputerProperty); }

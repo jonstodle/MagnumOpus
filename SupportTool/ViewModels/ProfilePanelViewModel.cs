@@ -2,6 +2,7 @@
 using ReactiveUI;
 using SupportTool.Helpers;
 using SupportTool.Models;
+using SupportTool.Services.DialogServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,8 +20,6 @@ namespace SupportTool.ViewModels
 {
     public class ProfilePanelViewModel : ReactiveObject
     {
-        private readonly Subject<Message> messages;
-
         private readonly ReactiveCommand<Unit, string> resetGlobalProfile;
         private readonly ReactiveCommand<Unit, string> resetLocalProfile;
         private readonly ReactiveCommand<Unit, Process> openGlobalProfileDirectory;
@@ -45,7 +44,6 @@ namespace SupportTool.ViewModels
 
         public ProfilePanelViewModel()
         {
-            messages = new Subject<Message>();
             resetMessages = new ReactiveList<string>();
             profiles = new ReactiveList<DirectoryInfo>();
 
@@ -57,7 +55,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(ex =>
                 {
                     resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
-                    messages.OnNext(Message.Error(ex.Message));
+                    DialogService.ShowError(ex.Message);
                 });
 
             resetLocalProfile = ReactiveCommand.CreateFromObservable(
@@ -70,7 +68,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(ex =>
                 {
                     resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
-                    messages.OnNext(Message.Error(ex.Message));
+                    DialogService.ShowError(ex.Message);
                 });
 
             openGlobalProfileDirectory = ReactiveCommand.Create(
@@ -95,14 +93,14 @@ namespace SupportTool.ViewModels
                 });
             searchForProfiles
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+                .Subscribe(ex => DialogService.ShowError(ex.Message));
 
             restoreProfile = ReactiveCommand.CreateFromObservable(() => RestoreProfileImpl(localProfileDirectory, profiles[SelectedProfileIndex]));
             restoreProfile
-                .Subscribe(_ => messages.OnNext(Message.Info("Profile restored", "Success")));
+                .Subscribe(_ => DialogService.ShowInfo("Profile restored", "Success"));
             restoreProfile
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Could not restore profile")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not restore profile"));
 
             this
                 .WhenAnyValue(x => x.IsShowingResetProfile)
@@ -120,8 +118,6 @@ namespace SupportTool.ViewModels
         }
 
 
-
-        public IObservable<Message> Messages => messages;
 
         public ReactiveCommand ResetGlobalProfile => resetGlobalProfile;
 

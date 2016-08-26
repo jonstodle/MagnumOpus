@@ -56,8 +56,6 @@ namespace SupportTool.Controls
                 .InvokeCommand(ViewModel, x => x.GetAllGroups);
         }
 
-        public IObservable<Message> Messages => ViewModel.Messages;
-
         public UserObject User
         {
             get { return (UserObject)GetValue(UserProperty); }

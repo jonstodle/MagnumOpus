@@ -16,5 +16,10 @@ namespace SupportTool.Services.DialogServices
         public static void ShowInfo(string text, string caption = "") => ShowMessage(text, caption, icon: MessageBoxImage.Information);
 
         public static bool ShowPrompt(string question, string caption = "", bool showCancel = false) => MessageBox.Show(question, caption, !showCancel ? MessageBoxButton.YesNo : MessageBoxButton.YesNoCancel, MessageBoxImage.Question) == MessageBoxResult.Yes;
+
+
+        public static void ShowPasswordSetMessage(string password) => ShowInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
+
+        public static void ShowPasswordSetErrorMessage() => ShowError($"Could not set password", "Password not set");
     }
 }

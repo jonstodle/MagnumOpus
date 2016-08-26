@@ -21,8 +21,6 @@ namespace SupportTool.ViewModels
 {
     public class UserGroupsViewModel : ReactiveObject
     {
-        private readonly Subject<Message> messages;
-
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, Unit> removeGroup;
         private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
@@ -42,7 +40,6 @@ namespace SupportTool.ViewModels
 
         public UserGroupsViewModel()
         {
-            messages = new Subject<Message>();
             allGroups = new ReactiveList<DirectoryEntry>();
             directGroups = new ReactiveList<string>();
 
@@ -70,7 +67,7 @@ namespace SupportTool.ViewModels
             this.WhenAnyValue(x => x.SelectedDirectGroup).Select(x => x != null));
             removeGroup
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Could not remove group")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove group"));
 
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
@@ -87,7 +84,7 @@ namespace SupportTool.ViewModels
                 });
             getAllGroups
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message, "Couldn't get groups")));
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
             getAllGroups
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups, out isLoadingGroups);
@@ -116,8 +113,6 @@ namespace SupportTool.ViewModels
         }
 
 
-
-        public IObservable<Message> Messages => messages;
 
         public ReactiveCommand OpenAddGroups => openAddGroups;
 

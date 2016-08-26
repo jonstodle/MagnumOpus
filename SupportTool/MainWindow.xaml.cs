@@ -45,14 +45,6 @@ namespace SupportTool
                     tbx?.SelectAll();
                 });
 
-            Observable.Merge(
-                ViewModel.Messages,
-                UserPasswordPanel.Messages,
-                UserProfilePanel.Messages,
-                UserGroups.Messages,
-                PingPanel.Messages)
-                .Subscribe(x => MessageBox.Show(x.Text, x.Caption, x.Button, x.Icon));
-
 
 
             this.Bind(ViewModel, vm => vm.UserQueryString, v => v.UserQueryStringTextBox.Text);

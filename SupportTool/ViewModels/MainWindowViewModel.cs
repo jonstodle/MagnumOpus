@@ -2,6 +2,7 @@
 using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
+using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,6 @@ namespace SupportTool.ViewModels
 {
     public partial class MainWindowViewModel : ReactiveObject, INavigable
     {
-        private readonly Subject<Message> messages;
-
         // User
         private readonly ReactiveCommand<Unit, string> userPaste;
         private readonly ReactiveCommand<Unit, UserObject> findUser;
@@ -37,7 +36,6 @@ namespace SupportTool.ViewModels
 
         public MainWindowViewModel()
         {
-            messages = new Subject<Message>();
             MessageBus.Current.Listen<ApplicationActionRequest>()
                 .Subscribe(a => ApplicationActionRequestImpl(a));
 
@@ -51,7 +49,7 @@ namespace SupportTool.ViewModels
                 .ToProperty(this, x => x.User, out user);
             findUser
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+                .Subscribe(ex => DialogService.ShowError(ex.Message));
 
             userPasteAndFind = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -69,7 +67,7 @@ namespace SupportTool.ViewModels
                 .ToProperty(this, x => x.Computer, out computer);
             findComputer
                 .ThrownExceptions
-                .Subscribe(ex => messages.OnNext(Message.Error(ex.Message)));
+                .Subscribe(ex => DialogService.ShowError(ex.Message));
 
             computerPasteAndFind = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -81,8 +79,6 @@ namespace SupportTool.ViewModels
 
 
         // User
-        public IObservable<Message> Messages => messages;
-
         public ReactiveCommand UserPaste => userPaste;
 
         public ReactiveCommand<Unit, UserObject> FindUser => findUser;

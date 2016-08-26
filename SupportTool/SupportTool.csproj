@@ -123,7 +123,6 @@
     <Compile Include="Models\ApplicationActionRequest.cs" />
     <Compile Include="Models\ComputerObject.cs" />
     <Compile Include="Models\GroupObject.cs" />
-    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\UserObject.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Computer.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Constants.cs" />
