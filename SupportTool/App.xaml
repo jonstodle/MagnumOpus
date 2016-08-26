@@ -5,11 +5,11 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <Style TargetType="Button">
-            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="Padding" Value="10,1"/>
         </Style>
 
         <Style TargetType="ToggleButton">
-            <Setter Property="Padding" Value="4,1"/>
+            <Setter Property="Padding" Value="10,1"/>
         </Style>
 
         <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
