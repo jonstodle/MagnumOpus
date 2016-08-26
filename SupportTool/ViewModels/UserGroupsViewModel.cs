@@ -85,7 +85,7 @@ namespace SupportTool.ViewModels
                 .Where(x => x != null)
                 .Merge(MessageBus.Current.Listen<ApplicationActionRequest>().Where(x => x == ApplicationActionRequest.LoadDirectGroupsForUser).Select(_ => User))
                 .Do(_ => DirectGroups.Clear())
-                .SelectMany(x => GetDirectGroups(x))
+                .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName))
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
 
             this
@@ -164,11 +164,13 @@ namespace SupportTool.ViewModels
             GroupFilter = "";
         }
 
-        private IObservable<DirectoryEntry> GetDirectGroups(UserObject user) => Observable.Create<DirectoryEntry>(async observer =>
+        private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Create<DirectoryEntry>(async observer =>
         {
             var disposed = false;
 
-            foreach (string item in user.MemberOf)
+            var usr = await ActiveDirectoryService.Current.GetUser(identity);
+
+            foreach (string item in usr.MemberOf)
             {
                 var de = await ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1);
 

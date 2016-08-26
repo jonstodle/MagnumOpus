@@ -64,7 +64,7 @@ namespace SupportTool.ViewModels
                         DialogService.ShowInfo(builder.ToString(), "Some groups were not removed");
                     }
 
-
+                    MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
                     await NavigationService.Current.GoBack(null);
                 });
             removePrincipalFromGroups
