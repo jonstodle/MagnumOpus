@@ -7,3 +7,4 @@
 
 ## Features
 * Custom MessageBox to enable automatic closing after timeout
+* Refresh button to "All groups"
