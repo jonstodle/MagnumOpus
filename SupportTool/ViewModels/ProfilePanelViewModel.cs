@@ -49,7 +49,7 @@ namespace SupportTool.ViewModels
             resetMessages = new ReactiveList<string>();
             profiles = new ReactiveList<DirectoryInfo>();
 
-            resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(user));
+            resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(user).SubscribeOn(RxApp.TaskpoolScheduler));
             resetGlobalProfile
                 .Subscribe(x => resetMessages.Insert(0, x));
             resetGlobalProfile
@@ -61,7 +61,7 @@ namespace SupportTool.ViewModels
                 });
 
             resetLocalProfile = ReactiveCommand.CreateFromObservable(
-                () => ResetLocalProfileImpl(user, computerName),
+                () => ResetLocalProfileImpl(user, computerName).SubscribeOn(RxApp.TaskpoolScheduler),
                 this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
             resetLocalProfile
                 .Subscribe(x => resetMessages.Insert(0, x));
