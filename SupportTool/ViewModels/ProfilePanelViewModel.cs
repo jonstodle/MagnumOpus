@@ -14,6 +14,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
@@ -22,8 +23,8 @@ namespace SupportTool.ViewModels
     {
         private readonly ReactiveCommand<Unit, string> resetGlobalProfile;
         private readonly ReactiveCommand<Unit, string> resetLocalProfile;
-        private readonly ReactiveCommand<Unit, Process> openGlobalProfileDirectory;
-        private readonly ReactiveCommand<Unit, Process> openLocalProfileDirectory;
+        private readonly ReactiveCommand<Unit, Unit> openGlobalProfileDirectory;
+        private readonly ReactiveCommand<Unit, Unit> openLocalProfileDirectory;
         private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> searchForProfiles;
         private readonly ReactiveCommand<Unit, Unit> restoreProfile;
         private readonly ReactiveList<string> resetMessages;
@@ -72,12 +73,27 @@ namespace SupportTool.ViewModels
                 });
 
             openGlobalProfileDirectory = ReactiveCommand.Create(
-                () => Process.Start(GlobalProfileDirectory.FullName),
-                this.WhenAnyValue(x => x.GlobalProfileDirectory).Select(x => x != null));
+                () =>
+                {
+                    var gpdPath = GetParentDirectory(user.ProfilePath)?.Parent;
+                    if (gpdPath == null || !gpdPath.Exists) throw new Exception($"Could not find global profile folder");
+                    Process.Start(gpdPath.FullName);
+                });
+            openGlobalProfileDirectory
+                .ThrownExceptions
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open directory"));
 
             openLocalProfileDirectory = ReactiveCommand.Create(
-                () => Process.Start(LocalProfileDirectory.FullName),
-                this.WhenAnyValue(x => x.LocalProfileDirectory).Select(x => x != null));
+                () =>
+                {
+                    var lpd = GetProfileDirectory(ComputerName);
+                    if (lpd == null || !lpd.Exists) throw new Exception($"Could not find local profile folder");
+                    Process.Start(lpd.FullName);
+                },
+                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
+            openLocalProfileDirectory
+                .ThrownExceptions
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open directory"));
 
             searchForProfiles = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -207,11 +223,12 @@ namespace SupportTool.ViewModels
         {
             observer.OnNext(CreateLogString("Resetting global profile"));
 
-            var profilePath = usr.ProfilePath;
-            if (profilePath == null) throw new Exception("Could not get profile path");
+            Thread.Sleep(3000);
 
-            GlobalProfileDirectory = new DirectoryInfo(profilePath).Parent;
-            foreach (var dir in GlobalProfileDirectory.GetDirectories($"{usr.Principal.SamAccountName}*"))
+            var globalProfileDirecotry = GetParentDirectory(usr.ProfilePath);
+            if (globalProfileDirecotry == null) throw new Exception("Could not get profile path");
+
+            foreach (var dir in globalProfileDirecotry.GetDirectories($"{usr.Principal.SamAccountName}*"))
             {
                 BangRenameDirectory(dir, usr.Principal.SamAccountName);
                 observer.OnNext(CreateLogString($"Renamed folder {dir.FullName}"));
@@ -220,7 +237,7 @@ namespace SupportTool.ViewModels
             observer.OnNext(CreateLogString("Successfully reset global profile"));
             observer.OnCompleted();
             return () => { };
-        });
+        }).SubscribeOn(RxApp.TaskpoolScheduler);
 
         private IObservable<string> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Create<string>(observer =>
         {
@@ -232,8 +249,8 @@ namespace SupportTool.ViewModels
 
             observer.OnNext(CreateLogString("Resetting local profile"));
 
-            LocalProfileDirectory = new DirectoryInfo($@"\\{cpr}\c$\Users");
-            foreach (var dir in LocalProfileDirectory.GetDirectories($"{usr.Principal.SamAccountName}*"))
+            var profileDir = GetProfileDirectory(cpr);
+            foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*"))
             {
                 BangRenameDirectory(dir, usr.Principal.SamAccountName);
                 observer.OnNext(CreateLogString($"Renamed folder {dir.FullName}"));
@@ -296,7 +313,7 @@ namespace SupportTool.ViewModels
             observer.OnNext(CreateLogString("Successfully reset local profile"));
             observer.OnCompleted();
             return () => { };
-        });
+        }).SubscribeOn(RxApp.TaskpoolScheduler);
 
         private IObservable<Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
@@ -324,6 +341,10 @@ namespace SupportTool.ViewModels
         });
 
 
+
+        private DirectoryInfo GetProfileDirectory(string hostName) => hostName != null ? new DirectoryInfo($@"\\{hostName}\c$\Users") : null;
+
+        private DirectoryInfo GetParentDirectory(string path) => path != null ? new DirectoryInfo(path).Parent : null;
 
         private void BangRenameDirectory(DirectoryInfo directory, string userName)
         {
