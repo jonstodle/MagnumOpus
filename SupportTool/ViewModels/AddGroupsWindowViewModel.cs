@@ -53,7 +53,7 @@ namespace SupportTool.ViewModels
             searchForGroups = ReactiveCommand.CreateFromObservable(() =>
             {
                 searchResults.Clear();
-                return ActiveDirectoryService.Current.GetGroups("group", $"cn", $"{searchQuery}*", "cn").SubscribeOn(RxApp.TaskpoolScheduler);
+                return ActiveDirectoryService.Current.GetGroups($"cn", $"{searchQuery}*", "cn").SubscribeOn(RxApp.TaskpoolScheduler);
             });
             searchForGroups
                 .Subscribe(x => searchResults.Add(x));
