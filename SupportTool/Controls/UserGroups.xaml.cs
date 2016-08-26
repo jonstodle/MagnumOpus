@@ -46,7 +46,7 @@ namespace SupportTool.Controls
             this.WhenActivated(d =>
             {
                 d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddGroupsButton));
-                d(this.BindCommand(ViewModel, vm => vm.RemoveGroup, v => v.RemoveGroupsButton));
+                d(this.BindCommand(ViewModel, vm => vm.OpenRemoveGroups, v => v.RemoveGroupsButton));
             });
 
             ViewModel

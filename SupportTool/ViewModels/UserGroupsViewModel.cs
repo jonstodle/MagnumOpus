@@ -22,7 +22,7 @@ namespace SupportTool.ViewModels
     public class UserGroupsViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
-        private readonly ReactiveCommand<Unit, Unit> removeGroup;
+        private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;
         private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
         private readonly ReactiveList<DirectoryEntry> allGroups;
         private readonly ReactiveList<string> directGroups;
@@ -54,20 +54,7 @@ namespace SupportTool.ViewModels
 
             openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddGroupsWindow>(user.Principal.SamAccountName));
 
-            removeGroup = ReactiveCommand.CreateFromObservable(() => Observable.Start(() =>
-            {
-                if (DialogService.ShowPrompt($"Remove {SelectedDirectGroup as string} from {user.Principal.DisplayName}?"))
-                {
-                    var group = ActiveDirectoryService.Current.GetGroup(selectedDirectGroup as string).Wait();
-                    group.Principal.Members.Remove(user.Principal);
-                    group.Principal.Save();
-                    MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
-                }
-            }),
-            this.WhenAnyValue(x => x.SelectedDirectGroup).Select(x => x != null));
-            removeGroup
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove group"));
+            openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveGroupsWindow>(user.Principal.SamAccountName));
 
             getAllGroups = ReactiveCommand.CreateFromObservable(
                 () => GetGroupsImpl(User.Principal.SamAccountName)
@@ -116,7 +103,7 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenAddGroups => openAddGroups;
 
-        public ReactiveCommand RemoveGroup => removeGroup;
+        public ReactiveCommand OpenRemoveGroups => openRemoveGroups;
 
         public ReactiveCommand GetAllGroups => getAllGroups;
 
@@ -183,7 +170,7 @@ namespace SupportTool.ViewModels
 
             foreach (string item in user.MemberOf)
             {
-                var de = await ActiveDirectoryService.Current.GetGroups("group", "distinguishedname", item).Take(1);
+                var de = await ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1);
 
                 if (disposed) break;
                 observer.OnNext(de);

@@ -20,13 +20,13 @@ namespace SupportTool.Services.ActiveDirectoryServices
             return up != null ? new GroupObject(up) : null;
         });
 
-        public IObservable<DirectoryEntry> GetGroupsForUser(string searchTerm, params string[] propertiesToLoad) => GetGroups("user", "samaccountname", searchTerm, propertiesToLoad);
+        //public IObservable<DirectoryEntry> GetGroupsForUser(string searchTerm, params string[] propertiesToLoad) => GetGroups("user", "samaccountname", searchTerm, propertiesToLoad);
 
-        public IObservable<DirectoryEntry> GetGroups(string objectCategory, string searchProperty, string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
+        public IObservable<DirectoryEntry> GetGroups(string searchProperty, string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
         {
             var disposed = false;
 
-            using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory={objectCategory})({searchProperty}={searchTerm}))", propertiesToLoad))
+            using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory=group)({searchProperty}={searchTerm}))", propertiesToLoad))
             {
                 searcher.PageSize = 1000;
 
@@ -48,7 +48,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
         {
             var result = new List<DirectoryEntry>();
 
-            var group = await GetGroups("group", "distinguishedname", name).Take(1);
+            var group = await GetGroups("distinguishedname", name).Take(1);
             result.Add(group);
             var memberof = group.Properties["memberof"];
 

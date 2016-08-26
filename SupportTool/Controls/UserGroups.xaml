@@ -38,7 +38,7 @@
 
                 <Button x:Name="AddGroupsButton" Content="Add groups..." Margin="2"/>
 
-                <Button x:Name="RemoveGroupsButton" Content="Remove group" Grid.Column="1" Margin="2"/>
+                <Button x:Name="RemoveGroupsButton" Content="Remove groups..." Grid.Column="1" Margin="2"/>
             </Grid>
         </Grid>
 
