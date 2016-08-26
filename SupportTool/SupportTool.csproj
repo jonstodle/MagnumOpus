@@ -130,6 +130,7 @@
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Group.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
+    <Compile Include="Services\DialogServices\DialogService.cs" />
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
     <Compile Include="ViewModels\AddGroupsWindowViewModel.cs" />
