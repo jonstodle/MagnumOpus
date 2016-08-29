@@ -85,7 +85,8 @@ namespace SupportTool.ViewModels
                 .Where(x => x != null)
                 .Merge(MessageBus.Current.Listen<ApplicationActionRequest>().Where(x => x == ApplicationActionRequest.LoadDirectGroupsForUser).Select(_ => User))
                 .Do(_ => DirectGroups.Clear())
-                .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName))
+                .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
+                .ObserveOnDispatcher()
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
 
             this
@@ -183,14 +184,14 @@ namespace SupportTool.ViewModels
             return () => disposed = true;
         });
 
-        private IObservable<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName) => Observable.StartAsync(async () =>
+        private IObservable<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName) => Observable.Start(() =>
         {
             var result = new List<DirectoryEntry>();
 
             foreach (var element in User.MemberOf)
             {
                 var name = element.ToString();
-                result.AddRange(await ActiveDirectoryService.Current.GetParents(name, $"{User.Principal.SamAccountName}/" + name, result));
+                result.AddRange(ActiveDirectoryService.Current.GetParents(name, $"{User.Principal.SamAccountName}/" + name, result).Result);
             }
 
             return result;

@@ -36,9 +36,10 @@ namespace SupportTool.ViewModels
             paste = ReactiveCommand.Create(() => QueryString = Clipboard.GetText());
 
             find = ReactiveCommand.CreateFromObservable(
-                () => ActiveDirectoryService.Current.GetPrincipal(QueryString),
+                () => ActiveDirectoryService.Current.GetPrincipal(QueryString).SubscribeOn(RxApp.TaskpoolScheduler),
                 this.WhenAnyValue(x => x.QueryString, x => x.HasValue()));
             find
+                .ObserveOnDispatcher()
                 .Subscribe(x =>
                 {
                     User = null;
