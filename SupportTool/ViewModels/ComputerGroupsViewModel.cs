@@ -43,7 +43,8 @@ namespace SupportTool.ViewModels
                 openAddGroups.Select(_ => Computer),
                 openRemoveGroups.Select(_ => Computer))
                 .Do(_ => DirectGroups.Clear())
-                .SelectMany(x => GetDirectGroups(x))
+                .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
+                .ObserveOnDispatcher()
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
         }
 
