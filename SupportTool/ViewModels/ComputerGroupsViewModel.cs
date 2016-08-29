@@ -78,7 +78,7 @@ namespace SupportTool.ViewModels
 
             foreach (string item in computer.MemberOf)
             {
-                var de = await ActiveDirectoryService.Current.GetGroups("group", "distinguishedname", item).Take(1);
+                var de = await ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1);
 
                 if (disposed) break;
                 observer.OnNext(de);
