@@ -22,6 +22,16 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="AddGroupsButton" Content="Add groups..." Margin="2"/>
+
+                <Button x:Name="RemoveGroupsButton" Content="Remove groups..." Grid.Column="1" Margin="2"/>
+            </Grid>
         </StackPanel>
     </StackPanel>
 </UserControl>
