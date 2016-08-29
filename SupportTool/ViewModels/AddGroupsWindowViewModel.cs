@@ -65,7 +65,14 @@ namespace SupportTool.ViewModels
                 .ToProperty(this, x => x.IsSearchingForGroups, out isSearchingForGroups);
 
             addToGroupsToAdd = ReactiveCommand.Create(
-                () => groupsToAdd.Add(selectedSearchResult as DirectoryEntry),
+                () =>
+                {
+                    var de = selectedSearchResult as DirectoryEntry;
+                    if (!groupsToAdd.Contains(de))
+                    {
+                        groupsToAdd.Add(de);
+                    }
+                },
                 this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
             addToGroupsToAdd
                 .ThrownExceptions
