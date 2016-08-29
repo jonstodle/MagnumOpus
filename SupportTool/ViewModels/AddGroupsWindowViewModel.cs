@@ -48,7 +48,7 @@ namespace SupportTool.ViewModels
             searchResultsView.SortDescriptions.Add(new SortDescription("Path", ListSortDirection.Ascending));
 
             groupsToAddView = new ListCollectionView(groupsToAdd);
-            groupsToAddView.SortDescriptions.Add(new SortDescription());
+            groupsToAddView.SortDescriptions.Add(new SortDescription("Path", ListSortDirection.Ascending));
 
             searchForGroups = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -120,6 +120,10 @@ namespace SupportTool.ViewModels
         public ReactiveList<DirectoryEntry> SearchResults => searchResults;
 
         public ReactiveList<DirectoryEntry> GroupsToAdd => groupsToAdd;
+
+        public ListCollectionView SearchResultsView => searchResultsView;
+
+        public ListCollectionView GroupsToAddView => groupsToAddView;
 
         public string WindowTitle => windowTitle.Value;
 
