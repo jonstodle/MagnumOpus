@@ -3,6 +3,7 @@ using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,6 +60,11 @@ namespace SupportTool
             {
                 d(this.BindCommand(ViewModel, vm => vm.PasteAndFind, v => v.PasteAndFindButton));
                 d(this.BindCommand(ViewModel, vm => vm.Find, v => v.FindButton));
+                d(QueryStringTextBox.Events()
+                    .KeyDown
+                    .Where(x => x.Key == Key.Enter)
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.Find));
             });
         }
 

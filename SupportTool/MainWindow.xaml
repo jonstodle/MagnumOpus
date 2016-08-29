@@ -24,7 +24,7 @@
 
             <TextBox x:Name="QueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Margin="2"/>
 
-            <Button x:Name="FindButton" Content="Find" IsDefault="True" Grid.Column="1" Padding="10,0" Margin="2"/>
+            <Button x:Name="FindButton" Content="Find" Grid.Column="1" Padding="10,0" Margin="2"/>
 
             <Button x:Name="PasteAndFindButton" Content="Paste&amp;Find" Grid.Column="2" Padding="10,0" Margin="2"/>
         </Grid>
