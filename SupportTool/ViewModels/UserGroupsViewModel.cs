@@ -80,10 +80,10 @@ namespace SupportTool.ViewModels
                 .WhenAnyValue(x => x.User)
                 .Subscribe(_ => ResetValues());
 
-            this
-                .WhenAnyValue(x => x.User)
-                .Where(x => x != null)
-                .Merge(MessageBus.Current.Listen<ApplicationActionRequest>().Where(x => x == ApplicationActionRequest.LoadDirectGroupsForUser).Select(_ => User))
+            Observable.Merge(
+                this.WhenAnyValue(x => x.User).Where(x => x != null),
+                openAddGroups.Select(_ => User),
+                openRemoveGroups.Select(_ => User))
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
                 .ObserveOnDispatcher()

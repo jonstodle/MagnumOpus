@@ -38,9 +38,10 @@ namespace SupportTool.ViewModels
 
             openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveGroupsWindow>(computer.Principal.SamAccountName));
 
-            this
-                .WhenAnyValue(x => x.Computer)
-                .Where(x => x != null)
+            Observable.Merge(
+                this.WhenAnyValue(x => x.Computer).Where(x => x != null),
+                openAddGroups.Select(_ => Computer),
+                openRemoveGroups.Select(_ => Computer))
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x))
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));

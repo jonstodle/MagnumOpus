@@ -100,7 +100,6 @@ namespace SupportTool.ViewModels
                         DialogService.ShowInfo(builder.ToString(), "Some groups were not added");
                     }
 
-                    MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
                     await NavigationService.Current.GoBack(null);
                 });
             addPrincipalToGroups
