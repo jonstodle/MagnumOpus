@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
-        Height="300" Width="600">
+        Height="600" Width="600">
 
     <Window.Resources>
         <DataTemplate x:Key="ListViewItemTemplate">
