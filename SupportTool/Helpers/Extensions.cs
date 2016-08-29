@@ -59,6 +59,13 @@ namespace SupportTool.Helpers
             return (T)propCollection[index];
         }
 
+        public static IEnumerable<T> ToEnumerable<T>(this PropertyValueCollection pvc)
+        {
+            var result = new List<T>();
+            foreach (T val in pvc) result.Add(val);
+            return result;
+        }
+
         public static bool HasValue(this string s, int minLength = 1) => !string.IsNullOrWhiteSpace(s) && s.Length >= minLength;
 
         public static void WriteToDisk(this StreamResourceInfo sri, string file)

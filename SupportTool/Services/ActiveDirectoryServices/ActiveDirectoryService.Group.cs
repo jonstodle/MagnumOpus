@@ -1,4 +1,5 @@
-﻿using SupportTool.Models;
+﻿using SupportTool.Helpers;
+using SupportTool.Models;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -19,8 +20,6 @@ namespace SupportTool.Services.ActiveDirectoryServices
             var up = GroupPrincipal.FindByIdentity(principalContext, identity);
             return up != null ? new GroupObject(up) : null;
         });
-
-        //public IObservable<DirectoryEntry> GetGroupsForUser(string searchTerm, params string[] propertiesToLoad) => GetGroups("user", "samaccountname", searchTerm, propertiesToLoad);
 
         public IObservable<DirectoryEntry> GetGroups(string searchProperty, string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
         {
@@ -44,22 +43,18 @@ namespace SupportTool.Services.ActiveDirectoryServices
             }
         });
 
-        public async Task<IEnumerable<DirectoryEntry>> GetParents(string name, string path, IEnumerable<DirectoryEntry> collection)
+        public IObservable<DirectoryEntry> GetParents(string name)
         {
-            var result = new List<DirectoryEntry>();
-
-            var group = await GetGroups("distinguishedname", name).Take(1);
-            result.Add(group);
+            var group = GetGroups("distinguishedname", name).Take(1).Wait();
             var memberof = group.Properties["memberof"];
 
-            foreach (var element in memberof)
-            {
-                var memberofName = element.ToString();
-                if (collection.Any(x => x.Properties["distinguishedname"][0].ToString() == element.ToString())) continue;
-                else result.AddRange(await GetParents(memberofName, path + "/" + memberofName, result));
-            }
+            if (memberof.Count > 0)
+                return Observable.Return(group)
+                     .Concat(group.Properties["memberof"].ToEnumerable<string>()
+                     .ToObservable()
+                     .SelectMany(x => GetParents(x))).Distinct(x => x.Path);
 
-            return result.Distinct(new DirectoryEntryComparer());
+            return Observable.Return(group);
         }
 
         public string GetNameFromPath(string path) => path.Split(',')[0].Split('=')[1];

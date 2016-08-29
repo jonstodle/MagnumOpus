@@ -23,8 +23,8 @@ namespace SupportTool.ViewModels
     {
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;
-        private readonly ReactiveCommand<Unit, IEnumerable<DirectoryEntry>> getAllGroups;
-        private readonly ReactiveList<DirectoryEntry> allGroups;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> getAllGroups;
+        private readonly ReactiveList<string> allGroups;
         private readonly ReactiveList<string> directGroups;
         private readonly ListCollectionView allGroupsCollectionView;
         private readonly ListCollectionView directGroupsCollectionView;
@@ -40,10 +40,11 @@ namespace SupportTool.ViewModels
 
         public UserGroupsViewModel()
         {
-            allGroups = new ReactiveList<DirectoryEntry>();
+            allGroups = new ReactiveList<string>();
             directGroups = new ReactiveList<string>();
 
             allGroupsCollectionView = new ListCollectionView(allGroups);
+            allGroupsCollectionView.SortDescriptions.Add(new SortDescription());
             allGroupsCollectionView.Filter = TextFilter;
             this
                 .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
@@ -57,18 +58,17 @@ namespace SupportTool.ViewModels
             openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveGroupsWindow>(user.Principal.SamAccountName));
 
             getAllGroups = ReactiveCommand.CreateFromObservable(
-                () => GetGroupsImpl(User.Principal.SamAccountName)
-                        .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x)),
+                () =>
+                {
+                    AllGroups.Clear();
+                    return GetAllGroupsImpl(User.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler)
+                            .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x));
+                },
                 this.WhenAnyValue(x => x.IsShowingAllGroups, y => y.AllGroups.Count, (x, y) => x && y == 0));
             getAllGroups
-                .Subscribe(x =>
-                {
-                    using (AllGroups.SuppressChangeNotifications())
-                    {
-                        AllGroups.Clear();
-                        AllGroups.AddRange(x.OrderBy(y => y.Path));
-                    }
-                });
+                .ObserveOnDispatcher()
+                .Select(x => x.Properties.Get<string>("cn"))
+                .Subscribe(x => AllGroups.Add(x));
             getAllGroups
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
@@ -108,7 +108,7 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand GetAllGroups => getAllGroups;
 
-        public ReactiveList<DirectoryEntry> AllGroups => allGroups;
+        public ReactiveList<string> AllGroups => allGroups;
 
         public ReactiveList<string> DirectGroups => directGroups;
 
@@ -184,18 +184,10 @@ namespace SupportTool.ViewModels
             return () => disposed = true;
         });
 
-        private IObservable<IEnumerable<DirectoryEntry>> GetGroupsImpl(string samAccountName) => Observable.Start(() =>
-        {
-            var result = new List<DirectoryEntry>();
-
-            foreach (var element in User.MemberOf)
-            {
-                var name = element.ToString();
-                result.AddRange(ActiveDirectoryService.Current.GetParents(name, $"{User.Principal.SamAccountName}/" + name, result).Result);
-            }
-
-            return result;
-        });
+        private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName) => ActiveDirectoryService.Current.GetUser(samAccountName).Wait().MemberOf.ToEnumerable<string>()
+            .ToObservable()
+            .SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
+            .Distinct(x => x.Path);
 
         bool TextFilter(object item)
         {
