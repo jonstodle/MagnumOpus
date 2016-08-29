@@ -80,7 +80,8 @@ namespace SupportTool.ViewModels
                 .ToProperty(this, x => x.WindowTitle, out windowTitle);
 
             principalChanged
-                .SelectMany(x => GetMemberOfDirectoryEntries(x))
+                .SelectMany(x => GetMemberOfDirectoryEntries(x).SubscribeOn(RxApp.TaskpoolScheduler))
+                .ObserveOnDispatcher()
                 .Subscribe(x => principalGroups.Add(x));
         }
 
