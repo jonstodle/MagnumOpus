@@ -33,28 +33,21 @@ namespace SupportTool
 
             this.Events()
                 .Activated
-                .Select(_ => MainTabControl.SelectedIndex)
-                .Subscribe(idx =>
+                .Subscribe(_ =>
                 {
-                    TextBox tbx = null;
-
-                    if (idx == 0) tbx = UserQueryStringTextBox;
-                    else if (idx == 1) tbx = ComputerQueryStringTextBox;
-
-                    tbx?.Focus();
-                    tbx?.SelectAll();
+                    QueryStringTextBox.Focus();
+                    QueryStringTextBox.SelectAll();
                 });
 
 
 
-            this.Bind(ViewModel, vm => vm.UserQueryString, v => v.UserQueryStringTextBox.Text);
+            this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserPasswordPanel.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
 
-            this.Bind(ViewModel, vm => vm.ComputerQueryString, v => v.ComputerQueryStringTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
@@ -64,11 +57,8 @@ namespace SupportTool
 
             this.WhenActivated(d =>
             {
-                d(this.BindCommand(ViewModel, vm => vm.UserPasteAndFind, v => v.UserPasteButton));
-                d(this.BindCommand(ViewModel, vm => vm.FindUser, v => v.FindUserButton));
-
-                d(this.BindCommand(ViewModel, vm => vm.ComputerPasteAndFind, v => v.ComputerPasteButton));
-                d(this.BindCommand(ViewModel, vm => vm.FindComputer, v => v.FindComputerButton));
+                d(this.BindCommand(ViewModel, vm => vm.PasteAndFind, v => v.PasteAndFindButton));
+                d(this.BindCommand(ViewModel, vm => vm.Find, v => v.FindButton));
             });
         }
 

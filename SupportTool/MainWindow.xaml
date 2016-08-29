@@ -8,74 +8,47 @@
         mc:Ignorable="d"
         Icon="Assets/Icon.ico"
         Title="Support Tool by Jon Stødle" MinHeight="300" MinWidth="200" Height="900" Width="525">
-    
-    <TabControl x:Name="MainTabControl">
-        <TabItem Header="Users">
-            <ScrollViewer>
-                <Grid Margin="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-                        <TextBox x:Name="UserQueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Margin="2"/>
+        <Grid Margin="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                        <Button x:Name="FindUserButton" Content="Find" IsDefault="True" Grid.Column="1" Padding="10,0" Margin="2"/>
+            <TextBox x:Name="QueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Margin="2"/>
 
-                        <Button x:Name="UserPasteButton" Content="Paste&amp;Find" Grid.Column="2" Padding="10,0" Margin="2"/>
-                    </Grid>
+            <Button x:Name="FindButton" Content="Find" IsDefault="True" Grid.Column="1" Padding="10,0" Margin="2"/>
 
-                    <StackPanel x:Name="UserDetailsStackPanel" Grid.Row="1">
-                        <controls:UserDetails x:Name="UserDetails"/>
+            <Button x:Name="PasteAndFindButton" Content="Paste&amp;Find" Grid.Column="2" Padding="10,0" Margin="2"/>
+        </Grid>
 
-                        <controls:PasswordPanel x:Name="UserPasswordPanel"/>
+        <ScrollViewer Grid.Row="1">
+            <Grid Margin="2">
+                <StackPanel x:Name="UserDetailsStackPanel">
+                    <controls:UserDetails x:Name="UserDetails"/>
 
-                        <controls:ProfilePanel x:Name="UserProfilePanel"/>
+                    <controls:PasswordPanel x:Name="UserPasswordPanel"/>
 
-                        <controls:UserGroups x:Name="UserGroups"/>
-                    </StackPanel>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
+                    <controls:ProfilePanel x:Name="UserProfilePanel"/>
 
-        <TabItem Header="Computers">
-            <ScrollViewer>
-                <Grid Margin="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                    <controls:UserGroups x:Name="UserGroups"/>
+                </StackPanel>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                <StackPanel x:Name="ComputerDetailsStackPanel">
+                    <controls:ComputerDetails x:Name="ComputerDetails"/>
 
-                        <TextBox x:Name="ComputerQueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Margin="2"/>
+                    <controls:PingPanel x:Name="PingPanel"/>
 
-                        <Button x:Name="FindComputerButton" Content="Find" IsDefault="True" Grid.Column="1" Padding="10,0" Margin="2"/>
-
-                        <Button x:Name="ComputerPasteButton" Content="Paste&amp;Find" Grid.Column="2" Padding="10,0" Margin="2"/>
-                    </Grid>
-
-                    <StackPanel x:Name="ComputerDetailsStackPanel" Grid.Row="1">
-                        <controls:ComputerDetails x:Name="ComputerDetails"/>
-
-                        <controls:PingPanel x:Name="PingPanel"/>
-
-                        <controls:ComputerGroups x:Name="ComputerGroups"/>
-                    </StackPanel>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
-    </TabControl>
+                    <controls:ComputerGroups x:Name="ComputerGroups"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </Window>

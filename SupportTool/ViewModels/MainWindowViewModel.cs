@@ -6,6 +6,7 @@ using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -18,19 +19,12 @@ namespace SupportTool.ViewModels
 {
     public partial class MainWindowViewModel : ReactiveObject, INavigable
     {
-        // User
-        private readonly ReactiveCommand<Unit, string> userPaste;
-        private readonly ReactiveCommand<Unit, UserObject> findUser;
-        private readonly ReactiveCommand<Unit, Unit> userPasteAndFind;
-        private readonly ObservableAsPropertyHelper<UserObject> user;
-        private string userQueryString;
-
-        // Computer
-        private readonly ReactiveCommand<Unit, string> computerPaste;
-        private readonly ReactiveCommand<Unit, ComputerObject> findComputer;
-        private readonly ReactiveCommand<Unit, Unit> computerPasteAndFind;
-        private readonly ObservableAsPropertyHelper<ComputerObject> computer;
-        private string computerQueryString;
+        private readonly ReactiveCommand<Unit, string> paste;
+        private readonly ReactiveCommand<Unit, Principal> find;
+        private readonly ReactiveCommand<Unit, Unit> pasteAndFind;
+        private UserObject user;
+        private ComputerObject computer;
+        private string queryString;
 
 
 
@@ -39,73 +33,55 @@ namespace SupportTool.ViewModels
             MessageBus.Current.Listen<ApplicationActionRequest>()
                 .Subscribe(a => ApplicationActionRequestImpl(a));
 
-            // User
-            userPaste = ReactiveCommand.Create(() => UserQueryString = Clipboard.GetText());
+            paste = ReactiveCommand.Create(() => QueryString = Clipboard.GetText());
 
-            findUser = ReactiveCommand.CreateFromObservable(
-                () => ActiveDirectoryService.Current.GetUser(UserQueryString),
-                this.WhenAnyValue(x => x.UserQueryString, x => x.HasValue()));
-            findUser
-                .ToProperty(this, x => x.User, out user);
-            findUser
+            find = ReactiveCommand.CreateFromObservable(
+                () => ActiveDirectoryService.Current.GetPrincipal(QueryString),
+                this.WhenAnyValue(x => x.QueryString, x => x.HasValue()));
+            find
+                .Subscribe(x =>
+                {
+                    User = null;
+                    Computer = null;
+
+                    if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
+                    else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
+                });
+            find
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            userPasteAndFind = ReactiveCommand.CreateFromTask(async () =>
+            pasteAndFind = ReactiveCommand.CreateFromTask(async () =>
             {
-                await userPaste.Execute();
-                await findUser.Execute();
-            });
-
-            // Computer
-            computerPaste = ReactiveCommand.Create(() => ComputerQueryString = Clipboard.GetText());
-
-            findComputer = ReactiveCommand.CreateFromObservable(
-                () => ActiveDirectoryService.Current.GetComputer(ComputerQueryString),
-                this.WhenAnyValue(x => x.ComputerQueryString, x => x.HasValue()));
-            findComputer
-                .ToProperty(this, x => x.Computer, out computer);
-            findComputer
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message));
-
-            computerPasteAndFind = ReactiveCommand.CreateFromTask(async () =>
-            {
-                await computerPaste.Execute();
-                await findComputer.Execute();
+                await paste.Execute();
+                await find.Execute();
             });
         }
 
 
 
-        // User
-        public ReactiveCommand UserPaste => userPaste;
+        public ReactiveCommand Paste => paste;
 
-        public ReactiveCommand<Unit, UserObject> FindUser => findUser;
+        public ReactiveCommand<Unit, Principal> Find => find;
 
-        public ReactiveCommand UserPasteAndFind => userPasteAndFind;
+        public ReactiveCommand PasteAndFind => pasteAndFind;
 
-        public UserObject User => user.Value;
-
-        public string UserQueryString
+        public UserObject User
         {
-            get { return userQueryString; }
-            set { this.RaiseAndSetIfChanged(ref userQueryString, value); }
+            get { return user; }
+            set { this.RaiseAndSetIfChanged(ref user, value); }
         }
 
-        // Computer
-        public ReactiveCommand ComputerPaste => computerPaste;
-
-        public ReactiveCommand<Unit, ComputerObject> FindComputer => findComputer;
-
-        public ReactiveCommand ComputerPasteAndFind => computerPasteAndFind;
-
-        public ComputerObject Computer => computer.Value;
-
-        public string ComputerQueryString
+        public ComputerObject Computer
         {
-            get { return computerQueryString; }
-            set { this.RaiseAndSetIfChanged(ref computerQueryString, value); }
+            get { return computer; }
+            set { this.RaiseAndSetIfChanged(ref computer, value); }
+        }
+
+        public string QueryString
+        {
+            get { return queryString; }
+            set { this.RaiseAndSetIfChanged(ref queryString, value); }
         }
 
 
@@ -115,7 +91,7 @@ namespace SupportTool.ViewModels
             switch (a)
             {
                 case ApplicationActionRequest.RefreshUser:
-                    await FindUser.Execute();
+                    await Find.Execute();
                     break;
                 default:
                     break;
