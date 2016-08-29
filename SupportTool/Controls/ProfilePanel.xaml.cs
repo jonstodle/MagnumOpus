@@ -4,6 +4,8 @@ using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,6 +51,16 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.OpenLocalProfileDirectory, v => v.OpenLocalProfileDirectoryButton));
                 d(this.BindCommand(ViewModel, vm => vm.SearchForProfiles, v => v.SearchButton));
                 d(this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton));
+                d(ResetProfileComputerNameTextBox.Events()
+                    .KeyDown
+                    .Where(x => x.Key == Key.Enter)
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.ResetLocalProfile));
+                d(RestoreProfileComputerNameTextBox.Events()
+                    .KeyDown
+                    .Where(x => x.Key == Key.Enter)
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.SearchForProfiles));
             });
         }
 

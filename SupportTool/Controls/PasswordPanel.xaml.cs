@@ -4,6 +4,7 @@ using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,6 +42,11 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.ExpirePassword, v => v.ExpirePasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.UnlockAccount, v => v.UnlockAccountButton));
                 d(this.BindCommand(ViewModel, vm => vm.RunLockoutStatus, v => v.LockOutStatusButton));
+                d(NewPasswordTextBox.Events()
+                    .KeyDown
+                    .Where(x => x.Key == Key.Enter)
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.SetNewPassword));
             });
         }
 
