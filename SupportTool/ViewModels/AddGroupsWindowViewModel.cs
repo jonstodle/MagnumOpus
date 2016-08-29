@@ -151,6 +151,15 @@ namespace SupportTool.ViewModels
 
 
 
+        private void ResetValues()
+        {
+            SearchQuery = "";
+            SearchResults.Clear();
+            GroupsToAdd.Clear();
+        }
+
+
+
         private IObservable<IEnumerable<string>> AddPrincipalToGroupsImpl(IEnumerable<DirectoryEntry> groups, Principal principal) => Observable.Start(() =>
         {
             var groupsNotAdded = new List<string>();
@@ -171,6 +180,8 @@ namespace SupportTool.ViewModels
 
         public async Task OnNavigatedTo(object parameter)
         {
+            ResetValues();
+
             if (parameter is string)
             {
                 var param = (string)parameter;
