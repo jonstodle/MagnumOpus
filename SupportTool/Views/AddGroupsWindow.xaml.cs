@@ -37,9 +37,9 @@ namespace SupportTool.Views
             this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.IsSearchingForGroups, v => v.SearchingProgressBar.Visibility);
             this.OneWayBind(ViewModel, vm => vm.IsSearchingForGroups, v => v.SearchingProgressBar.IsIndeterminate);
-            this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
-            this.OneWayBind(ViewModel, vm => vm.GroupsToAdd, v => v.GroupsToAddListView.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.GroupsToAddView, v => v.GroupsToAddListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.SelectedGroupToAdd, v => v.GroupsToAddListView.SelectedItem);
 
             this.WhenActivated(d =>
