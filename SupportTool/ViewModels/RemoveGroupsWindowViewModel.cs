@@ -118,6 +118,13 @@ namespace SupportTool.ViewModels
         }
 
 
+        private void ResetValues()
+        {
+            PrincipalGroups.Clear();
+            GroupsToRemove.Clear();
+        }
+
+
 
         private IObservable<DirectoryEntry> GetMemberOfDirectoryEntries(Principal principal) => Observable.Create<DirectoryEntry>(observer =>
         {
@@ -156,6 +163,8 @@ namespace SupportTool.ViewModels
 
         public async Task OnNavigatedTo(object parameter)
         {
+            ResetValues();
+
             if (parameter is string)
             {
                 Principal = await ActiveDirectoryService.Current.GetPrincipal(parameter as string);
