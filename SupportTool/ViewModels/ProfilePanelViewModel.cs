@@ -40,6 +40,7 @@ namespace SupportTool.ViewModels
         private int selectedProfileIndex;
         private DirectoryInfo globalProfileDirectory;
         private DirectoryInfo localProfileDirectory;
+        private DirectoryInfo newProfileDirectory;
 
 
 
@@ -104,14 +105,16 @@ namespace SupportTool.ViewModels
             searchForProfiles
                 .Subscribe(x =>
                 {
-                    localProfileDirectory = x.Item1;
+                    NewProfileDirectory = x.Item1;
                     using (profiles.SuppressChangeNotifications()) profiles.AddRange(x.Item2);
                 });
             searchForProfiles
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            restoreProfile = ReactiveCommand.CreateFromObservable(() => RestoreProfileImpl(localProfileDirectory, profiles[SelectedProfileIndex]));
+            restoreProfile = ReactiveCommand.CreateFromObservable(
+                () => RestoreProfileImpl(NewProfileDirectory, profiles[SelectedProfileIndex]),
+                this.WhenAnyValue(x => x.NewProfileDirectory, y => y.SelectedProfileIndex, (x, y) => x != null && y >= 0));
             restoreProfile
                 .Subscribe(_ => DialogService.ShowInfo("Profile restored", "Success"));
             restoreProfile
@@ -215,6 +218,12 @@ namespace SupportTool.ViewModels
         {
             get { return localProfileDirectory; }
             set { this.RaiseAndSetIfChanged(ref localProfileDirectory, value); }
+        }
+
+        public DirectoryInfo NewProfileDirectory
+        {
+            get { return newProfileDirectory; }
+            set { this.RaiseAndSetIfChanged(ref newProfileDirectory, value); }
         }
 
 
