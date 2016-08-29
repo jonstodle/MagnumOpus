@@ -45,7 +45,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
         public IObservable<DirectoryEntry> GetParents(string name)
         {
-            var group = GetGroups("distinguishedname", name).Take(1).Wait();
+            var group = GetGroups("distinguishedname", EscapeString(name)).Take(1).Wait();
             var memberof = group.Properties["memberof"];
 
             if (memberof.Count > 0)
