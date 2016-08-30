@@ -193,9 +193,7 @@ namespace SupportTool.ViewModels
         {
             if (!GroupFilter.HasValue()) { return true; }
 
-            var itm = ((DirectoryEntry)item).Properties["cn"][0].ToString().ToLowerInvariant().Replace(" ", string.Empty);
-
-            itm = itm.ToLowerInvariant();
+            var itm = ((string)item).ToLowerInvariant().Replace(" ", string.Empty);
 
             if (UseFuzzy)
             {
