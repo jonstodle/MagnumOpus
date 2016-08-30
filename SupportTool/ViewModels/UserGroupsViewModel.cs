@@ -64,7 +64,7 @@ namespace SupportTool.ViewModels
                     return GetAllGroupsImpl(User.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler)
                             .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x));
                 },
-                this.WhenAnyValue(x => x.IsShowingAllGroups, y => y.AllGroups.Count, (x, y) => x && y == 0));
+                this.WhenAnyValue(x => x.IsShowingAllGroups));
             getAllGroups
                 .ObserveOnDispatcher()
                 .Select(x => x.Properties.Get<string>("cn"))
@@ -184,10 +184,15 @@ namespace SupportTool.ViewModels
             return () => disposed = true;
         });
 
-        private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName) => ActiveDirectoryService.Current.GetUser(samAccountName).Wait().MemberOf.ToEnumerable<string>()
+        private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName)
+        {
+            var groups = ActiveDirectoryService.Current.GetUser(samAccountName).Wait().MemberOf.ToEnumerable<string>()
             .ToObservable()
             .SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
             .Distinct(x => x.Path);
+
+            return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
+        }
 
         bool TextFilter(object item)
         {
