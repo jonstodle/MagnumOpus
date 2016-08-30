@@ -17,6 +17,8 @@
             <Button x:Name="UnlockAccountButton" Content="Unlock account" Margin="2"/>
 
             <Button x:Name="LockOutStatusButton" Content="LockOutStatus" Margin="2"/>
+
+            <Button x:Name="PermittedWorkstationsButton" Content="Log on to..." Margin="2"/>
         </WrapPanel>
 
         <Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">

@@ -137,6 +137,7 @@
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\AccountPanelViewModel.cs" />
+    <Compile Include="ViewModels\PermittedWorkstationsWindowViewModel.cs" />
     <Compile Include="ViewModels\PingPanelViewModel.cs" />
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
     <Compile Include="ViewModels\RemoveGroupsWindowViewModel.cs" />
@@ -144,6 +145,9 @@
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="Views\AddGroupsWindow.xaml.cs">
       <DependentUpon>AddGroupsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
+      <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoveGroupsWindow.xaml.cs">
       <DependentUpon>RemoveGroupsWindow.xaml</DependentUpon>
@@ -189,6 +193,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\AddGroupsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PermittedWorkstationsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

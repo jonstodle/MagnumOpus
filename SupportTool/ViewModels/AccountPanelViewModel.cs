@@ -3,6 +3,7 @@ using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
+using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> expirePassword;
         private readonly ReactiveCommand<Unit, Unit> unlockAccount;
         private readonly ReactiveCommand<Unit, Unit> runLockoutStatus;
+        private readonly ReactiveCommand<Unit, Unit> openPermittedWorkstations;
         private UserObject user;
         private bool isShowingNewPasswordOptions;
         private string newPassword;
@@ -83,6 +85,8 @@ namespace SupportTool.ViewModels
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 
+            openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.PermittedWorkstationsWindow>(user.Principal.SamAccountName));
+
             this
                 .WhenAnyValue(x => x.User)
                 .Subscribe(_ => ResetValues());
@@ -101,6 +105,8 @@ namespace SupportTool.ViewModels
         public ReactiveCommand UnlockAccount => unlockAccount;
 
         public ReactiveCommand RunLockoutStatus => runLockoutStatus;
+
+        public ReactiveCommand OpenPermittedWorkstations => openPermittedWorkstations;
 
         public UserObject User
         {

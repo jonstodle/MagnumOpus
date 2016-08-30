@@ -1,0 +1,160 @@
+﻿using ReactiveUI;
+using SupportTool.Helpers;
+using SupportTool.Models;
+using SupportTool.Services.ActiveDirectoryServices;
+using SupportTool.Services.DialogServices;
+using SupportTool.Services.NavigationServices;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.DirectoryServices;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Data;
+
+namespace SupportTool.ViewModels
+{
+    public class PermittedWorkstationsWindowViewModel : ReactiveObject, INavigable
+    {
+        private readonly ReactiveCommand<Unit, string> _addComputer;
+        private readonly ReactiveCommand<Unit, bool> _removeComputer;
+        private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
+        private readonly ReactiveCommand<Unit, Unit> _save;
+        private readonly ReactiveList<string> _computers;
+        private readonly ListCollectionView _computersView;
+        private readonly ObservableAsPropertyHelper<string> _windowTitle;
+        private UserObject _user;
+        private string _computerName;
+        private object _selectedComputer;
+
+
+
+        public PermittedWorkstationsWindowViewModel()
+        {
+            _computers = new ReactiveList<string>();
+
+            _computersView = new ListCollectionView(_computers);
+            _computersView.SortDescriptions.Add(new SortDescription());
+
+            _addComputer = ReactiveCommand.CreateFromObservable(
+                () => AddComputerImpl(ComputerName),
+                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
+            _addComputer
+                .Do(_ => ComputerName = "")
+                .Subscribe(x => _computers.Add(x));
+            _addComputer
+                .ThrownExceptions
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not add computer"));
+
+            _removeComputer = ReactiveCommand.Create(
+            () => _computers.Remove(SelectedComputer as string),
+            this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
+            _removeComputer
+                .ThrownExceptions
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove computer"));
+
+            _removeAllComputers = ReactiveCommand.Create(
+                () => _computers.Clear(),
+            this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
+            _removeAllComputers
+                .ThrownExceptions
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove computers"));
+
+            _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
+            _save
+                .Subscribe(async _ => await NavigationService.Current.GoBack(null));
+            _save
+                .ThrownExceptions
+                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not save"));
+
+            this
+                .WhenAnyValue(x => x.User)
+                .Where(x => x != null)
+                .Select(x => $"Add workstations to {x.Principal.DisplayName}")
+                .ToProperty(this, x => x.WindowTitle, out _windowTitle);
+
+            this
+                .WhenAnyValue(x => x.User)
+                .Where(x => x != null)
+                .Select(x => x.Principal.PermittedWorkstations)
+                .Subscribe(x =>
+                {
+                    using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
+                });
+        }
+
+
+
+        public ReactiveCommand AddComputer => _addComputer;
+
+        public ReactiveCommand RemoveComputer => _removeComputer;
+
+        public ReactiveCommand RemoveAllComputers => _removeAllComputers;
+
+        public ReactiveCommand Save => _save;
+
+        public ReactiveList<string> Computers => _computers;
+
+        public ListCollectionView ComputersView => _computersView;
+
+        public string WindowTitle => _windowTitle.Value;
+
+        public UserObject User
+        {
+            get { return _user; }
+            set { this.RaiseAndSetIfChanged(ref _user, value); }
+        }
+
+        public string ComputerName
+        {
+            get { return _computerName; }
+            set { this.RaiseAndSetIfChanged(ref _computerName, value); }
+        }
+
+        public object SelectedComputer
+        {
+            get { return _selectedComputer; }
+            set { this.RaiseAndSetIfChanged(ref _selectedComputer, value); }
+        }
+
+
+
+        private IObservable<string> AddComputerImpl(string computerName) => Observable.Start(() =>
+        {
+            if (ActiveDirectoryService.Current.GetComputer(computerName).Wait() == null) throw new Exception("Could not find computer");
+            return computerName;
+        });
+
+        private IObservable<Unit> SaveImpl(UserObject user, IEnumerable<string> computers) => Observable.Start(() =>
+        {
+            user.Principal.PermittedWorkstations.Clear();
+            foreach (var computer in computers) user.Principal.PermittedWorkstations.Add(computer);
+            user.Principal.Save();
+        });
+
+        private void ResetValues()
+        {
+            User = null;
+            ComputerName = null;
+            SelectedComputer = null;
+            _computers.Clear();
+        }
+
+
+
+        public async Task OnNavigatedTo(object parameter)
+        {
+            ResetValues();
+
+            if (parameter is string)
+            {
+                User = await ActiveDirectoryService.Current.GetUser(parameter as string);
+            }
+        }
+
+        public Task OnNavigatingFrom() => Task.FromResult<object>(null);
+    }
+}
