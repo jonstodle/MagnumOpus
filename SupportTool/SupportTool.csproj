@@ -102,8 +102,8 @@
     <Compile Include="Controls\ComputerGroups.xaml.cs">
       <DependentUpon>ComputerGroups.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PasswordPanel.xaml.cs">
-      <DependentUpon>PasswordPanel.xaml</DependentUpon>
+    <Compile Include="Controls\AccountPanel.xaml.cs">
+      <DependentUpon>AccountPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PingPanel.xaml.cs">
       <DependentUpon>PingPanel.xaml</DependentUpon>
@@ -136,7 +136,7 @@
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\PasswordPanelViewModel.cs" />
+    <Compile Include="ViewModels\AccountPanelViewModel.cs" />
     <Compile Include="ViewModels\PingPanelViewModel.cs" />
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
     <Compile Include="ViewModels\RemoveGroupsWindowViewModel.cs" />
@@ -156,7 +156,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\PasswordPanel.xaml">
+    <Page Include="Controls\AccountPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

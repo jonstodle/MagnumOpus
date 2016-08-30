@@ -23,9 +23,9 @@ namespace SupportTool.Controls
     /// <summary>
     /// Interaction logic for PasswordPanel.xaml
     /// </summary>
-    public partial class PasswordPanel : UserControl, IViewFor<PasswordPanelViewModel>
+    public partial class AccountPanel : UserControl, IViewFor<AccountPanelViewModel>
     {
-        public PasswordPanel()
+        public AccountPanel()
         {
             InitializeComponent();
 
@@ -57,20 +57,20 @@ namespace SupportTool.Controls
             set { SetValue(UserProperty, value); }
         }
 
-        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(PasswordPanel), new PropertyMetadata(null, (d,e) => (d as PasswordPanel).ViewModel.User = e.NewValue as UserObject));
+        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(AccountPanel), new PropertyMetadata(null, (d,e) => (d as AccountPanel).ViewModel.User = e.NewValue as UserObject));
 
-        public PasswordPanelViewModel ViewModel
+        public AccountPanelViewModel ViewModel
         {
-            get { return (PasswordPanelViewModel)GetValue(ViewModelProperty); }
+            get { return (AccountPanelViewModel)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(PasswordPanelViewModel), typeof(PasswordPanel), new PropertyMetadata(new PasswordPanelViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AccountPanelViewModel), typeof(AccountPanel), new PropertyMetadata(new AccountPanelViewModel()));
 
         object IViewFor.ViewModel
         {
             get { return ViewModel; }
-            set { ViewModel = value as PasswordPanelViewModel; }
+            set { ViewModel = value as AccountPanelViewModel; }
         }
     }
 }

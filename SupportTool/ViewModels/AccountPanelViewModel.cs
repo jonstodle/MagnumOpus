@@ -17,7 +17,7 @@ using System.Windows;
 
 namespace SupportTool.ViewModels
 {
-    public class PasswordPanelViewModel : ReactiveObject
+    public class AccountPanelViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, string> setNewPassword;
         private readonly ReactiveCommand<Unit, string> setNewSimplePassword;
@@ -31,7 +31,7 @@ namespace SupportTool.ViewModels
 
 
 
-        public PasswordPanelViewModel()
+        public AccountPanelViewModel()
         {
             setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),

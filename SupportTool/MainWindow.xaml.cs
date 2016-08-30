@@ -45,7 +45,7 @@ namespace SupportTool
             this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserPasswordPanel.User);
+            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
 

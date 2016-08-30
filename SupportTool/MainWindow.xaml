@@ -34,7 +34,7 @@
                 <StackPanel x:Name="UserDetailsStackPanel">
                     <controls:UserDetails x:Name="UserDetails"/>
 
-                    <controls:PasswordPanel x:Name="UserPasswordPanel"/>
+                    <controls:AccountPanel x:Name="UserAccountPanel"/>
 
                     <controls:ProfilePanel x:Name="UserProfilePanel"/>
 
