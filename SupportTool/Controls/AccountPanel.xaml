@@ -18,6 +18,8 @@
 
             <Button x:Name="LockOutStatusButton" Content="LockOutStatus"/>
 
+            <Button x:Name="SplunkButton" Content="Splunk..."/>
+
             <Button x:Name="PermittedWorkstationsButton" Content="Log on to..."/>
         </WrapPanel>
 

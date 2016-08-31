@@ -26,6 +26,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> expirePassword;
         private readonly ReactiveCommand<Unit, Unit> unlockAccount;
         private readonly ReactiveCommand<Unit, Unit> runLockoutStatus;
+        private readonly ReactiveCommand<Unit, Unit> openSplunk;
         private readonly ReactiveCommand<Unit, Unit> openPermittedWorkstations;
         private UserObject user;
         private bool isShowingNewPasswordOptions;
@@ -85,6 +86,11 @@ namespace SupportTool.ViewModels
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 
+            openSplunk = ReactiveCommand.Create(() =>
+            {
+                Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
+            });
+
             openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.PermittedWorkstationsWindow>(user.Principal.SamAccountName));
 
             this
@@ -105,6 +111,8 @@ namespace SupportTool.ViewModels
         public ReactiveCommand UnlockAccount => unlockAccount;
 
         public ReactiveCommand RunLockoutStatus => runLockoutStatus;
+
+        public ReactiveCommand OpenSplunk => openSplunk;
 
         public ReactiveCommand OpenPermittedWorkstations => openPermittedWorkstations;
 
