@@ -30,6 +30,7 @@ namespace SupportTool.Controls
 
 
             this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.CNTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.Computer.Company, v => v.CompanyTextBlock.Text);
         }
 
         public ComputerObject Computer

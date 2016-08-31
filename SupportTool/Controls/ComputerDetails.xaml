@@ -8,5 +8,15 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
         <TextBlock x:Name="CNTextBlock" FontSize="20" Margin="2"/>
+
+        <WrapPanel Opacity=".5" Margin="2">
+            <TextBlock x:Name="CompanyTextBlock"/>
+            <!--<TextBlock Text=" | "/>
+            <TextBlock x:Name="ExpirationTextBlock"/>
+            <TextBlock Text=" | "/>
+            <TextBlock x:Name="AccountLockedTextBlock"/>
+            <TextBlock Text=" | "/>
+            <TextBlock x:Name="PasswordAgeTextBlock"/>-->
+        </WrapPanel>
     </StackPanel>
 </UserControl>
