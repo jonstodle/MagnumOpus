@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:SupportTool.Controls"
         mc:Ignorable="d"
         Icon="/Assets/Icon.ico"
-        Title="Support Tool by Jon Stødle" MinHeight="300" MinWidth="200" Height="900" Width="600">
+        Title="Magnum Opus by Jon Stødle" MinHeight="300" MinWidth="200" Height="900" Width="600">
 
     <Grid>
         <Grid.RowDefinitions>

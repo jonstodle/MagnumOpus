@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SupportTool")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Magnum Opus by Jon Stødle")]
+[assembly: AssemblyDescription("Lets perform common service desk tasks from one application")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Sykehuspartner")]
-[assembly: AssemblyProduct("SupportTool")]
+[assembly: AssemblyProduct("Magnum Opus")]
 [assembly: AssemblyCopyright("Copyright © Sykehuspartner 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
