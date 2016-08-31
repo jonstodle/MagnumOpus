@@ -13,6 +13,8 @@
         <WrapPanel>
             <Button x:Name="LoggedOnButton" Content="Logged on..." Margin="2" />
 
+            <Button x:Name="LoggedOnPlusButton" Content="Logged on +..." Margin="2"/>
+
             <Button x:Name="RemoteExecutionButton" Content="PSExec..." Margin="2"/>
 
             <Button x:Name="OpenCButton" Content="Open C:..." Margin="2"/>

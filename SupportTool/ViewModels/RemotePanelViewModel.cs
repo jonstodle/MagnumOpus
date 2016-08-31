@@ -17,6 +17,7 @@ namespace SupportTool.ViewModels
     public class RemotePanelViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
+        private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
         private readonly ReactiveCommand<Unit, Unit> _openRemoteExecution;
         private readonly ReactiveCommand<Unit, Unit> _openCDrive;
         private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
@@ -26,7 +27,9 @@ namespace SupportTool.ViewModels
 
         public RemotePanelViewModel()
         {
-            _openLoggedOn = ReactiveCommand.Create(() =>  ExecuteCmd(@"C:\PsTools\PsLoggedon.exe", $@"\\{_computer.CN}"));
+            _openLoggedOn = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsLoggedon.exe", $@"\\{_computer.CN}"));
+
+            _openLoggedOnPlus = ReactiveCommand.Create(()=> ExecuteCmd(@"C:\PsTools\PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user"));
 
             _openRemoteExecution = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
 
@@ -50,6 +53,8 @@ namespace SupportTool.ViewModels
 
 
         public ReactiveCommand OpenLoggedOn => _openLoggedOn;
+
+        public ReactiveCommand OpenLoggedOnPlus => _openLoggedOnPlus;
 
         public ReactiveCommand OpenRemoteExecution => _openRemoteExecution;
 
