@@ -7,18 +7,18 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
+        <TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="NewPasswordToggleButton" Content="New password..." Margin="2"/>
+            <ToggleButton x:Name="NewPasswordToggleButton" Content="New password..."/>
 
-            <Button x:Name="ExpirePasswordButton" Content="Expire password" Margin="2"/>
+            <Button x:Name="ExpirePasswordButton" Content="Expire password"/>
 
-            <Button x:Name="UnlockAccountButton" Content="Unlock account" Margin="2"/>
+            <Button x:Name="UnlockAccountButton" Content="Unlock account"/>
 
-            <Button x:Name="LockOutStatusButton" Content="LockOutStatus" Margin="2"/>
+            <Button x:Name="LockOutStatusButton" Content="LockOutStatus"/>
 
-            <Button x:Name="PermittedWorkstationsButton" Content="Log on to..." Margin="2"/>
+            <Button x:Name="PermittedWorkstationsButton" Content="Log on to..."/>
         </WrapPanel>
 
         <Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -33,13 +33,13 @@
                     <TextBox x:Name="NewPasswordTextBox" Grid.Row="1"/>
                 </StackPanel>
 
-                <Button x:Name="SetNewPasswordButton" Content="Set password" Margin="2"/>
+                <Button x:Name="SetNewPasswordButton" Content="Set password"/>
             </StackPanel>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                <Button x:Name="SetNewSimplePasswordButton" Content="Set simple password" Margin="2"/>
+                <Button x:Name="SetNewSimplePasswordButton" Content="Set simple password"/>
 
-                <Button x:Name="SetNewComplexPasswordButton" Content="Set complex password" Margin="2"/>
+                <Button x:Name="SetNewComplexPasswordButton" Content="Set complex password"/>
             </StackPanel>
         </Grid>
     </StackPanel>

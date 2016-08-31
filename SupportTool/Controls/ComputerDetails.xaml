@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <TextBlock x:Name="CNTextBlock" FontSize="20" Margin="2"/>
+        <TextBlock x:Name="CNTextBlock" FontSize="20"/>
 
         <WrapPanel Opacity=".5" Margin="2">
             <TextBlock x:Name="CompanyTextBlock"/>

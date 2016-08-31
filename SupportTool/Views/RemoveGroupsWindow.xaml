@@ -29,13 +29,13 @@
         <ListView x:Name="GroupsToRemoveListView" ItemTemplate="{StaticResource ListViewItemTemplate}" Grid.Column="1" Margin="2"/>
 
         <Grid Grid.Row="1">
-            <Button x:Name="AddToGroupsToRemoveButton" Content="Add &#x00BB;" HorizontalAlignment="Right" Margin="2"/>
+            <Button x:Name="AddToGroupsToRemoveButton" Content="Add &#x00BB;" HorizontalAlignment="Right"/>
         </Grid>
 
         <Grid Grid.Row="1" Grid.Column="1">
-            <Button x:Name="RemoveFromGroupsToRemoveButton" Content="Remove" HorizontalAlignment="Left" Margin="2"/>
+            <Button x:Name="RemoveFromGroupsToRemoveButton" Content="Remove" HorizontalAlignment="Left"/>
 
-            <Button x:Name="RemovePrincipalFromGroupsButton" Content="Save" HorizontalAlignment="Right" Margin="2"/>
+            <Button x:Name="RemovePrincipalFromGroupsButton" Content="Save" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>

@@ -20,9 +20,9 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBox x:Name="SearchTextBox" Margin="2"/>
+        <TextBox x:Name="SearchTextBox"/>
 
-        <ProgressBar x:Name="SearchingProgressBar" Height="10" Grid.Row="1" Margin="2"/>
+        <ProgressBar x:Name="SearchingProgressBar" Height="10" Grid.Row="1"/>
 
         <ListView x:Name="SearchResultsListView" Grid.Row="2" Margin="2">
             <ListView.ItemTemplate>
@@ -40,12 +40,12 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button x:Name="AddToGroupsToAddButton" Content="Add &#x00BB;" Grid.Row="3" HorizontalAlignment="Right" Margin="2"/>
+        <Button x:Name="AddToGroupsToAddButton" Content="Add &#x00BB;" Grid.Row="3" HorizontalAlignment="Right"/>
 
         <Grid Grid.Row="3" Grid.Column="1">
-            <Button x:Name="RemoveFromGroupsToAddButton" Content="Remove" HorizontalAlignment="Left" Margin="2"/>
+            <Button x:Name="RemoveFromGroupsToAddButton" Content="Remove" HorizontalAlignment="Left"/>
 
-            <Button x:Name="AddPrincipalToGroupsButton" Content="Save" HorizontalAlignment="Right" Margin="2"/>
+            <Button x:Name="AddPrincipalToGroupsButton" Content="Save" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>

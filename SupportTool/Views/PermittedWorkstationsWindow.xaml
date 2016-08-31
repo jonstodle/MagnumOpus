@@ -21,11 +21,11 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Add computer: " Margin="2"/>
+            <TextBlock Text="Add computer: "/>
 
-            <TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
+            <TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1"/>
 
-            <Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Grid.Column="2" Margin="2"/>
+            <Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Grid.Column="2"/>
         </Grid>
 
         <ListView x:Name="ComputersListView" Grid.Row="1" Margin="2">
@@ -43,11 +43,11 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
+            <Button x:Name="RemoveAllComputersButton" Content="Remove all"/>
 
-            <Button x:Name="RemoveComputerButton" Content="Remove" Grid.Column="1" Margin="2"/>
+            <Button x:Name="RemoveComputerButton" Content="Remove" Grid.Column="1"/>
 
-            <Button x:Name="SaveButton" Content="Save" Grid.Column="2" HorizontalAlignment="Right" Margin="2"/>
+            <Button x:Name="SaveButton" Content="Save" Grid.Column="2" HorizontalAlignment="Right"/>
         </Grid>
     </Grid>
 </Window>

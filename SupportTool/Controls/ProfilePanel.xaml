@@ -8,12 +8,12 @@
              d:DesignHeight="300" d:DesignWidth="300">
     
     <StackPanel>
-        <TextBlock Text="Profile" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
+        <TextBlock Text="Profile" Style="{StaticResource SectionHeaderStyle}"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="ResetProfileToggleButton" Content="Reset profile..." Margin="2"/>
+            <ToggleButton x:Name="ResetProfileToggleButton" Content="Reset profile..."/>
 
-            <ToggleButton x:Name="RestoreProfileToggleButton" Content="Restore profile..." Margin="2"/>
+            <ToggleButton x:Name="RestoreProfileToggleButton" Content="Restore profile..."/>
         </WrapPanel>
 
         <Grid x:Name="ResetProfileGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -28,15 +28,15 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Computer name" FontSize="10" VerticalAlignment="Bottom" Margin="2"/>
+            <TextBlock Text="Computer name" FontSize="10" VerticalAlignment="Bottom"/>
 
-            <Button x:Name="ResetGlobalProfileButton" Content="Reset global profile" Grid.Column="1" Margin="2"/>
+            <Button x:Name="ResetGlobalProfileButton" Content="Reset global profile" Grid.Column="1"/>
 
-            <TextBox x:Name="ResetProfileComputerNameTextBox" CharacterCasing="Upper" Grid.Row="1" Margin="2"/>
+            <TextBox x:Name="ResetProfileComputerNameTextBox" CharacterCasing="Upper" Grid.Row="1"/>
 
-            <Button x:Name="ResetLocalProfileButton" Content="Reset local profile" Grid.Row="1" Grid.Column="1" Margin="2"/>
+            <Button x:Name="ResetLocalProfileButton" Content="Reset local profile" Grid.Row="1" Grid.Column="1"/>
 
-            <ListView x:Name="ResetProfileListView" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
+            <ListView x:Name="ResetProfileListView" Height="200" Grid.Row="2" Grid.ColumnSpan="2">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}"/>
@@ -50,9 +50,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="OpenGlobalProfileDirectoryButton" Content="Open global profile folder" Margin="2"/>
+                <Button x:Name="OpenGlobalProfileDirectoryButton" Content="Open global profile folder"/>
 
-                <Button x:Name="OpenLocalProfileDirectoryButton" Content="Open local profile folder" Grid.Column="1" Margin="2"/>
+                <Button x:Name="OpenLocalProfileDirectoryButton" Content="Open local profile folder" Grid.Column="1"/>
             </Grid>
         </Grid>
 
@@ -64,11 +64,11 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Computer name:" Margin="2"/>
+                <TextBlock Text="Computer name:"/>
 
-                <TextBox x:Name="RestoreProfileComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
+                <TextBox x:Name="RestoreProfileComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1"/>
 
-                <Button x:Name="SearchButton" Content="Search" Grid.Column="2" Margin="2"/>
+                <Button x:Name="SearchButton" Content="Search" Grid.Column="2"/>
             </Grid>
 
             <ListView x:Name="RestoreProfileListView" Height="100" Margin="2">
@@ -95,7 +95,7 @@
                 <CheckBox x:Name="WindowsExplorerFavoritesCheckBox" Content="Windows Explorer Favorites"/>
             </WrapPanel>
 
-            <Button x:Name="RestoreProfileButton" Content="Restore profile" Margin="2"/>
+            <Button x:Name="RestoreProfileButton" Content="Restore profile"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

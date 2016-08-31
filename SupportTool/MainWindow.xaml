@@ -23,13 +23,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="FindPreviousIdentityButton" Content="&lt;" Margin="2"/>
+            <Button x:Name="FindPreviousIdentityButton" Content="&lt;"/>
 
-            <TextBox x:Name="QueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Grid.Column="1" Margin="2"/>
+            <TextBox x:Name="QueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Grid.Column="1"/>
 
-            <Button x:Name="FindButton" Content="Find" Grid.Column="2" Padding="10,0" Margin="2"/>
+            <Button x:Name="FindButton" Content="Find" Grid.Column="2" Padding="10,0"/>
 
-            <Button x:Name="PasteAndFindButton" Content="Paste&amp;Find" Grid.Column="3" Padding="10,0" Margin="2"/>
+            <Button x:Name="PasteAndFindButton" Content="Paste&amp;Find" Grid.Column="3" Padding="10,0"/>
         </Grid>
 
         <ScrollViewer Grid.Row="1">
