@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     
     <StackPanel>
-        <TextBlock Text="Profile" Style="{StaticResource SectionHeaderStyle}"/>
+        <TextBlock Text="Profile" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
             <ToggleButton x:Name="ResetProfileToggleButton" Content="Reset profile..." Margin="2"/>
