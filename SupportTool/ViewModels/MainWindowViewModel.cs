@@ -19,9 +19,11 @@ namespace SupportTool.ViewModels
 {
     public partial class MainWindowViewModel : ReactiveObject, INavigable
     {
+        private readonly ReactiveCommand<Unit, Unit> _findPreviousIdenitity;
         private readonly ReactiveCommand<Unit, string> paste;
         private readonly ReactiveCommand<Unit, Principal> find;
         private readonly ReactiveCommand<Unit, Unit> pasteAndFind;
+        private readonly ReactiveList<string> _previousIdentities;
         private UserObject user;
         private ComputerObject computer;
         private string queryString;
@@ -30,8 +32,19 @@ namespace SupportTool.ViewModels
 
         public MainWindowViewModel()
         {
+            _previousIdentities = new ReactiveList<string>();
+
             MessageBus.Current.Listen<ApplicationActionRequest>()
                 .Subscribe(a => ApplicationActionRequestImpl(a));
+
+            _findPreviousIdenitity = ReactiveCommand.CreateFromTask(
+                async () =>
+                {
+                    QueryString = _previousIdentities.Reverse().Skip(1).First();
+                    _previousIdentities.RemoveRange(_previousIdentities.Count - 2, 2);
+                    await find.Execute();
+                },
+                this.WhenAnyObservable(x => x._previousIdentities.CountChanged).Select(x => x > 1));
 
             paste = ReactiveCommand.Create(() => QueryString = Clipboard.GetText());
 
@@ -44,6 +57,8 @@ namespace SupportTool.ViewModels
                 {
                     User = null;
                     Computer = null;
+
+                    if (x != null) _previousIdentities.Add(x.SamAccountName);
 
                     if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
                     else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
@@ -61,11 +76,15 @@ namespace SupportTool.ViewModels
 
 
 
+        public ReactiveCommand FindPreviousIdentity => _findPreviousIdenitity;
+
         public ReactiveCommand Paste => paste;
 
         public ReactiveCommand<Unit, Principal> Find => find;
 
         public ReactiveCommand PasteAndFind => pasteAndFind;
+
+        public ReactiveList<string> PreviousIdentities => _previousIdentities;
 
         public UserObject User
         {
@@ -91,7 +110,7 @@ namespace SupportTool.ViewModels
         {
             switch (a)
             {
-                case ApplicationActionRequest.RefreshUser:
+                case ApplicationActionRequest.Refresh:
                     await Find.Execute();
                     break;
                 default:

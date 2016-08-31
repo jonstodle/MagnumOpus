@@ -59,6 +59,7 @@ namespace SupportTool
 
             this.WhenActivated(d =>
             {
+                d(this.BindCommand(ViewModel, vm => vm.FindPreviousIdentity, v => v.FindPreviousIdentityButton));
                 d(this.BindCommand(ViewModel, vm => vm.PasteAndFind, v => v.PasteAndFindButton));
                 d(this.BindCommand(ViewModel, vm => vm.Find, v => v.FindButton));
                 d(QueryStringTextBox.Events()

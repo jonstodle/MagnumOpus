@@ -69,7 +69,7 @@ namespace SupportTool.ViewModels
             unlockAccount
                 .Subscribe(_ => 
                 {
-                    MessageBus.Current.SendMessage(ApplicationActionRequest.RefreshUser);
+                    MessageBus.Current.SendMessage(ApplicationActionRequest.Refresh);
                     DialogService.ShowInfo("Account unlocked");
                 });
             unlockAccount
