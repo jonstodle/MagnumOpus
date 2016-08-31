@@ -76,7 +76,7 @@ namespace SupportTool.ViewModels
             openGlobalProfileDirectory = ReactiveCommand.Create(
                 () =>
                 {
-                    var gpdPath = GetParentDirectory(user.ProfilePath)?.Parent;
+                    var gpdPath = GetParentDirectory(user.ProfilePath);
                     if (gpdPath == null || !gpdPath.Exists) throw new Exception($"Could not find global profile folder");
                     Process.Start(gpdPath.FullName);
                 });
