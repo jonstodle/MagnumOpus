@@ -58,10 +58,16 @@ namespace SupportTool.ViewModels
                     User = null;
                     Computer = null;
 
-                    if (x != null) _previousIdentities.Add(x.SamAccountName);
-
-                    if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
-                    else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
+                    if (x is UserPrincipal)
+                    {
+                        User = new UserObject(x as UserPrincipal);
+                        AddToPreviousIdentities(User.Principal.SamAccountName);
+                    }
+                    else if (x is ComputerPrincipal)
+                    {
+                        Computer = new ComputerObject(x as ComputerPrincipal);
+                        AddToPreviousIdentities(Computer.CN);
+                    }
                 });
             find
                 .ThrownExceptions
@@ -116,6 +122,11 @@ namespace SupportTool.ViewModels
                 default:
                     break;
             }
+        }
+
+        private void AddToPreviousIdentities(string item)
+        {
+            if (item != (_previousIdentities.LastOrDefault() ?? "")) _previousIdentities.Add(item); 
         }
 
 
