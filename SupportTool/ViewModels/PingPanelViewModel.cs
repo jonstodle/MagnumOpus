@@ -99,7 +99,7 @@ namespace SupportTool.ViewModels
             var pinger = new Ping();
             observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
 
-            var pings = Observable.Interval(TimeSpan.FromSeconds(4d))
+            var pings = Observable.Interval(TimeSpan.FromSeconds(2d))
                 .Subscribe(async _ =>
                 {
                     PingReply reply = null;
