@@ -44,6 +44,8 @@
                 <StackPanel x:Name="ComputerDetailsStackPanel">
                     <controls:ComputerDetails x:Name="ComputerDetails"/>
 
+                    <controls:RemotePanel x:Name="RemotePanel"/>
+
                     <controls:PingPanel x:Name="PingPanel"/>
 
                     <controls:ComputerGroups x:Name="ComputerGroups"/>

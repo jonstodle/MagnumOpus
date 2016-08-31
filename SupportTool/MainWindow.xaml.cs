@@ -51,6 +51,7 @@ namespace SupportTool
 
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
+            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
 

@@ -111,6 +111,9 @@
     <Compile Include="Controls\ProfilePanel.xaml.cs">
       <DependentUpon>ProfilePanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\RemotePanel.xaml.cs">
+      <DependentUpon>RemotePanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\UserDetails.xaml.cs">
       <DependentUpon>UserDetails.xaml</DependentUpon>
     </Compile>
@@ -140,6 +143,7 @@
     <Compile Include="ViewModels\PermittedWorkstationsWindowViewModel.cs" />
     <Compile Include="ViewModels\PingPanelViewModel.cs" />
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
+    <Compile Include="ViewModels\RemotePanelViewModel.cs" />
     <Compile Include="ViewModels\RemoveGroupsWindowViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
@@ -169,6 +173,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ProfilePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RemotePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
