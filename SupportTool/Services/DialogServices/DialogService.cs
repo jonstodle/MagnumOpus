@@ -20,6 +20,6 @@ namespace SupportTool.Services.DialogServices
 
         public static void ShowPasswordSetMessage(string password) => ShowInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
 
-        public static void ShowPasswordSetErrorMessage() => ShowError($"Could not set password", "Password not set");
+        public static void ShowPasswordSetErrorMessage(string message = null) => ShowError(message ?? $"Could not set password", "Password not set");
     }
 }

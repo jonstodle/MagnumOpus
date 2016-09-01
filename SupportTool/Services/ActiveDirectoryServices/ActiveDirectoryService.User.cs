@@ -22,36 +22,61 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
         public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true) => Observable.Start(() =>
         {
-            var user = GetUser(identity).Wait();
-            if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
+            GetUser(identity).Wait().Principal.SetPassword(password);
 
-            user.Principal.SetPassword(password);
-            if(expirePassword) user.Principal.ExpirePasswordNow();
-            UnlockUser(user.Principal.SamAccountName);
+            DoActionOnAllDCs(x =>
+            {
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+                if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
+
+                if (expirePassword) user.ExpirePasswordNow();
+                user.UnlockAccount();
+
+                return Unit.Default;
+            }).Wait();
         });
 
         public IObservable<Unit> ExpirePassword(string identity) => Observable.Start(() =>
         {
-            var user = GetUser(identity).Wait();
-            if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
+            DoActionOnAllDCs(x =>
+            {
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+                if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
-            user.Principal.ExpirePasswordNow();
+                user.ExpirePasswordNow();
+
+                return Unit.Default;
+            }).Wait();
         });
 
         public IObservable<Unit> UnlockUser(string identity) => Observable.Start(() =>
         {
-            var dcs = new List<string>();
-            foreach (DomainController dc in Domain.GetCurrentDomain().DomainControllers) dcs.Add(dc.Name);
-
-            dcs.Select((x, i) =>
+            DoActionOnAllDCs(x =>
             {
-                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x), identity);
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
                 if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
                 user.UnlockAccount();
 
+                return Unit.Default;
+            }).Wait();
+        });
+
+        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Create<TResult>(observer =>
+        {
+            var disposed = false;
+            var dcs = new List<DomainController>();
+            foreach (DomainController dc in Domain.GetCurrentDomain().DomainControllers) dcs.Add(dc);
+
+            dcs.Select((x, i) =>
+            {
+                if(!disposed) observer.OnNext(action(x));
+
                 return i;
             }).AsParallel().Sum();
+
+            observer.OnCompleted();
+            return () => disposed = true;
         });
     }
 }
