@@ -46,6 +46,10 @@ namespace SupportTool.ViewModels
                 .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
                 .ObserveOnDispatcher()
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
+
+            this
+                .WhenAnyValue(x => x.Computer)
+                .Subscribe(_ => ResetValues());
         }
 
 
@@ -68,6 +72,14 @@ namespace SupportTool.ViewModels
         {
             get { return isShowingDirectGroups; }
             set { this.RaiseAndSetIfChanged(ref isShowingDirectGroups, value); }
+        }
+
+
+
+        private void ResetValues()
+        {
+            directGroups.Clear();
+            IsShowingDirectGroups = false;
         }
 
 
