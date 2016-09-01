@@ -97,7 +97,6 @@ namespace SupportTool.ViewModels
             }
 
             observer.OnCompleted();
-
             return () => disposed = true;
         });
     }
