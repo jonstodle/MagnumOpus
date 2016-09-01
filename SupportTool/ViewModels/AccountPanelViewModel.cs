@@ -43,21 +43,21 @@ namespace SupportTool.ViewModels
                 .Subscribe(newPass => DialogService.ShowInfo($"New password is: {newPass}", "Password set"));
             setNewPassword
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't set password"));
+                .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
 
             setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
             setNewSimplePassword
                 .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
             setNewSimplePassword
                 .ThrownExceptions
-                .Subscribe(_ => DialogService.ShowPasswordSetErrorMessage());
+                .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
 
             setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
             setNewComplexPassword
                 .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
             setNewComplexPassword
                 .ThrownExceptions
-                .Subscribe(_ => DialogService.ShowPasswordSetErrorMessage());
+                .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
 
             expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
             expirePassword
