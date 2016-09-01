@@ -84,7 +84,8 @@ namespace SupportTool.ViewModels
             var arguments = $"1 {computer.CN}";
 
             if (computer.Company == "SIHF"
-                || computer.Company == "REV")
+                || computer.Company == "REV"
+                || computer.Company == "SOHF")
             {
                 fileName = @"C:\RemoteControl2012\CmRcViewer.exe";
                 arguments = computer.CN;
