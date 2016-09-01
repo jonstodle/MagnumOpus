@@ -20,9 +20,8 @@ namespace SupportTool.ViewModels
     public partial class MainWindowViewModel : ReactiveObject, INavigable
     {
         private readonly ReactiveCommand<Unit, Unit> _findPreviousIdenitity;
-        private readonly ReactiveCommand<Unit, string> paste;
         private readonly ReactiveCommand<Unit, Principal> find;
-        private readonly ReactiveCommand<Unit, Unit> pasteAndFind;
+        private readonly ReactiveCommand<Unit, string> pasteAndFind;
         private readonly ReactiveList<string> _previousIdentities;
         private UserObject user;
         private ComputerObject computer;
@@ -45,8 +44,6 @@ namespace SupportTool.ViewModels
                     await find.Execute();
                 },
                 this.WhenAnyObservable(x => x._previousIdentities.CountChanged).Select(x => x > 1));
-
-            paste = ReactiveCommand.Create(() => QueryString = Clipboard.GetText());
 
             find = ReactiveCommand.CreateFromObservable(
                 () => ActiveDirectoryService.Current.GetPrincipal(QueryString).SubscribeOn(RxApp.TaskpoolScheduler),
@@ -73,18 +70,14 @@ namespace SupportTool.ViewModels
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            pasteAndFind = ReactiveCommand.CreateFromTask(async () =>
-            {
-                await paste.Execute();
-                await find.Execute();
-            });
+            pasteAndFind = ReactiveCommand.Create(() => QueryString = Clipboard.GetText());
+            pasteAndFind
+                .InvokeCommand(Find);
         }
 
 
 
         public ReactiveCommand FindPreviousIdentity => _findPreviousIdenitity;
-
-        public ReactiveCommand Paste => paste;
 
         public ReactiveCommand<Unit, Principal> Find => find;
 
