@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <StackPanel>
-        <TextBlock Text="Ping" Style="{StaticResource SectionHeaderStyle}"/>
+        <TextBlock Text="Ping" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -17,13 +17,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="StartPingButton" Content="Start"/>
+            <Button x:Name="StartPingButton" Content="Start" Margin="2"/>
             
-            <Button x:Name="StopPingButton" Content="Stop"/>
+            <Button x:Name="StopPingButton" Content="Stop" Margin="2"/>
 
-            <TextBlock x:Name="PingResultTextBlock" Grid.Column="1" VerticalAlignment="Center"/>
+            <TextBlock x:Name="PingResultTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>
 
-            <ToggleButton x:Name="PingResultDetailsToggleButton" Content="Details..." Grid.Column="2"/>
+            <ToggleButton x:Name="PingResultDetailsToggleButton" Content="Details..." Grid.Column="2" Margin="2"/>
         </Grid>
 
         <StackPanel x:Name="PingResultDetailsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">

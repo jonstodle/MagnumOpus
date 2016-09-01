@@ -8,12 +8,12 @@
              d:DesignHeight="1000" d:DesignWidth="300">
 
     <StackPanel>
-        <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}"/>
+        <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups..."/>
+            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups..." Margin="2"/>
 
-            <ToggleButton x:Name="AllGroupsToggleButton" Content="All groups..."/>
+            <ToggleButton x:Name="AllGroupsToggleButton" Content="All groups..." Margin="2"/>
         </WrapPanel>
 
         <Grid x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -36,9 +36,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="AddGroupsButton" Content="Add groups..."/>
+                <Button x:Name="AddGroupsButton" Content="Add groups..." Margin="2"/>
 
-                <Button x:Name="RemoveGroupsButton" Content="Remove groups..." Grid.Column="1"/>
+                <Button x:Name="RemoveGroupsButton" Content="Remove groups..." Grid.Column="1" Margin="2"/>
             </Grid>
         </Grid>
 
@@ -54,11 +54,11 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBox x:Name="GroupFilterTextBox"/>
+            <TextBox x:Name="GroupFilterTextBox" Margin="2"/>
 
-            <ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1"/>
+            <ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1" Margin="2"/>
 
-            <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2"/>
+            <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
 
             <ListView x:Name="AllGroupsListView" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
                 <ListView.ItemTemplate>
@@ -68,7 +68,7 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <TextBlock Grid.Row="3">
+            <TextBlock Grid.Row="3" Margin="2">
                         <Run Text="Showing "/>
                         <Run x:Name="ShowingCountRun"/>
                         <Run Text=" of "/>

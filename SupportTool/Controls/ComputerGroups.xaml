@@ -8,10 +8,10 @@
              d:DesignHeight="300" d:DesignWidth="300">
     
     <StackPanel>
-        <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}"/>
+        <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups..."/>
+            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups..." Margin="2"/>
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -28,9 +28,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="AddGroupsButton" Content="Add groups..."/>
+                <Button x:Name="AddGroupsButton" Content="Add groups..." Margin="2"/>
 
-                <Button x:Name="RemoveGroupsButton" Content="Remove groups..." Grid.Column="1"/>
+                <Button x:Name="RemoveGroupsButton" Content="Remove groups..." Grid.Column="1" Margin="2"/>
             </Grid>
         </StackPanel>
     </StackPanel>
