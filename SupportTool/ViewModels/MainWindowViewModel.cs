@@ -91,7 +91,7 @@ namespace SupportTool.ViewModels
                 .Where(x => x == null)
                 .ObserveOnDispatcher()
                 .Do(_ => _navigationStack.Remove(_navigationStack.LastOrDefault()))
-                .Select(_ => { System.Diagnostics.Debug.WriteLine($"{_navigationStack.Count}, {_currentNavigationIndex}"); return Unit.Default; })
+                .Select(_ => Unit.Default)
                 .InvokeCommand(_navigateBack);
 
             Observable.Merge(
