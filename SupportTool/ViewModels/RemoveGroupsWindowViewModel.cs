@@ -6,6 +6,7 @@ using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
@@ -13,6 +14,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
@@ -23,6 +25,8 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, IEnumerable<string>> removePrincipalFromGroups;
         private readonly ReactiveList<DirectoryEntry> principalGroups;
         private readonly ReactiveList<DirectoryEntry> groupsToRemove;
+        private readonly ListCollectionView principalGroupsView;
+        private readonly ListCollectionView groupsToRemoveView;
         private readonly ObservableAsPropertyHelper<string> windowTitle;
         private Principal principal;
         private object selectedPrincipalGroup;
@@ -34,6 +38,16 @@ namespace SupportTool.ViewModels
         {
             principalGroups = new ReactiveList<DirectoryEntry>();
             groupsToRemove = new ReactiveList<DirectoryEntry>();
+
+            principalGroupsView = new ListCollectionView(principalGroups)
+            {
+                SortDescriptions = { new SortDescription(nameof(DirectoryEntry.Path), ListSortDirection.Ascending) }
+            };
+
+            groupsToRemoveView = new ListCollectionView(groupsToRemove)
+            {
+                SortDescriptions = { new SortDescription(nameof(DirectoryEntry.Path), ListSortDirection.Ascending) }
+            };
 
             addGroupToGroupsToRemove = ReactiveCommand.Create(
                 () => groupsToRemove.Add(SelectedPrincipalGroup as DirectoryEntry),
@@ -96,6 +110,10 @@ namespace SupportTool.ViewModels
         public ReactiveList<DirectoryEntry> PrincipalGroups => principalGroups;
 
         public ReactiveList<DirectoryEntry> GroupsToRemove => groupsToRemove;
+
+        public ListCollectionView PrincipalGroupsView => principalGroupsView;
+
+        public ListCollectionView GroupsToRemoveView => groupsToRemoveView;
 
         public string WindowTitle => windowTitle.Value;
 

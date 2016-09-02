@@ -28,9 +28,9 @@ namespace SupportTool.Views
             InitializeComponent();
 
             this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title, x => x ?? "");
-            this.OneWayBind(ViewModel, vm => vm.PrincipalGroups, v => v.PrincipalGroupsListView.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.PrincipalGroupsView, v => v.PrincipalGroupsListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.SelectedPrincipalGroup, v => v.PrincipalGroupsListView.SelectedItem);
-            this.OneWayBind(ViewModel, vm => vm.GroupsToRemove, v => v.GroupsToRemoveListView.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.GroupsToRemoveView, v => v.GroupsToRemoveListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.SelectedGroupToRemove, v => v.GroupsToRemoveListView.SelectedItem);
 
             this.WhenActivated(d =>
