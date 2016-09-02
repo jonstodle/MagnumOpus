@@ -41,14 +41,22 @@ namespace SupportTool.ViewModels
                 .Subscribe(a => ApplicationActionRequestImpl(a));
 
             _navigateBack = ReactiveCommand.Create(
-                () => { CurrentNavigationIndex -= 1; QueryString = _navigationStack[_currentNavigationIndex]; },
+                () =>
+                {
+                    CurrentNavigationIndex -= 1;
+                    QueryString = _navigationStack[_currentNavigationIndex];
+                },
                 Observable.CombineLatest(
                     this.WhenAnyValue(x => x.CurrentNavigationIndex),
                     this.WhenAnyObservable(x => x._navigationStack.CountChanged),
                     (x, y) => x > 0 && x <= y));
 
             _navigateForward = ReactiveCommand.Create(
-                () => { CurrentNavigationIndex += 1; QueryString = _navigationStack[_currentNavigationIndex]; },
+                () =>
+                {
+                    CurrentNavigationIndex += 1;
+                    QueryString = _navigationStack[_currentNavigationIndex];
+                },
                 Observable.CombineLatest(
                     this.WhenAnyValue(x => x.CurrentNavigationIndex),
                     this.WhenAnyObservable(x => x._navigationStack.CountChanged),
