@@ -22,7 +22,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _navigateBack;
         private readonly ReactiveCommand<Unit, Unit> _navigateForward;
         private readonly ReactiveCommand<Unit, Unit> _find;
-        private readonly ReactiveCommand<Unit, string> _pasteAndFind;
+        private readonly ReactiveCommand<Unit, Unit> _pasteAndFind;
         private readonly ReactiveCommand<Unit, Principal> _open;
         private readonly ReactiveList<string> _navigationStack;
         private UserObject _user;
@@ -76,7 +76,7 @@ namespace SupportTool.ViewModels
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            _pasteAndFind = ReactiveCommand.Create(() => QueryString = Clipboard.GetText());
+            _pasteAndFind = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText(); });
             _pasteAndFind
                 .InvokeCommand(Find);
 
