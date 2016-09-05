@@ -63,6 +63,16 @@ namespace SupportTool
 
             this.WhenActivated(d =>
             {
+                d(this.Events()
+                    .MouseDown
+                    .Where(x => x.ChangedButton == MouseButton.XButton1)
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.NavigateBack));
+                d(this.Events()
+                    .MouseDown
+                    .Where(x => x.ChangedButton == MouseButton.XButton2)
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.NavigateForward));
                 d(this.BindCommand(ViewModel, vm => vm.NavigateBack, v => v.NavigateBackButton));
                 d(this.BindCommand(ViewModel, vm => vm.NavigateForward, v => v.NavigateForwardButton));
                 d(this.BindCommand(ViewModel, vm => vm.PasteAndFind, v => v.PasteAndFindButton));
