@@ -56,6 +56,10 @@
 
                     <controls:ComputerGroups x:Name="ComputerGroups"/>
                 </StackPanel>
+
+                <StackPanel x:Name="GroupDetailsStackPanel">
+                    <controls:GroupDetails x:Name="GroupDetails"/>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

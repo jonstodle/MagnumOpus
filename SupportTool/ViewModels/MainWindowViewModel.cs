@@ -27,6 +27,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveList<string> _navigationStack;
         private UserObject _user;
         private ComputerObject _computer;
+        private GroupObject _group;
         private string _queryString;
         private int _currentNavigationIndex;
 
@@ -94,6 +95,7 @@ namespace SupportTool.ViewModels
 
                     if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
                     else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
+                    else if (x is GroupPrincipal) Group = new GroupObject(x as GroupPrincipal);
                 });
             _open
                 .Where(x => x == null)
@@ -140,6 +142,12 @@ namespace SupportTool.ViewModels
         {
             get { return _computer; }
             set { this.RaiseAndSetIfChanged(ref _computer, value); }
+        }
+
+        public GroupObject Group
+        {
+            get { return _group; }
+            set { this.RaiseAndSetIfChanged(ref _group, value); }
         }
 
         public string QueryString

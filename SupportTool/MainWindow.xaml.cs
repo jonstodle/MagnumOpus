@@ -43,6 +43,7 @@ namespace SupportTool
 
 
             this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
+
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
@@ -54,6 +55,9 @@ namespace SupportTool
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
             this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
+
+            this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
+            this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
 
 
 
