@@ -42,6 +42,7 @@ namespace SupportTool
 
 
 
+            this.OneWayBind(ViewModel, vm => vm.ReverseNavigationStack, v => v.NavigationContextMenu.ItemsSource);
             this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
 
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
@@ -83,6 +84,15 @@ namespace SupportTool
                     .Select(_ => Unit.Default)
                     .InvokeCommand(ViewModel, x => x.Find));
             });
+        }
+
+        private void MenuItemClick(object sender, RoutedEventArgs args)
+        {
+            var menuItem = sender as MenuItem;
+            var idx = ViewModel.NavigationStack.IndexOf(ViewModel.NavigationStack.LastOrDefault(x => x == (menuItem.Header as string)));
+            ViewModel.CurrentNavigationIndex = idx - 1;
+            Observable.Return(Unit.Default)
+                .InvokeCommand(ViewModel, x => x.NavigateForward);
         }
 
         public MainWindowViewModel ViewModel

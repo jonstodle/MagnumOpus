@@ -30,6 +30,7 @@ namespace SupportTool.ViewModels
         private GroupObject _group;
         private string _queryString;
         private int _currentNavigationIndex;
+        private ObservableAsPropertyHelper<IReadOnlyList<string>> _reverseNavigationStack;
 
 
 
@@ -104,6 +105,11 @@ namespace SupportTool.ViewModels
                 .Select(_ => Unit.Default)
                 .InvokeCommand(_navigateBack);
 
+            _reverseNavigationStack = this
+                .WhenAnyObservable(x => x._navigationStack.Changed)
+                .Select(_ => _navigationStack.Reverse().ToList())
+                .ToProperty(this, x => x.ReverseNavigationStack, new List<string>());
+
             Observable.Merge(
                 _navigateBack,
                 _navigateForward)
@@ -131,6 +137,8 @@ namespace SupportTool.ViewModels
         public ReactiveCommand Open => _open;
 
         public ReactiveList<string> NavigationStack => _navigationStack;
+
+        public IReadOnlyList<string> ReverseNavigationStack => _reverseNavigationStack.Value;
 
         public UserObject User
         {
