@@ -66,7 +66,7 @@ namespace SupportTool.ViewModels
             _find = ReactiveCommand.Create(
                 () =>
                 {
-                    if (_currentNavigationIndex < (_navigationStack.Count - 1)) _navigationStack.RemoveRange(-CurrentNavigationIndex + 1, _navigationStack.Count - (_currentNavigationIndex + 1));
+                    if (_currentNavigationIndex < (_navigationStack.Count - 1)) _navigationStack.RemoveRange(CurrentNavigationIndex + 1, _navigationStack.Count - (_currentNavigationIndex + 1));
                     _navigationStack.Add(QueryString);
                 },
                 this.WhenAnyValue(x => x.QueryString, x => x.HasValue()));
