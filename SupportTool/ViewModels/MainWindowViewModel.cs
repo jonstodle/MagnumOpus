@@ -77,7 +77,7 @@ namespace SupportTool.ViewModels
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            _pasteAndFind = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText(); });
+            _pasteAndFind = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText()?.ToUpperInvariant(); });
             _pasteAndFind
                 .InvokeCommand(Find);
 
