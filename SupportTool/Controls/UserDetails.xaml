@@ -10,6 +10,8 @@
         <TextBlock x:Name="DisplayNameTextBlock" FontSize="20" Margin="2"/>
 
         <WrapPanel Opacity=".5" Margin="2">
+            <TextBlock Text="User"/>
+            <TextBlock Text=" | "/>
             <TextBlock x:Name="CompanyTextBlock"/>
             <TextBlock Text=" | "/>
             <TextBlock x:Name="ExpirationTextBlock"/>
