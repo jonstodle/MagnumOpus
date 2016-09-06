@@ -82,8 +82,8 @@ namespace SupportTool.ViewModels
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.User).Where(x => x != null),
-                openAddGroups.Select(_ => User),
-                openRemoveGroups.Select(_ => User))
+                openAddGroups.Throttle(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler).Select(_ => User),
+                openRemoveGroups.Throttle(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler).Select(_ => User))
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
                 .ObserveOnDispatcher()
