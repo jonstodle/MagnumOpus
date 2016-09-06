@@ -24,7 +24,9 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;
         private readonly ReactiveCommand<Unit, DirectoryEntry> getAllGroups;
-        private readonly ReactiveList<string> allGroups;
+		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
+		private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
+		private readonly ReactiveList<string> allGroups;
         private readonly ReactiveList<string> directGroups;
         private readonly ListCollectionView allGroupsCollectionView;
         private readonly ListCollectionView directGroupsCollectionView;
@@ -33,7 +35,8 @@ namespace SupportTool.ViewModels
         private bool isShowingDirectGroups;
         private bool isShowingAllGroups;
         private object selectedDirectGroup;
-        private string groupFitler;
+		private object _selectedAllGroup;
+        private string groupFilter;
         private bool useFuzzy;
 
 
@@ -76,6 +79,10 @@ namespace SupportTool.ViewModels
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups, out isLoadingGroups);
 
+			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(selectedDirectGroup as string, "search"));
+
+			_findAllGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedAllGroup as string, "search"));
+
             this
                 .WhenAnyValue(x => x.User)
                 .Subscribe(_ => ResetValues());
@@ -108,7 +115,11 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand GetAllGroups => getAllGroups;
 
-        public ReactiveList<string> AllGroups => allGroups;
+		public ReactiveCommand FindDirectGroup => _findDirectGroup;
+
+		public ReactiveCommand FindAllGroup => _findAllGroup;
+
+		public ReactiveList<string> AllGroups => allGroups;
 
         public ReactiveList<string> DirectGroups => directGroups;
 
@@ -142,10 +153,16 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref selectedDirectGroup, value); }
         }
 
-        public string GroupFilter
+		public object SelectedAllGroup
+		{
+			get { return _selectedAllGroup; }
+			set { this.RaiseAndSetIfChanged(ref _selectedAllGroup, value); }
+		}
+
+		public string GroupFilter
         {
-            get { return groupFitler; }
-            set { this.RaiseAndSetIfChanged(ref groupFitler, value); }
+            get { return groupFilter; }
+            set { this.RaiseAndSetIfChanged(ref groupFilter, value); }
         }
 
         public bool UseFuzzy

@@ -30,10 +30,12 @@ namespace SupportTool.Controls
             this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsStackPanel.Visibility);
             this.OneWayBind(ViewModel, vm => vm.DirectGroupsCollectionView, v => v.DirectGroupsListView.ItemsSource);
+			this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem);
 
-            this.WhenActivated(d =>
+			this.WhenActivated(d =>
             {
-                d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddGroupsButton));
+				d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.DirectGroupsListView, nameof(ListView.MouseDoubleClick)));
+				d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddGroupsButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenRemoveGroups, v => v.RemoveGroupsButton));
             });
         }

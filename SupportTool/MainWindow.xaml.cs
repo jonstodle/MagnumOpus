@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Helpers;
 using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,13 @@ namespace SupportTool
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
                     .InvokeCommand(ViewModel, x => x.Find));
+
+				d(MessageBus.Current.Listen<string>("search")
+					.SubscribeOnDispatcher()
+					.Where(x => x.HasValue())
+					.Do(x => ViewModel.QueryString = x)
+					.Select(_ => Unit.Default)
+					.InvokeCommand(ViewModel, x => x.Find));
             });
         }
 

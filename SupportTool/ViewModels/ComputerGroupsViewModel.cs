@@ -20,10 +20,12 @@ namespace SupportTool.ViewModels
     {
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;
+		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
         private readonly ReactiveList<string> directGroups;
         private readonly ListCollectionView directGroupsCollectionView;
         private ComputerObject computer;
         private bool isShowingDirectGroups;
+		private object _selectedDirectGroup;
 
 
 
@@ -37,6 +39,8 @@ namespace SupportTool.ViewModels
             openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddGroupsWindow>(computer.Principal.SamAccountName));
 
             openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveGroupsWindow>(computer.Principal.SamAccountName));
+
+			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.Computer).Where(x => x != null),
@@ -58,6 +62,8 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenRemoveGroups => openRemoveGroups;
 
+		public ReactiveCommand FindDirectGroup => _findDirectGroup;
+
         public ReactiveList<string> DirectGroups => directGroups;
 
         public ListCollectionView DirectGroupsCollectionView => directGroupsCollectionView;
@@ -74,9 +80,15 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref isShowingDirectGroups, value); }
         }
 
+		public object SelectedDirectGroup
+		{
+			get { return _selectedDirectGroup; }
+			set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
+		}
 
 
-        private void ResetValues()
+
+		private void ResetValues()
         {
             directGroups.Clear();
             IsShowingDirectGroups = false;
