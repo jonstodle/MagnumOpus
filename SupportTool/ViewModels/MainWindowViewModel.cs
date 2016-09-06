@@ -93,6 +93,7 @@ namespace SupportTool.ViewModels
                 {
                     User = null;
                     Computer = null;
+					Group = null;
 
                     if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
                     else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
