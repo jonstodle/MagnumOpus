@@ -72,13 +72,13 @@ namespace SupportTool.ViewModels
 
             this
                 .WhenAnyValue(x => x.User)
-                .Where(x => x != null)
+                .NotNull()
                 .Select(x => $"Add workstations to {x.Principal.DisplayName}")
                 .ToProperty(this, x => x.WindowTitle, out _windowTitle);
 
             this
                 .WhenAnyValue(x => x.User)
-                .Where(x => x != null)
+                .NotNull()
                 .Select(x => x.Principal.PermittedWorkstations)
                 .Subscribe(x =>
                 {

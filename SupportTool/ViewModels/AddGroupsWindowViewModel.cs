@@ -108,7 +108,7 @@ namespace SupportTool.ViewModels
 
             this
                 .WhenAnyValue(x => x.Principal)
-                .Where(x => x != null)
+                .NotNull()
                 .Select(x => $"Add groups to {x.DisplayName}")
                 .ToProperty(this, x => x.WindowTitle, out windowTitle);
         }

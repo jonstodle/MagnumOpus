@@ -88,7 +88,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(_ => ResetValues());
 
             Observable.Merge(
-                this.WhenAnyValue(x => x.User).Where(x => x != null),
+                this.WhenAnyValue(x => x.User).NotNull(),
                 openAddGroups.Throttle(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler).Select(_ => User),
                 openRemoveGroups.Throttle(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler).Select(_ => User))
                 .Do(_ => DirectGroups.Clear())

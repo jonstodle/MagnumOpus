@@ -43,7 +43,7 @@ namespace SupportTool.ViewModels
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 
             Observable.Merge(
-                this.WhenAnyValue(x => x.Computer).Where(x => x != null),
+                this.WhenAnyValue(x => x.Computer).NotNull(),
                 openAddGroups.Select(_ => Computer),
                 openRemoveGroups.Select(_ => Computer))
                 .Do(_ => DirectGroups.Clear())

@@ -78,5 +78,7 @@ namespace SupportTool.Helpers
                 writer.Write(stream.ToArray());
             }
         }
+
+		public static IObservable<T> NotNull<T>(this IObservable<T> source) where T : class => source.Where(x => x != null);
     }
 }

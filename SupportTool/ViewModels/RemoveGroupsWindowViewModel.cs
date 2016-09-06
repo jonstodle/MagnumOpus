@@ -87,7 +87,7 @@ namespace SupportTool.ViewModels
 
             var principalChanged = this
                 .WhenAnyValue(x => x.Principal)
-                .Where(x => x != null);
+                .NotNull();
 
             principalChanged
                 .Select(x => $"Remove groups from {x.DisplayName}")

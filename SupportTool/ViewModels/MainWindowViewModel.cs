@@ -87,7 +87,7 @@ namespace SupportTool.ViewModels
                 return ActiveDirectoryService.Current.GetPrincipal(_queryString).SubscribeOn(RxApp.TaskpoolScheduler);
             });
             _open
-                .Where(x => x != null)
+                .NotNull()
                 .ObserveOnDispatcher()
                 .Subscribe(x =>
                 {

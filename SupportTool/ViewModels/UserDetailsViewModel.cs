@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Helpers;
 using SupportTool.Models;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,9 @@ namespace SupportTool.ViewModels
 
         public UserDetailsViewModel()
         {
-            this
-                .WhenAnyValue(x => x.User)
-                .Where(x => x != null)
+			this
+				.WhenAnyValue(x => x.User)
+				.NotNull()
                 .Select(x => x.Principal.IsAccountLockedOut())
                 .ToProperty(this, x => x.IsAccountLocked, out isAccountLocked);
 
