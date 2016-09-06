@@ -32,26 +32,21 @@ namespace SupportTool.ViewModels
             startPing = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
-                    IsPinging = true;
                     PingResults.Clear();
                     return PingHost(Computer.CN).TakeUntil(stopPing);
-                },
-                this.WhenAnyValue(x => x.IsPinging, x => !x));
+                });
             startPing
                 .Subscribe(x => PingResults.Insert(0, x));
             startPing
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            stopPing = ReactiveCommand.Create(() =>
-            {
-                IsPinging = false;
-                return Unit.Default;
-            },
-            this.WhenAnyValue(x => x.IsPinging));
+            stopPing = ReactiveCommand.Create(() => { });
 
-            Observable
-                .Merge(pingResults.ItemsAdded, this.WhenAnyValue(x => x.Computer).Where(x => x != null).Select(_ => ""))
+			Observable.Merge(
+				pingResults.ItemsAdded,
+				stopPing.Select(_ => ""),
+				this.WhenAnyValue(x => x.Computer).Where(x => x != null).Select(_ => ""))
                 .ToProperty(this, x => x.MostRecentPingResult, out mostRecentPingResult);
 
             this

@@ -30,9 +30,9 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
-            this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.StartPingButton.Visibility, x => !x ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.StopPingButton.Visibility, x => x ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text);
+			this.Bind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.IsChecked);
+			this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, x => !x ? "Start" : "Stop");
+			this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text);
             this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingResultDetailsToggleButton.IsEnabled);
             this.Bind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsStackPanel.Visibility);
@@ -40,8 +40,24 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.BindCommand(ViewModel, vm => vm.StartPing, v => v.StartPingButton));
-                d(this.BindCommand(ViewModel, vm => vm.StopPing, v => v.StopPingButton));
+				d(ViewModel
+					.WhenAnyValue(x => x.IsPinging)
+					.Where(x => x)
+					.Select(_ => Unit.Default)
+					.ObserveOnDispatcher()
+					.InvokeCommand(ViewModel, x => x.StartPing));
+				d(ViewModel
+					.WhenAnyValue(x => x.IsPinging)
+					.Where(x => !x)
+					.Select(_ => Unit.Default)
+					.ObserveOnDispatcher()
+					.InvokeCommand(ViewModel, x => x.StopPing));
+				d(ViewModel
+					.WhenAnyValue(x => x.Computer)
+					.Where(x => x == null)
+					.Select(_ => Unit.Default)
+					.ObserveOnDispatcher()
+					.InvokeCommand(ViewModel, x => x.StopPing));
             });
         }
 
