@@ -46,10 +46,10 @@ namespace SupportTool.Views
             {
                 d(ViewModel
                     .WhenAnyValue(x => x.SearchQuery)
-                    .Where(x => x.HasValue())
                     .Throttle(TimeSpan.FromMilliseconds(500))
+                    .Where(x => x.HasValue())
                     .Select(x => Unit.Default)
-                    .ObserveOnDispatcher()
+					.ObserveOnDispatcher()
                     .InvokeCommand(ViewModel, x => x.SearchForGroups));
                 d(SearchResultsListView.Events()
                     .MouseDoubleClick
