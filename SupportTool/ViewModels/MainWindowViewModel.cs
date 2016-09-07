@@ -102,7 +102,11 @@ namespace SupportTool.ViewModels
             _open
                 .Where(x => x == null)
                 .ObserveOnDispatcher()
-                .Do(_ => _navigationStack.Remove(_navigationStack.LastOrDefault()))
+                .Do(_ =>
+				{
+					DialogService.ShowError($"Could not find {_queryString}", "Not found");
+					_navigationStack.Remove(_navigationStack.LastOrDefault());
+				})
                 .Select(_ => Unit.Default)
                 .InvokeCommand(_navigateBack);
 
