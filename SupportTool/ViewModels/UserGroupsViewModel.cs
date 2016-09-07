@@ -89,9 +89,10 @@ namespace SupportTool.ViewModels
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.User).NotNull(),
-                openAddGroups.Throttle(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler).Select(_ => User),
-                openRemoveGroups.Throttle(TimeSpan.FromMilliseconds(500), RxApp.MainThreadScheduler).Select(_ => User))
-                .Do(_ => DirectGroups.Clear())
+                openAddGroups.Select(_ => User),
+                openRemoveGroups.Select(_ => User))
+				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
+				.Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
                 .ObserveOnDispatcher()
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
