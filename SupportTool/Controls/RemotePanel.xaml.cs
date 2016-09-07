@@ -33,7 +33,8 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenRemoteExecution, v => v.RemoteExecutionButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
+				d(this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton));
+				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
 			});
         }
