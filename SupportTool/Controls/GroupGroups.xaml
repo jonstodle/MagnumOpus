@@ -51,7 +51,6 @@
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
 				<RowDefinition/>
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
@@ -60,9 +59,7 @@
 
 			<ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1" Margin="2"/>
 
-			<ProgressBar x:Name="IsLoadingMembersProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
-
-			<ListView x:Name="MemberOfListView" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
+			<ListView x:Name="MemberOfListView" Height="200" Grid.Row="1" Grid.ColumnSpan="2" Margin="2">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<TextBlock Text="{Binding}"/>
@@ -70,7 +67,7 @@
 				</ListView.ItemTemplate>
 			</ListView>
 
-			<TextBlock Grid.Row="3" Margin="2">
+			<TextBlock Grid.Row="2" Margin="2">
                         <Run Text="Showing "/>
                         <Run x:Name="ShowingCountRun"/>
                         <Run Text=" of "/>
