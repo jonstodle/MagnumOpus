@@ -23,6 +23,8 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
 		private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
+		private readonly ReactiveCommand<Unit, Unit> _openAddUsers;
+		private readonly ReactiveCommand<Unit, Unit> _openRemoveUsers;
 		private readonly ReactiveList<string> _directMemberOfGroups;
 		private readonly ReactiveList<string> _allMemberOfGroups;
 		private readonly ListCollectionView _directMemberOfGroupsView;
@@ -84,6 +86,10 @@ namespace SupportTool.ViewModels
 
 			_findAllMemberOfGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedAllMemberOfGroup as string, "search"));
 
+			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddUsersWindow>(_group.CN));
+
+			//_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveUsersWindow>(_group.CN));
+
 			this
 				.WhenAnyValue(x => x.IsShowingMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
 				.Where(x => x)
@@ -123,6 +129,10 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand GetAllGroups => _getAllMemberOfGroups;
 
 		public ReactiveCommand FindAllMemberOfGroup => _findAllMemberOfGroup;
+
+		public ReactiveCommand OpenAddUsers => _openAddUsers;
+
+		public ReactiveCommand OpenRemoveUsers => _openRemoveUsers;
 
 		public ReactiveList<string> DirectMemberOfGroups => _directMemberOfGroups;
 

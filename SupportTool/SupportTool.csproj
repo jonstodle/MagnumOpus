@@ -142,6 +142,7 @@
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
     <Compile Include="ViewModels\AddGroupsWindowViewModel.cs" />
+    <Compile Include="ViewModels\AddUsersWindowViewModel.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
@@ -157,6 +158,9 @@
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="Views\AddGroupsWindow.xaml.cs">
       <DependentUpon>AddGroupsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddUsersWindow.xaml.cs">
+      <DependentUpon>AddUsersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
       <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
@@ -217,6 +221,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\AddGroupsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddUsersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -3,20 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:SupportTool"
              StartupUri="MainWindow.xaml">
-    <Application.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Padding" Value="10,1"/>
-        </Style>
+	<Application.Resources>
+		<Style TargetType="Button">
+			<Setter Property="Padding" Value="10,1"/>
+		</Style>
 
-        <Style TargetType="ToggleButton">
-            <Setter Property="Padding" Value="10,1"/>
-        </Style>
+		<Style TargetType="ToggleButton">
+			<Setter Property="Padding" Value="10,1"/>
+		</Style>
 
-        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Padding" Value="0,6,0,2"/>
-        </Style>
+		<Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+			<Setter Property="FontSize" Value="16"/>
+			<Setter Property="Padding" Value="0,6,0,2"/>
+		</Style>
 
-        <SolidColorBrush x:Key="SubSectionBackgroundBrush" Color="Black" Opacity=".05"/>
-    </Application.Resources>
+		<DataTemplate x:Key="StringDataTemplate">
+			<TextBlock Text="{Binding}"/>
+		</DataTemplate>
+
+		<SolidColorBrush x:Key="SubSectionBackgroundBrush" Color="Black" Opacity=".05"/>
+	</Application.Resources>
 </Application>

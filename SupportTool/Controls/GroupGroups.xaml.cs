@@ -52,6 +52,8 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddToButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenRemoveGroups, v => v.RemoveFromButton));
 				d(this.BindCommand(ViewModel, vm => vm.FindAllMemberOfGroup, v => v.MemberOfListView, nameof(ListView.MouseDoubleClick)));
+				d(this.BindCommand(ViewModel, vm => vm.OpenAddUsers, v => v.AddMembersButton));
+				d(this.BindCommand(ViewModel, vm => vm.OpenRemoveUsers, v => v.RemoveMembersButton));
 
 				d(ViewModel
 				.WhenAnyValue(x => x.IsShowingMemberOf)
