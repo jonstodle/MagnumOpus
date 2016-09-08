@@ -45,6 +45,8 @@ namespace SupportTool.Controls
 
 			this.Bind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersToggleButton.IsChecked);
 			this.OneWayBind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersGrid.Visibility);
+			this.OneWayBind(ViewModel, vm => vm.MemberUsersView, v => v.MembersListView.ItemsSource);
+			this.Bind(ViewModel, vm => vm.SelectedMemberUser, v => v.MembersListView.SelectedItem);
 
 			this.WhenActivated(d =>
 			{
@@ -54,6 +56,7 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.FindAllMemberOfGroup, v => v.MemberOfListView, nameof(ListView.MouseDoubleClick)));
 				d(this.BindCommand(ViewModel, vm => vm.OpenAddUsers, v => v.AddMembersButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenRemoveUsers, v => v.RemoveMembersButton));
+				d(this.BindCommand(ViewModel, vm => vm.FindMemberUser, v => v.MembersListView, nameof(ListView.MouseDoubleClick)));
 
 				d(ViewModel
 				.WhenAnyValue(x => x.IsShowingMemberOf)

@@ -7,6 +7,7 @@ using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -25,10 +26,13 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
 		private readonly ReactiveCommand<Unit, Unit> _openAddUsers;
 		private readonly ReactiveCommand<Unit, Unit> _openRemoveUsers;
+		private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
 		private readonly ReactiveList<string> _directMemberOfGroups;
 		private readonly ReactiveList<string> _allMemberOfGroups;
+		private readonly ReactiveList<string> _memberUsers;
 		private readonly ListCollectionView _directMemberOfGroupsView;
 		private readonly ListCollectionView _allMemberOfGroupsView;
+		private readonly ListCollectionView _memberUsersView;
 		private GroupObject _group;
 		private bool _isShowingDirectMemberOf;
 		private bool _isShowingMemberOf;
@@ -37,6 +41,7 @@ namespace SupportTool.ViewModels
 		private string _filterString;
 		private bool _useFuzzy;
 		private object _selectedAllMemberOfGroup;
+		private object _selectedMemberUser;
 
 
 
@@ -44,20 +49,19 @@ namespace SupportTool.ViewModels
 		{
 			_directMemberOfGroups = new ReactiveList<string>();
 			_allMemberOfGroups = new ReactiveList<string>();
+			_memberUsers = new ReactiveList<string>();
 			_directMemberOfGroupsView = new ListCollectionView(_directMemberOfGroups)
 			{
-				SortDescriptions =
-				{
-					new SortDescription()
-				}
+				SortDescriptions = { new SortDescription() }
 			};
 			_allMemberOfGroupsView = new ListCollectionView(_allMemberOfGroups)
 			{
 				Filter = TextFilter,
-				SortDescriptions =
-				{
-					new SortDescription()
-				}
+				SortDescriptions = { new SortDescription() }
+			};
+			_memberUsersView = new ListCollectionView(_memberUsers)
+			{
+				SortDescriptions = { new SortDescription() }
 			};
 			this
 				.WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
@@ -88,7 +92,9 @@ namespace SupportTool.ViewModels
 
 			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddUsersWindow>(_group.CN));
 
-			//_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveUsersWindow>(_group.CN));
+			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddUsersWindow>(_group.CN));
+
+			_findMemberUser = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedMemberUser as string, "search"));
 
 			this
 				.WhenAnyValue(x => x.IsShowingMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
@@ -113,6 +119,16 @@ namespace SupportTool.ViewModels
 				.ObserveOnDispatcher()
 				.Subscribe(x => _directMemberOfGroups.Add(x));
 
+			Observable.Merge(
+				this.WhenAnyValue(x => x.Group).NotNull(),
+				_openAddUsers.Select(_ => _group),
+				_openRemoveUsers.Select(_ => _group))
+				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
+				.Do(_ => _memberUsers.Clear())
+				.SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
+				.ObserveOnDispatcher()
+				.Subscribe(x => _memberUsers.Add(x));
+
 			this
 				.WhenAnyValue(x => x.Group)
 				.Subscribe(_ => ResetValues());
@@ -134,13 +150,19 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand OpenRemoveUsers => _openRemoveUsers;
 
+		public ReactiveCommand FindMemberUser => _findMemberUser;
+
 		public ReactiveList<string> DirectMemberOfGroups => _directMemberOfGroups;
 
 		public ReactiveList<string> AllMemberOfGroups => _allMemberOfGroups;
 
+		public ReactiveList<string> MemberUsers => _memberUsers;
+
 		public ListCollectionView DirectMemberOfGroupsView => _directMemberOfGroupsView;
 
 		public ListCollectionView AllMemberOfGroupsView => _allMemberOfGroupsView;
+
+		public ListCollectionView MemberUsersView => _memberUsersView;
 
 		public GroupObject Group
 		{
@@ -190,15 +212,21 @@ namespace SupportTool.ViewModels
 			set { this.RaiseAndSetIfChanged(ref _selectedAllMemberOfGroup, value); }
 		}
 
+		public object SelectedMemberUser
+		{
+			get { return _selectedMemberUser; }
+			set { this.RaiseAndSetIfChanged(ref _selectedMemberUser, value); }
+		}
+
 
 
 		private IObservable<string> GetDirectGroups(string identity) => Observable.Create<string>(observer =>
 		{
 			var disposed = false;
 
-			var usr = ActiveDirectoryService.Current.GetGroup(identity).Wait();
+			var group = ActiveDirectoryService.Current.GetGroup(identity).Wait();
 
-			foreach (string item in usr.MemberOf)
+			foreach (string item in group.MemberOf)
 			{
 				var de = ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1).Wait();
 
@@ -220,6 +248,22 @@ namespace SupportTool.ViewModels
 
 			return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
 		}
+
+		private IObservable<string> GetMemberUsers(string identity) => Observable.Create<string>(observer =>
+		{
+			var disposed = false;
+
+			var group = ActiveDirectoryService.Current.GetGroup(identity).Wait();
+
+			foreach (Principal item in group.Principal.Members)
+			{
+				if (disposed) break;
+				observer.OnNext(item.DisplayName);
+			}
+
+			observer.OnCompleted();
+			return () => disposed = true;
+		});
 
 		bool TextFilter(object item)
 		{
