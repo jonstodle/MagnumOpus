@@ -8,47 +8,75 @@ using System.Windows;
 
 namespace SupportTool.Services.NavigationServices
 {
-    public class NavigationService
-    {
-        public static NavigationService Current { get; private set; }
+	public class NavigationService
+	{
+		public static NavigationService Current { get; private set; }
 
 
 
-        private NavigationService() { }
-        public static void Init(Window mainWindow)
-        {
-            Current = new NavigationService();
-            Current.navigationStack.Add(mainWindow);
-        }
+		private NavigationService() { }
+		public static void Init(Window mainWindow)
+		{
+			Current = new NavigationService();
+			Current.navigationStack.Add(mainWindow);
+		}
 
 
 
-        private List<Window> navigationStack = new List<Window>();
-        public IReadOnlyList<Window> NavigationStack => navigationStack;
+		public async static Task ShowDialog<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
+		{
+			var dialogWindow = new TWindow();
 
-        private IViewFor currentWindow => navigationStack.LastOrDefault() as IViewFor;
-        private IViewFor previousWindow => navigationStack.Reverse<Window>().Skip(1).FirstOrDefault() as IViewFor;
+			await (dialogWindow.ViewModel as IDialog)?.Opening(() => dialogWindow.Close(), parameter);
 
-        public async Task NavigateTo<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
-        {
-            await (currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+			dialogWindow.ShowDialog();
+		}
 
-            var newWindow = new TWindow();
-            await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+		public async static Task<TResult> ShowDialog<TWindow, TResult>(object parameter = null) where TWindow : Window, IViewFor, new()
+		{
+			var dialogWindow = new TWindow();
+			TResult resultValue = default(TResult);
 
-            navigationStack.Add(newWindow as Window);
-            newWindow.ShowDialog();
-        }
+			await (dialogWindow.ViewModel as IDialog<TResult>)?.Opening(
+				(TResult result) =>
+				{
+					resultValue = result;
+					dialogWindow.Close();
+				}, parameter);
 
-        public async Task GoBack(object parameter = null)
-        {
-            await (currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+			dialogWindow.ShowDialog();
 
-            await (previousWindow?.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+			return resultValue;
+		}
 
-            (currentWindow as Window).Close();
 
-            navigationStack.Remove(navigationStack.Last());
-        }
-    }
+
+		private List<Window> navigationStack = new List<Window>();
+		public IReadOnlyList<Window> NavigationStack => navigationStack;
+
+		private IViewFor currentWindow => navigationStack.LastOrDefault() as IViewFor;
+		private IViewFor previousWindow => navigationStack.Reverse<Window>().Skip(1).FirstOrDefault() as IViewFor;
+
+		public async Task NavigateTo<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
+		{
+			await (currentWindow.ViewModel as IDialog)?.OnNavigatingFrom();
+
+			var newWindow = new TWindow();
+			await (newWindow.ViewModel as IDialog)?.OnNavigatedTo(parameter);
+
+			navigationStack.Add(newWindow as Window);
+			newWindow.ShowDialog();
+		}
+
+		public async Task GoBack(object parameter = null)
+		{
+			await (currentWindow.ViewModel as IDialog)?.OnNavigatingFrom();
+
+			await (previousWindow?.ViewModel as IDialog)?.OnNavigatedTo(parameter);
+
+			(currentWindow as Window).Close();
+
+			navigationStack.Remove(navigationStack.Last());
+		}
+	}
 }
