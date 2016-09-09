@@ -218,30 +218,27 @@ namespace SupportTool.ViewModels
 
             var itm = ((string)item).ToLowerInvariant().Replace(" ", string.Empty);
 
-            if (UseFuzzy)
-            {
-                var filterString = GroupFilter.Replace(" ", string.Empty).ToLowerInvariant();
+			if (UseFuzzy)
+			{
+				var filterString = GroupFilter.Replace(" ", string.Empty).ToLowerInvariant();
 
-                var idx = 0;
+				var idx = 0;
 
-                foreach (var letter in itm)
-                {
-                    if (letter == filterString[idx])
-                    {
-                        idx += 1;
-                        if (idx >= filterString.Length) { return true; }
-                    }
-                }
-            }
-            else
-            {
-                if (itm.Contains(GroupFilter.ToLowerInvariant()))
-                {
-                    return true;
-                }
-            }
+				foreach (var letter in itm)
+				{
+					if (letter == filterString[idx])
+					{
+						idx += 1;
+						if (idx >= filterString.Length) { return true; }
+					}
+				}
 
-            return false;
+				return false;
+			}
+			else
+			{
+				return GroupFilter.Split(' ').All(x => itm.Contains(x.ToLowerInvariant()));
+			}
         }
     }
 }
