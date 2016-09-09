@@ -28,6 +28,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title);
+
 			this.Bind(ViewModel, vm => vm.SearchString, v => v.SearchTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
-        Height="300" Width="300">
+        Height="400" Width="400">
 
 	<Window.Resources>
 		<DataTemplate x:Key="DirectoryEntryDataTemplate">

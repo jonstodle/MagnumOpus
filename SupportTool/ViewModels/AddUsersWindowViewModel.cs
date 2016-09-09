@@ -91,7 +91,7 @@ namespace SupportTool.ViewModels
 			_windowTitle = this
 				.WhenAnyValue(x => x.Group)
 				.NotNull()
-				.Select(x => $"Add users to {x.Principal.DisplayName}")
+				.Select(x => $"Add users to {x.CN}")
 				.ToProperty(this, x => x.WindowTitle, "");
 
 			Observable.Merge(

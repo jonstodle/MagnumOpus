@@ -77,7 +77,7 @@ namespace SupportTool.ViewModels
 				() =>
 				{
 					_allMemberOfGroups.Clear();
-					return GetAllGroupsImpl(_group.Principal.DisplayName).SubscribeOn(RxApp.TaskpoolScheduler)
+					return GetAllGroupsImpl(_group.CN).SubscribeOn(RxApp.TaskpoolScheduler)
 								.TakeUntil(this.WhenAnyValue(x => x.IsShowingMemberOf).Where(x => !x));
 				},
 				this.WhenAnyValue(x => x.IsShowingMemberOf));
@@ -92,7 +92,7 @@ namespace SupportTool.ViewModels
 
 			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddUsersWindow>(_group.CN));
 
-			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddUsersWindow>(_group.CN));
+			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveUsersWindow>(_group.CN));
 
 			_findMemberUser = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedMemberUser as string, "search"));
 
