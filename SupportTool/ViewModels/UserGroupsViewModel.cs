@@ -70,7 +70,12 @@ namespace SupportTool.ViewModels
                 this.WhenAnyValue(x => x.IsShowingAllGroups));
             getAllGroups
                 .ObserveOnDispatcher()
-                .Select(x => x.Properties.Get<string>("cn"))
+                .Select(x =>
+				{
+					var cn = x.Properties.Get<string>("cn");
+					x.Dispose();
+					return cn;
+				})
                 .Subscribe(x => AllGroups.Add(x));
             getAllGroups
                 .ThrownExceptions
