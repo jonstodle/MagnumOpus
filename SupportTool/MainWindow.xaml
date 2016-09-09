@@ -78,7 +78,9 @@
 
                 <StackPanel x:Name="GroupDetailsStackPanel">
                     <controls:GroupDetails x:Name="GroupDetails"/>
-                </StackPanel>
+
+					<controls:GroupGroups x:Name="GroupGroups"/>
+				</StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>

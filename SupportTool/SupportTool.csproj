@@ -108,6 +108,9 @@
     <Compile Include="Controls\GroupDetails.xaml.cs">
       <DependentUpon>GroupDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GroupGroups.xaml.cs">
+      <DependentUpon>GroupGroups.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PingPanel.xaml.cs">
       <DependentUpon>PingPanel.xaml</DependentUpon>
     </Compile>
@@ -139,9 +142,11 @@
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
     <Compile Include="ViewModels\AddGroupsWindowViewModel.cs" />
+    <Compile Include="ViewModels\AddUsersWindowViewModel.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
+    <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\AccountPanelViewModel.cs" />
     <Compile Include="ViewModels\PermittedWorkstationsWindowViewModel.cs" />
@@ -149,16 +154,23 @@
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
     <Compile Include="ViewModels\RemotePanelViewModel.cs" />
     <Compile Include="ViewModels\RemoveGroupsWindowViewModel.cs" />
+    <Compile Include="ViewModels\RemoveUsersWindowViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="Views\AddGroupsWindow.xaml.cs">
       <DependentUpon>AddGroupsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddUsersWindow.xaml.cs">
+      <DependentUpon>AddUsersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
       <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoveGroupsWindow.xaml.cs">
       <DependentUpon>RemoveGroupsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RemoveUsersWindow.xaml.cs">
+      <DependentUpon>RemoveUsersWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ComputerDetails.xaml">
       <SubType>Designer</SubType>
@@ -173,6 +185,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GroupDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GroupGroups.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -212,11 +228,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AddUsersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PermittedWorkstationsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RemoveGroupsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\RemoveUsersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

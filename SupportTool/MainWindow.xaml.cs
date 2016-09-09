@@ -60,10 +60,11 @@ namespace SupportTool
 
             this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
             this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
+			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
 
 
 
-            this.WhenActivated(d =>
+			this.WhenActivated(d =>
             {
                 d(this.Events()
                     .MouseDown

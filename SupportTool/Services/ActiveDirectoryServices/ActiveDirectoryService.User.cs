@@ -20,7 +20,29 @@ namespace SupportTool.Services.ActiveDirectoryServices
             return up != null ? new UserObject(up) : null;
         });
 
-        public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true) => Observable.Start(() =>
+		public IObservable<DirectoryEntry> GetUsers(string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
+		{
+			var disposed = false;
+
+			using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory=user)({searchTerm}))", propertiesToLoad))
+			{
+				searcher.PageSize = 1000;
+
+				using (var results = searcher.FindAll())
+				{
+					foreach (SearchResult result in results)
+					{
+						if (disposed) break;
+						observer.OnNext(result.GetDirectoryEntry());
+					}
+				}
+
+				observer.OnCompleted();
+				return () => disposed = true;
+			}
+		});
+
+		public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true) => Observable.Start(() =>
         {
             GetUser(identity).Wait().Principal.SetPassword(password);
 
