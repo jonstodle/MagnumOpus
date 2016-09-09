@@ -243,7 +243,12 @@ namespace SupportTool.ViewModels
 			var groups = ActiveDirectoryService.Current.GetGroup(identity).Wait().MemberOf.ToEnumerable<string>()
 			.ToObservable()
 			.SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
-			.Select(x => x.Properties.Get<string>("cn"))
+			.Select(x =>
+			{
+				var cn = x.Properties.Get<string>("cn");
+				x.Dispose();
+				return cn;
+			})
 			.Distinct();
 
 			return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
