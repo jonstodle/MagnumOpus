@@ -20,7 +20,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class AddGroupsWindowViewModel : ReactiveObject, INavigable
+	public class AddGroupsWindowViewModel : ReactiveObject, IDialog
 	{
 		private readonly ReactiveCommand<Unit, DirectoryEntry> searchForGroups;
 		private readonly ReactiveCommand<Unit, Unit> addToGroupsToAdd;
@@ -36,6 +36,7 @@ namespace SupportTool.ViewModels
 		private string searchQuery;
 		private object selectedSearchResult;
 		private object selectedGroupToAdd;
+		private Action _close;
 
 
 
@@ -90,7 +91,7 @@ namespace SupportTool.ViewModels
 				groupsToAdd.CountChanged.Select(x => x > 0));
 			addPrincipalToGroups
 				.Take(1)
-				.Subscribe(async x =>
+				.Subscribe(x =>
 				{
 					if (x.Count() > 0)
 					{
@@ -100,7 +101,7 @@ namespace SupportTool.ViewModels
 						DialogService.ShowInfo(builder.ToString(), "Some groups were not added");
 					}
 
-					await NavigationService.Current.GoBack(null);
+					_close();
 				});
 			addPrincipalToGroups
 				.ThrownExceptions
@@ -190,8 +191,10 @@ namespace SupportTool.ViewModels
 
 
 
-		public async Task OnNavigatedTo(object parameter)
+		public async Task Opening(Action close, object parameter)
 		{
+			_close = close;
+
 			ResetValues();
 
 			if (parameter is string)
@@ -201,7 +204,5 @@ namespace SupportTool.ViewModels
 				Principal = await ActiveDirectoryService.Current.GetPrincipal(param).Take(1);
 			}
 		}
-
-		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
 	}
 }

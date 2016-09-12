@@ -36,9 +36,9 @@ namespace SupportTool.ViewModels
             directGroupsCollectionView = new ListCollectionView(directGroups);
             directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-            openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddGroupsWindow>(computer.Principal.SamAccountName));
+            openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddGroupsWindow>(computer.Principal.SamAccountName));
 
-            openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveGroupsWindow>(computer.Principal.SamAccountName));
+            openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveGroupsWindow>(computer.Principal.SamAccountName));
 
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 

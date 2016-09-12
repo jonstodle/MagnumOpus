@@ -17,7 +17,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class AddUsersWindowViewModel : ReactiveObject, INavigable
+	public class AddUsersWindowViewModel : ReactiveObject, IDialog
 	{
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _searchForUsers;
 		private readonly ReactiveCommand<Unit, Unit> _addToUsersToAdd;
@@ -32,6 +32,7 @@ namespace SupportTool.ViewModels
 		private string _searchString;
 		private object _selectedSearchResult;
 		private object _selectedUserToAdd;
+		private Action _close;
 
 
 
@@ -75,7 +76,7 @@ namespace SupportTool.ViewModels
 				_usersToAdd.CountChanged.Select(x => x > 0));
 			_save
 				.Take(1)
-				.Subscribe(async x =>
+				.Subscribe(x =>
 				{
 					if (x.Count() > 0)
 					{
@@ -85,7 +86,7 @@ namespace SupportTool.ViewModels
 						DialogService.ShowInfo(builder.ToString(), "Some users were not added");
 					}
 
-					await NavigationService.Current.GoBack(null);
+					_close();
 				});
 
 			_windowTitle = this
@@ -170,8 +171,10 @@ namespace SupportTool.ViewModels
 
 
 
-		public async Task OnNavigatedTo(object parameter)
+		public async Task Opening(Action close, object parameter)
 		{
+			_close = close;
+
 			ResetValues();
 
 			if (parameter is string)
@@ -179,7 +182,5 @@ namespace SupportTool.ViewModels
 				Group = await ActiveDirectoryService.Current.GetGroup(parameter as string);
 			}
 		}
-
-		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
 	}
 }

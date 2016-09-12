@@ -17,7 +17,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-    public class PermittedWorkstationsWindowViewModel : ReactiveObject, INavigable
+    public class PermittedWorkstationsWindowViewModel : ReactiveObject, IDialog
     {
         private readonly ReactiveCommand<Unit, string> _addComputer;
         private readonly ReactiveCommand<Unit, bool> _removeComputer;
@@ -29,6 +29,7 @@ namespace SupportTool.ViewModels
         private UserObject _user;
         private string _computerName;
         private object _selectedComputer;
+		private Action _close;
 
 
 
@@ -65,7 +66,7 @@ namespace SupportTool.ViewModels
 
             _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
             _save
-                .Subscribe(async _ => await NavigationService.Current.GoBack(null));
+                .Subscribe(_ => _close());
             _save
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not save"));
@@ -145,16 +146,15 @@ namespace SupportTool.ViewModels
 
 
 
-        public async Task OnNavigatedTo(object parameter)
-        {
-            ResetValues();
+		public async Task Opening(Action close, object parameter)
+		{
+			_close = close;
+			ResetValues();
 
-            if (parameter is string)
-            {
-                User = await ActiveDirectoryService.Current.GetUser(parameter as string);
-            }
-        }
-
-        public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-    }
+			if (parameter is string)
+			{
+				User = await ActiveDirectoryService.Current.GetUser(parameter as string);
+			}
+		}
+	}
 }

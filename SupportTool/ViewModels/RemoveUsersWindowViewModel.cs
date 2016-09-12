@@ -18,7 +18,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class RemoveUsersWindowViewModel : ReactiveObject, INavigable
+	public class RemoveUsersWindowViewModel : ReactiveObject, IDialog
 	{
 		private readonly ReactiveCommand<Unit, Unit> _addToMembersToRemove;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromMembersToRemove;
@@ -31,6 +31,7 @@ namespace SupportTool.ViewModels
 		private GroupObject _group;
 		private object _selectedMember;
 		private object _selectedMemberToRemove;
+		private Action _close;
 
 
 
@@ -64,7 +65,7 @@ namespace SupportTool.ViewModels
 				_membersToRemove.CountChanged.Select(x => x > 0));
 			_save
 				.Take(1)
-				.Subscribe(async x =>
+				.Subscribe(x =>
 				{
 					if (x.Count() > 0)
 					{
@@ -74,7 +75,7 @@ namespace SupportTool.ViewModels
 						DialogService.ShowInfo(builder.ToString(), "Some members were not removed");
 					}
 
-					await NavigationService.Current.GoBack(null);
+					_close();
 				});
 
 			_windowTitle = this
@@ -177,8 +178,10 @@ namespace SupportTool.ViewModels
 
 
 
-		public async Task OnNavigatedTo(object parameter)
+		public async Task Opening(Action close, object parameter)
 		{
+			_close = close;
+
 			ResetValues();
 
 			if (parameter is string)
@@ -186,7 +189,5 @@ namespace SupportTool.ViewModels
 				Group = await ActiveDirectoryService.Current.GetGroup(parameter as string);
 			}
 		}
-
-		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
 	}
 }

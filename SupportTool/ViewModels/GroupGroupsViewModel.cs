@@ -67,9 +67,9 @@ namespace SupportTool.ViewModels
 				.WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
 				.Subscribe(_ => _allMemberOfGroupsView?.Refresh());
 
-			_openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddGroupsWindow>(_group.CN));
+			_openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddGroupsWindow>(_group.CN));
 
-			_openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveGroupsWindow>(_group.CN));
+			_openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveGroupsWindow>(_group.CN));
 
 			_findDirectMemberOfGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectMemberOfGroup as string, "search"));
 
@@ -90,9 +90,9 @@ namespace SupportTool.ViewModels
 
 			_findAllMemberOfGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedAllMemberOfGroup as string, "search"));
 
-			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.AddUsersWindow>(_group.CN));
+			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddUsersWindow>(_group.CN));
 
-			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.Current.NavigateTo<Views.RemoveUsersWindow>(_group.CN));
+			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveUsersWindow>(_group.CN));
 
 			_findMemberUser = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedMemberUser as string, "search"));
 

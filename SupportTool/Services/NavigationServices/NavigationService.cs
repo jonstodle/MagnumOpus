@@ -59,10 +59,10 @@ namespace SupportTool.Services.NavigationServices
 
 		public async Task NavigateTo<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
 		{
-			await (currentWindow.ViewModel as IDialog)?.OnNavigatingFrom();
+			await (currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
 
 			var newWindow = new TWindow();
-			await (newWindow.ViewModel as IDialog)?.OnNavigatedTo(parameter);
+			await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
 			navigationStack.Add(newWindow as Window);
 			newWindow.ShowDialog();
@@ -70,9 +70,9 @@ namespace SupportTool.Services.NavigationServices
 
 		public async Task GoBack(object parameter = null)
 		{
-			await (currentWindow.ViewModel as IDialog)?.OnNavigatingFrom();
+			await (currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
 
-			await (previousWindow?.ViewModel as IDialog)?.OnNavigatedTo(parameter);
+			await (previousWindow?.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
 			(currentWindow as Window).Close();
 

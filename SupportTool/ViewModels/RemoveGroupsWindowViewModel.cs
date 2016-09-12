@@ -18,7 +18,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-    public class RemoveGroupsWindowViewModel : ReactiveObject, INavigable
+    public class RemoveGroupsWindowViewModel : ReactiveObject, IDialog
     {
         private readonly ReactiveCommand<Unit, Unit> addGroupToGroupsToRemove;
         private readonly ReactiveCommand<Unit, bool> removeGroupFromGroupsToRemove;
@@ -31,6 +31,7 @@ namespace SupportTool.ViewModels
         private Principal principal;
         private object selectedPrincipalGroup;
         private object selectedGroupToRemove;
+		private Action _close;
 
 
 
@@ -68,7 +69,7 @@ namespace SupportTool.ViewModels
                 this.WhenAnyObservable(x => x.groupsToRemove.CountChanged).Select(x => x > 0));
             removePrincipalFromGroups
                 .Take(1)
-                .Subscribe(async x =>
+                .Subscribe(x =>
                 {
                     if (x.Count() > 0)
                     {
@@ -79,7 +80,7 @@ namespace SupportTool.ViewModels
                     }
 
                     MessageBus.Current.SendMessage(ApplicationActionRequest.LoadDirectGroupsForUser);
-                    await NavigationService.Current.GoBack(null);
+                    _close();
                 });
             removePrincipalFromGroups
                 .ThrownExceptions
@@ -179,16 +180,16 @@ namespace SupportTool.ViewModels
 
 
 
-        public async Task OnNavigatedTo(object parameter)
-        {
-            ResetValues();
+		public async Task Opening(Action close, object parameter)
+		{
+			_close = close;
 
-            if (parameter is string)
-            {
-                Principal = await ActiveDirectoryService.Current.GetPrincipal(parameter as string);
-            }
-        }
+			ResetValues();
 
-        public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-    }
+			if (parameter is string)
+			{
+				Principal = await ActiveDirectoryService.Current.GetPrincipal(parameter as string);
+			}
+		}
+	}
 }
