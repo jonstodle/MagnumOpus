@@ -22,7 +22,7 @@ namespace SupportTool.ViewModels
 {
 	public class AddGroupsWindowViewModel : ReactiveObject, IDialog
 	{
-		private readonly ReactiveCommand<Unit, DirectoryEntry> searchForGroups;
+		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> searchForGroups;
 		private readonly ReactiveCommand<Unit, Unit> addToGroupsToAdd;
 		private readonly ReactiveCommand<Unit, bool> removeFromGroupsToAdd;
 		private readonly ReactiveCommand<Unit, IEnumerable<string>> addPrincipalToGroups;
@@ -51,12 +51,11 @@ namespace SupportTool.ViewModels
 			groupsToAddView = new ListCollectionView(groupsToAdd);
 			groupsToAddView.SortDescriptions.Add(new SortDescription("Path", ListSortDirection.Ascending));
 
-			searchForGroups = ReactiveCommand.CreateFromObservable(() =>
-			{
-				searchResults.Clear();
-				return ActiveDirectoryService.Current.GetGroups($"cn", $"{searchQuery}*", "cn").SubscribeOn(RxApp.TaskpoolScheduler);
-			});
+			searchForGroups = ReactiveCommand.Create(() => ActiveDirectoryService.Current.GetGroups($"cn", $"{searchQuery}*", "cn").SubscribeOn(RxApp.TaskpoolScheduler));
 			searchForGroups
+				.Do(_ => searchResults.Clear())
+				.Switch()
+				.ObserveOnDispatcher()
 				.Subscribe(x => searchResults.Add(x));
 			searchForGroups
 				.ThrownExceptions

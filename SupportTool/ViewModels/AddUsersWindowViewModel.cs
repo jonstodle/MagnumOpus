@@ -19,7 +19,7 @@ namespace SupportTool.ViewModels
 {
 	public class AddUsersWindowViewModel : ReactiveObject, IDialog
 	{
-		private readonly ReactiveCommand<Unit, DirectoryEntry> _searchForUsers;
+		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _searchForUsers;
 		private readonly ReactiveCommand<Unit, Unit> _addToUsersToAdd;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromUsersToAdd;
 		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
@@ -49,15 +49,14 @@ namespace SupportTool.ViewModels
 				SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) }
 			};
 
-			_searchForUsers = ReactiveCommand.CreateFromObservable(
-				() =>
-				{
-					_searchResults.Clear();
-					return ActiveDirectoryService.Current.GetUsers($"|(samaccountname={_searchString}*)(displayname={_searchString}*)")
-						.SubscribeOn(RxApp.TaskpoolScheduler);
-				},
+			_searchForUsers = ReactiveCommand.Create(
+				() => ActiveDirectoryService.Current.GetUsers($"|(samaccountname={_searchString}*)(displayname={_searchString}*)")
+						.SubscribeOn(RxApp.TaskpoolScheduler),
 				this.WhenAnyValue(x => x.SearchString, x => x.HasValue()));
 			_searchForUsers
+				.Do(_ => _searchResults.Clear())
+				.Switch()
+				.ObserveOnDispatcher()r
 				.Subscribe(x => _searchResults.Add(x));
 
 			_addToUsersToAdd = ReactiveCommand.Create(
