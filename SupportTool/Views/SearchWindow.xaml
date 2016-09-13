@@ -25,6 +25,15 @@
 			</ListView.ItemTemplate>
 		</ListView>
 
-		<Button x:Name="ChooseButton" Content="Choose" HorizontalAlignment="Right" Grid.Row="2" Margin="2"/>
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<TextBlock Text="Only showing first 1000 results" Opacity=".5" VerticalAlignment="Center"/>
+
+			<Button x:Name="ChooseButton" Content="Choose" Grid.Column="1" Margin="2"/>
+		</Grid>
 	</Grid>
 </Window>

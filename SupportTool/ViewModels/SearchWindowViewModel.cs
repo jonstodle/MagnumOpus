@@ -37,7 +37,7 @@ namespace SupportTool.ViewModels
 				SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) }
 			};
 
-			_search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).SubscribeOn(RxApp.TaskpoolScheduler));
+			_search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
 			_search
 				.Do(_ => _searchResults.Clear())
 				.Switch()
