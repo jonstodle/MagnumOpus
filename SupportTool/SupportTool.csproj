@@ -158,6 +158,7 @@
     <Compile Include="ViewModels\RemotePanelViewModel.cs" />
     <Compile Include="ViewModels\RemoveGroupsWindowViewModel.cs" />
     <Compile Include="ViewModels\RemoveUsersWindowViewModel.cs" />
+    <Compile Include="ViewModels\SearchWindowViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="Views\AddGroupsWindow.xaml.cs">
@@ -174,6 +175,9 @@
     </Compile>
     <Compile Include="Views\RemoveUsersWindow.xaml.cs">
       <DependentUpon>RemoveUsersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SearchWindow.xaml.cs">
+      <DependentUpon>SearchWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ComputerDetails.xaml">
       <SubType>Designer</SubType>
@@ -244,6 +248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\RemoveUsersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SearchWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
