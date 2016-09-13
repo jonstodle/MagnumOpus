@@ -56,7 +56,7 @@ namespace SupportTool.ViewModels
 			_searchForUsers
 				.Do(_ => _searchResults.Clear())
 				.Switch()
-				.ObserveOnDispatcher()r
+				.ObserveOnDispatcher()
 				.Subscribe(x => _searchResults.Add(x));
 
 			_addToUsersToAdd = ReactiveCommand.Create(
