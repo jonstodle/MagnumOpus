@@ -20,7 +20,7 @@
 		<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
 			<ListView.ItemTemplate>
 				<DataTemplate>
-					<TextBlock Text="{Binding}"/>
+					<TextBlock Text="{Binding Properties[cn][0]}"/>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>

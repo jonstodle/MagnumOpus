@@ -17,187 +17,179 @@ using System.Windows;
 
 namespace SupportTool.ViewModels
 {
-    public partial class MainWindowViewModel : ReactiveObject, INavigable
-    {
-        private readonly ReactiveCommand<Unit, Unit> _navigateBack;
-        private readonly ReactiveCommand<Unit, Unit> _navigateForward;
-        private readonly ReactiveCommand<Unit, Unit> _find;
-        private readonly ReactiveCommand<Unit, Unit> _pasteAndFind;
-        private readonly ReactiveCommand<Unit, Principal> _open;
-        private readonly ReactiveList<string> _navigationStack;
-        private UserObject _user;
-        private ComputerObject _computer;
-        private GroupObject _group;
-        private string _queryString;
-        private int _currentNavigationIndex;
-        private ObservableAsPropertyHelper<IReadOnlyList<string>> _reverseNavigationStack;
+	public partial class MainWindowViewModel : ReactiveObject, INavigable
+	{
+		private readonly ReactiveCommand<Unit, Principal> _find;
+		//private readonly ReactiveCommand<Unit, Unit> _find;
+		private readonly ReactiveCommand<Unit, Unit> _pasteAndFind;
+		private readonly ReactiveCommand<Unit, Unit> _navigateBack;
+		private readonly ReactiveCommand<Unit, Unit> _navigateForward;
+		private readonly ReactiveList<string> _history;
+		private ObservableAsPropertyHelper<IReadOnlyList<string>> _reverseHistory;
+		private UserObject _user;
+		private ComputerObject _computer;
+		private GroupObject _group;
+		private string _queryString;
+		private int _backwardStepsCount;
 
 
 
-        public MainWindowViewModel()
-        {
-            _navigationStack = new ReactiveList<string>();
-            _currentNavigationIndex = -1;
+		public MainWindowViewModel()
+		{
+			_history = new ReactiveList<string>();
+			_backwardStepsCount = 0;
 
-            MessageBus.Current.Listen<ApplicationActionRequest>()
-                .Subscribe(a => ApplicationActionRequestImpl(a));
+			MessageBus.Current.Listen<ApplicationActionRequest>()
+				.Subscribe(a => ApplicationActionRequestImpl(a));
 
-            _navigateBack = ReactiveCommand.Create(
-                () =>
-                {
-                    CurrentNavigationIndex -= 1;
-                    QueryString = _navigationStack[_currentNavigationIndex];
-                },
-                Observable.CombineLatest(
-                    this.WhenAnyValue(x => x.CurrentNavigationIndex),
-                    this.WhenAnyObservable(x => x._navigationStack.CountChanged),
-                    (x, y) => x > 0 && x <= y));
-
-            _navigateForward = ReactiveCommand.Create(
-                () =>
-                {
-                    CurrentNavigationIndex += 1;
-                    QueryString = _navigationStack[_currentNavigationIndex];
-                },
-                Observable.CombineLatest(
-                    this.WhenAnyValue(x => x.CurrentNavigationIndex),
-                    this.WhenAnyObservable(x => x._navigationStack.CountChanged),
-                    (x, y) => x >= -1 && x < (y - 1)));
-
-            _find = ReactiveCommand.Create(
-                () =>
-                {
-                    if (_currentNavigationIndex < (_navigationStack.Count - 1)) _navigationStack.RemoveRange(CurrentNavigationIndex + 1, _navigationStack.Count - (_currentNavigationIndex + 1));
-                    _navigationStack.Add(QueryString);
-                },
-                this.WhenAnyValue(x => x.QueryString, x => x.HasValue()));
-            _find
-                .ObserveOnDispatcher()
-                .InvokeCommand(_navigateForward);
-            _find
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message));
-
-            _pasteAndFind = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText()?.ToUpperInvariant(); });
-            _pasteAndFind
-                .InvokeCommand(Find);
-
-            _open = ReactiveCommand.CreateFromObservable(() =>
-            {
-                return ActiveDirectoryService.Current.GetPrincipal(_queryString).SubscribeOn(RxApp.TaskpoolScheduler);
-            });
-            _open
-                .NotNull()
-                .ObserveOnDispatcher()
-                .Subscribe(x =>
-                {
-                    User = null;
-                    Computer = null;
+			_find = ReactiveCommand.CreateFromObservable(
+				() =>
+				{
+					return ActiveDirectoryService.Current.GetPrincipal(_queryString)
+					.Select(x =>
+					{
+						if (x != null) return x;
+						throw new Exception("Principal not found");
+					})
+					.SubscribeOn(RxApp.TaskpoolScheduler)
+					.ObserveOnDispatcher()
+					.Catch(Observable.FromAsync(() => NavigationService.ShowDialog<Views.SearchWindow, Principal>(_queryString)));
+				},
+				this.WhenAnyValue(x => x.QueryString, x => x.HasValue()));
+			_find
+				.NotNull()
+				.ObserveOnDispatcher()
+				.Subscribe(x =>
+				{
+					User = null;
+					Computer = null;
 					Group = null;
 
-                    if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
-                    else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
-                    else if (x is GroupPrincipal) Group = new GroupObject(x as GroupPrincipal);
-                });
-            _open
-                .Where(x => x == null)
-                .ObserveOnDispatcher()
-                .Do(_ =>
+					if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
+					else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
+					else if (x is GroupPrincipal) Group = new GroupObject(x as GroupPrincipal);
+				});
+
+			_pasteAndFind = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText()?.ToUpperInvariant(); });
+			_pasteAndFind
+				.InvokeCommand(_find);
+
+			_navigateBack = ReactiveCommand.Create(
+				() =>
 				{
-					DialogService.ShowError($"Could not find {_queryString}", "Not found");
-					_navigationStack.Remove(_navigationStack.LastOrDefault());
-				})
-                .Select(_ => Unit.Default)
-                .InvokeCommand(_navigateBack);
+					BackwardStepsCount += 1;
+					QueryString = _history.Reverse().Skip(_backwardStepsCount).FirstOrDefault();
+				},
+				Observable.CombineLatest(
+					this.WhenAnyValue(x => x.BackwardStepsCount),
+					this.WhenAnyObservable(y => y._history.CountChanged),
+					(x, y) => x < (y - 1)));
 
-            _reverseNavigationStack = this
-                .WhenAnyObservable(x => x._navigationStack.Changed)
-                .Select(_ => _navigationStack.Reverse().ToList())
-                .ToProperty(this, x => x.ReverseNavigationStack, new List<string>());
+			_navigateForward = ReactiveCommand.Create(
+				() =>
+				{
+					BackwardStepsCount -= 1;
+					QueryString = _history.Reverse().Skip(_backwardStepsCount).FirstOrDefault();
+				},
+				this.WhenAnyValue(x => x.BackwardStepsCount, x => x > 0));
 
-            Observable.Merge(
-                _navigateBack,
-                _navigateForward)
-                .InvokeCommand(_open);
+			Observable.Merge(
+				_navigateBack,
+				_navigateForward)
+				.InvokeCommand(_find);
 
-            Observable.Merge(
-                _navigateBack.ThrownExceptions,
-                _navigateForward.ThrownExceptions,
-                _find.ThrownExceptions,
-                _pasteAndFind.ThrownExceptions,
-                _open.ThrownExceptions)
-                .Subscribe(ex => DialogService.ShowError(ex.Message));
-        }
+			_reverseHistory = this
+				.WhenAnyObservable(x => x._history.Changed)
+				.Select(_ => _history.Reverse().ToList())
+				.ToProperty(this, x => x.ReverseHistory, new List<string>());
+
+			Observable.Merge(
+				this.WhenAnyValue(x => x.User.CN).NotNull(),
+				this.WhenAnyValue(x => x.Computer.CN).NotNull(),
+				this.WhenAnyValue(x => x.Group.CN).NotNull())
+				.Where(x => !_history.Contains(x))
+				.Subscribe(x =>
+				{
+					BackwardStepsCount = 0;
+					_history.Add(x);
+				});
 
 
-
-        public ReactiveCommand NavigateBack => _navigateBack;
-
-        public ReactiveCommand NavigateForward => _navigateForward;
-
-        public ReactiveCommand Find => _find;
-
-        public ReactiveCommand PasteAndFind => _pasteAndFind;
-
-        public ReactiveCommand Open => _open;
-
-        public ReactiveList<string> NavigationStack => _navigationStack;
-
-        public IReadOnlyList<string> ReverseNavigationStack => _reverseNavigationStack.Value;
-
-        public UserObject User
-        {
-            get { return _user; }
-            set { this.RaiseAndSetIfChanged(ref _user, value); }
-        }
-
-        public ComputerObject Computer
-        {
-            get { return _computer; }
-            set { this.RaiseAndSetIfChanged(ref _computer, value); }
-        }
-
-        public GroupObject Group
-        {
-            get { return _group; }
-            set { this.RaiseAndSetIfChanged(ref _group, value); }
-        }
-
-        public string QueryString
-        {
-            get { return _queryString; }
-            set { this.RaiseAndSetIfChanged(ref _queryString, value); }
-        }
-
-        public int CurrentNavigationIndex
-        {
-            get { return _currentNavigationIndex; }
-            set { this.RaiseAndSetIfChanged(ref _currentNavigationIndex, value); }
-        }
+			Observable.Merge(
+				_navigateBack.ThrownExceptions,
+				_navigateForward.ThrownExceptions,
+				_pasteAndFind.ThrownExceptions,
+				_find.ThrownExceptions)
+				.Subscribe(ex => DialogService.ShowError(ex.Message));
+		}
 
 
 
-        private async void ApplicationActionRequestImpl(ApplicationActionRequest a)
-        {
-            switch (a)
-            {
-                case ApplicationActionRequest.Refresh:
-                    await _open.Execute();
-                    break;
-                default:
-                    break;
-            }
-        }
+		public ReactiveCommand Find => _find;
 
-        private void AddToPreviousIdentities(string item)
-        {
-            if (item != (_navigationStack.LastOrDefault() ?? "")) _navigationStack.Add(item);
-        }
+		public ReactiveCommand PasteAndFind => _pasteAndFind;
+
+		public ReactiveCommand NavigateBack => _navigateBack;
+
+		public ReactiveCommand NavigateForward => _navigateForward;
+
+		public ReactiveList<string> History => _history;
+
+		public IReadOnlyList<string> ReverseHistory => _reverseHistory.Value;
+
+		public UserObject User
+		{
+			get { return _user; }
+			set { this.RaiseAndSetIfChanged(ref _user, value); }
+		}
+
+		public ComputerObject Computer
+		{
+			get { return _computer; }
+			set { this.RaiseAndSetIfChanged(ref _computer, value); }
+		}
+
+		public GroupObject Group
+		{
+			get { return _group; }
+			set { this.RaiseAndSetIfChanged(ref _group, value); }
+		}
+
+		public string QueryString
+		{
+			get { return _queryString; }
+			set { this.RaiseAndSetIfChanged(ref _queryString, value); }
+		}
+
+		public int BackwardStepsCount
+		{
+			get { return _backwardStepsCount; }
+			set { this.RaiseAndSetIfChanged(ref _backwardStepsCount, value); }
+		}
 
 
 
-        public Task OnNavigatedTo(object parameter) => Task.FromResult<object>(null);
+		private async void ApplicationActionRequestImpl(ApplicationActionRequest a)
+		{
+			switch (a)
+			{
+				case ApplicationActionRequest.Refresh:
+					await _find.Execute();
+					break;
+				default:
+					break;
+			}
+		}
 
-        public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-    }
+		private void AddToPreviousIdentities(string item)
+		{
+			if (item != (_history.LastOrDefault() ?? "")) _history.Add(item);
+		}
+
+
+
+		public Task OnNavigatedTo(object parameter) => Task.FromResult<object>(null);
+
+		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
+	}
 }

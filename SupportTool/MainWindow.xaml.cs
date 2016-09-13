@@ -43,7 +43,7 @@ namespace SupportTool
 
 
 
-            this.OneWayBind(ViewModel, vm => vm.ReverseNavigationStack, v => v.NavigationContextMenu.ItemsSource);
+            this.OneWayBind(ViewModel, vm => vm.ReverseHistory, v => v.NavigationContextMenu.ItemsSource);
             this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
 
             this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
@@ -98,10 +98,11 @@ namespace SupportTool
         private void MenuItemClick(object sender, RoutedEventArgs args)
         {
             var menuItem = sender as MenuItem;
-            var idx = ViewModel.NavigationStack.IndexOf(ViewModel.NavigationStack.LastOrDefault(x => x == (menuItem.Header as string)));
-            ViewModel.CurrentNavigationIndex = idx - 1;
+			var header = menuItem.Header as string;
+			ViewModel.QueryString = header;
+			ViewModel.BackwardStepsCount = ViewModel.History.Reverse().ToList().IndexOf(header);
             Observable.Return(Unit.Default)
-                .InvokeCommand(ViewModel, x => x.NavigateForward);
+                .InvokeCommand(ViewModel, x => x.Find);
         }
 
         public MainWindowViewModel ViewModel

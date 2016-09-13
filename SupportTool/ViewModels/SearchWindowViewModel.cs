@@ -17,7 +17,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class SearchWindowViewModel : ReactiveObject, IDialog<string>
+	public class SearchWindowViewModel : ReactiveObject, IDialog<Principal>
 	{
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _choose;
@@ -25,7 +25,7 @@ namespace SupportTool.ViewModels
 		private readonly ListCollectionView _searchResultsView;
 		private string _searchQuery;
 		private object _selectedSearchResult;
-		private Action<string> _close;
+		private Action<Principal> _close;
 
 
 
@@ -45,7 +45,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _searchResults.Add(x));
 
 			_choose = ReactiveCommand.Create(
-				() => _close((_selectedSearchResult as DirectoryEntry)?.Properties.Get<string>("cn")),
+				() => _close(ActiveDirectoryService.Current.GetPrincipal((_selectedSearchResult as DirectoryEntry)?.Properties.Get<string>("cn")).Wait()),
 				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
 			Observable.Merge(
@@ -87,7 +87,7 @@ namespace SupportTool.ViewModels
 
 
 
-		public Task Opening(Action<string> close, object parameter)
+		public Task Opening(Action<Principal> close, object parameter)
 		{
 			_close = close;
 
