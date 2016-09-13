@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Helpers;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
@@ -43,7 +44,9 @@ namespace SupportTool.ViewModels
 				.ObserveOnDispatcher()
 				.Subscribe(x => _searchResults.Add(x));
 
-			_choose = ReactiveCommand.Create(() => _close(_selectedSearchResult as string));
+			_choose = ReactiveCommand.Create(
+				() => _close((_selectedSearchResult as DirectoryEntry)?.Properties.Get<string>("cn")),
+				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
 			Observable.Merge(
 				_search.ThrownExceptions,
