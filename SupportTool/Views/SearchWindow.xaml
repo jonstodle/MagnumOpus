@@ -15,7 +15,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
+		<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" Margin="2"/>
 
 		<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
 			<ListView.ItemTemplate>
