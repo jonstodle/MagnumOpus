@@ -31,7 +31,7 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
-			<TextBlock Text="Only showing first 1000 results" Opacity=".5" VerticalAlignment="Center"/>
+			<TextBlock Text="Only showing first 1000 results" Opacity=".5" VerticalAlignment="Center" Margin="2"/>
 
 			<Button x:Name="ChooseButton" Content="Choose" Grid.Column="1" Margin="2"/>
 		</Grid>
