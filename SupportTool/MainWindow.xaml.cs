@@ -100,7 +100,7 @@ namespace SupportTool
             var menuItem = sender as MenuItem;
 			var header = menuItem.Header as string;
 			ViewModel.QueryString = header;
-			ViewModel.BackwardStepsCount = ViewModel.History.Reverse().ToList().IndexOf(header);
+			ViewModel.BackwardStepsCount = ViewModel.ReverseHistory.IndexOf(header);
             Observable.Return(Unit.Default)
                 .InvokeCommand(ViewModel, x => x.Find);
         }

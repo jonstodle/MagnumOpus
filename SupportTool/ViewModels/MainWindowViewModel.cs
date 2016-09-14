@@ -24,7 +24,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _navigateBack;
 		private readonly ReactiveCommand<Unit, Unit> _navigateForward;
 		private readonly ReactiveList<string> _history;
-		private ObservableAsPropertyHelper<IReadOnlyList<string>> _reverseHistory;
+		private ObservableAsPropertyHelper<List<string>> _reverseHistory;
 		private UserObject _user;
 		private ComputerObject _computer;
 		private GroupObject _group;
@@ -102,15 +102,22 @@ namespace SupportTool.ViewModels
 				.Select(_ => _history.Reverse().ToList())
 				.ToProperty(this, x => x.ReverseHistory, new List<string>());
 
-			Observable.Merge(
+			var principalChanged = Observable.Merge(
 				this.WhenAnyValue(x => x.User.CN).NotNull(),
 				this.WhenAnyValue(x => x.Computer.CN).NotNull(),
-				this.WhenAnyValue(x => x.Group.CN).NotNull())
+				this.WhenAnyValue(x => x.Group.CN).NotNull());
+			principalChanged
 				.Where(x => !_history.Contains(x))
 				.Subscribe(x =>
 				{
 					BackwardStepsCount = 0;
 					_history.Add(x);
+				});
+			principalChanged
+				.Where(x => _history.Contains(x))
+				.Subscribe(x =>
+				{
+					BackwardStepsCount = _reverseHistory.Value.IndexOf(x);
 				});
 
 
@@ -134,7 +141,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveList<string> History => _history;
 
-		public IReadOnlyList<string> ReverseHistory => _reverseHistory.Value;
+		public List<string> ReverseHistory => _reverseHistory.Value;
 
 		public UserObject User
 		{
