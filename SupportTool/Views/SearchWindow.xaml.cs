@@ -34,6 +34,9 @@ namespace SupportTool.Views
 
 			this.WhenActivated(d =>
 			{
+				SearchQueryTextBox.Focus();
+				SearchQueryTextBox.SelectionStart = ViewModel.SearchQuery.Length;
+
 				d(ViewModel
 					.WhenAnyValue(x => x.SearchQuery)
 					.Throttle(TimeSpan.FromMilliseconds(500))
