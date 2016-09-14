@@ -124,6 +124,7 @@ namespace SupportTool.ViewModels
 				this.WhenAnyValue(x => x.Group.CN).NotNull(),
 				this.WhenAnyValue(x => x.IPAddress));
 			principalChanged
+				.Where(x => x.HasValue(3))
 				.Where(x => !_history.Contains(x))
 				.Subscribe(x =>
 				{
