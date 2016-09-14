@@ -78,20 +78,20 @@ namespace SupportTool
                     .InvokeCommand(ViewModel, x => x.NavigateForward));
                 d(this.BindCommand(ViewModel, vm => vm.NavigateBack, v => v.NavigateBackButton));
                 d(this.BindCommand(ViewModel, vm => vm.NavigateForward, v => v.NavigateForwardButton));
-                d(this.BindCommand(ViewModel, vm => vm.PasteAndFind, v => v.PasteAndFindButton));
-                d(this.BindCommand(ViewModel, vm => vm.Find, v => v.FindButton));
+                d(this.BindCommand(ViewModel, vm => vm.PasteAndSearch, v => v.PasteAndFindButton));
+                d(this.BindCommand(ViewModel, vm => vm.Search, v => v.FindButton));
                 d(QueryStringTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.Find));
+                    .InvokeCommand(ViewModel, x => x.Search));
 
 				d(MessageBus.Current.Listen<string>("search")
 					.SubscribeOnDispatcher()
 					.Where(x => x.HasValue())
 					.Do(x => ViewModel.QueryString = x)
 					.Select(_ => Unit.Default)
-					.InvokeCommand(ViewModel, x => x.Find));
+					.InvokeCommand(ViewModel, x => x.Search));
             });
         }
 

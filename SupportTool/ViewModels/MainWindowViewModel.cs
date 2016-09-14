@@ -12,6 +12,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -20,7 +21,8 @@ namespace SupportTool.ViewModels
 	public partial class MainWindowViewModel : ReactiveObject, INavigable
 	{
 		private readonly ReactiveCommand<Unit, Principal> _find;
-		private readonly ReactiveCommand<Unit, Unit> _pasteAndFind;
+		private readonly ReactiveCommand<Unit, bool> _search;
+		private readonly ReactiveCommand<Unit, Unit> _pasteAndSearch;
 		private readonly ReactiveCommand<Unit, Unit> _navigateBack;
 		private readonly ReactiveCommand<Unit, Unit> _navigateForward;
 		private readonly ReactiveList<string> _history;
@@ -69,9 +71,18 @@ namespace SupportTool.ViewModels
 					else if (x is GroupPrincipal) Group = new GroupObject(x as GroupPrincipal);
 				});
 
-			_pasteAndFind = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText()?.ToUpperInvariant(); });
-			_pasteAndFind
+			_search = ReactiveCommand.Create(() => Regex.IsMatch(_queryString, @"(?:[0-9]{1,3}\.){3}[0-9]{1,3}"));
+			_search
+				.Where(x => x != true)
+				.Select(_ => Unit.Default)
 				.InvokeCommand(_find);
+			_search
+				.Where(x => x == true)
+				.Subscribe(async _ => await NavigationService.ShowDialog<Views.IPWindow>(_queryString));
+
+			_pasteAndSearch = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText()?.ToUpperInvariant(); });
+			_pasteAndSearch
+				.InvokeCommand(_search);
 
 			_navigateBack = ReactiveCommand.Create(
 				() =>
@@ -124,7 +135,7 @@ namespace SupportTool.ViewModels
 			Observable.Merge(
 				_navigateBack.ThrownExceptions,
 				_navigateForward.ThrownExceptions,
-				_pasteAndFind.ThrownExceptions,
+				_pasteAndSearch.ThrownExceptions,
 				_find.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 		}
@@ -133,7 +144,9 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand Find => _find;
 
-		public ReactiveCommand PasteAndFind => _pasteAndFind;
+		public ReactiveCommand Search => _search;
+
+		public ReactiveCommand PasteAndSearch => _pasteAndSearch;
 
 		public ReactiveCommand NavigateBack => _navigateBack;
 
