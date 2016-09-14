@@ -20,7 +20,6 @@ namespace SupportTool.ViewModels
 	public partial class MainWindowViewModel : ReactiveObject, INavigable
 	{
 		private readonly ReactiveCommand<Unit, Principal> _find;
-		//private readonly ReactiveCommand<Unit, Unit> _find;
 		private readonly ReactiveCommand<Unit, Unit> _pasteAndFind;
 		private readonly ReactiveCommand<Unit, Unit> _navigateBack;
 		private readonly ReactiveCommand<Unit, Unit> _navigateForward;
