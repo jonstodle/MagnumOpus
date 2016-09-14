@@ -12,21 +12,21 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SupportTool.Views
+namespace SupportTool.Controls
 {
 	/// <summary>
-	/// Interaction logic for IPWindow.xaml
+	/// Interaction logic for IPPanel.xaml
 	/// </summary>
-	public partial class IPWindow : Window, IViewFor<IPWindowViewModel>
+	public partial class IPAddressPanel : UserControl, IViewFor<IPAddressPanelViewModel>
 	{
-		public IPWindow()
+		public IPAddressPanel()
 		{
 			InitializeComponent();
 
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x=> $"IP {x}");
+			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}");
 
 			this.WhenActivated(d =>
 			{
@@ -40,18 +40,26 @@ namespace SupportTool.Views
 			});
 		}
 
-		public IPWindowViewModel ViewModel
+		public string IPAddress
 		{
-			get { return (IPWindowViewModel)GetValue(ViewModelProperty); }
+			get { return (string)GetValue(IPAddressProperty); }
+			set { SetValue(IPAddressProperty, value); }
+		}
+
+		public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register(nameof(IPAddress), typeof(string), typeof(IPAddressPanel), new PropertyMetadata(null, (d, e) => (d as IPAddressPanel).ViewModel.IPAddress = e.NewValue as string));
+
+		public IPAddressPanelViewModel ViewModel
+		{
+			get { return (IPAddressPanelViewModel)GetValue(ViewModelProperty); }
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPWindowViewModel), typeof(IPWindow), new PropertyMetadata(new IPWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPAddressPanelViewModel), typeof(IPAddressPanel), new PropertyMetadata(new IPAddressPanelViewModel()));
 
 		object IViewFor.ViewModel
 		{
 			get { return ViewModel; }
-			set { ViewModel = value as IPWindowViewModel; }
+			set { ViewModel = value as IPAddressPanelViewModel; }
 		}
 	}
 }

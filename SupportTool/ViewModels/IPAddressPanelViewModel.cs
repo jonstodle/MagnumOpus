@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using SupportTool.Services.DialogServices;
-using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-	public class IPWindowViewModel : ReactiveObject, IDialog
+	public class IPAddressPanelViewModel : ReactiveObject
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
@@ -27,7 +26,7 @@ namespace SupportTool.ViewModels
 
 
 
-		public IPWindowViewModel()
+		public IPAddressPanelViewModel()
 		{
 			_openLoggedOn = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsLoggedon.exe", $@"\\{_ipAddress}"));
 
@@ -106,20 +105,6 @@ namespace SupportTool.ViewModels
 			//}
 
 			ExecuteFile(fileName, arguments);
-		}
-
-
-
-		public Task Opening(Action close, object parameter)
-		{
-			_close = close;
-
-			if (parameter is string)
-			{
-				IPAddress = parameter as string;
-			}
-
-			return Task.FromResult<object>(null);
 		}
 	}
 }

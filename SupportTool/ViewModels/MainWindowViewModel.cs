@@ -30,6 +30,7 @@ namespace SupportTool.ViewModels
 		private UserObject _user;
 		private ComputerObject _computer;
 		private GroupObject _group;
+		private string _ipAddress;
 		private string _queryString;
 		private int _backwardStepsCount;
 
@@ -62,23 +63,25 @@ namespace SupportTool.ViewModels
 				.ObserveOnDispatcher()
 				.Subscribe(x =>
 				{
-					User = null;
-					Computer = null;
-					Group = null;
+					NullValues();
 
 					if (x is UserPrincipal) User = new UserObject(x as UserPrincipal);
 					else if (x is ComputerPrincipal) Computer = new ComputerObject(x as ComputerPrincipal);
 					else if (x is GroupPrincipal) Group = new GroupObject(x as GroupPrincipal);
 				});
 
-			_search = ReactiveCommand.Create(() => Regex.IsMatch(_queryString, @"(?:[0-9]{1,3}\.){3}[0-9]{1,3}"));
+			_search = ReactiveCommand.Create(() => Regex.IsMatch(_queryString, @"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"));
 			_search
 				.Where(x => x != true)
 				.Select(_ => Unit.Default)
 				.InvokeCommand(_find);
 			_search
 				.Where(x => x == true)
-				.Subscribe(async _ => await NavigationService.ShowDialog<Views.IPWindow>(_queryString));
+				.Subscribe(_ =>
+				{
+					NullValues();
+					IPAddress = _queryString;
+				});
 
 			_pasteAndSearch = ReactiveCommand.Create(() => { QueryString = Clipboard.GetText()?.ToUpperInvariant(); });
 			_pasteAndSearch
@@ -116,7 +119,8 @@ namespace SupportTool.ViewModels
 			var principalChanged = Observable.Merge(
 				this.WhenAnyValue(x => x.User.CN).NotNull(),
 				this.WhenAnyValue(x => x.Computer.CN).NotNull(),
-				this.WhenAnyValue(x => x.Group.CN).NotNull());
+				this.WhenAnyValue(x => x.Group.CN).NotNull(),
+				this.WhenAnyValue(x => x.IPAddress));
 			principalChanged
 				.Where(x => !_history.Contains(x))
 				.Subscribe(x =>
@@ -174,6 +178,12 @@ namespace SupportTool.ViewModels
 			set { this.RaiseAndSetIfChanged(ref _group, value); }
 		}
 
+		public string IPAddress
+		{
+			get { return _ipAddress; }
+			set { this.RaiseAndSetIfChanged(ref _ipAddress, value); }
+		}
+
 		public string QueryString
 		{
 			get { return _queryString; }
@@ -187,6 +197,14 @@ namespace SupportTool.ViewModels
 		}
 
 
+
+		private void NullValues()
+		{
+			User = null;
+			Group = null;
+			Computer = null;
+			IPAddress = null;
+		}
 
 		private async void ApplicationActionRequestImpl(ApplicationActionRequest a)
 		{

@@ -111,6 +111,9 @@
     <Compile Include="Controls\GroupGroups.xaml.cs">
       <DependentUpon>GroupGroups.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IPAddressPanel.xaml.cs">
+      <DependentUpon>IPAddressPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PingPanel.xaml.cs">
       <DependentUpon>PingPanel.xaml</DependentUpon>
     </Compile>
@@ -150,6 +153,7 @@
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
+    <Compile Include="ViewModels\IPAddressPanelViewModel.cs" />
     <Compile Include="ViewModels\IPWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\AccountPanelViewModel.cs" />
@@ -200,6 +204,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GroupGroups.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\IPAddressPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

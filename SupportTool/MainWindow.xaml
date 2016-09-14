@@ -81,6 +81,10 @@
 
 					<controls:GroupGroups x:Name="GroupGroups"/>
 				</StackPanel>
+
+				<StackPanel x:Name="IPAddressDetailsStackPanel">
+					<controls:IPAddressPanel x:Name="IPAddressPanel"/>
+				</StackPanel>
             </Grid>
         </ScrollViewer>
     </Grid>
