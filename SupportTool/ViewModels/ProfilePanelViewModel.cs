@@ -37,6 +37,7 @@ namespace SupportTool.ViewModels
 		private bool shouldRestoreInternetExplorerFavorites;
 		private bool shouldRestoreOutlookSignatures;
 		private bool shouldRestoreWindowsExplorerFavorites;
+		private bool shouldRestoreStickyNotes;
 		private int selectedProfileIndex;
 		private DirectoryInfo globalProfileDirectory;
 		private DirectoryInfo localProfileDirectory;
@@ -200,6 +201,12 @@ namespace SupportTool.ViewModels
 		{
 			get { return shouldRestoreWindowsExplorerFavorites; }
 			set { this.RaiseAndSetIfChanged(ref shouldRestoreWindowsExplorerFavorites, value); }
+		}
+
+		public bool ShouldRestoreStickyNotes
+		{
+			get { return shouldRestoreStickyNotes; }
+			set { this.RaiseAndSetIfChanged(ref shouldRestoreStickyNotes, value); }
 		}
 
 		public int SelectedProfileIndex
@@ -371,6 +378,8 @@ namespace SupportTool.ViewModels
 			if (ShouldRestoreOutlookSignatures) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, @"AppData\Roaming\Microsoft\Signaturer"); }
 
 			if (ShouldRestoreWindowsExplorerFavorites) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, "Links"); }
+
+			if (ShouldRestoreStickyNotes) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, @"AppData\Roaming\Microsoft\Sticky Notes"); }
 		});
 
 
@@ -467,6 +476,7 @@ namespace SupportTool.ViewModels
 			ShouldRestoreInternetExplorerFavorites = true;
 			ShouldRestoreOutlookSignatures = true;
 			ShouldRestoreWindowsExplorerFavorites = true;
+			ShouldRestoreStickyNotes = true;
 			SelectedProfileIndex = -1;
 			LocalProfileDirectory = null;
 			GlobalProfileDirectory = null;

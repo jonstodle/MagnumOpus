@@ -42,8 +42,9 @@ namespace SupportTool.Controls
             this.Bind(ViewModel, vm => vm.ShouldRestoreInternetExplorerFavorites, v => v.InternetExplorerFavoritesCheckBox.IsChecked);
             this.Bind(ViewModel, vm => vm.ShouldRestoreOutlookSignatures, v => v.OutlookSignaturesCheckBox.IsChecked);
             this.Bind(ViewModel, vm => vm.ShouldRestoreWindowsExplorerFavorites, v => v.WindowsExplorerFavoritesCheckBox.IsChecked);
+			this.Bind(ViewModel, vm => vm.ShouldRestoreStickyNotes, v => v.StickyNotesCheckBox.IsChecked);
 
-            this.WhenActivated(d =>
+			this.WhenActivated(d =>
             {
                 d(this.BindCommand(ViewModel, vm => vm.ResetGlobalProfile, v => v.ResetGlobalProfileButton));
                 d(this.BindCommand(ViewModel, vm => vm.ResetLocalProfile, v => v.ResetLocalProfileButton));

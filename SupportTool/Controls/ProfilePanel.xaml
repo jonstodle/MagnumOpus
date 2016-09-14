@@ -92,7 +92,8 @@
                 <CheckBox x:Name="DesktopItemsCheckBox" Content="Desktop items"/>
                 <CheckBox x:Name="InternetExplorerFavoritesCheckBox" Content="IE Favorites"/>
                 <CheckBox x:Name="OutlookSignaturesCheckBox" Content="Outlook signatures"/>
-                <CheckBox x:Name="WindowsExplorerFavoritesCheckBox" Content="Windows Explorer Favorites"/>
+				<CheckBox x:Name="WindowsExplorerFavoritesCheckBox" Content="Windows Explorer Favorites"/>
+				<CheckBox x:Name="StickyNotesCheckBox" Content="Sticky Notes"/>
             </WrapPanel>
 
             <Button x:Name="RestoreProfileButton" Content="Restore profile" Margin="2"/>
