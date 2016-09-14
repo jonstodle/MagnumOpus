@@ -70,7 +70,9 @@ namespace SupportTool.ViewModels
 					else if (x is GroupPrincipal) Group = new GroupObject(x as GroupPrincipal);
 				});
 
-			_search = ReactiveCommand.Create(() => Regex.IsMatch(_queryString, @"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"));
+			_search = ReactiveCommand.Create(
+				() => Regex.IsMatch(_queryString, @"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$"),
+				this.WhenAnyValue(x => x.QueryString, x => x.HasValue(3)));
 			_search
 				.Where(x => x != true)
 				.Select(_ => Unit.Default)
