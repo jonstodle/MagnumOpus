@@ -140,10 +140,11 @@ namespace SupportTool.ViewModels
 
 
 			Observable.Merge(
-				_navigateBack.ThrownExceptions,
-				_navigateForward.ThrownExceptions,
+				_find.ThrownExceptions,
+				_search.ThrownExceptions,
 				_pasteAndSearch.ThrownExceptions,
-				_find.ThrownExceptions)
+				_navigateBack.ThrownExceptions,
+				_navigateForward.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 		}
 
