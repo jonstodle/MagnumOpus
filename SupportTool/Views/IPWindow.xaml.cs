@@ -26,6 +26,7 @@ namespace SupportTool.Views
 			InitializeComponent();
 
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
+			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x=> $"IP {x}");
 
 			this.WhenActivated(d =>
 			{

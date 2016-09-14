@@ -6,12 +6,12 @@
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
-        Height="500" Width="400">
+        Height="400" Width="600">
 
-	<StackPanel>
+	<StackPanel Margin="2">
 		<TextBlock x:Name="IPAddressTextBlock" FontSize="20" Margin="2"/>
 
-		<TextBlock Text="Remote" Margin="2"/>
+		<TextBlock Text="Remote" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
 		<WrapPanel>
 			<Button x:Name="LoggedOnButton" Content="Logged on..." Margin="2" />
