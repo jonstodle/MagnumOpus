@@ -111,7 +111,7 @@ namespace SupportTool.ViewModels
 			Observable.Merge(
 				_navigateBack,
 				_navigateForward)
-				.InvokeCommand(_find);
+				.InvokeCommand(_search);
 
 			_reverseHistory = this
 				.WhenAnyObservable(x => x._history.Changed)
