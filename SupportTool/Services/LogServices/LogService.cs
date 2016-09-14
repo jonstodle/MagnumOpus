@@ -14,7 +14,7 @@ namespace SupportTool.Services.LogServices
 	public static class LogService
 	{
 		private const string ApplicationName = "Magnum Opus";
-		private const string LogDirectoryPath = @"C:\Logs";
+		private const string LogDirectoryPath = @"C:\Logs\Magnum Opus";
 		private static readonly string _logFileName;
 		private static Subject<string> _logger;
 
