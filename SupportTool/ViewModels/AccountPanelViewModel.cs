@@ -5,20 +5,16 @@ using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SupportTool.ViewModels
 {
-    public class AccountPanelViewModel : ReactiveObject
+	public class AccountPanelViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, string> setNewPassword;
         private readonly ReactiveCommand<Unit, string> setNewSimplePassword;

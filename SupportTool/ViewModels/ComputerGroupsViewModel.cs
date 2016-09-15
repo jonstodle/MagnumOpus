@@ -4,19 +4,16 @@ using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-    public class ComputerGroupsViewModel : ReactiveObject
+	public class ComputerGroupsViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;

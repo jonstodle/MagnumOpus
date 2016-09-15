@@ -5,21 +5,16 @@ using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-    public class UserGroupsViewModel : ReactiveObject
+	public class UserGroupsViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, Unit> openAddGroups;
         private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;

@@ -6,12 +6,10 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupportTool.Services.ActiveDirectoryServices
 {
-    public partial class ActiveDirectoryService
+	public partial class ActiveDirectoryService
     {
         private DirectoryEntry directoryEntry = new DirectoryEntry("LDAP://sikt.sykehuspartner.no");
 

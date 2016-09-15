@@ -2,15 +2,10 @@
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SupportTool.ViewModels
 {

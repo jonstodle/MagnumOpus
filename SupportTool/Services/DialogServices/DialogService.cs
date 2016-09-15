@@ -1,14 +1,9 @@
 ﻿using SupportTool.Services.LogServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace SupportTool.Services.DialogServices
 {
-    public class DialogService
+	public class DialogService
     {
 		public static void ShowMessage(string text, string caption = "", MessageBoxButton button = MessageBoxButton.OK, MessageBoxImage icon = MessageBoxImage.None)
 		{

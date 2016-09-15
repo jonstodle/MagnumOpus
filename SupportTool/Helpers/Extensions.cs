@@ -1,17 +1,14 @@
-﻿using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Resources;
 
 namespace SupportTool.Helpers
 {
-    public static class Extensions
+	public static class Extensions
     {
         public static string ToNorwegianString(this DayOfWeek dow)
         {

@@ -7,17 +7,15 @@ using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-    public class PermittedWorkstationsWindowViewModel : ReactiveObject, IDialog
+	public class PermittedWorkstationsWindowViewModel : ReactiveObject, IDialog
     {
         private readonly ReactiveCommand<Unit, string> _addComputer;
         private readonly ReactiveCommand<Unit, bool> _removeComputer;

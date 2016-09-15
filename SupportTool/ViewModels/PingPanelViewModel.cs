@@ -3,18 +3,14 @@ using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-    public class PingPanelViewModel : ReactiveObject
+	public class PingPanelViewModel : ReactiveObject
     {
         private readonly ReactiveCommand<Unit, string> startPing;
         private readonly ReactiveCommand<Unit, Unit> stopPing;
