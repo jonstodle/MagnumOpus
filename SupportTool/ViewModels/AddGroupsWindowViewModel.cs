@@ -76,7 +76,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not add group"));
 
 			removeFromGroupsToAdd = ReactiveCommand.Create(
-				() => groupsToAdd.Remove(SelectedSearchResult as DirectoryEntry),
+				() => groupsToAdd.Remove(SelectedGroupToAdd as DirectoryEntry),
 				this.WhenAnyValue(x => x.SelectedGroupToAdd).Select(x => x != null));
 			removeFromGroupsToAdd
 				.ThrownExceptions
