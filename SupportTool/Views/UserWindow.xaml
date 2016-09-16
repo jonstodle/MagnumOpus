@@ -1,0 +1,22 @@
+﻿<Window x:Class="SupportTool.Views.UserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SupportTool.Views"
+		xmlns:controls="clr-namespace:SupportTool.Controls"
+        mc:Ignorable="d"
+        Title="UserWindow" Height="300" Width="300">
+
+	<ScrollViewer>
+		<StackPanel Margin="2">
+			<controls:UserDetails x:Name="UserDetails"/>
+
+			<controls:AccountPanel x:Name="UserAccountPanel"/>
+
+			<controls:ProfilePanel x:Name="UserProfilePanel"/>
+
+			<controls:UserGroups x:Name="UserGroups"/>
+		</StackPanel>
+	</ScrollViewer>
+</Window>
