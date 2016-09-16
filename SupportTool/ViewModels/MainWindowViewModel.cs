@@ -36,7 +36,9 @@ namespace SupportTool.ViewModels
 		//private int _backwardStepsCount;
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _paste;
+		private readonly ReactiveCommand<Unit, Unit> _open;
 		private readonly ReactiveList<DirectoryEntry> _searchResults;
+		private readonly ReactiveList<string> _history;
 		private readonly ListCollectionView _searchResultsView;
 		private string _searchQuery;
 		private object _selectedSearchResult;
@@ -46,6 +48,7 @@ namespace SupportTool.ViewModels
 		public MainWindowViewModel()
 		{
 			_searchResults = new ReactiveList<DirectoryEntry>();
+			_history = new ReactiveList<string>();
 			_searchResultsView = new ListCollectionView(_searchResults)
 			{
 				SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) }
@@ -60,9 +63,22 @@ namespace SupportTool.ViewModels
 
 			_paste = ReactiveCommand.Create(() => { SearchQuery = Clipboard.GetText(); });
 
+			_open = ReactiveCommand.CreateFromTask(
+				async () => 
+				{
+					var de = _selectedSearchResult as DirectoryEntry;
+					var principal = await ActiveDirectoryService.Current.GetPrincipal(de.Properties.Get<string>("cn"));
+
+					if (principal is UserPrincipal) await NavigationService.ShowWindow<Views.UserWindow>(principal.SamAccountName);
+
+					_history.Insert(0, de.Properties.Get<string>("cn"));
+				},
+				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
+
 			Observable.Merge(
 				_search.ThrownExceptions,
-				_paste.ThrownExceptions)
+				_paste.ThrownExceptions,
+				_open.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 			//_history = new ReactiveList<string>();
 			//_backwardStepsCount = 0;
@@ -180,7 +196,11 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand Paste => _paste;
 
+		public ReactiveCommand Open => _open;
+
 		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
+
+		public ReactiveList<string> History => _history;
 
 		public ListCollectionView SearchResultsView => _searchResultsView;
 
