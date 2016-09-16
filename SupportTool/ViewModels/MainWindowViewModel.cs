@@ -62,13 +62,14 @@ namespace SupportTool.ViewModels
 				async () => 
 				{
 					var de = _selectedSearchResult as DirectoryEntry;
-					var principal = await ActiveDirectoryService.Current.GetPrincipal(de.Properties.Get<string>("cn"));
+					var cn = de.Properties.Get<string>("cn");
+					var principal = await ActiveDirectoryService.Current.GetPrincipal(cn);
 
 					if (principal is UserPrincipal) await NavigationService.ShowWindow<Views.UserWindow>(principal.SamAccountName);
 					else if (principal is ComputerPrincipal) await NavigationService.ShowWindow<Views.ComputerWindow>(principal.SamAccountName);
 					else if (principal is GroupPrincipal) await NavigationService.ShowWindow<Views.GroupWindow>(principal.SamAccountName);
 
-					_history.Insert(0, de.Properties.Get<string>("cn"));
+					if(!_history.Contains(cn)) _history.Insert(0, cn);
 				},
 				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
