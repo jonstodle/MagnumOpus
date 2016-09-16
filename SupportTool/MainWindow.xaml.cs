@@ -27,6 +27,7 @@ namespace SupportTool
 			InitializeComponent();
 
 			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
+			this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
 
@@ -54,18 +55,21 @@ namespace SupportTool
 					.MouseDoubleClick
 					.Select(_ => Unit.Default)
 					.InvokeCommand(ViewModel, x => x.Open));
+				d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
+					.Subscribe(e =>
+					{
+						HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
+						HistoryButtonContextMenu.IsOpen = true;
+					}));
 			});
 		}
 
-		//     private void MenuItemClick(object sender, RoutedEventArgs args)
-		//     {
-		//         var menuItem = sender as MenuItem;
-		//var header = menuItem.Header as string;
-		//ViewModel.QueryString = header;
-		//ViewModel.BackwardStepsCount = ViewModel.ReverseHistory.IndexOf(header);
-		//         Observable.Return(Unit.Default)
-		//             .InvokeCommand(ViewModel, x => x.Find);
-		//     }
+		private void MenuItemClick(object sender, RoutedEventArgs args)
+		{
+			var menuItem = sender as MenuItem;
+			var header = menuItem.Header as string;
+			ViewModel.SearchQuery = header;
+		}
 
 		public MainWindowViewModel ViewModel
 		{

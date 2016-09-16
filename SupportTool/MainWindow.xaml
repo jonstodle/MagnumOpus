@@ -27,7 +27,23 @@
 
 			<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
 
-			<Button x:Name="HistoryButton" Content="History" Grid.Column="2" Margin="2"/>
+			<Button x:Name="HistoryButton" Content="History" Grid.Column="2" Margin="2">
+				<Button.ContextMenu>
+					<ContextMenu x:Name="HistoryButtonContextMenu">
+						<ContextMenu.ItemContainerStyle>
+							<Style TargetType="MenuItem">
+								<EventSetter Event="Click" Handler="MenuItemClick"/>
+							</Style>
+						</ContextMenu.ItemContainerStyle>
+
+						<ContextMenu.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding}"/>
+							</DataTemplate>
+						</ContextMenu.ItemTemplate>
+					</ContextMenu>
+				</Button.ContextMenu>
+			</Button>
 		</Grid>
 
 		<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
