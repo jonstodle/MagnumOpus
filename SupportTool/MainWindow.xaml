@@ -25,7 +25,7 @@
 
 			<Button x:Name="PasteButton" Content="Paste" Margin="2"/>
 
-			<TextBox x:Name="SearchQueryTextBox" Grid.Column="1" Margin="2"/>
+			<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
 
 			<Button x:Name="HistoryButton" Content="History" Grid.Column="2" Margin="2"/>
 		</Grid>

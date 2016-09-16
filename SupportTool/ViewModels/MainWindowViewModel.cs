@@ -61,7 +61,7 @@ namespace SupportTool.ViewModels
 				.ObserveOnDispatcher()
 				.Subscribe(x => _searchResults.Add(x));
 
-			_paste = ReactiveCommand.Create(() => { SearchQuery = Clipboard.GetText(); });
+			_paste = ReactiveCommand.Create(() => { SearchQuery = Clipboard.GetText().ToUpperInvariant(); });
 
 			_open = ReactiveCommand.CreateFromTask(
 				async () => 
