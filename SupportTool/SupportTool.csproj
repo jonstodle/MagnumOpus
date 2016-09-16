@@ -156,6 +156,7 @@
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupWindowViewModel.cs" />
     <Compile Include="ViewModels\IPAddressPanelViewModel.cs" />
+    <Compile Include="ViewModels\IPAddressWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\AccountPanelViewModel.cs" />
     <Compile Include="ViewModels\PermittedWorkstationsWindowViewModel.cs" />
@@ -179,6 +180,9 @@
     </Compile>
     <Compile Include="Views\GroupWindow.xaml.cs">
       <DependentUpon>GroupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IPAddressWindow.xaml.cs">
+      <DependentUpon>IPAddressWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
       <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
@@ -264,6 +268,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\GroupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\IPAddressWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
