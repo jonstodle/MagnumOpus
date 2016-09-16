@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
+using SupportTool.Services.FileServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,16 @@ namespace SupportTool.ViewModels
 				_paste.ThrownExceptions,
 				_open.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
+
+			_history.CountChanged
+				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history)))
+				.Subscribe();
+
+			FileService.DeserializeFromDisk<IEnumerable<string>>(nameof(_history))
+				.Catch(Observable.Return(Enumerable.Empty<string>()))
+				.SelectMany(x => x.ToObservable())
+				.ObserveOnDispatcher()
+				.Subscribe(x => _history.Add(x));
 		}
 
 
