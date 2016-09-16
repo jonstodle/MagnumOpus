@@ -30,6 +30,7 @@ namespace SupportTool
 			this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
+			this.OneWayBind(ViewModel, vm => vm.SearchResultsView.Count, v => v.SearchResultsCountTextBox.Text, x => $"{x} results");
 
 			this.WhenActivated(d =>
 			{
