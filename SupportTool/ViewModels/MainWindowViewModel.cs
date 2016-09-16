@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Akavache;
+using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -34,7 +35,7 @@ namespace SupportTool.ViewModels
 		public MainWindowViewModel()
 		{
 			_searchResults = new ReactiveList<DirectoryEntry>();
-			_history = new ReactiveList<string>();
+			_history = new ReactiveList<string>(BlobCache.LocalMachine.GetOrCreateObject(nameof(_history), () => Enumerable.Empty<string>()).Wait());
 			_searchResultsView = new ListCollectionView(_searchResults)
 			{
 				SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) }
@@ -76,6 +77,10 @@ namespace SupportTool.ViewModels
 				_paste.ThrownExceptions,
 				_open.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
+
+			_history
+				.CountChanged
+				.Subscribe(_ => BlobCache.LocalMachine.InsertObject(nameof(_history), _history));
 		}
 
 
