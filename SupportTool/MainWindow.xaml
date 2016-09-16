@@ -52,7 +52,7 @@
 				<GridView>
 					<GridView.Columns>
 						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[cn][0]}" Width="300"/>
-						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Properties[distinguishedname][0]}" Width="200"/>
+						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" Width="200"/>
 					</GridView.Columns>
 				</GridView>
 			</ListView.View>
