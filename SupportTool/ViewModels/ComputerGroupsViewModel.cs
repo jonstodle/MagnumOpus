@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
@@ -40,7 +39,7 @@ namespace SupportTool.ViewModels
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 
             Observable.Merge(
-                this.WhenAnyValue(x => x.Computer).NotNull(),
+                this.WhenAnyValue(x => x.Computer).WhereNotNull(),
                 openAddGroups.Select(_ => Computer),
                 openRemoveGroups.Select(_ => Computer))
                 .Do(_ => DirectGroups.Clear())

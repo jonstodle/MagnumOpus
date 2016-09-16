@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -80,7 +79,7 @@ namespace SupportTool.ViewModels
 
 			_windowTitle = this
 				.WhenAnyValue(x => x.Group)
-				.NotNull()
+				.WhereNotNull()
 				.Select(x => $"Remove users from {x.CN}")
 				.ToProperty(this, x => x.WindowTitle, "");
 
@@ -92,7 +91,7 @@ namespace SupportTool.ViewModels
 
 			this
 				.WhenAnyValue(x => x.Group)
-				.NotNull()
+				.WhereNotNull()
 				.SelectMany(x => GetMembers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
 				.ObserveOnDispatcher()
 				.Subscribe(x => _members.Add(x));

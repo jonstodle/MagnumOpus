@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -54,7 +53,15 @@ namespace SupportTool.ViewModels
 				SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) }
 			};
 
-			_search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
+			_search = ReactiveCommand.CreateFromTask(async () =>
+			{
+				if (_searchQuery.IsIPAddress())
+				{
+					await NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery);
+					return Observable.Empty<DirectoryEntry>();
+				}
+				else return ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler);
+			});
 			_search
 				.Do(_ => _searchResults.Clear())
 				.Switch()

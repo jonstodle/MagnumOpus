@@ -129,7 +129,8 @@
     <Compile Include="Controls\UserGroups.xaml.cs">
       <DependentUpon>UserGroups.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Extensions\System.cs" />
+    <Compile Include="Extensions\System.Windows.Resources.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
@@ -314,6 +315,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Compile Include="Extensions\System.DirectoryServices.cs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

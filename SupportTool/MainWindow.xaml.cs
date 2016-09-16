@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.ViewModels;
 using System;
 using System.Linq;
@@ -66,7 +65,8 @@ namespace SupportTool
 						.Where(x => x.Key == Key.Enter)
 						.Select(_ => ViewModel.SearchQuery),
 					ViewModel
-						.WhenAnyValue(x => x.SearchQuery))
+						.WhenAnyValue(x => x.SearchQuery)
+						.Where(x => !x.IsIPAddress()))
 					.Throttle(TimeSpan.FromSeconds(1))
 					.DistinctUntilChanged()
 					.Where(x => x.HasValue(3))
