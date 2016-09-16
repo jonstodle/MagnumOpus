@@ -1,6 +1,4 @@
-﻿using Akavache;
-using SupportTool.Services.LogServices;
-using System;
+﻿using SupportTool.Services.LogServices;
 using System.Windows;
 
 namespace SupportTool
@@ -13,11 +11,6 @@ namespace SupportTool
 		public App()
 		{
 			LogService.Info("Application start");
-			BlobCache.ApplicationName = "Magnum Opus";
-
-			this.Events()
-				.Exit
-				.Subscribe(_ => BlobCache.Shutdown().Wait());
 		}
     }
 }
