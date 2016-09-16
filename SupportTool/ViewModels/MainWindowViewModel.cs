@@ -71,6 +71,7 @@ namespace SupportTool.ViewModels
 
 					if (principal is UserPrincipal) await NavigationService.ShowWindow<Views.UserWindow>(principal.SamAccountName);
 					else if (principal is ComputerPrincipal) await NavigationService.ShowWindow<Views.ComputerWindow>(principal.SamAccountName);
+					else if (principal is GroupPrincipal) await NavigationService.ShowWindow<Views.GroupWindow>(principal.SamAccountName);
 
 					_history.Insert(0, de.Properties.Get<string>("cn"));
 				},
