@@ -70,6 +70,7 @@ namespace SupportTool.ViewModels
 					var principal = await ActiveDirectoryService.Current.GetPrincipal(de.Properties.Get<string>("cn"));
 
 					if (principal is UserPrincipal) await NavigationService.ShowWindow<Views.UserWindow>(principal.SamAccountName);
+					else if (principal is ComputerPrincipal) await NavigationService.ShowWindow<Views.ComputerWindow>(principal.SamAccountName);
 
 					_history.Insert(0, de.Properties.Get<string>("cn"));
 				},
