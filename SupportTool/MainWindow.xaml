@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         x:Name="ThisWindow"
         Icon="/Assets/Icon.ico"
-        Title="Magnum Opus by Jon Stødle" MinHeight="300" MinWidth="200" Height="900" Width="600">
+        Title="Magnum Opus by Jon Stødle" MinHeight="200" MinWidth="200" Height="400" Width="900">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,7 +16,32 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Grid Margin="2">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<Button x:Name="PasteButton" Content="Paste" Margin="2"/>
+
+			<TextBox x:Name="SearchQueryTextBox" Grid.Column="1" Margin="2"/>
+
+			<Button x:Name="HistoryButton" Content="History" Grid.Column="2" Margin="2"/>
+		</Grid>
+
+		<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
+			<ListView.View>
+				<GridView>
+					<GridView.Columns>
+						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[cn][0]}" Width="300"/>
+						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Properties[distinguishedname][0]}" Width="200"/>
+					</GridView.Columns>
+				</GridView>
+			</ListView.View>
+		</ListView>
+
+        <!--<Grid Margin="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
@@ -86,6 +111,6 @@
 					<controls:IPAddressPanel x:Name="IPAddressPanel"/>
 				</StackPanel>
             </Grid>
-        </ScrollViewer>
+        </ScrollViewer>-->
     </Grid>
 </Window>

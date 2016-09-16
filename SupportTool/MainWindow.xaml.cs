@@ -27,82 +27,90 @@ namespace SupportTool
 
             InitializeComponent();
 
+			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
+			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
+			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
+																			 //         this.OneWayBind(ViewModel, vm => vm.ReverseHistory, v => v.NavigationContextMenu.ItemsSource);
+																			 //         this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
 
+			//         this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
+			//         this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
+			//         this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
+			//         this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
+			//         this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
 
-            this.Events()
-                .Activated
-                .Subscribe(_ =>
-                {
-                    QueryStringTextBox.Focus();
-                    QueryStringTextBox.SelectAll();
-                });
+			//         this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
+			//         this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
+			//         this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
+			//         this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
+			//         this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
 
+			//         this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
+			//         this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
+			//this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
 
-
-            this.OneWayBind(ViewModel, vm => vm.ReverseHistory, v => v.NavigationContextMenu.ItemsSource);
-            this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
-
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
-
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
-
-            this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
-			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
-
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
+			//this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
+			//this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
 
 
 
 			this.WhenActivated(d =>
             {
-                d(this.Events()
-                    .MouseDown
-                    .Where(x => x.ChangedButton == MouseButton.XButton1)
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.NavigateBack));
-                d(this.Events()
-                    .MouseDown
-                    .Where(x => x.ChangedButton == MouseButton.XButton2)
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.NavigateForward));
-                d(this.BindCommand(ViewModel, vm => vm.NavigateBack, v => v.NavigateBackButton));
-                d(this.BindCommand(ViewModel, vm => vm.NavigateForward, v => v.NavigateForwardButton));
-                d(this.BindCommand(ViewModel, vm => vm.PasteAndSearch, v => v.PasteAndFindButton));
-                d(this.BindCommand(ViewModel, vm => vm.Search, v => v.FindButton));
-                d(QueryStringTextBox.Events()
-                    .KeyDown
-                    .Where(x => x.Key == Key.Enter)
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.Search));
+				SearchQueryTextBox.Focus();
+				SearchQueryTextBox.SelectAll();
 
-				d(MessageBus.Current.Listen<string>("search")
-					.SubscribeOnDispatcher()
-					.Where(x => x.HasValue())
-					.Do(x => ViewModel.QueryString = x)
-					.Select(_ => Unit.Default)
-					.InvokeCommand(ViewModel, x => x.Search));
-            });
+				d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
+			d(Observable.Merge(
+				SearchQueryTextBox.Events()
+					.KeyDown
+					.Where(x => x.Key == Key.Enter)
+					.Select(_ => ViewModel.SearchQuery),
+				ViewModel
+					.WhenAnyValue(x => x.SearchQuery))
+				.Throttle(TimeSpan.FromSeconds(1))
+				.DistinctUntilChanged()
+				.Where(x => x.HasValue(3))
+				.Select(_ => Unit.Default)
+				.ObserveOnDispatcher()
+				.InvokeCommand(ViewModel, x => x.Search));
+																						   //            d(this.Events()
+																						   //                .MouseDown
+																						   //                .Where(x => x.ChangedButton == MouseButton.XButton1)
+																						   //                .Select(_ => Unit.Default)
+																						   //                .InvokeCommand(ViewModel, x => x.NavigateBack));
+																						   //            d(this.Events()
+																						   //                .MouseDown
+																						   //                .Where(x => x.ChangedButton == MouseButton.XButton2)
+																						   //                .Select(_ => Unit.Default)
+																						   //                .InvokeCommand(ViewModel, x => x.NavigateForward));
+																						   //            d(this.BindCommand(ViewModel, vm => vm.NavigateBack, v => v.NavigateBackButton));
+																						   //            d(this.BindCommand(ViewModel, vm => vm.NavigateForward, v => v.NavigateForwardButton));
+																						   //            d(this.BindCommand(ViewModel, vm => vm.PasteAndSearch, v => v.PasteAndFindButton));
+																						   //            d(this.BindCommand(ViewModel, vm => vm.Search, v => v.FindButton));
+																						   //            d(QueryStringTextBox.Events()
+																						   //                .KeyDown
+																						   //                .Where(x => x.Key == Key.Enter)
+																						   //                .Select(_ => Unit.Default)
+																						   //                .InvokeCommand(ViewModel, x => x.Search));
+
+				//d(MessageBus.Current.Listen<string>("search")
+				//	.SubscribeOnDispatcher()
+				//	.Where(x => x.HasValue())
+				//	.Do(x => ViewModel.QueryString = x)
+				//	.Select(_ => Unit.Default)
+				//	.InvokeCommand(ViewModel, x => x.Search));
+			});
         }
 
-        private void MenuItemClick(object sender, RoutedEventArgs args)
-        {
-            var menuItem = sender as MenuItem;
-			var header = menuItem.Header as string;
-			ViewModel.QueryString = header;
-			ViewModel.BackwardStepsCount = ViewModel.ReverseHistory.IndexOf(header);
-            Observable.Return(Unit.Default)
-                .InvokeCommand(ViewModel, x => x.Find);
-        }
+   //     private void MenuItemClick(object sender, RoutedEventArgs args)
+   //     {
+   //         var menuItem = sender as MenuItem;
+			//var header = menuItem.Header as string;
+			//ViewModel.QueryString = header;
+			//ViewModel.BackwardStepsCount = ViewModel.ReverseHistory.IndexOf(header);
+   //         Observable.Return(Unit.Default)
+   //             .InvokeCommand(ViewModel, x => x.Find);
+   //     }
 
         public MainWindowViewModel ViewModel
         {
