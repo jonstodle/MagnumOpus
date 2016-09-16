@@ -43,8 +43,8 @@ namespace SupportTool
 						.Select(_ => ViewModel.SearchQuery),
 					ViewModel
 						.WhenAnyValue(x => x.SearchQuery)
-						.Where(x => !x.IsIPAddress()))
-					.Throttle(TimeSpan.FromSeconds(1))
+						.Where(x => !x.IsIPAddress())
+						.Throttle(TimeSpan.FromSeconds(1)))
 					.DistinctUntilChanged()
 					.Where(x => x.HasValue(3))
 					.Select(_ => Unit.Default)
