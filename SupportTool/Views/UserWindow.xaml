@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:SupportTool.Views"
 		xmlns:controls="clr-namespace:SupportTool.Controls"
         mc:Ignorable="d"
-        Title="UserWindow" Height="300" Width="300">
+		Icon="/Assets/Icon.ico"
+        Height="600" Width="600">
 
 	<ScrollViewer>
 		<StackPanel Margin="2">
