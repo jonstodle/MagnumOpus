@@ -20,19 +20,6 @@ namespace SupportTool.ViewModels
 {
 	public partial class MainWindowViewModel : ReactiveObject
 	{
-		//private readonly ReactiveCommand<Unit, Principal> _find;
-		//private readonly ReactiveCommand<Unit, bool> _search;
-		//private readonly ReactiveCommand<Unit, Unit> _pasteAndSearch;
-		//private readonly ReactiveCommand<Unit, Unit> _navigateBack;
-		//private readonly ReactiveCommand<Unit, Unit> _navigateForward;
-		//private readonly ReactiveList<string> _history;
-		//private ObservableAsPropertyHelper<List<string>> _reverseHistory;
-		//private UserObject _user;
-		//private ComputerObject _computer;
-		//private GroupObject _group;
-		//private string _ipAddress;
-		//private string _queryString;
-		//private int _backwardStepsCount;
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _paste;
 		private readonly ReactiveCommand<Unit, Unit> _open;
