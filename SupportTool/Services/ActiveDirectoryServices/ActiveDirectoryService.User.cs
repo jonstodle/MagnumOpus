@@ -90,7 +90,8 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
             dcs.Select((x, i) =>
             {
-                if(!disposed) observer.OnNext(action(x));
+				try { if (!disposed) observer.OnNext(action(x)); }
+				catch { observer.OnNext(default(TResult)); }
 
                 return i;
             }).AsParallel().Sum();
