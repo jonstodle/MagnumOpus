@@ -1,8 +1,10 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +34,13 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
+
+			this.WhenActivated(d =>
+			{
+				d(MessageBus.Current.Listen<string>(ApplicationActionRequest.Refresh.ToString())
+					.Where(x => x == ViewModel.User?.CN)
+					.InvokeCommand(ViewModel, x => x.SetUser));
+			});
 		}
 
 		public UserWindowViewModel ViewModel
