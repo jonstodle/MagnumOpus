@@ -134,6 +134,7 @@
       <DependentUpon>UserGroups.xaml</DependentUpon>
     </Compile>
     <Compile Include="Extensions\System.cs" />
+    <Compile Include="Extensions\System.Reactive.Linq.cs" />
     <Compile Include="Extensions\System.Windows.Resources.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />

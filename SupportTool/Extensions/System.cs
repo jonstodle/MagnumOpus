@@ -48,13 +48,5 @@ namespace System
         public static bool HasValue(this string s, int minLength = 1) => !string.IsNullOrWhiteSpace(s) && s.Length >= minLength;
 
 		public static bool IsIPAddress(this string s) => Regex.IsMatch(s, @"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$");
-
-		public static IObservable<T> WhereNotNull<T>(this IObservable<T> source) where T : class => source.Where(x => x != null);
-
-		public static IObservable<bool> IsTrue<T>(this IObservable<bool> source) where T : class => source.Select(x => x == true);
-
-		public static IObservable<bool> IsFalse<T>(this IObservable<bool> source) where T : class => source.Select(x => x == false);
-
-		public static IObservable<Unit> ToSignal<T>(this IObservable<T> source) where T : class => source.Select(_ => Unit.Default);
 	}
 }
