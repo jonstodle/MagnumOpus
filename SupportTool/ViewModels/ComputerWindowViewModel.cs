@@ -13,31 +13,35 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerWindowViewModel : ReactiveObject, INavigable
 	{
-		private ComputerObject _computer;
+		private readonly ReactiveCommand<string, ComputerObject> _setComputer;
+		private readonly ObservableAsPropertyHelper<ComputerObject> _computer;
 
 
 
 		public ComputerWindowViewModel()
 		{
-
+			_setComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
+			_setComputer
+				.ToProperty(this, x => x.Computer, out _computer);
 		}
 
 
 
-		public ComputerObject Computer
-		{
-			get { return _computer; }
-			set { this.RaiseAndSetIfChanged(ref _computer, value); }
-		}
+		public ReactiveCommand SetComputer => _setComputer;
+
+		public ComputerObject Computer => _computer.Value;
 
 
 
-		public async Task OnNavigatedTo(object parameter)
+		public Task OnNavigatedTo(object parameter)
 		{
 			if (parameter is string)
 			{
-				Computer = await ActiveDirectoryService.Current.GetComputer(parameter as string);
+				Observable.Return(parameter as string)
+					.InvokeCommand(_setComputer);
 			}
+
+			return Task.FromResult<object>(null);
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);

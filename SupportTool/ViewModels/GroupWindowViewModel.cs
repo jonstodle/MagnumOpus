@@ -13,31 +13,35 @@ namespace SupportTool.ViewModels
 {
 	public class GroupWindowViewModel : ReactiveObject, INavigable
 	{
-		private GroupObject _group;
+		private readonly ReactiveCommand<string, GroupObject> _setGroup;
+		private readonly ObservableAsPropertyHelper<GroupObject> _group;
 
 
 
 		public GroupWindowViewModel()
 		{
-
+			_setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
+			_setGroup
+				.ToProperty(this, x => x.Group, out _group);
 		}
 
 
 
-		public GroupObject Group
-		{
-			get { return _group; }
-			set { this.RaiseAndSetIfChanged(ref _group, value); }
-		}
+		public ReactiveCommand SetGroup => _setGroup;
+
+		public GroupObject Group => _group.Value;
 
 
 
-		public async Task OnNavigatedTo(object parameter)
+		public Task OnNavigatedTo(object parameter)
 		{
 			if (parameter is string)
 			{
-				Group = await ActiveDirectoryService.Current.GetGroup(parameter as string);
+				Observable.Return(parameter as string)
+					.InvokeCommand(_setGroup);
 			}
+
+			return Task.FromResult<object>(null);
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);

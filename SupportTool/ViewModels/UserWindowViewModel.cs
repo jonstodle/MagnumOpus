@@ -13,22 +13,23 @@ namespace SupportTool.ViewModels
 {
 	public class UserWindowViewModel : ReactiveObject, INavigable
 	{
-		private UserObject _user;
+		private readonly ReactiveCommand<string, UserObject> _setUser;
+		private readonly ObservableAsPropertyHelper<UserObject> _user;
 
 
 
 		public UserWindowViewModel()
 		{
-
+			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
+			_setUser
+				.ToProperty(this, x => x.User, out _user);
 		}
 
 
 
-		public UserObject User
-		{
-			get { return _user; }
-			set { this.RaiseAndSetIfChanged(ref _user, value); }
-		}
+		public ReactiveCommand SetUser => _setUser;
+
+		public UserObject User => _user.Value;
 
 
 
@@ -36,7 +37,8 @@ namespace SupportTool.ViewModels
 		{
 			if (parameter is string)
 			{
-				User = await ActiveDirectoryService.Current.GetUser(parameter as string);
+				Observable.Return(parameter as string)
+					.InvokeCommand(_setUser);
 			}
 		}
 

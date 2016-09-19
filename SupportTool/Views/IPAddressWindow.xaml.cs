@@ -29,6 +29,12 @@ namespace SupportTool.Views
 
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
+
+			this.WhenActivated(d =>
+			{
+				d(MessageBus.Current.Listen<string>(ViewModel.IPAddress)
+					.InvokeCommand(ViewModel, x => x.SetIPAddress));
+			});
 		}
 
 		public IPAddressWindowViewModel ViewModel

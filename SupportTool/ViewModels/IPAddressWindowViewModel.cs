@@ -3,6 +3,7 @@ using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,22 +11,23 @@ namespace SupportTool.ViewModels
 {
 	public class IPAddressWindowViewModel : ReactiveObject, INavigable
 	{
-		private string _ipAddress;
+		private readonly ReactiveCommand<string, string> _setIPAddress;
+		private readonly ObservableAsPropertyHelper<string> _ipAddress;
 
 
 
 		public IPAddressWindowViewModel()
 		{
-
+			_setIPAddress = ReactiveCommand.Create<string, string>(ipAddress => ipAddress);
+			_setIPAddress
+				.ToProperty(this, x => x.IPAddress, out _ipAddress);
 		}
 
 
 
-		public string IPAddress
-		{
-			get { return _ipAddress; }
-			set { this.RaiseAndSetIfChanged(ref _ipAddress, value); }
-		}
+		public ReactiveCommand SetIPAddress => _setIPAddress;
+
+		public string IPAddress => _ipAddress.Value;
 
 
 
@@ -33,7 +35,8 @@ namespace SupportTool.ViewModels
 		{
 			if (parameter is string)
 			{
-				IPAddress = parameter as string;
+				Observable.Return(parameter as string)
+					.InvokeCommand(_setIPAddress);
 			}
 
 			return Task.FromResult<object>(null);

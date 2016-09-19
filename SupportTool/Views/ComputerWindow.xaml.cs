@@ -3,6 +3,7 @@ using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,6 +33,12 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
+
+			this.WhenActivated(d =>
+			{
+				d(MessageBus.Current.Listen<string>(ViewModel.Computer.CN)
+					.InvokeCommand(ViewModel, x => x.SetComputer));
+			});
 		}
 
 		public ComputerWindowViewModel ViewModel
