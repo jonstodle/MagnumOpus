@@ -78,9 +78,9 @@ namespace SupportTool.ViewModels
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups, out isLoadingGroups);
 
-			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(selectedDirectGroup as string, "search"));
+			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(selectedDirectGroup as string));
 
-			_findAllGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedAllGroup as string, "search"));
+			_findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
 
             this
                 .WhenAnyValue(x => x.User)

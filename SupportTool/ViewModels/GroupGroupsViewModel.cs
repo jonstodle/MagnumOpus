@@ -68,7 +68,7 @@ namespace SupportTool.ViewModels
 
 			_openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveGroupsWindow>(_group.CN));
 
-			_findDirectMemberOfGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectMemberOfGroup as string, "search"));
+			_findDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup as string));
 
 			_getAllMemberOfGroups = ReactiveCommand.CreateFromObservable(
 				() =>
@@ -85,13 +85,13 @@ namespace SupportTool.ViewModels
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
 
-			_findAllMemberOfGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedAllMemberOfGroup as string, "search"));
+			_findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup as string));
 
 			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddUsersWindow>(_group.CN));
 
 			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveUsersWindow>(_group.CN));
 
-			_findMemberUser = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedMemberUser as string, "search"));
+			_findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedMemberUser as string));
 
 			this
 				.WhenAnyValue(x => x.IsShowingMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
