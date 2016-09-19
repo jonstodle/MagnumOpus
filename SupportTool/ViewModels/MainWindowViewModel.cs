@@ -94,7 +94,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand Search => _search;
 
-		public ReactiveCommand Paste => _paste;
+		public ReactiveCommand<Unit, Unit> Paste => _paste;
 
 		public ReactiveCommand Open => _open;
 

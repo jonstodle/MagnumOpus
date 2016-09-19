@@ -51,6 +51,9 @@ namespace SupportTool
 						.Where(x => x.Key == Key.Enter)
 						.Select(_ => ViewModel.SearchQuery),
 					ViewModel
+						.Paste
+						.Select(_ => ViewModel.SearchQuery),
+					ViewModel
 						.WhenAnyValue(x => x.SearchQuery)
 						.Where(x =>
 						{
