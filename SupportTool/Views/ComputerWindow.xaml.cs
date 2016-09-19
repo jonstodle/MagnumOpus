@@ -33,12 +33,6 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
-
-			this.WhenActivated(d =>
-			{
-				d(MessageBus.Current.Listen<string>(ViewModel.Computer.CN)
-					.InvokeCommand(ViewModel, x => x.SetComputer));
-			});
 		}
 
 		public ComputerWindowViewModel ViewModel

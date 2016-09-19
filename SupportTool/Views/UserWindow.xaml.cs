@@ -32,12 +32,6 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
-
-			this.WhenActivated(d =>
-			{
-				d(MessageBus.Current.Listen<string>(ViewModel.User.CN)
-					.InvokeCommand(ViewModel, x => x.SetUser));
-			});
 		}
 
 		public UserWindowViewModel ViewModel
