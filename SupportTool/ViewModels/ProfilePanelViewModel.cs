@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
 using System;

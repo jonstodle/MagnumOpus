@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.ViewModels;
 using System;
 using System.Linq;
@@ -20,102 +19,75 @@ namespace SupportTool
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window, IViewFor<MainWindowViewModel>
-    {
-        public MainWindow()
-        {
-            SupportTool.Services.NavigationServices.NavigationService.Init(this);
+	{
+		public MainWindow()
+		{
+			SupportTool.Services.NavigationServices.NavigationService.Init(this);
 
-            InitializeComponent();
+			InitializeComponent();
 
-
-
-            this.Events()
-                .Activated
-                .Subscribe(_ =>
-                {
-                    QueryStringTextBox.Focus();
-                    QueryStringTextBox.SelectAll();
-                });
-
-
-
-            this.OneWayBind(ViewModel, vm => vm.ReverseHistory, v => v.NavigationContextMenu.ItemsSource);
-            this.Bind(ViewModel, vm => vm.QueryString, v => v.QueryStringTextBox.Text);
-
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
-            this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User);
-
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
-            this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
-
-            this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-            this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
-			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
-
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressDetailsStackPanel.Visibility, x => x != null ? Visibility.Visible : Visibility.Collapsed);
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
-
-
+			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
+			this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource);
+			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
+			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
+			this.OneWayBind(ViewModel, vm => vm.SearchResultsView.Count, v => v.SearchResultsCountTextBox.Text, x => $"{x} results");
 
 			this.WhenActivated(d =>
-            {
-                d(this.Events()
-                    .MouseDown
-                    .Where(x => x.ChangedButton == MouseButton.XButton1)
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.NavigateBack));
-                d(this.Events()
-                    .MouseDown
-                    .Where(x => x.ChangedButton == MouseButton.XButton2)
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.NavigateForward));
-                d(this.BindCommand(ViewModel, vm => vm.NavigateBack, v => v.NavigateBackButton));
-                d(this.BindCommand(ViewModel, vm => vm.NavigateForward, v => v.NavigateForwardButton));
-                d(this.BindCommand(ViewModel, vm => vm.PasteAndSearch, v => v.PasteAndFindButton));
-                d(this.BindCommand(ViewModel, vm => vm.Search, v => v.FindButton));
-                d(QueryStringTextBox.Events()
-                    .KeyDown
-                    .Where(x => x.Key == Key.Enter)
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.Search));
+			{
+				SearchQueryTextBox.Focus();
+				SearchQueryTextBox.SelectAll();
 
-				d(MessageBus.Current.Listen<string>("search")
-					.SubscribeOnDispatcher()
-					.Where(x => x.HasValue())
-					.Do(x => ViewModel.QueryString = x)
+				d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
+				d(Observable.Merge(
+					SearchQueryTextBox.Events()
+						.KeyDown
+						.Where(x => x.Key == Key.Enter)
+						.Select(_ => ViewModel.SearchQuery),
+					ViewModel
+						.WhenAnyValue(x => x.SearchQuery)
+						.Where(x =>
+						{
+							int i;
+							return x.Length > 0 && !int.TryParse(x.First().ToString(), out i);
+						})
+						.Throttle(TimeSpan.FromSeconds(1)))
+					.DistinctUntilChanged()
+					.Where(x => x.HasValue(3))
 					.Select(_ => Unit.Default)
+					.ObserveOnDispatcher()
 					.InvokeCommand(ViewModel, x => x.Search));
-            });
-        }
+				d(SearchResultsListView.Events()
+					.MouseDoubleClick
+					.Select(_ => Unit.Default)
+					.InvokeCommand(ViewModel, x => x.Open));
+				d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
+					.Subscribe(e =>
+					{
+						HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
+						HistoryButtonContextMenu.IsOpen = true;
+					}));
+			});
+		}
 
-        private void MenuItemClick(object sender, RoutedEventArgs args)
-        {
-            var menuItem = sender as MenuItem;
+		private void MenuItemClick(object sender, RoutedEventArgs args)
+		{
+			var menuItem = sender as MenuItem;
 			var header = menuItem.Header as string;
-			ViewModel.QueryString = header;
-			ViewModel.BackwardStepsCount = ViewModel.ReverseHistory.IndexOf(header);
-            Observable.Return(Unit.Default)
-                .InvokeCommand(ViewModel, x => x.Find);
-        }
+			ViewModel.SearchQuery = header;
+		}
 
-        public MainWindowViewModel ViewModel
-        {
-            get { return (MainWindowViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
+		public MainWindowViewModel ViewModel
+		{
+			get { return (MainWindowViewModel)GetValue(ViewModelProperty); }
+			set { SetValue(ViewModelProperty, value); }
+		}
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(new MainWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(new MainWindowViewModel()));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as MainWindowViewModel; }
-        }
-    }
+		object IViewFor.ViewModel
+		{
+			get { return ViewModel; }
+			set { ViewModel = value as MainWindowViewModel; }
+		}
+	}
 }

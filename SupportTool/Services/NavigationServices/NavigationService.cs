@@ -47,6 +47,15 @@ namespace SupportTool.Services.NavigationServices
 			return resultValue;
 		}
 
+		public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
+		{
+			var newWindow = new TWindow();
+
+			await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+
+			newWindow.Show();
+		}
+
 
 
 		private List<Window> navigationStack = new List<Window>();

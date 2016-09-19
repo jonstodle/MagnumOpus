@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -88,7 +87,7 @@ namespace SupportTool.ViewModels
 
             var principalChanged = this
                 .WhenAnyValue(x => x.Principal)
-                .NotNull();
+                .WhereNotNull();
 
             principalChanged
                 .Select(x => $"Remove groups from {x.DisplayName}")

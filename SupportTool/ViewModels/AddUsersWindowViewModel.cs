@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -90,7 +89,7 @@ namespace SupportTool.ViewModels
 
 			_windowTitle = this
 				.WhenAnyValue(x => x.Group)
-				.NotNull()
+				.WhereNotNull()
 				.Select(x => $"Add users to {x.CN}")
 				.ToProperty(this, x => x.WindowTitle, "");
 

@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -88,7 +87,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(_ => ResetValues());
 
             Observable.Merge(
-                this.WhenAnyValue(x => x.User).NotNull(),
+                this.WhenAnyValue(x => x.User).WhereNotNull(),
                 openAddGroups.Select(_ => User),
                 openRemoveGroups.Select(_ => User))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)

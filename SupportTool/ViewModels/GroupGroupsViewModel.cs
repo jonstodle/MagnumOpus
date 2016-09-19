@@ -1,11 +1,11 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.ComponentModel;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
@@ -107,7 +107,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(_ => IsShowingMembers = false);
 
 			Observable.Merge(
-				this.WhenAnyValue(x => x.Group).NotNull(),
+				this.WhenAnyValue(x => x.Group).WhereNotNull(),
 				_openAddGroups.Select(_ => _group),
 				_openRemoveGroups.Select(_ => _group))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
@@ -117,7 +117,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _directMemberOfGroups.Add(x));
 
 			Observable.Merge(
-				this.WhenAnyValue(x => x.Group).NotNull(),
+				this.WhenAnyValue(x => x.Group).WhereNotNull(),
 				_openAddUsers.Select(_ => _group),
 				_openRemoveUsers.Select(_ => _group))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)

@@ -1,5 +1,4 @@
-﻿using SupportTool.Helpers;
-using SupportTool.Models;
+﻿using SupportTool.Models;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;

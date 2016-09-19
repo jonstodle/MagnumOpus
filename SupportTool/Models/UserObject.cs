@@ -1,5 +1,5 @@
-﻿using System.DirectoryServices.AccountManagement;
-using SupportTool.Helpers;
+﻿using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 
 namespace SupportTool.Models
 {

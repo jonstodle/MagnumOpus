@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using System;
 using System.Linq;
@@ -19,7 +18,7 @@ namespace SupportTool.ViewModels
         {
 			this
 				.WhenAnyValue(x => x.User)
-				.NotNull()
+				.WhereNotNull()
                 .Select(x => x.Principal.IsAccountLockedOut())
                 .ToProperty(this, x => x.IsAccountLocked, out isAccountLocked);
 

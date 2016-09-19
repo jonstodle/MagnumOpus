@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
 using System;
@@ -43,7 +42,7 @@ namespace SupportTool.ViewModels
 			Observable.Merge(
 				pingResults.ItemsAdded,
 				stopPing.Select(_ => ""),
-				this.WhenAnyValue(x => x.Computer).NotNull().Select(_ => ""))
+				this.WhenAnyValue(x => x.Computer).WhereNotNull().Select(_ => ""))
                 .ToProperty(this, x => x.MostRecentPingResult, out mostRecentPingResult);
 
             this

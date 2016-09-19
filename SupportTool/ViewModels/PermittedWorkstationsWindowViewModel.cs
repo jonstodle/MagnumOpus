@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -71,13 +70,13 @@ namespace SupportTool.ViewModels
 
             this
                 .WhenAnyValue(x => x.User)
-                .NotNull()
+                .WhereNotNull()
                 .Select(x => $"Add workstations to {x.Principal.DisplayName}")
                 .ToProperty(this, x => x.WindowTitle, out _windowTitle);
 
             this
                 .WhenAnyValue(x => x.User)
-                .NotNull()
+                .WhereNotNull()
                 .Select(x => x.Principal.PermittedWorkstations)
                 .Subscribe(x =>
                 {

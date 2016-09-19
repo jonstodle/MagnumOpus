@@ -41,6 +41,10 @@
     <ApplicationIcon>Assets\Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ReactiveUI, Version=7.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\reactiveui-core.7.0.0.1467261023\lib\Net45\ReactiveUI.dll</HintPath>
       <Private>True</Private>
@@ -129,7 +133,8 @@
     <Compile Include="Controls\UserGroups.xaml.cs">
       <DependentUpon>UserGroups.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Extensions\System.cs" />
+    <Compile Include="Extensions\System.Windows.Resources.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
@@ -142,6 +147,7 @@
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Group.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
     <Compile Include="Services\DialogServices\DialogService.cs" />
+    <Compile Include="Services\FileServices\FileService.cs" />
     <Compile Include="Services\LogServices\LogService.cs" />
     <Compile Include="Services\LogServices\LogType.cs" />
     <Compile Include="Services\NavigationServices\IDialog.cs" />
@@ -151,9 +157,12 @@
     <Compile Include="ViewModels\AddUsersWindowViewModel.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
+    <Compile Include="ViewModels\ComputerWindowViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
+    <Compile Include="ViewModels\GroupWindowViewModel.cs" />
     <Compile Include="ViewModels\IPAddressPanelViewModel.cs" />
+    <Compile Include="ViewModels\IPAddressWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\AccountPanelViewModel.cs" />
     <Compile Include="ViewModels\PermittedWorkstationsWindowViewModel.cs" />
@@ -165,11 +174,21 @@
     <Compile Include="ViewModels\SearchWindowViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
+    <Compile Include="ViewModels\UserWindowViewModel.cs" />
     <Compile Include="Views\AddGroupsWindow.xaml.cs">
       <DependentUpon>AddGroupsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddUsersWindow.xaml.cs">
       <DependentUpon>AddUsersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ComputerWindow.xaml.cs">
+      <DependentUpon>ComputerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GroupWindow.xaml.cs">
+      <DependentUpon>GroupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IPAddressWindow.xaml.cs">
+      <DependentUpon>IPAddressWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
       <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
@@ -182,6 +201,9 @@
     </Compile>
     <Compile Include="Views\SearchWindow.xaml.cs">
       <DependentUpon>SearchWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UserWindow.xaml.cs">
+      <DependentUpon>UserWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Controls\ComputerDetails.xaml">
       <SubType>Designer</SubType>
@@ -247,6 +269,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ComputerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GroupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\IPAddressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\PermittedWorkstationsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -260,6 +294,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SearchWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\UserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -282,6 +320,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Compile Include="Extensions\System.DirectoryServices.cs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

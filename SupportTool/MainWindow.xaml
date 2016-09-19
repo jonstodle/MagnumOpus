@@ -8,84 +8,66 @@
         mc:Ignorable="d"
         x:Name="ThisWindow"
         Icon="/Assets/Icon.ico"
-        Title="Magnum Opus by Jon Stødle" MinHeight="300" MinWidth="200" Height="900" Width="600">
+        Title="Magnum Opus by Jon Stødle" MinHeight="200" MinWidth="200" Height="400" Width="900">
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-        </Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-        <Grid Margin="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2" Margin="2">
-                <StackPanel.ContextMenu>
-                    <ContextMenu x:Name="NavigationContextMenu">
-                        <ContextMenu.ItemContainerStyle>
-                            <Style TargetType="MenuItem">
-                                <EventSetter Event="Click" Handler="MenuItemClick"/>
-                            </Style>
-                        </ContextMenu.ItemContainerStyle>
+			<Button x:Name="PasteButton" Content="Paste" Margin="2"/>
 
-                        <ContextMenu.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}"/>
-                            </DataTemplate>
-                        </ContextMenu.ItemTemplate>
-                    </ContextMenu>
-                </StackPanel.ContextMenu>
-                
-                <Button x:Name="NavigateBackButton" Content="&lt;"/>
+			<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
 
-                <Button x:Name="NavigateForwardButton" Content="&gt;"/>
-            </StackPanel>
+			<Button x:Name="HistoryButton" Content="History" Grid.Column="2" Margin="2">
+				<Button.ContextMenu>
+					<ContextMenu x:Name="HistoryButtonContextMenu">
+						<ContextMenu.ItemContainerStyle>
+							<Style TargetType="MenuItem">
+								<EventSetter Event="Click" Handler="MenuItemClick"/>
+							</Style>
+						</ContextMenu.ItemContainerStyle>
 
-            <TextBox x:Name="QueryStringTextBox" CharacterCasing="Upper" MaxLines="1" Grid.Column="2" Margin="2"/>
+						<ContextMenu.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding}"/>
+							</DataTemplate>
+						</ContextMenu.ItemTemplate>
+					</ContextMenu>
+				</Button.ContextMenu>
+			</Button>
+		</Grid>
 
-            <Button x:Name="FindButton" Content="Find" Grid.Column="3" Padding="10,0" Margin="2"/>
+		<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
+			<ListView.View>
+				<GridView>
+					<GridView.Columns>
+						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[cn][0]}" Width="300"/>
+						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" Width="200"/>
+					</GridView.Columns>
+				</GridView>
+			</ListView.View>
+		</ListView>
 
-            <Button x:Name="PasteAndFindButton" Content="Paste&amp;Find" Grid.Column="4" Padding="10,0" Margin="2"/>
-        </Grid>
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Row="1">
-            <Grid Margin="2">
-                <StackPanel x:Name="UserDetailsStackPanel">
-                    <controls:UserDetails x:Name="UserDetails"/>
+			<TextBlock x:Name="SearchResultsCountTextBox" Margin="2"/>
 
-                    <controls:AccountPanel x:Name="UserAccountPanel"/>
-
-                    <controls:ProfilePanel x:Name="UserProfilePanel"/>
-
-                    <controls:UserGroups x:Name="UserGroups"/>
-                </StackPanel>
-
-                <StackPanel x:Name="ComputerDetailsStackPanel">
-                    <controls:ComputerDetails x:Name="ComputerDetails"/>
-
-                    <controls:RemotePanel x:Name="RemotePanel"/>
-
-                    <controls:PingPanel x:Name="PingPanel"/>
-
-                    <controls:ComputerGroups x:Name="ComputerGroups"/>
-                </StackPanel>
-
-                <StackPanel x:Name="GroupDetailsStackPanel">
-                    <controls:GroupDetails x:Name="GroupDetails"/>
-
-					<controls:GroupGroups x:Name="GroupGroups"/>
-				</StackPanel>
-
-				<StackPanel x:Name="IPAddressDetailsStackPanel">
-					<controls:IPAddressPanel x:Name="IPAddressPanel"/>
-				</StackPanel>
-            </Grid>
-        </ScrollViewer>
+			<TextBlock Text="Showing first 1000 results" Opacity=".5" Grid.Column="2" Margin="2"/>
+		</Grid>
     </Grid>
 </Window>

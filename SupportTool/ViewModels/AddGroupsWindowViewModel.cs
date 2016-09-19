@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Helpers;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
@@ -105,7 +104,7 @@ namespace SupportTool.ViewModels
 
 			this
 				.WhenAnyValue(x => x.Principal)
-				.NotNull()
+				.WhereNotNull()
 				.Select(x => $"Add groups to {x.DisplayName}")
 				.ToProperty(this, x => x.WindowTitle, out windowTitle);
 		}
