@@ -30,6 +30,11 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
+
+			this.WhenActivated(d =>
+			{
+				d(this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Group.CN)));
+			});
 		}
 
 		public GroupWindowViewModel ViewModel

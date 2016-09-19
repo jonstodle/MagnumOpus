@@ -10,14 +10,20 @@
         Height="600" Width="600">
 
 	<ScrollViewer>
-		<StackPanel Margin="2">
-			<controls:ComputerDetails x:Name="ComputerDetails"/>
+		<Grid Margin="2">
+			<StackPanel>
+				<controls:ComputerDetails x:Name="ComputerDetails"/>
 
-			<controls:RemotePanel x:Name="RemotePanel"/>
+				<controls:RemotePanel x:Name="RemotePanel"/>
 
-			<controls:PingPanel x:Name="PingPanel"/>
+				<controls:PingPanel x:Name="PingPanel"/>
 
-			<controls:ComputerGroups x:Name="ComputerGroups"/>
-		</StackPanel>
+				<controls:ComputerGroups x:Name="ComputerGroups"/>
+			</StackPanel>
+
+			<TextBlock HorizontalAlignment="Right" Margin="2">
+				<Hyperlink x:Name="RefreshHyperlink">Refresh</Hyperlink>
+			</TextBlock>
+		</Grid>
 	</ScrollViewer>
 </Window>

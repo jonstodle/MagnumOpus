@@ -10,10 +10,16 @@
         Height="600" Width="600">
 
 	<ScrollViewer>
-		<StackPanel Margin="2">
-			<controls:GroupDetails x:Name="GroupDetails"/>
+		<Grid Margin="2">
+			<StackPanel>
+				<controls:GroupDetails x:Name="GroupDetails"/>
 
-			<controls:GroupGroups x:Name="GroupGroups"/>
-		</StackPanel>
+				<controls:GroupGroups x:Name="GroupGroups"/>
+			</StackPanel>
+
+			<TextBlock HorizontalAlignment="Right" Margin="2">
+				<Hyperlink x:Name="RefreshHyperlink">Refresh</Hyperlink>
+			</TextBlock>
+		</Grid>
 	</ScrollViewer>
 </Window>
