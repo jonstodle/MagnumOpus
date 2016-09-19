@@ -26,6 +26,16 @@ namespace SupportTool
 
 			InitializeComponent();
 
+			ViewModel = new MainWindowViewModel();
+
+			this.Events()
+				.Activated
+				.Subscribe(_ =>
+				{
+					SearchQueryTextBox.Focus();
+					SearchQueryTextBox.SelectAll();
+				});
+
 			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
@@ -34,9 +44,6 @@ namespace SupportTool
 
 			this.WhenActivated(d =>
 			{
-				SearchQueryTextBox.Focus();
-				SearchQueryTextBox.SelectAll();
-
 				d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
 				d(Observable.Merge(
 					SearchQueryTextBox.Events()
@@ -82,7 +89,7 @@ namespace SupportTool
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(new MainWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{
