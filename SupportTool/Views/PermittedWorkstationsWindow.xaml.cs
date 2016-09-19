@@ -22,6 +22,8 @@ namespace SupportTool.Views
         {
             InitializeComponent();
 
+			ViewModel = new PermittedWorkstationsWindowViewModel();
+
             this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title, x => x != null ? x : "");
             this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text);
             this.OneWayBind(ViewModel, vm => vm.ComputersView, v => v.ComputersListView.ItemsSource);
@@ -48,7 +50,7 @@ namespace SupportTool.Views
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(PermittedWorkstationsWindowViewModel), typeof(PermittedWorkstationsWindow), new PropertyMetadata(new PermittedWorkstationsWindowViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(PermittedWorkstationsWindowViewModel), typeof(PermittedWorkstationsWindow), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

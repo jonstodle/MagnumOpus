@@ -23,6 +23,8 @@ namespace SupportTool.Views
         {
             InitializeComponent();
 
+			ViewModel = new AddGroupsWindowViewModel();
+
             this.Events()
                 .Activated
                 .Subscribe(_ => SearchTextBox.Focus());
@@ -67,7 +69,7 @@ namespace SupportTool.Views
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AddGroupsWindowViewModel), typeof(AddGroupsWindow), new PropertyMetadata(new AddGroupsWindowViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AddGroupsWindowViewModel), typeof(AddGroupsWindow), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

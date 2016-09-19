@@ -25,6 +25,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			ViewModel = new UserWindowViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.User.CN, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
@@ -38,7 +40,7 @@ namespace SupportTool.Views
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserWindowViewModel), typeof(UserWindow), new PropertyMetadata(new UserWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserWindowViewModel), typeof(UserWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{

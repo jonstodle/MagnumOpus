@@ -14,6 +14,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			ViewModel = new RemoveUsersWindowViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title);
 
 			this.OneWayBind(ViewModel, vm => vm.MembersView, v => v.MembersListView.ItemsSource);
@@ -37,7 +39,7 @@ namespace SupportTool.Views
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemoveUsersWindowViewModel), typeof(RemoveUsersWindow), new PropertyMetadata(new RemoveUsersWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemoveUsersWindowViewModel), typeof(RemoveUsersWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{

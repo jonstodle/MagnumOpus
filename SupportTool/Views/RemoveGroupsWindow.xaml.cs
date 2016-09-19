@@ -22,6 +22,8 @@ namespace SupportTool.Views
         {
             InitializeComponent();
 
+			ViewModel = new RemoveGroupsWindowViewModel();
+
             this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title, x => x ?? "");
             this.OneWayBind(ViewModel, vm => vm.PrincipalGroupsView, v => v.PrincipalGroupsListView.ItemsSource);
             this.Bind(ViewModel, vm => vm.SelectedPrincipalGroup, v => v.PrincipalGroupsListView.SelectedItem);
@@ -50,7 +52,7 @@ namespace SupportTool.Views
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemoveGroupsWindowViewModel), typeof(RemoveGroupsWindow), new PropertyMetadata(new RemoveGroupsWindowViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemoveGroupsWindowViewModel), typeof(RemoveGroupsWindow), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

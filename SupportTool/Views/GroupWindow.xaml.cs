@@ -25,6 +25,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			ViewModel = new GroupWindowViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
@@ -36,7 +38,7 @@ namespace SupportTool.Views
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupWindowViewModel), typeof(GroupWindow), new PropertyMetadata(new GroupWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupWindowViewModel), typeof(GroupWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{

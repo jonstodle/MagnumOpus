@@ -25,6 +25,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			ViewModel = new IPAddressWindowViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
 		}
@@ -35,7 +37,7 @@ namespace SupportTool.Views
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPAddressWindowViewModel), typeof(IPAddressWindow), new PropertyMetadata(new IPAddressWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPAddressWindowViewModel), typeof(IPAddressWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{

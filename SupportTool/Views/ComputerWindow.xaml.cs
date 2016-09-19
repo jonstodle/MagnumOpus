@@ -25,6 +25,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			ViewModel = new ComputerWindowViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
@@ -37,7 +39,7 @@ namespace SupportTool.Views
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerWindowViewModel), typeof(ComputerWindow), new PropertyMetadata(new ComputerWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerWindowViewModel), typeof(ComputerWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{

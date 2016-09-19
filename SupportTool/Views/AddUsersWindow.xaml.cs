@@ -18,6 +18,8 @@ namespace SupportTool.Views
 		{
 			InitializeComponent();
 
+			ViewModel = new AddUsersWindowViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title);
 
 			this.Bind(ViewModel, vm => vm.SearchString, v => v.SearchTextBox.Text);
@@ -52,7 +54,7 @@ namespace SupportTool.Views
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AddUsersWindowViewModel), typeof(AddUsersWindow), new PropertyMetadata(new AddUsersWindowViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AddUsersWindowViewModel), typeof(AddUsersWindow), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{
