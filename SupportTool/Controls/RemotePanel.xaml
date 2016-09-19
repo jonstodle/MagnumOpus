@@ -23,6 +23,8 @@
 
 			<Button x:Name="RemoteControlButton" Content="Remote control..." Margin="2"/>
 
+			<Button x:Name="KillRemoteControlButton" Content="Kill RC..." Margin="2"/>
+
 			<Button x:Name="RemoteAssistanceButton" Content="Remote assistance..." Margin="2"/>
 
 			<Button x:Name="RdpButton" Content="RDP..." Margin="2"/>
