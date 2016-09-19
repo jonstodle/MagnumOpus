@@ -14,6 +14,8 @@ namespace SupportTool.Controls
 		{
 			InitializeComponent();
 
+			ViewModel = new IPAddressPanelViewModel();
+
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}");
 
 			this.WhenActivated(d =>
@@ -42,7 +44,7 @@ namespace SupportTool.Controls
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPAddressPanelViewModel), typeof(IPAddressPanel), new PropertyMetadata(new IPAddressPanelViewModel()));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPAddressPanelViewModel), typeof(IPAddressPanel), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{

@@ -18,6 +18,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new UserGroupsViewModel();
+
             this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsGrid.Visibility);
             this.Bind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsToggleButton.IsChecked);
@@ -63,7 +65,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserGroupsViewModel), typeof(UserGroups), new PropertyMetadata(new UserGroupsViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserGroupsViewModel), typeof(UserGroups), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

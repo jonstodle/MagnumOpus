@@ -15,6 +15,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new GroupDetailsViewModel();
+
             this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text);
         }
 
@@ -32,7 +34,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupDetailsViewModel), typeof(GroupDetails), new PropertyMetadata(new GroupDetailsViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupDetailsViewModel), typeof(GroupDetails), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

@@ -24,6 +24,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new ProfilePanelViewModel();
+
             this.Bind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileGrid.Visibility);
             this.Bind(ViewModel, vm => vm.ComputerName, v => v.ResetProfileComputerNameTextBox.Text);
@@ -74,7 +76,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ProfilePanelViewModel), typeof(ProfilePanel), new PropertyMetadata(new ProfilePanelViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ProfilePanelViewModel), typeof(ProfilePanel), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

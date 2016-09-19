@@ -15,6 +15,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new ComputerGroupsViewModel();
+
             this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsStackPanel.Visibility);
             this.OneWayBind(ViewModel, vm => vm.DirectGroupsCollectionView, v => v.DirectGroupsListView.ItemsSource);
@@ -42,7 +44,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerGroupsViewModel), typeof(ComputerGroups), new PropertyMetadata(new ComputerGroupsViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerGroupsViewModel), typeof(ComputerGroups), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

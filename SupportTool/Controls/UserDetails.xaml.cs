@@ -16,6 +16,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new UserDetailsViewModel();
+
             this.OneWayBind(ViewModel, vm => vm.User.Principal.DisplayName, v => v.DisplayNameTextBlock.Text);
             this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text);
             this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"Expires {((DateTime)x).ToShortDateString()}" : "Never expires");
@@ -38,7 +40,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserDetailsViewModel), typeof(UserDetails), new PropertyMetadata(new UserDetailsViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserDetailsViewModel), typeof(UserDetails), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

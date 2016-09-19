@@ -15,6 +15,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new ComputerDetailsViewModel();
+
 
 
             this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.CNTextBlock.Text);
@@ -35,7 +37,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerDetailsViewModel), typeof(ComputerDetails), new PropertyMetadata(new ComputerDetailsViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerDetailsViewModel), typeof(ComputerDetails), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

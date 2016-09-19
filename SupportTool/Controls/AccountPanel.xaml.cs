@@ -24,6 +24,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new AccountPanelViewModel();
+
             this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility);
             this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text);
@@ -62,7 +64,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AccountPanelViewModel), typeof(AccountPanel), new PropertyMetadata(new AccountPanelViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(AccountPanelViewModel), typeof(AccountPanel), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

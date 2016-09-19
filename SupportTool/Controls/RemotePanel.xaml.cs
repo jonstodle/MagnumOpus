@@ -15,6 +15,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new RemotePanelViewModel();
+
             this.WhenActivated(d =>
             {
                 d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton));
@@ -41,7 +43,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemotePanelViewModel), typeof(RemotePanel), new PropertyMetadata(new RemotePanelViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemotePanelViewModel), typeof(RemotePanel), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {

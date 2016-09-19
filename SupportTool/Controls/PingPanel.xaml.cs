@@ -18,6 +18,8 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
+			ViewModel = new PingPanelViewModel();
+
 			this.Bind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.IsChecked);
 			this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, x => !x ? "Start" : "Stop");
 			this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text);
@@ -63,7 +65,7 @@ namespace SupportTool.Controls
             set { SetValue(ViewModelProperty, value); }
         }
 
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(PingPanelViewModel), typeof(PingPanel), new PropertyMetadata(new PingPanelViewModel()));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(PingPanelViewModel), typeof(PingPanel), new PropertyMetadata(null));
 
         object IViewFor.ViewModel
         {
