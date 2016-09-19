@@ -17,6 +17,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _openCDrive;
 		private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
+		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
 		private ComputerObject _computer;
 
@@ -45,12 +46,15 @@ namespace SupportTool.ViewModels
 
 			_startRemoteControl = ReactiveCommand.Create(() => StartRemoteControlImpl(_computer));
 
+			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteCmd(@"C:\Windows\System32\msra.exe", $"/offerra {_computer.CN}"));
+
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\mstsc.exe", $"/v {_computer.CN}"));
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
 				_openRemoteExecution.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
+				_startRemoteAssistance.ThrownExceptions,
 				_startRdp.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not launch external program"));
 		}
@@ -68,6 +72,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand RebootComputer => _rebootComputer;
 
 		public ReactiveCommand StartRemoteControl => _startRemoteControl;
+
+		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
 
 		public ReactiveCommand StartRdp => _startRdp;
 
