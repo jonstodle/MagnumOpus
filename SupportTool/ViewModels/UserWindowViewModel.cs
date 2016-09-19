@@ -33,13 +33,15 @@ namespace SupportTool.ViewModels
 
 
 
-		public async Task OnNavigatedTo(object parameter)
+		public Task OnNavigatedTo(object parameter)
 		{
 			if (parameter is string)
 			{
 				Observable.Return(parameter as string)
 					.InvokeCommand(_setUser);
 			}
+
+			return Task.FromResult<object>(null);
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
