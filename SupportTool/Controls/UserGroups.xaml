@@ -21,14 +21,8 @@
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <ListView x:Name="DirectGroupsListView" Height="200" Margin="2">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+
+			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
 			<Button x:Name="EditGroupsButton" Content="Edit..." Grid.Row="1" Margin="2"/>
 
@@ -62,15 +56,9 @@
 
             <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
 
-            <ListView x:Name="AllGroupsListView" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+			<ListView x:Name="AllGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2"/>
 
-            <TextBlock Grid.Row="3" Margin="2">
+			<TextBlock Grid.Row="3" Margin="2">
                         <Run Text="Showing "/>
                         <Run x:Name="ShowingCountRun"/>
                         <Run Text=" of "/>

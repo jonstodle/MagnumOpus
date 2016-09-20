@@ -24,13 +24,7 @@
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
-			<ListView x:Name="DirectMemberOfListView" Height="200" Margin="2">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+			<ListView x:Name="DirectMemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
 			<Button x:Name="EditDirectGroupsButton" Content="Edit..." Grid.Row="1" Margin="2"/>
 		</Grid>
@@ -50,13 +44,7 @@
 
 			<ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1" Margin="2"/>
 
-			<ListView x:Name="MemberOfListView" Height="200" Grid.Row="1" Grid.ColumnSpan="2" Margin="2">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+			<ListView x:Name="MemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
 
 			<TextBlock Grid.Row="2" Margin="2">
                         <Run Text="Showing "/>
@@ -72,13 +60,7 @@
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
-			<ListView x:Name="MembersListView" Height="200" Margin="2">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-			</ListView>
+			<ListView x:Name="MembersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
 			<Button x:Name="MembersButton" Content="Edit..." Grid.Row="1" Margin="2"/>
 		</Grid>

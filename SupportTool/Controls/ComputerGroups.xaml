@@ -15,13 +15,7 @@
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
-            <ListView x:Name="DirectGroupsListView" Height="200" Margin="2">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
 			<Button x:Name="EditDirectGroupsButton" Content="Edit..." Margin="2"/>
 		</StackPanel>
