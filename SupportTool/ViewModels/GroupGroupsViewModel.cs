@@ -212,7 +212,7 @@ namespace SupportTool.ViewModels
 				var de = ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1).Wait();
 
 				if (disposed) break;
-				observer.OnNext(de.Properties.Get<string>("cn"));
+				observer.OnNext(de.Properties.Get<string>("name"));
 			}
 
 			observer.OnCompleted();
@@ -226,9 +226,9 @@ namespace SupportTool.ViewModels
 			.SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
 			.Select(x =>
 			{
-				var cn = x.Properties.Get<string>("cn");
+				var name = x.Properties.Get<string>("name");
 				x.Dispose();
-				return cn;
+				return name;
 			})
 			.Distinct();
 
@@ -244,7 +244,7 @@ namespace SupportTool.ViewModels
 			foreach (Principal item in group.Principal.Members)
 			{
 				if (disposed) break;
-				observer.OnNext(item.DisplayName);
+				observer.OnNext(item.Name);
 			}
 
 			observer.OnCompleted();
