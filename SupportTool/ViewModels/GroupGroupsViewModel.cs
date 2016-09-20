@@ -20,8 +20,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
 		private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
-		private readonly ReactiveCommand<Unit, Unit> _openAddUsers;
-		private readonly ReactiveCommand<Unit, Unit> _openRemoveUsers;
+		private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
 		private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
 		private readonly ReactiveList<string> _directMemberOfGroups;
 		private readonly ReactiveList<string> _allMemberOfGroups;
@@ -84,9 +83,7 @@ namespace SupportTool.ViewModels
 
 			_findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup as string));
 
-			_openAddUsers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddUsersWindow>(_group.CN));
-
-			_openRemoveUsers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveUsersWindow>(_group.CN));
+			_openEditMembers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMembersWindow>(_group.CN));
 
 			_findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedMemberUser as string));
 
@@ -114,8 +111,7 @@ namespace SupportTool.ViewModels
 
 			Observable.Merge(
 				this.WhenAnyValue(x => x.Group).WhereNotNull(),
-				_openAddUsers.Select(_ => _group),
-				_openRemoveUsers.Select(_ => _group))
+				_openEditMembers.Select(_ => _group))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
 				.Do(_ => _memberUsers.Clear())
 				.SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
@@ -133,9 +129,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand FindAllMemberOfGroup => _findAllMemberOfGroup;
 
-		public ReactiveCommand OpenAddUsers => _openAddUsers;
-
-		public ReactiveCommand OpenRemoveUsers => _openRemoveUsers;
+		public ReactiveCommand OpenEditMembers => _openEditMembers;
 
 		public ReactiveCommand FindMemberUser => _findMemberUser;
 

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SupportTool.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="600">
+             d:DesignHeight="900" d:DesignWidth="600">
 
 	<StackPanel>
 		<TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
@@ -80,16 +80,7 @@
 				</ListView.ItemTemplate>
 			</ListView>
 
-			<Grid Grid.Row="1">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-
-				<Button x:Name="AddMembersButton" Content="Add members..." Margin="2"/>
-
-				<Button x:Name="RemoveMembersButton" Content="Remove members..." Grid.Column="1" Margin="2"/>
-			</Grid>
+			<Button x:Name="MembersButton" Content="Edit..." Grid.Row="1" Margin="2"/>
 		</Grid>
 	</StackPanel>
 </UserControl>

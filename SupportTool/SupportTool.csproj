@@ -154,11 +154,11 @@
     <Compile Include="Services\NavigationServices\IDialog.cs" />
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
-    <Compile Include="ViewModels\AddUsersWindowViewModel.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\ComputerWindowViewModel.cs" />
     <Compile Include="ViewModels\EditMemberOfWindowViewModel.cs" />
+    <Compile Include="ViewModels\EditMembersWindowViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupWindowViewModel.cs" />
@@ -170,18 +170,17 @@
     <Compile Include="ViewModels\PingPanelViewModel.cs" />
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
     <Compile Include="ViewModels\RemotePanelViewModel.cs" />
-    <Compile Include="ViewModels\RemoveUsersWindowViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="ViewModels\UserWindowViewModel.cs" />
-    <Compile Include="Views\AddUsersWindow.xaml.cs">
-      <DependentUpon>AddUsersWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\ComputerWindow.xaml.cs">
       <DependentUpon>ComputerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditMemberOfWindow.xaml.cs">
       <DependentUpon>EditMemberOfWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditMembersWindow.xaml.cs">
+      <DependentUpon>EditMembersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\GroupWindow.xaml.cs">
       <DependentUpon>GroupWindow.xaml</DependentUpon>
@@ -191,9 +190,6 @@
     </Compile>
     <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
       <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RemoveUsersWindow.xaml.cs">
-      <DependentUpon>RemoveUsersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\UserWindow.xaml.cs">
       <DependentUpon>UserWindow.xaml</DependentUpon>
@@ -254,15 +250,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\AddUsersWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\ComputerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EditMemberOfWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditMembersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -275,10 +271,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PermittedWorkstationsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\RemoveUsersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
