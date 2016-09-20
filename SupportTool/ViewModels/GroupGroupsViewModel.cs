@@ -16,8 +16,7 @@ namespace SupportTool.ViewModels
 {
 	public class GroupGroupsViewModel : ReactiveObject
 	{
-		private readonly ReactiveCommand<Unit, Unit> _openAddGroups;
-		private readonly ReactiveCommand<Unit, Unit> _openRemoveGroups;
+		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
 		private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
@@ -64,9 +63,7 @@ namespace SupportTool.ViewModels
 				.WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
 				.Subscribe(_ => _allMemberOfGroupsView?.Refresh());
 
-			_openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddGroupsWindow>(_group.CN));
-
-			_openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveGroupsWindow>(_group.CN));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_group.CN));
 
 			_findDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup as string));
 
@@ -108,8 +105,7 @@ namespace SupportTool.ViewModels
 
 			Observable.Merge(
 				this.WhenAnyValue(x => x.Group).WhereNotNull(),
-				_openAddGroups.Select(_ => _group),
-				_openRemoveGroups.Select(_ => _group))
+				_openEditMemberOf.Select(_ => _group))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
 				.Do(_ => _directMemberOfGroups.Clear())
 				.SelectMany(x => GetDirectGroups(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
@@ -129,9 +125,7 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand OpenAddGroups => _openAddGroups;
-
-		public ReactiveCommand OpenRemoveGroups => _openRemoveGroups;
+		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
 		public ReactiveCommand FindDirectMemberOfGroup => _findDirectMemberOfGroup;
 

@@ -32,16 +32,7 @@
 				</ListView.ItemTemplate>
 			</ListView>
 
-			<Grid Grid.Row="1">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-
-				<Button x:Name="AddToButton" Content="Add to..." Margin="2"/>
-
-				<Button x:Name="RemoveFromButton" Content="Remove from..." Grid.Column="1" Margin="2"/>
-			</Grid>
+			<Button x:Name="EditDirectGroupsButton" Content="Edit..." Grid.Row="1" Margin="2"/>
 		</Grid>
 
 		<Grid x:Name="MemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">

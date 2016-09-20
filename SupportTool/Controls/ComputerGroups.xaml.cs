@@ -25,9 +25,8 @@ namespace SupportTool.Controls
 			this.WhenActivated(d =>
             {
 				d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.DirectGroupsListView, nameof(ListView.MouseDoubleClick)));
-				d(this.BindCommand(ViewModel, vm => vm.OpenAddGroups, v => v.AddGroupsButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenRemoveGroups, v => v.RemoveGroupsButton));
-            });
+				d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton));
+			});
         }
 
         public ComputerObject Computer

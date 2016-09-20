@@ -14,8 +14,7 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerGroupsViewModel : ReactiveObject
     {
-        private readonly ReactiveCommand<Unit, Unit> openAddGroups;
-        private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;
+		private readonly ReactiveCommand<Unit, Unit> openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
         private readonly ReactiveList<string> directGroups;
         private readonly ListCollectionView directGroupsCollectionView;
@@ -32,16 +31,13 @@ namespace SupportTool.ViewModels
             directGroupsCollectionView = new ListCollectionView(directGroups);
             directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-            openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddGroupsWindow>(computer.Principal.SamAccountName));
-
-            openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveGroupsWindow>(computer.Principal.SamAccountName));
+			openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(computer.Principal.SamAccountName));
 
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.Computer).WhereNotNull(),
-                openAddGroups.Select(_ => Computer),
-                openRemoveGroups.Select(_ => Computer))
+               openEditMemberOf.Select(_ => Computer))
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
                 .ObserveOnDispatcher()
@@ -50,9 +46,7 @@ namespace SupportTool.ViewModels
 
 
 
-        public ReactiveCommand OpenAddGroups => openAddGroups;
-
-        public ReactiveCommand OpenRemoveGroups => openRemoveGroups;
+		public ReactiveCommand OpenEditMemberOf => openEditMemberOf;
 
 		public ReactiveCommand FindDirectGroup => _findDirectGroup;
 
