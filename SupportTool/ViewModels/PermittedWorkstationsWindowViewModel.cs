@@ -133,20 +133,11 @@ namespace SupportTool.ViewModels
             user.Principal.Save();
         });
 
-        private void ResetValues()
-        {
-            User = null;
-            ComputerName = null;
-            SelectedComputer = null;
-            _computers.Clear();
-        }
-
 
 
 		public async Task Opening(Action close, object parameter)
 		{
 			_close = close;
-			ResetValues();
 
 			if (parameter is string)
 			{

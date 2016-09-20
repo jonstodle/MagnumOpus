@@ -136,13 +136,6 @@ namespace SupportTool.ViewModels
         }
 
 
-        private void ResetValues()
-        {
-            PrincipalGroups.Clear();
-            GroupsToRemove.Clear();
-        }
-
-
 
         private IObservable<DirectoryEntry> GetMemberOfDirectoryEntries(Principal principal) => Observable.Create<DirectoryEntry>(observer =>
         {
@@ -182,8 +175,6 @@ namespace SupportTool.ViewModels
 		public async Task Opening(Action close, object parameter)
 		{
 			_close = close;
-
-			ResetValues();
 
 			if (parameter is string)
 			{

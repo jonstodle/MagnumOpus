@@ -160,20 +160,11 @@ namespace SupportTool.ViewModels
 			return groupsNotAdded;
 		});
 
-		private void ResetValues()
-		{
-			_searchResults.Clear();
-			_usersToAdd.Clear();
-			SearchString = "";
-		}
-
 
 
 		public async Task Opening(Action close, object parameter)
 		{
 			_close = close;
-
-			ResetValues();
 
 			if (parameter is string)
 			{

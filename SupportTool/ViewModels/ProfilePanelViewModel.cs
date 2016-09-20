@@ -127,10 +127,6 @@ namespace SupportTool.ViewModels
 				.WhenAnyValue(x => x.IsShowingRestoreProfile)
 				.Where(x => x)
 				.Subscribe(_ => IsShowingResetProfile = false);
-
-			this
-				.WhenAnyValue(x => x.User)
-				.Subscribe(_ => ResetValues());
 		}
 
 
@@ -458,24 +454,5 @@ namespace SupportTool.ViewModels
 		}
 
 		private string CreateLogString(string logMessage) => $"{DateTimeOffset.Now.ToString("T")} - {logMessage}";
-
-
-
-		private void ResetValues()
-		{
-			ResetMessages.Clear();
-			Profiles.Clear();
-			IsShowingResetProfile = false;
-			IsShowingRestoreProfile = false;
-			ComputerName = "";
-			ShouldRestoreDesktopItems = true;
-			ShouldRestoreInternetExplorerFavorites = true;
-			ShouldRestoreOutlookSignatures = true;
-			ShouldRestoreWindowsExplorerFavorites = true;
-			ShouldRestoreStickyNotes = true;
-			SelectedProfileIndex = -1;
-			LocalProfileDirectory = null;
-			GlobalProfileDirectory = null;
-		}
 	}
 }

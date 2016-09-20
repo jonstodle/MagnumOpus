@@ -79,10 +79,6 @@ namespace SupportTool.ViewModels
 
 			_findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
 
-            this
-                .WhenAnyValue(x => x.User)
-                .Subscribe(_ => ResetValues());
-
             Observable.Merge(
                 this.WhenAnyValue(x => x.User).WhereNotNull(),
                 openEditMemberOf.Select(_ => User))
@@ -166,15 +162,6 @@ namespace SupportTool.ViewModels
         }
 
 
-
-        private void ResetValues()
-        {
-            AllGroups.Clear();
-            DirectGroups.Clear();
-            IsShowingDirectGroups = false;
-            IsShowingAllGroups = false;
-            GroupFilter = "";
-        }
 
         private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Create<DirectoryEntry>(async observer =>
         {

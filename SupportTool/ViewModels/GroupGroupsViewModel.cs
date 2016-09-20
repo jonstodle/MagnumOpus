@@ -125,10 +125,6 @@ namespace SupportTool.ViewModels
 				.SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
 				.ObserveOnDispatcher()
 				.Subscribe(x => _memberUsers.Add(x));
-
-			this
-				.WhenAnyValue(x => x.Group)
-				.Subscribe(_ => ResetValues());
 		}
 
 
@@ -297,19 +293,6 @@ namespace SupportTool.ViewModels
 			}
 
 			return false;
-		}
-
-
-
-		private void ResetValues()
-		{
-			DirectMemberOfGroups.Clear();
-			AllMemberOfGroups.Clear();
-			IsShowingDirectMemberOf = false;
-			IsShowingMemberOf = false;
-			IsShowingMembers = false;
-			FilterString = "";
-			UseFuzzy = false;
 		}
 	}
 }

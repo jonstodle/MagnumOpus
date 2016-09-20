@@ -49,10 +49,6 @@ namespace SupportTool.ViewModels
                 .WhenAnyValue(x => x.IsPinging)
                 .Where(x => !x)
                 .Subscribe(_ => IsShowingPingResultDetails = false);
-
-            this
-                .WhenAnyValue(x => x.Computer)
-                .Subscribe(_ => ResetValues());
         }
 
 
@@ -104,12 +100,5 @@ namespace SupportTool.ViewModels
 
             return () => pings.Dispose();
         });
-
-        private void ResetValues()
-        {
-            PingResults.Clear();
-            IsPinging = false;
-            IsShowingPingResultDetails = false;
-        }
     }
 }

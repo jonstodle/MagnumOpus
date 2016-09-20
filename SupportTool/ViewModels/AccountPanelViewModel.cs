@@ -88,10 +88,6 @@ namespace SupportTool.ViewModels
             });
 
             openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.PermittedWorkstationsWindow>(user.Principal.SamAccountName));
-
-            this
-                .WhenAnyValue(x => x.User)
-                .Subscribe(_ => ResetValues());
         }
 
 
@@ -164,11 +160,5 @@ namespace SupportTool.ViewModels
 
             return password;
         });
-
-        private void ResetValues()
-        {
-            IsShowingNewPasswordOptions = false;
-            NewPassword = "";
-        }
     }
 }

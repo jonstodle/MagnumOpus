@@ -167,21 +167,11 @@ namespace SupportTool.ViewModels
 			return membersNotRemoved;
 		});
 
-		private void ResetValues()
-		{
-			_members.Clear();
-			_membersToRemove.Clear();
-			SelectedMember = null;
-			SelectedMemberToRemove = null;
-		}
-
 
 
 		public async Task Opening(Action close, object parameter)
 		{
 			_close = close;
-
-			ResetValues();
 
 			if (parameter is string)
 			{
