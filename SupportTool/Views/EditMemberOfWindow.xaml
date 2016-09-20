@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
-        Title="EditMemberOfWindow" Height="500" Width="500">
+		Icon="/Assets/Icon.ico"
+        Height="500" Width="500">
 
 	<Window.Resources>
 		<DataTemplate x:Key="DirectoryEntryDataTemplate">
@@ -37,7 +38,7 @@
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 			
-			<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Margin="2"/>
+			<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2"/>
 
 			<Button x:Name="SaveButton" Content="&#x1F4BE; Save" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2" Margin="2"/>
 		</Grid>

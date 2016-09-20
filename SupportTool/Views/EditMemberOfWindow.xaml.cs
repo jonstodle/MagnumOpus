@@ -28,6 +28,8 @@ namespace SupportTool.Views
 
 			ViewModel = new EditMemberOfWindowViewModel();
 
+			this.OneWayBind(ViewModel, vm => vm.Principal, v => v.Title, x => x != null ? $"Edit {x.Name}'s MemberOf" : "");
+
 			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
@@ -37,6 +39,12 @@ namespace SupportTool.Views
 			this.WhenActivated(d =>
 			{
 				SearchQueryTextBox.Focus();
+				d(ViewModel
+					.WhenAnyValue(x => x.Principal)
+					.WhereNotNull()
+					.SubscribeOnDispatcher()
+					.ToSignal()
+					.InvokeCommand(ViewModel, x => x.GetPrincipalMembers));
 				d(Observable.Merge(
 						SearchQueryTextBox.Events()
 							.KeyDown
@@ -45,8 +53,10 @@ namespace SupportTool.Views
 						ViewModel
 							.WhenAnyValue(x => x.SearchQuery)
 							.Throttle(TimeSpan.FromSeconds(1)))
+					.Where(x => x.HasValue(3))
 					.DistinctUntilChanged()
 					.SubscribeOnDispatcher()
+					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.Search));
 				d(SearchResultsListView.Events()
 					.MouseDoubleClick
@@ -56,7 +66,7 @@ namespace SupportTool.Views
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromPrincipal));
-				d(this.BindCommand(ViewModel, vm => vm.Search, v => v.SaveButton));
+				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
 			});
 		}
 

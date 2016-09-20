@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
@@ -19,6 +20,7 @@ namespace SupportTool.ViewModels
 	public class EditMemberOfWindowViewModel : ReactiveObject, IDialog
 	{
 		private readonly ReactiveCommand<string, Principal> _setPrincipal;
+		private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
@@ -50,6 +52,11 @@ namespace SupportTool.ViewModels
 			_setPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
 			_setPrincipal
 				.ToProperty(this, x => x.Principal, out _principal);
+
+			_getPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value).SubscribeOn(RxApp.TaskpoolScheduler));
+			_getPrincipalMembers
+				.ObserveOnDispatcher()
+				.Subscribe(x => _principalMembers.Add(x));
 
 			_search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
 			_search
@@ -106,6 +113,8 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand SetPrincipal => _setPrincipal;
 
+		public ReactiveCommand GetPrincipalMembers => _getPrincipalMembers;
+
 		public ReactiveCommand Search => _search;
 
 		public ReactiveCommand AddToPrincipal => _addToPrincipal;
@@ -148,6 +157,22 @@ namespace SupportTool.ViewModels
 		}
 
 
+
+		private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal) => Observable.Create<DirectoryEntry>(observer =>
+		{
+			var disposed = false;
+
+			var obj = new ActiveDirectoryObject<Principal>(principal);
+			foreach (string item in obj.MemberOf)
+			{
+				var de = ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1).Wait();
+
+				if (disposed) break;
+				observer.OnNext(de);
+			}
+
+			return () => disposed = true;
+		});
 
 		private IObservable<IEnumerable<string>> SaveImpl(Principal principal, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
 		{

@@ -15,8 +15,7 @@ namespace SupportTool.ViewModels
 {
 	public class UserGroupsViewModel : ReactiveObject
     {
-        private readonly ReactiveCommand<Unit, Unit> openAddGroups;
-        private readonly ReactiveCommand<Unit, Unit> openRemoveGroups;
+		private readonly ReactiveCommand<Unit, Unit> openEditMemberOf;
         private readonly ReactiveCommand<Unit, DirectoryEntry> getAllGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
 		private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
@@ -50,11 +49,9 @@ namespace SupportTool.ViewModels
             directGroupsCollectionView = new ListCollectionView(directGroups);
             directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-            openAddGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.AddGroupsWindow>(user.Principal.SamAccountName));
+			openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(user.Principal.SamAccountName));
 
-            openRemoveGroups = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.RemoveGroupsWindow>(user.Principal.SamAccountName));
-
-            getAllGroups = ReactiveCommand.CreateFromObservable(
+			getAllGroups = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
                     AllGroups.Clear();
@@ -88,8 +85,7 @@ namespace SupportTool.ViewModels
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.User).WhereNotNull(),
-                openAddGroups.Select(_ => User),
-                openRemoveGroups.Select(_ => User))
+                openEditMemberOf.Select(_ => User))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
 				.Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
@@ -109,9 +105,7 @@ namespace SupportTool.ViewModels
 
 
 
-        public ReactiveCommand OpenAddGroups => openAddGroups;
-
-        public ReactiveCommand OpenRemoveGroups => openRemoveGroups;
+		public ReactiveCommand OpenEditMemberOf => openEditMemberOf;
 
         public ReactiveCommand GetAllGroups => getAllGroups;
 
