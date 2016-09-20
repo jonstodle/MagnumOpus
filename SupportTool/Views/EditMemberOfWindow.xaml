@@ -8,13 +8,7 @@
 		Icon="/Assets/Icon.ico"
         Height="500" Width="500">
 
-	<Window.Resources>
-		<DataTemplate x:Key="DirectoryEntryDataTemplate">
-			<TextBlock Text="{Binding Properties[cn][0]}"/>
-		</DataTemplate>
-	</Window.Resources>
-	
-    <Grid Margin="2">
+	<Grid Margin="2">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
 			<ColumnDefinition/>
