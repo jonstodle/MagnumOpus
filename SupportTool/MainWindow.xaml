@@ -51,7 +51,7 @@
 			<ListView.View>
 				<GridView>
 					<GridView.Columns>
-						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[cn][0]}" Width="300"/>
+						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="300"/>
 						<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="80"/>
 						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" Width="200"/>
 					</GridView.Columns>
