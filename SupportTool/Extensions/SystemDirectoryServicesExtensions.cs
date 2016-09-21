@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace System.DirectoryServices
 {
-    public static class SystemDirectoryServicesExtensions
+	public static class SystemDirectoryServicesExtensions
     {
 		public static T Get<T>(this PropertyCollection rpc, string propertyName, int index = 0)
 		{

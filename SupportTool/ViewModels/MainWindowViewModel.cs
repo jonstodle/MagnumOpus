@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
@@ -12,8 +11,6 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
