@@ -47,9 +47,9 @@ namespace SupportTool.ViewModels
 
 			_startRemoteControl = ReactiveCommand.Create(() => StartRemoteControlImpl(_computer));
 
-			_killRemoteControl = ReactiveCommand.Create(() => ExecuteCmd(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im rcagent.exe /f"));
+			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im rcagent.exe /f"));
 
-			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteCmd(@"C:\Windows\System32\msra.exe", $"/offerra {_computer.CN}"));
+			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\msra.exe", $"/offerra {_computer.CN}"));
 
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\mstsc.exe", $"/v {_computer.CN}"));
 
