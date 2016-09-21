@@ -11,8 +11,10 @@
 
         <WrapPanel Opacity=".5" Margin="2">
             <TextBlock Text="User"/>
-            <TextBlock Text=" | "/>
-            <TextBlock x:Name="CompanyTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="SamTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="CompanyTextBlock"/>
             <TextBlock Text=" | "/>
             <TextBlock x:Name="ExpirationTextBlock"/>
             <TextBlock Text=" | "/>
