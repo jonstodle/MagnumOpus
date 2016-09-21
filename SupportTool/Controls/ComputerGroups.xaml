@@ -11,13 +11,13 @@
         <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups..." Margin="2"/>
+            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups" Margin="2"/>
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
 			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Button x:Name="EditDirectGroupsButton" Content="Edit..." Margin="2"/>
+			<Button x:Name="EditDirectGroupsButton" Content="Edit" Margin="2"/>
 		</StackPanel>
     </StackPanel>
 </UserControl>

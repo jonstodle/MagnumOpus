@@ -10,7 +10,7 @@
         <TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="NewPasswordToggleButton" Content="New password..." Margin="2"/>
+            <ToggleButton x:Name="NewPasswordToggleButton" Content="New password" Margin="2"/>
 
             <Button x:Name="ExpirePasswordButton" Content="Expire password" Margin="2"/>
 
@@ -18,9 +18,9 @@
 
             <Button x:Name="LockOutStatusButton" Content="LockOutStatus" Margin="2"/>
 
-            <Button x:Name="PermittedWorkstationsButton" Content="Log on to..." Margin="2"/>
+            <Button x:Name="PermittedWorkstationsButton" Content="Log on to" Margin="2"/>
 
-            <Button x:Name="SplunkButton" Content="Splunk..." Margin="2"/>
+            <Button x:Name="SplunkButton" Content="Splunk" Margin="2"/>
         </WrapPanel>
 
         <Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">

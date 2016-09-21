@@ -11,11 +11,11 @@
 		<TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
 		<WrapPanel>
-			<ToggleButton x:Name="DirectMemberOfToggleButton" Content="Direct member of..." Margin="2"/>
+			<ToggleButton x:Name="DirectMemberOfToggleButton" Content="Direct member of" Margin="2"/>
 
-			<ToggleButton x:Name="MemberOfToggleButton" Content="Member of..." Margin="2"/>
+			<ToggleButton x:Name="MemberOfToggleButton" Content="Member of" Margin="2"/>
 
-			<ToggleButton x:Name="MembersToggleButton" Content="Members..." Margin="2"/>
+			<ToggleButton x:Name="MembersToggleButton" Content="Members" Margin="2"/>
 		</WrapPanel>
 
 		<Grid x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -26,7 +26,7 @@
 
 			<ListView x:Name="DirectMemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Button x:Name="EditDirectGroupsButton" Content="Edit..." Grid.Row="1" Margin="2"/>
+			<Button x:Name="EditDirectGroupsButton" Content="Edit" Grid.Row="1" Margin="2"/>
 		</Grid>
 
 		<Grid x:Name="MemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -62,7 +62,7 @@
 
 			<ListView x:Name="MembersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Button x:Name="MembersButton" Content="Edit..." Grid.Row="1" Margin="2"/>
+			<Button x:Name="MembersButton" Content="Edit" Grid.Row="1" Margin="2"/>
 		</Grid>
 	</StackPanel>
 </UserControl>

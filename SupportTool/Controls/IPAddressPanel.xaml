@@ -13,19 +13,19 @@
 		<TextBlock Text="Remote" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
 		<WrapPanel>
-			<Button x:Name="LoggedOnButton" Content="Logged on..." Margin="2" />
+			<Button x:Name="LoggedOnButton" Content="Logged on" Margin="2" />
 
-			<Button x:Name="LoggedOnPlusButton" Content="Logged on +..." Margin="2"/>
+			<Button x:Name="LoggedOnPlusButton" Content="Logged on +" Margin="2"/>
 
-			<Button x:Name="RemoteExecutionButton" Content="PSExec..." Margin="2"/>
+			<Button x:Name="RemoteExecutionButton" Content="PSExec" Margin="2"/>
 
-			<Button x:Name="OpenCButton" Content="Open C:..." Margin="2"/>
+			<Button x:Name="OpenCButton" Content="Open C:" Margin="2"/>
 
-			<Button x:Name="RebootButton" Content="Reboot..." Margin="2"/>
+			<Button x:Name="RebootButton" Content="Reboot" Margin="2"/>
 
-			<Button x:Name="RemoteControlButton" Content="Remote control..." Margin="2"/>
+			<Button x:Name="RemoteControlButton" Content="Remote control" Margin="2"/>
 
-			<Button x:Name="RdpButton" Content="RDP..." Margin="2"/>
+			<Button x:Name="RdpButton" Content="RDP" Margin="2"/>
 		</WrapPanel>
 	</StackPanel>
 </UserControl>
