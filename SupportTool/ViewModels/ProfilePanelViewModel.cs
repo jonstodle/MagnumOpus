@@ -45,6 +45,11 @@ namespace SupportTool.ViewModels
 		{
 			resetMessages = new ReactiveList<string>();
 			profiles = new ReactiveList<DirectoryInfo>();
+			shouldRestoreDesktopItems = true;
+			shouldRestoreInternetExplorerFavorites = true;
+			shouldRestoreOutlookSignatures = true;
+			shouldRestoreWindowsExplorerFavorites = true;
+			shouldRestoreStickyNotes = true;
 
 			resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(user));
 			resetGlobalProfile
