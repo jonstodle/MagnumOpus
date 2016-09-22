@@ -281,7 +281,7 @@ namespace SupportTool.ViewModels
 			var profileGuidKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileGuid", true);
 			var policyGuidKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\PolicyGuid", true);
 
-			if (profileListKey?.OpenSubKey(userSid) != null)
+			if (userSid != null && profileListKey?.OpenSubKey(userSid) != null)
 			{
 				try
 				{
@@ -292,7 +292,7 @@ namespace SupportTool.ViewModels
 			}
 			else { observer.OnNext(CreateLogString($"Didn't find key in {profileListKey.Name}")); }
 
-			if (groupPolicyKey?.OpenSubKey(userSid) != null)
+			if (userSid != null && groupPolicyKey?.OpenSubKey(userSid) != null)
 			{
 				try
 				{
@@ -303,7 +303,7 @@ namespace SupportTool.ViewModels
 			}
 			else { observer.OnNext(CreateLogString($"Didn't find key in {groupPolicyKey.Name}")); }
 
-			if (groupPolicyStateKey?.OpenSubKey(userSid) != null)
+			if (userSid != null && groupPolicyStateKey?.OpenSubKey(userSid) != null)
 			{
 				try
 				{
@@ -314,7 +314,7 @@ namespace SupportTool.ViewModels
 			}
 			else { observer.OnNext(CreateLogString($"Didn't find key in {groupPolicyStateKey.Name}")); }
 
-			if (userDataKey?.OpenSubKey(userSid) != null)
+			if (userSid != null && userDataKey?.OpenSubKey(userSid) != null)
 			{
 				try
 				{
@@ -325,7 +325,7 @@ namespace SupportTool.ViewModels
 			}
 			else { observer.OnNext(CreateLogString($"Didn't find key in {userDataKey.Name}")); }
 
-			if (profileGuidKey?.OpenSubKey(bracketedGuid) != null)
+			if (bracketedGuid != null && profileGuidKey?.OpenSubKey(bracketedGuid) != null)
 			{
 				try
 				{
@@ -336,7 +336,7 @@ namespace SupportTool.ViewModels
 			}
 			else { observer.OnNext(CreateLogString($"Didn't find key in {profileGuidKey.Name}")); }
 
-			if (policyGuidKey?.OpenSubKey(bracketedGuid) != null)
+			if (bracketedGuid != null && policyGuidKey?.OpenSubKey(bracketedGuid) != null)
 			{
 				try
 				{
