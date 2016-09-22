@@ -21,7 +21,7 @@
 				<controls:UserGroups x:Name="UserGroups"/>
 			</StackPanel>
 
-			<TextBlock HorizontalAlignment="Right" Margin="2">
+			<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
 				<Hyperlink x:Name="RefreshHyperLink">Refresh</Hyperlink>
 			</TextBlock>
 		</Grid>
