@@ -105,7 +105,8 @@ namespace SupportTool.ViewModels
 			Observable.Merge(
 					_search.ThrownExceptions,
 					_addToPrincipal.ThrownExceptions,
-					_removeFromPrincipal.ThrownExceptions)
+					_removeFromPrincipal.ThrownExceptions,
+					_save.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 		}
 
