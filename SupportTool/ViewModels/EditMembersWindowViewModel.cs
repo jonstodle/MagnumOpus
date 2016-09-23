@@ -45,9 +45,8 @@ namespace SupportTool.ViewModels
 			_groupMembers = new ReactiveList<DirectoryEntry>();
 			_membersToAdd = new ReactiveList<DirectoryEntry>();
 			_membersToRemove = new ReactiveList<DirectoryEntry>();
-			var directoryEntrySortDescription = new SortDescription("Path", ListSortDirection.Ascending);
-			_searchResultsView = new ListCollectionView(_searchResults) { SortDescriptions = { directoryEntrySortDescription } };
-			_groupMembersView = new ListCollectionView(_groupMembers) { SortDescriptions = { directoryEntrySortDescription } };
+			_searchResultsView = new ListCollectionView(_searchResults) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
+			_groupMembersView = new ListCollectionView(_groupMembers) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
 
 			_setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
 			_setGroup

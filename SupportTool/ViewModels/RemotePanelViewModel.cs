@@ -7,6 +7,8 @@ using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 
+using static SupportTool.Executables.Helpers;
+
 namespace SupportTool.ViewModels
 {
 	public class RemotePanelViewModel : ReactiveObject
@@ -26,11 +28,23 @@ namespace SupportTool.ViewModels
 
 		public RemotePanelViewModel()
 		{
-			_openLoggedOn = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsLoggedon.exe", $@"\\{_computer.CN}"));
+			_openLoggedOn = ReactiveCommand.Create(() =>
+			{
+				EnsureExecutableIsAvailable("PsLoggedon.exe");
+				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_computer.CN}");
+			});
 
-			_openLoggedOnPlus = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user"));
+			_openLoggedOnPlus = ReactiveCommand.Create(() =>
+			{
+				EnsureExecutableIsAvailable("PsExec.exe");
+				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user");
+			});
 
-			_openRemoteExecution = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
+			_openRemoteExecution = ReactiveCommand.Create(() =>
+			{
+				EnsureExecutableIsAvailable("PsExec.exe");
+				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_computer.CN} C:\Windows\System32\cmd.exe");
+			});
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
 			_openCDrive

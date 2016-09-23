@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Executables;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
@@ -75,10 +76,7 @@ namespace SupportTool.ViewModels
 
             runLockoutStatus = ReactiveCommand.Create(() =>
             {
-                if (!File.Exists("LockoutStatus.exe"))
-                {
-                    Application.GetResourceStream(new Uri("pack://application:,,,/Executables/LockoutStatus.exe")).WriteToDisk("LockoutStatus.exe");
-                }
+				Helpers.EnsureExecutableIsAvailable("LockoutStatus.exe");
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 

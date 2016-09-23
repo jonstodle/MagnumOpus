@@ -45,9 +45,8 @@ namespace SupportTool.ViewModels
 			_principalMembers = new ReactiveList<DirectoryEntry>();
 			_membersToAdd = new ReactiveList<DirectoryEntry>();
 			_membersToRemove = new ReactiveList<DirectoryEntry>();
-			var directoryEntrySortDescription = new SortDescription("Path", ListSortDirection.Ascending);
-			_searchResultsView = new ListCollectionView(_searchResults) { SortDescriptions = { directoryEntrySortDescription } };
-			_principalMembersView = new ListCollectionView(_principalMembers) { SortDescriptions = { directoryEntrySortDescription } };
+			_searchResultsView = new ListCollectionView(_searchResults) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
+			_principalMembersView = new ListCollectionView(_principalMembers) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
 
 			_setPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
 			_setPrincipal

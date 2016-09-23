@@ -133,10 +133,10 @@
     <Compile Include="Controls\UserGroups.xaml.cs">
       <DependentUpon>UserGroups.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Executables\Helpers.cs" />
     <Compile Include="Extensions\SystemDirectoryServicesExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\SystemReactiveLinqExtensions.cs" />
-    <Compile Include="Extensions\SystemWindowsResourcesExtensions.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
@@ -308,7 +308,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Executables\psexec.exe" />
+    <Content Include="Executables\psshutdown.exe" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Icon-128.png" />
     <Resource Include="Assets\Icon-16.png" />
