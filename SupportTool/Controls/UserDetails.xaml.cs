@@ -18,7 +18,7 @@ namespace SupportTool.Controls
 
 			ViewModel = new UserDetailsViewModel();
 
-            this.OneWayBind(ViewModel, vm => vm.User.Principal.DisplayName, v => v.DisplayNameTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.User.Principal.Name, v => v.DisplayNameTextBlock.Text);
 			this.OneWayBind(ViewModel, vm => vm.User.Principal.SamAccountName, v => v.SamTextBlock.Text, x => x?.ToUpperInvariant());
 			this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text, x => x.HasValue() ? x : "No company");
             this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"Expires {((DateTime)x).ToShortDateString()}" : "Never expires");
