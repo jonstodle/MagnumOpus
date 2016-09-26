@@ -18,7 +18,6 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
 		private string _ipAddress;
-		private Action _close;
 
 
 
