@@ -29,6 +29,7 @@
 		<SolidColorBrush x:Key="SubSectionBackgroundBrush" Color="Black" Opacity=".05"/>
 
 		<system:Double x:Key="NameColumnWidth">300</system:Double>
-		<system:Double x:Key="IDColumnWidth">80</system:Double>
+
+		<system:Double x:Key="IDColumnWidth">100</system:Double>
 	</Application.Resources>
 </Application>
