@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
-        Height="500" Width="500">
+        Height="500" Width="700">
 
 	<Grid Margin="2">
 		<Grid.ColumnDefinitions>
@@ -23,7 +23,16 @@
 
 			<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
 
-			<ListView x:Name="SearchResultsListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Margin="2"/>
+			<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
+				<ListView.View>
+					<GridView>
+						<GridView.Columns>
+							<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
+							<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
+						</GridView.Columns>
+					</GridView>
+				</ListView.View>
+			</ListView>
 		</Grid>
 
 		<Grid Grid.Column="1">
@@ -32,7 +41,16 @@
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
-			<ListView x:Name="GroupMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2"/>
+			<ListView x:Name="GroupMembersListView" Margin="2">
+				<ListView.View>
+					<GridView>
+						<GridView.Columns>
+							<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
+							<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
+						</GridView.Columns>
+					</GridView>
+				</ListView.View>
+			</ListView>
 
 			<Button x:Name="SaveButton" Content="&#x1F4BE; Save" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2" Margin="2"/>
 		</Grid>
