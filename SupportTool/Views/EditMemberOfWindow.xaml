@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
-        Height="500" Width="500">
+        Height="500" Width="700">
 
 	<Grid Margin="2">
 		<Grid.ColumnDefinitions>
