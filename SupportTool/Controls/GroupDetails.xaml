@@ -11,14 +11,8 @@
 
         <WrapPanel Opacity=".5" Margin="2">
             <TextBlock Text="Group"/>
-            <!--<TextBlock Text=" | "/>
-            <TextBlock x:Name="CompanyTextBlock"/>
             <TextBlock Text=" | "/>
-            <TextBlock x:Name="ExpirationTextBlock"/>
-            <TextBlock Text=" | "/>
-            <TextBlock x:Name="AccountLockedTextBlock"/>
-            <TextBlock Text=" | "/>
-            <TextBlock x:Name="PasswordAgeTextBlock"/>-->
+            <TextBlock x:Name="DescriptionTextBlock"/>
         </WrapPanel>
     </StackPanel>
 </UserControl>
