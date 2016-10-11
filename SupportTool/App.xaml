@@ -18,6 +18,13 @@
 			<Setter Property="Padding" Value="0,6,0,2"/>
 		</Style>
 
+		<Style x:Key="TextBlockTextBoxStyle" TargetType="TextBox">
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="IsReadOnly" Value="True"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+		</Style>
+
 		<DataTemplate x:Key="StringDataTemplate">
 			<TextBlock Text="{Binding}"/>
 		</DataTemplate>
