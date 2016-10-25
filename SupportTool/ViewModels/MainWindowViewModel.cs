@@ -24,6 +24,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveList<DirectoryEntry> _searchResults;
 		private readonly ReactiveList<string> _history;
 		private readonly ListCollectionView _searchResultsView;
+		private SortDescription _listSortDescription;
 		private string _searchQuery;
 		private object _selectedSearchResult;
 
@@ -70,6 +71,16 @@ namespace SupportTool.ViewModels
 				},
 				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
+			this.WhenAnyValue(x => x.ListSortDescription)
+				.Subscribe(x =>
+				{
+					using (_searchResultsView.DeferRefresh())
+					{
+						_searchResultsView.SortDescriptions.Clear();
+						_searchResultsView.SortDescriptions.Add(_listSortDescription);
+					}
+				});
+
 			Observable.Merge(
 				_search.ThrownExceptions,
 				_paste.ThrownExceptions,
@@ -100,6 +111,12 @@ namespace SupportTool.ViewModels
 		public ReactiveList<string> History => _history;
 
 		public ListCollectionView SearchResultsView => _searchResultsView;
+
+		public SortDescription ListSortDescription
+		{
+			get { return _listSortDescription; }
+			set { this.RaiseAndSetIfChanged(ref _listSortDescription, value); }
+		}
 
 		public string SearchQuery
 		{
