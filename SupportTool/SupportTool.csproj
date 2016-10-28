@@ -178,9 +178,7 @@
     <Compile Include="Views\ComputerWindow.xaml.cs">
       <DependentUpon>ComputerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DetailsWindow.xaml.cs">
-      <DependentUpon>DetailsWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Views\DetailsWindow.cs" />
     <Compile Include="Views\EditMemberOfWindow.xaml.cs">
       <DependentUpon>EditMemberOfWindow.xaml</DependentUpon>
     </Compile>
@@ -256,10 +254,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\ComputerWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
