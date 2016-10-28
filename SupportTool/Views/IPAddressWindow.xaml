@@ -12,6 +12,8 @@
 	<ScrollViewer>
 		<StackPanel Margin="2">
 			<controls:IPAddressPanel x:Name="IPAddressPanel"/>
+
+			<controls:PingPanel x:Name="PingPanel"/>
 		</StackPanel>
 	</ScrollViewer>
 </local:DetailsWindow>

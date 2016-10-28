@@ -17,6 +17,7 @@ namespace SupportTool.Views
 
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
+			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName);
 		}
 
 		public IPAddressWindowViewModel ViewModel
