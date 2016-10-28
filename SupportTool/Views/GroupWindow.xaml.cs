@@ -7,7 +7,7 @@ namespace SupportTool.Views
 	/// <summary>
 	/// Interaction logic for GroupWindow.xaml
 	/// </summary>
-	public partial class GroupWindow : Window, IViewFor<GroupWindowViewModel>
+	public partial class GroupWindow : DetailsWindow, IViewFor<GroupWindowViewModel>
 	{
 		public GroupWindow()
 		{

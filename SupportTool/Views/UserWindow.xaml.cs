@@ -10,7 +10,7 @@ namespace SupportTool.Views
 	/// <summary>
 	/// Interaction logic for UserWindow.xaml
 	/// </summary>
-	public partial class UserWindow : Window, IViewFor<UserWindowViewModel>
+	public partial class UserWindow : DetailsWindow, IViewFor<UserWindowViewModel>
 	{
 		public UserWindow()
 		{

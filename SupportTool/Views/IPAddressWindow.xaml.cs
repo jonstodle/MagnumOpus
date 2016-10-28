@@ -7,7 +7,7 @@ namespace SupportTool.Views
 	/// <summary>
 	/// Interaction logic for IPAddressWindow.xaml
 	/// </summary>
-	public partial class IPAddressWindow : Window, IViewFor<IPAddressWindowViewModel>
+	public partial class IPAddressWindow : DetailsWindow, IViewFor<IPAddressWindowViewModel>
 	{
 		public IPAddressWindow()
 		{

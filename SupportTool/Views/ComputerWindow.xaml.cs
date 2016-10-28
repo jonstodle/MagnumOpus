@@ -7,7 +7,7 @@ namespace SupportTool.Views
 	/// <summary>
 	/// Interaction logic for ComputerWindow.xaml
 	/// </summary>
-	public partial class ComputerWindow : Window, IViewFor<ComputerWindowViewModel>
+	public partial class ComputerWindow : DetailsWindow, IViewFor<ComputerWindowViewModel>
 	{
 		public ComputerWindow()
 		{
