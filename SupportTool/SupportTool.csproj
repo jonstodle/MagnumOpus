@@ -136,6 +136,7 @@
     <Compile Include="Executables\Helpers.cs" />
     <Compile Include="Extensions\SystemDirectoryServicesExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />
+    <Compile Include="Extensions\SystemReactiveDisposablesExtensions.cs" />
     <Compile Include="Extensions\SystemReactiveLinqExtensions.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
@@ -176,6 +177,9 @@
     <Compile Include="ViewModels\UserWindowViewModel.cs" />
     <Compile Include="Views\ComputerWindow.xaml.cs">
       <DependentUpon>ComputerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DetailsWindow.xaml.cs">
+      <DependentUpon>DetailsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EditMemberOfWindow.xaml.cs">
       <DependentUpon>EditMemberOfWindow.xaml</DependentUpon>
@@ -252,6 +256,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\ComputerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DetailsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
