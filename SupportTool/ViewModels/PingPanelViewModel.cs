@@ -10,95 +10,94 @@ using System.Reactive.Linq;
 namespace SupportTool.ViewModels
 {
 	public class PingPanelViewModel : ReactiveObject
-    {
-        private readonly ReactiveCommand<Unit, string> startPing;
-        private readonly ReactiveCommand<Unit, Unit> stopPing;
-        private readonly ReactiveList<string> pingResults;
-        private readonly ObservableAsPropertyHelper<string> mostRecentPingResult;
-        private ComputerObject computer;
-        private bool isPinging;
-        private bool isShowingPingResultDetails;
+	{
+		private readonly ReactiveCommand<Unit, string> startPing;
+		private readonly ReactiveCommand<Unit, Unit> stopPing;
+		private readonly ReactiveList<string> pingResults;
+		private readonly ObservableAsPropertyHelper<string> mostRecentPingResult;
+		private string _hostName;
+		private bool isPinging;
+		private bool isShowingPingResultDetails;
 
 
 
-        public PingPanelViewModel()
-        {
-            pingResults = new ReactiveList<string>();
+		public PingPanelViewModel()
+		{
+			pingResults = new ReactiveList<string>();
 
-            startPing = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    PingResults.Clear();
-                    return PingHost(Computer.CN).TakeUntil(stopPing);
-                });
-            startPing
-                .Subscribe(x => PingResults.Insert(0, x));
-            startPing
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message));
+			startPing = ReactiveCommand.CreateFromObservable(() =>
+				{
+					PingResults.Clear();
+					return PingHost(_hostName).TakeUntil(stopPing);
+				});
+			startPing
+				.Subscribe(x => PingResults.Insert(0, x));
+			startPing
+				.ThrownExceptions
+				.Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            stopPing = ReactiveCommand.Create(() => { });
+			stopPing = ReactiveCommand.Create(() => { });
 
 			Observable.Merge(
 				pingResults.ItemsAdded,
 				stopPing.Select(_ => ""),
-				this.WhenAnyValue(x => x.Computer).WhereNotNull().Select(_ => ""))
-                .ToProperty(this, x => x.MostRecentPingResult, out mostRecentPingResult);
+				this.WhenAnyValue(x => x.HostName).WhereNotNull().Select(_ => ""))
+				.ToProperty(this, x => x.MostRecentPingResult, out mostRecentPingResult);
 
-            this
-                .WhenAnyValue(x => x.IsPinging)
-                .Where(x => !x)
-                .Subscribe(_ => IsShowingPingResultDetails = false);
-        }
-
-
-
-        public ReactiveCommand StartPing => startPing;
-
-        public ReactiveCommand StopPing => stopPing;
-
-        public ReactiveList<string> PingResults => pingResults;
-
-        public string MostRecentPingResult => mostRecentPingResult.Value;
-
-        public ComputerObject Computer
-        {
-            get { return computer; }
-            set { this.RaiseAndSetIfChanged(ref computer, value); }
-        }
-
-        public bool IsPinging
-        {
-            get { return isPinging; }
-            set { this.RaiseAndSetIfChanged(ref isPinging, value); }
-        }
-
-        public bool IsShowingPingResultDetails
-        {
-            get { return isShowingPingResultDetails; }
-            set { this.RaiseAndSetIfChanged(ref isShowingPingResultDetails, value); }
-        }
+			this
+				.WhenAnyValue(x => x.IsPinging)
+				.Where(x => !x)
+				.Subscribe(_ => IsShowingPingResultDetails = false);
+		}
 
 
 
-        private IObservable<string> PingHost(string hostName) => Observable.Create<string>(observer =>
-        {
-            var pinger = new Ping();
-            observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
+		public ReactiveCommand StartPing => startPing;
 
-            var pings = Observable.Interval(TimeSpan.FromSeconds(2d))
-                .Subscribe(async _ =>
-                {
-                    PingReply reply = null;
+		public ReactiveCommand StopPing => stopPing;
 
-                    try { reply = await pinger.SendPingAsync(hostName, 1000); }
-                    catch { /* Do nothing */ }
+		public ReactiveList<string> PingResults => pingResults;
 
-                    observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - {(reply?.Status == IPStatus.Success ? $"{hostName} responded after {reply.RoundtripTime}ms" : $"{hostName} did not respond")}");
-                }, 
-                () => observer.OnCompleted());
+		public string MostRecentPingResult => mostRecentPingResult.Value;
 
-            return () => pings.Dispose();
-        });
-    }
+		public string HostName
+		{
+			get { return _hostName; }
+			set { this.RaiseAndSetIfChanged(ref _hostName, value); }
+		}
+
+		public bool IsPinging
+		{
+			get { return isPinging; }
+			set { this.RaiseAndSetIfChanged(ref isPinging, value); }
+		}
+
+		public bool IsShowingPingResultDetails
+		{
+			get { return isShowingPingResultDetails; }
+			set { this.RaiseAndSetIfChanged(ref isShowingPingResultDetails, value); }
+		}
+
+
+
+		private IObservable<string> PingHost(string hostName) => Observable.Create<string>(observer =>
+		{
+			var pinger = new Ping();
+			observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
+
+			var pings = Observable.Interval(TimeSpan.FromSeconds(2d))
+				.Subscribe(async _ =>
+				{
+					PingReply reply = null;
+
+					try { reply = await pinger.SendPingAsync(hostName, 1000); }
+					catch { /* Do nothing */ }
+
+					observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - {(reply?.Status == IPStatus.Success ? $"{hostName} responded after {reply.RoundtripTime}ms" : $"{hostName} did not respond")}");
+				},
+				() => observer.OnCompleted());
+
+			return () => pings.Dispose();
+		});
+	}
 }

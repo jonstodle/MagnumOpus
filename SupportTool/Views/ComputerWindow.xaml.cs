@@ -18,7 +18,7 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
-			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.PingPanel.Computer);
+			this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName);
 			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
 
 			this.WhenActivated(d =>

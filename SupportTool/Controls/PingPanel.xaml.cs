@@ -43,7 +43,7 @@ namespace SupportTool.Controls
 					.ObserveOnDispatcher()
 					.InvokeCommand(ViewModel, x => x.StopPing));
 				d(ViewModel
-					.WhenAnyValue(x => x.Computer)
+					.WhenAnyValue(x => x.HostName)
 					.Where(x => x == null)
 					.Select(_ => Unit.Default)
 					.ObserveOnDispatcher()
@@ -51,15 +51,15 @@ namespace SupportTool.Controls
             });
         }
 
-        public ComputerObject Computer
-        {
-            get { return (ComputerObject)GetValue(ComputerProperty); }
-            set { SetValue(ComputerProperty, value); }
-        }
+		public string HostName
+		{
+			get { return (string)GetValue(HostNameProperty); }
+			set { SetValue(HostNameProperty, value); }
+		}
 
-        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(PingPanel), new PropertyMetadata(null, (d,e) => (d as PingPanel).ViewModel.Computer = e.NewValue as ComputerObject));
+		public static readonly DependencyProperty HostNameProperty = DependencyProperty.Register(nameof(HostName), typeof(string), typeof(PingPanel), new PropertyMetadata(null, (d,e) => (d as PingPanel).ViewModel.HostName = e.NewValue as string));
 
-        public PingPanelViewModel ViewModel
+		public PingPanelViewModel ViewModel
         {
             get { return (PingPanelViewModel)GetValue(ViewModelProperty); }
             set { SetValue(ViewModelProperty, value); }
