@@ -25,6 +25,12 @@
 
 			<Button x:Name="RemoteControlButton" Content="Remote control" Margin="2"/>
 
+			<Button x:Name="RemoteControl2012Button" Content="Remote control 2012" Margin="2"/>
+
+			<Button x:Name="KillRemoteConrolButton" Content="Kill RC" Margin="2"/>
+
+			<Button x:Name="RemoteAssistanceButton" Content="Remote assistance" Margin="2"/>
+
 			<Button x:Name="RdpButton" Content="RDP" Margin="2"/>
 		</WrapPanel>
 	</StackPanel>

@@ -6,6 +6,8 @@ using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 
+using static SupportTool.Executables.Helpers;
+
 namespace SupportTool.ViewModels
 {
 	public class IPAddressPanelViewModel : ReactiveObject
@@ -16,6 +18,9 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _openCDrive;
 		private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
+		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
+		private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
+		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
 		private string _ipAddress;
 
@@ -23,11 +28,23 @@ namespace SupportTool.ViewModels
 
 		public IPAddressPanelViewModel()
 		{
-			_openLoggedOn = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsLoggedon.exe", $@"\\{_ipAddress}"));
+			_openLoggedOn = ReactiveCommand.Create(() =>
+			{
+				EnsureExecutableIsAvailable("PsLoggedon.exe");
+				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_ipAddress}");
+			});
 
-			_openLoggedOnPlus = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsExec.exe", $@"\\{_ipAddress} C:\Windows\System32\cmd.exe /K query user"));
+			_openLoggedOnPlus = ReactiveCommand.Create(() =>
+			{
+				EnsureExecutableIsAvailable("PsExec.exe");
+				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe /K query user");
+			});
 
-			_openRemoteExecution = ReactiveCommand.Create(() => ExecuteCmd(@"C:\PsTools\PsExec.exe", $@"\\{_ipAddress} C:\Windows\System32\cmd.exe"));
+			_openRemoteExecution = ReactiveCommand.Create(() =>
+			{
+				EnsureExecutableIsAvailable("PsExec.exe");
+				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe");
+			});
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
 			_openCDrive
@@ -42,7 +59,13 @@ namespace SupportTool.ViewModels
 				}
 			});
 
-			_startRemoteControl = ReactiveCommand.Create(() => StartRemoteControlImpl(_ipAddress));
+			_startRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {_ipAddress}"));
+
+			_startRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(@"C:\RemoteControl2012\CmRcViewer.exe", _ipAddress));
+
+			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_ipAddress} /im rcagent.exe /f"));
+
+			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\msra.exe", $"/offerra {_ipAddress}"));
 
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\mstsc.exe", $"/v {_ipAddress}"));
 
@@ -68,6 +91,12 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand StartRemoteControl => _startRemoteControl;
 
+		public ReactiveCommand StartRemoteControl2012 => _startRemoteControl2012;
+
+		public ReactiveCommand KillRemoteControl => _killRemoteControl;
+
+		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
+
 		public ReactiveCommand StartRdp => _startRdp;
 
 		public string IPAddress
@@ -84,22 +113,6 @@ namespace SupportTool.ViewModels
 		{
 			if (File.Exists(fileName)) Process.Start(fileName, arguments);
 			else throw new ArgumentException($"Could not find {fileName}");
-		}
-
-		private void StartRemoteControlImpl(string ipAddress)
-		{
-			var fileName = @"C:\SCCM Remote Control\rc.exe";
-			var arguments = $"1 {ipAddress}";
-
-			//if (computer.Company == "SIHF"
-			//	|| computer.Company == "REV"
-			//	|| computer.Company == "SOHF")
-			//{
-			//	fileName = @"C:\RemoteControl2012\CmRcViewer.exe";
-			//	arguments = computer.CN;
-			//}
-
-			ExecuteFile(fileName, arguments);
 		}
 	}
 }
