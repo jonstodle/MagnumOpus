@@ -11,6 +11,7 @@ using System.Management;
 using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace SupportTool.ViewModels
@@ -269,83 +270,19 @@ namespace SupportTool.ViewModels
 				observer.OnNext(CreateLogString($"Renamed folder {dir.FullName}"));
 			}
 
-			var bracketedGuid = $"{{{user.Principal.Guid.ToString()}}}";
-			var userSid = user.Principal.Sid.Value;
-
-			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{cpr}");
-
-			var profileListKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList", true);
-			var groupPolicyKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy", true);
-			var groupPolicyStateKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State", true);
-			var userDataKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData", true);
-			var profileGuidKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileGuid", true);
-			var policyGuidKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\PolicyGuid", true);
-
-			if (userSid != null && profileListKey?.OpenSubKey(userSid) != null)
+			var scope = new ManagementScope(@"\\PC26678\root\cimv2");
+			scope.Connect();
+			using (var searcher = new ManagementObjectSearcher(scope, new ObjectQuery("SELECT * FROM Win32_UserProfile")))
 			{
-				try
+				foreach (ManagementObject userObject in searcher.Get())
 				{
-					profileListKey.DeleteSubKeyTree(userSid);
-					observer.OnNext(CreateLogString($"Deleted key in {profileListKey.Name}"));
-				}
-				catch { observer.OnNext(CreateLogString($"Couldn't delete key in {profileListKey.Name}")); }
+					if (userObject.Properties["LocalPath"].Value.ToString() == Path.Combine(@"C:\", "Users", usr.Principal.SamAccountName))
+					{
+						userObject.Delete();
+						observer.OnNext(CreateLogString("Deleted local profile references"));
+					}
+				} 
 			}
-			else { observer.OnNext(CreateLogString($"Didn't find key in {profileListKey.Name}")); }
-
-			if (userSid != null && groupPolicyKey?.OpenSubKey(userSid) != null)
-			{
-				try
-				{
-					groupPolicyKey.DeleteSubKeyTree(userSid);
-					observer.OnNext(CreateLogString($"Deleted key in {groupPolicyKey.Name}"));
-				}
-				catch { observer.OnNext(CreateLogString($"Couldn't delete key in {groupPolicyKey.Name}")); }
-			}
-			else { observer.OnNext(CreateLogString($"Didn't find key in {groupPolicyKey.Name}")); }
-
-			if (userSid != null && groupPolicyStateKey?.OpenSubKey(userSid) != null)
-			{
-				try
-				{
-					groupPolicyStateKey.DeleteSubKeyTree(userSid);
-					observer.OnNext(CreateLogString($"Deleted key in {groupPolicyStateKey.Name}"));
-				}
-				catch { observer.OnNext(CreateLogString($"Couldn't delete key in {groupPolicyStateKey.Name}")); }
-			}
-			else { observer.OnNext(CreateLogString($"Didn't find key in {groupPolicyStateKey.Name}")); }
-
-			if (userSid != null && userDataKey?.OpenSubKey(userSid) != null)
-			{
-				try
-				{
-					userDataKey.DeleteSubKeyTree(userSid);
-					observer.OnNext(CreateLogString($"Deleted key in {userDataKey.Name}"));
-				}
-				catch { observer.OnNext(CreateLogString($"Couldn't delete key in {userDataKey.Name}")); }
-			}
-			else { observer.OnNext(CreateLogString($"Didn't find key in {userDataKey.Name}")); }
-
-			if (bracketedGuid != null && profileGuidKey?.OpenSubKey(bracketedGuid) != null)
-			{
-				try
-				{
-					profileGuidKey.DeleteSubKeyTree(bracketedGuid);
-					observer.OnNext(CreateLogString($"Deleted key in {profileGuidKey.Name}"));
-				}
-				catch { observer.OnNext(CreateLogString($"Couldn't delete key in {profileGuidKey.Name}")); }
-			}
-			else { observer.OnNext(CreateLogString($"Didn't find key in {profileGuidKey.Name}")); }
-
-			if (bracketedGuid != null && policyGuidKey?.OpenSubKey(bracketedGuid) != null)
-			{
-				try
-				{
-					policyGuidKey.DeleteSubKeyTree(bracketedGuid);
-					observer.OnNext(CreateLogString($"Deleted key in {policyGuidKey.Name}"));
-				}
-				catch { observer.OnNext(CreateLogString($"Couldn't delete key in {policyGuidKey.Name}")); }
-			}
-			else { observer.OnNext(CreateLogString($"Didn't find key in {policyGuidKey.Name}")); }
 
 			observer.OnNext(CreateLogString("Successfully reset local profile"));
 			observer.OnCompleted();
@@ -457,6 +394,9 @@ namespace SupportTool.ViewModels
 				CopyFilesAndDirectories(directory.FullName, Path.Combine(destination, directory.Name));
 			}
 		}
+
+		[DllImport("userenv.dll", CharSet = CharSet.Unicode, ExactSpelling = false, SetLastError = true)]
+		public static extern bool DeleteProfile(string sidString, string profilePath, string computerName);
 
 		private string CreateLogString(string logMessage) => $"{DateTimeOffset.Now.ToString("T")} - {logMessage}";
 	}
