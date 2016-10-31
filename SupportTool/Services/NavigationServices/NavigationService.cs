@@ -16,7 +16,7 @@ namespace SupportTool.Services.NavigationServices
 		public static void Init(Window mainWindow)
 		{
 			Current = new NavigationService();
-			Current.navigationStack.Add(mainWindow);
+			Current._navigationStack.Add(mainWindow);
 		}
 
 
@@ -58,32 +58,32 @@ namespace SupportTool.Services.NavigationServices
 
 
 
-		private List<Window> navigationStack = new List<Window>();
-		public IReadOnlyList<Window> NavigationStack => navigationStack;
+		private List<Window> _navigationStack = new List<Window>();
+		public IReadOnlyList<Window> NavigationStack => _navigationStack;
 
-		private IViewFor currentWindow => navigationStack.LastOrDefault() as IViewFor;
-		private IViewFor previousWindow => navigationStack.Reverse<Window>().Skip(1).FirstOrDefault() as IViewFor;
+		private IViewFor _currentWindow => _navigationStack.LastOrDefault() as IViewFor;
+		private IViewFor _previousWindow => _navigationStack.Reverse<Window>().Skip(1).FirstOrDefault() as IViewFor;
 
 		public async Task NavigateTo<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
 		{
-			await (currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+			await (_currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
 
 			var newWindow = new TWindow();
 			await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
-			navigationStack.Add(newWindow as Window);
+			_navigationStack.Add(newWindow as Window);
 			newWindow.ShowDialog();
 		}
 
 		public async Task GoBack(object parameter = null)
 		{
-			await (currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+			await (_currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
 
-			await (previousWindow?.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+			await (_previousWindow?.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
-			(currentWindow as Window).Close();
+			(_currentWindow as Window).Close();
 
-			navigationStack.Remove(navigationStack.Last());
+			_navigationStack.Remove(_navigationStack.Last());
 		}
 	}
 }

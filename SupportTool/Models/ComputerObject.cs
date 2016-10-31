@@ -15,7 +15,7 @@ namespace SupportTool.Models
         {
             get
             {
-                var dn = principal.DistinguishedName;
+                var dn = _principal.DistinguishedName;
 
                 if (dn.Contains("OU=AHUSHF")) return "AHUSHF";
                 if (dn.Contains("OU=BET")) return "BET";

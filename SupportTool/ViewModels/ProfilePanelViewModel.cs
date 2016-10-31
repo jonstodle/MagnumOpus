@@ -18,76 +18,76 @@ namespace SupportTool.ViewModels
 {
 	public class ProfilePanelViewModel : ReactiveObject
 	{
-		private readonly ReactiveCommand<Unit, string> resetGlobalProfile;
-		private readonly ReactiveCommand<Unit, string> resetLocalProfile;
-		private readonly ReactiveCommand<Unit, Unit> openGlobalProfileDirectory;
-		private readonly ReactiveCommand<Unit, Unit> openLocalProfileDirectory;
-		private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> searchForProfiles;
-		private readonly ReactiveCommand<Unit, Unit> restoreProfile;
-		private readonly ReactiveList<string> resetMessages;
-		private readonly ReactiveList<DirectoryInfo> profiles;
-		private UserObject user;
-		private bool isShowingResetProfile;
-		private bool isShowingRestoreProfile;
-		private string computerName;
-		private bool shouldRestoreDesktopItems;
-		private bool shouldRestoreInternetExplorerFavorites;
-		private bool shouldRestoreOutlookSignatures;
-		private bool shouldRestoreWindowsExplorerFavorites;
-		private bool shouldRestoreStickyNotes;
-		private int selectedProfileIndex;
-		private DirectoryInfo globalProfileDirectory;
-		private DirectoryInfo localProfileDirectory;
-		private DirectoryInfo newProfileDirectory;
+		private readonly ReactiveCommand<Unit, string> _resetGlobalProfile;
+		private readonly ReactiveCommand<Unit, string> _resetLocalProfile;
+		private readonly ReactiveCommand<Unit, Unit> _openGlobalProfileDirectory;
+		private readonly ReactiveCommand<Unit, Unit> _openLocalProfileDirectory;
+		private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> _searchForProfiles;
+		private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
+		private readonly ReactiveList<string> _resetMessages;
+		private readonly ReactiveList<DirectoryInfo> _profiles;
+		private UserObject _user;
+		private bool _isShowingResetProfile;
+		private bool _isShowingRestoreProfile;
+		private string _computerName;
+		private bool _shouldRestoreDesktopItems;
+		private bool _shouldRestoreInternetExplorerFavorites;
+		private bool _shouldRestoreOutlookSignatures;
+		private bool _shouldRestoreWindowsExplorerFavorites;
+		private bool _shouldRestoreStickyNotes;
+		private int _selectedProfileIndex;
+		private DirectoryInfo _globalProfileDirectory;
+		private DirectoryInfo _localProfileDirectory;
+		private DirectoryInfo _newProfileDirectory;
 
 
 
 		public ProfilePanelViewModel()
 		{
-			resetMessages = new ReactiveList<string>();
-			profiles = new ReactiveList<DirectoryInfo>();
-			shouldRestoreDesktopItems = true;
-			shouldRestoreInternetExplorerFavorites = true;
-			shouldRestoreOutlookSignatures = true;
-			shouldRestoreWindowsExplorerFavorites = true;
-			shouldRestoreStickyNotes = true;
+			_resetMessages = new ReactiveList<string>();
+			_profiles = new ReactiveList<DirectoryInfo>();
+			_shouldRestoreDesktopItems = true;
+			_shouldRestoreInternetExplorerFavorites = true;
+			_shouldRestoreOutlookSignatures = true;
+			_shouldRestoreWindowsExplorerFavorites = true;
+			_shouldRestoreStickyNotes = true;
 
-			resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(user));
-			resetGlobalProfile
-				.Subscribe(x => resetMessages.Insert(0, x));
-			resetGlobalProfile
+			_resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(_user));
+			_resetGlobalProfile
+				.Subscribe(x => _resetMessages.Insert(0, x));
+			_resetGlobalProfile
 				.ThrownExceptions
 				.Subscribe(ex =>
 				{
-					resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
+					_resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
 					DialogService.ShowError(ex.Message);
 				});
 
-			resetLocalProfile = ReactiveCommand.CreateFromObservable(
-				() => ResetLocalProfileImpl(user, computerName),
+			_resetLocalProfile = ReactiveCommand.CreateFromObservable(
+				() => ResetLocalProfileImpl(_user, _computerName),
 				this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
-			resetLocalProfile
-				.Subscribe(x => resetMessages.Insert(0, x));
-			resetLocalProfile
+			_resetLocalProfile
+				.Subscribe(x => _resetMessages.Insert(0, x));
+			_resetLocalProfile
 				.ThrownExceptions
 				.Subscribe(ex =>
 				{
-					resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
+					_resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
 					DialogService.ShowError(ex.Message);
 				});
 
-			openGlobalProfileDirectory = ReactiveCommand.Create(
+			_openGlobalProfileDirectory = ReactiveCommand.Create(
 				() =>
 				{
-					var gpdPath = GetParentDirectory(user.ProfilePath);
+					var gpdPath = GetParentDirectory(_user.ProfilePath);
 					if (gpdPath == null || !gpdPath.Exists) throw new Exception($"Could not find global profile folder");
 					Process.Start(gpdPath.FullName);
 				});
-			openGlobalProfileDirectory
+			_openGlobalProfileDirectory
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open directory"));
 
-			openLocalProfileDirectory = ReactiveCommand.Create(
+			_openLocalProfileDirectory = ReactiveCommand.Create(
 				() =>
 				{
 					var lpd = GetProfileDirectory(ComputerName);
@@ -95,32 +95,32 @@ namespace SupportTool.ViewModels
 					Process.Start(lpd.FullName);
 				},
 				this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
-			openLocalProfileDirectory
+			_openLocalProfileDirectory
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open directory"));
 
-			searchForProfiles = ReactiveCommand.CreateFromObservable(() =>
+			_searchForProfiles = ReactiveCommand.CreateFromObservable(() =>
 			{
-				profiles.Clear();
-				return SearchForProfilesImpl(user, computerName);
+				_profiles.Clear();
+				return SearchForProfilesImpl(_user, _computerName);
 			},
 			this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
-			searchForProfiles
+			_searchForProfiles
 				.Subscribe(x =>
 				{
 					NewProfileDirectory = x.Item1;
-					using (profiles.SuppressChangeNotifications()) profiles.AddRange(x.Item2);
+					using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.Item2);
 				});
-			searchForProfiles
+			_searchForProfiles
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 
-			restoreProfile = ReactiveCommand.CreateFromObservable(
-				() => RestoreProfileImpl(NewProfileDirectory, profiles[SelectedProfileIndex]),
+			_restoreProfile = ReactiveCommand.CreateFromObservable(
+				() => RestoreProfileImpl(NewProfileDirectory, _profiles[SelectedProfileIndex]),
 				this.WhenAnyValue(x => x.NewProfileDirectory, y => y.SelectedProfileIndex, (x, y) => x != null && y >= 0));
-			restoreProfile
+			_restoreProfile
 				.Subscribe(_ => DialogService.ShowInfo("Profile restored", "Success"));
-			restoreProfile
+			_restoreProfile
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not restore profile"));
 
@@ -137,98 +137,98 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand ResetGlobalProfile => resetGlobalProfile;
+		public ReactiveCommand ResetGlobalProfile => _resetGlobalProfile;
 
-		public ReactiveCommand ResetLocalProfile => resetLocalProfile;
+		public ReactiveCommand ResetLocalProfile => _resetLocalProfile;
 
-		public ReactiveCommand OpenGlobalProfileDirectory => openGlobalProfileDirectory;
+		public ReactiveCommand OpenGlobalProfileDirectory => _openGlobalProfileDirectory;
 
-		public ReactiveCommand OpenLocalProfileDirectory => openLocalProfileDirectory;
+		public ReactiveCommand OpenLocalProfileDirectory => _openLocalProfileDirectory;
 
-		public ReactiveCommand SearchForProfiles => searchForProfiles;
+		public ReactiveCommand SearchForProfiles => _searchForProfiles;
 
-		public ReactiveCommand RestoreProfile => restoreProfile;
+		public ReactiveCommand RestoreProfile => _restoreProfile;
 
-		public ReactiveList<string> ResetMessages => resetMessages;
+		public ReactiveList<string> ResetMessages => _resetMessages;
 
-		public ReactiveList<DirectoryInfo> Profiles => profiles;
+		public ReactiveList<DirectoryInfo> Profiles => _profiles;
 
 		public UserObject User
 		{
-			get { return user; }
-			set { this.RaiseAndSetIfChanged(ref user, value); }
+			get { return _user; }
+			set { this.RaiseAndSetIfChanged(ref _user, value); }
 		}
 
 		public bool IsShowingResetProfile
 		{
-			get { return isShowingResetProfile; }
-			set { this.RaiseAndSetIfChanged(ref isShowingResetProfile, value); }
+			get { return _isShowingResetProfile; }
+			set { this.RaiseAndSetIfChanged(ref _isShowingResetProfile, value); }
 		}
 
 		public bool IsShowingRestoreProfile
 		{
-			get { return isShowingRestoreProfile; }
-			set { this.RaiseAndSetIfChanged(ref isShowingRestoreProfile, value); }
+			get { return _isShowingRestoreProfile; }
+			set { this.RaiseAndSetIfChanged(ref _isShowingRestoreProfile, value); }
 		}
 
 		public string ComputerName
 		{
-			get { return computerName; }
-			set { this.RaiseAndSetIfChanged(ref computerName, value); }
+			get { return _computerName; }
+			set { this.RaiseAndSetIfChanged(ref _computerName, value); }
 		}
 
 		public bool ShouldRestoreDesktopItems
 		{
-			get { return shouldRestoreDesktopItems; }
-			set { this.RaiseAndSetIfChanged(ref shouldRestoreDesktopItems, value); }
+			get { return _shouldRestoreDesktopItems; }
+			set { this.RaiseAndSetIfChanged(ref _shouldRestoreDesktopItems, value); }
 		}
 
 		public bool ShouldRestoreInternetExplorerFavorites
 		{
-			get { return shouldRestoreInternetExplorerFavorites; }
-			set { this.RaiseAndSetIfChanged(ref shouldRestoreInternetExplorerFavorites, value); }
+			get { return _shouldRestoreInternetExplorerFavorites; }
+			set { this.RaiseAndSetIfChanged(ref _shouldRestoreInternetExplorerFavorites, value); }
 		}
 
 		public bool ShouldRestoreOutlookSignatures
 		{
-			get { return shouldRestoreOutlookSignatures; }
-			set { this.RaiseAndSetIfChanged(ref shouldRestoreOutlookSignatures, value); }
+			get { return _shouldRestoreOutlookSignatures; }
+			set { this.RaiseAndSetIfChanged(ref _shouldRestoreOutlookSignatures, value); }
 		}
 
 		public bool ShouldRestoreWindowsExplorerFavorites
 		{
-			get { return shouldRestoreWindowsExplorerFavorites; }
-			set { this.RaiseAndSetIfChanged(ref shouldRestoreWindowsExplorerFavorites, value); }
+			get { return _shouldRestoreWindowsExplorerFavorites; }
+			set { this.RaiseAndSetIfChanged(ref _shouldRestoreWindowsExplorerFavorites, value); }
 		}
 
 		public bool ShouldRestoreStickyNotes
 		{
-			get { return shouldRestoreStickyNotes; }
-			set { this.RaiseAndSetIfChanged(ref shouldRestoreStickyNotes, value); }
+			get { return _shouldRestoreStickyNotes; }
+			set { this.RaiseAndSetIfChanged(ref _shouldRestoreStickyNotes, value); }
 		}
 
 		public int SelectedProfileIndex
 		{
-			get { return selectedProfileIndex; }
-			set { this.RaiseAndSetIfChanged(ref selectedProfileIndex, value); }
+			get { return _selectedProfileIndex; }
+			set { this.RaiseAndSetIfChanged(ref _selectedProfileIndex, value); }
 		}
 
 		public DirectoryInfo GlobalProfileDirectory
 		{
-			get { return globalProfileDirectory; }
-			set { this.RaiseAndSetIfChanged(ref globalProfileDirectory, value); }
+			get { return _globalProfileDirectory; }
+			set { this.RaiseAndSetIfChanged(ref _globalProfileDirectory, value); }
 		}
 
 		public DirectoryInfo LocalProfileDirectory
 		{
-			get { return localProfileDirectory; }
-			set { this.RaiseAndSetIfChanged(ref localProfileDirectory, value); }
+			get { return _localProfileDirectory; }
+			set { this.RaiseAndSetIfChanged(ref _localProfileDirectory, value); }
 		}
 
 		public DirectoryInfo NewProfileDirectory
 		{
-			get { return newProfileDirectory; }
-			set { this.RaiseAndSetIfChanged(ref newProfileDirectory, value); }
+			get { return _newProfileDirectory; }
+			set { this.RaiseAndSetIfChanged(ref _newProfileDirectory, value); }
 		}
 
 

@@ -15,43 +15,43 @@ namespace SupportTool.ViewModels
 {
 	public class UserGroupsViewModel : ReactiveObject
     {
-		private readonly ReactiveCommand<Unit, Unit> openEditMemberOf;
-        private readonly ReactiveCommand<Unit, DirectoryEntry> getAllGroups;
+		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
 		private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
-		private readonly ReactiveList<string> allGroups;
-        private readonly ReactiveList<string> directGroups;
-        private readonly ListCollectionView allGroupsCollectionView;
-        private readonly ListCollectionView directGroupsCollectionView;
-        private readonly ObservableAsPropertyHelper<bool> isLoadingGroups;
-        private UserObject user;
-        private bool isShowingDirectGroups;
-        private bool isShowingAllGroups;
-        private object selectedDirectGroup;
+		private readonly ReactiveList<string> _allGroups;
+        private readonly ReactiveList<string> _directGroups;
+        private readonly ListCollectionView _allGroupsCollectionView;
+        private readonly ListCollectionView _directGroupsCollectionView;
+        private readonly ObservableAsPropertyHelper<bool> _isLoadingGroups;
+        private UserObject _user;
+        private bool _isShowingDirectGroups;
+        private bool _isShowingAllGroups;
+        private object _selectedDirectGroup;
 		private object _selectedAllGroup;
-        private string groupFilter;
-        private bool useFuzzy;
+        private string _groupFilter;
+        private bool _useFuzzy;
 
 
 
         public UserGroupsViewModel()
         {
-            allGroups = new ReactiveList<string>();
-            directGroups = new ReactiveList<string>();
+            _allGroups = new ReactiveList<string>();
+            _directGroups = new ReactiveList<string>();
 
-            allGroupsCollectionView = new ListCollectionView(allGroups);
-            allGroupsCollectionView.SortDescriptions.Add(new SortDescription());
-            allGroupsCollectionView.Filter = TextFilter;
+            _allGroupsCollectionView = new ListCollectionView(_allGroups);
+            _allGroupsCollectionView.SortDescriptions.Add(new SortDescription());
+            _allGroupsCollectionView.Filter = TextFilter;
             this
                 .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
                 .Subscribe(_ => AllGroupsCollectionView?.Refresh());
 
-            directGroupsCollectionView = new ListCollectionView(directGroups);
-            directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
+            _directGroupsCollectionView = new ListCollectionView(_directGroups);
+            _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-			openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(user.Principal.SamAccountName));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_user.Principal.SamAccountName));
 
-			getAllGroups = ReactiveCommand.CreateFromObservable(
+			_getAllGroups = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
                     AllGroups.Clear();
@@ -59,7 +59,7 @@ namespace SupportTool.ViewModels
                             .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x));
                 },
                 this.WhenAnyValue(x => x.IsShowingAllGroups));
-            getAllGroups
+            _getAllGroups
                 .ObserveOnDispatcher()
                 .Select(x =>
 				{
@@ -68,20 +68,20 @@ namespace SupportTool.ViewModels
 					return cn;
 				})
                 .Subscribe(x => AllGroups.Add(x));
-            getAllGroups
+            _getAllGroups
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
-            getAllGroups
+            _getAllGroups
                 .IsExecuting
-                .ToProperty(this, x => x.IsLoadingGroups, out isLoadingGroups);
+                .ToProperty(this, x => x.IsLoadingGroups, out _isLoadingGroups);
 
-			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(selectedDirectGroup as string));
+			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
 			_findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.User).WhereNotNull(),
-                openEditMemberOf.Select(_ => User))
+                _openEditMemberOf.Select(_ => User))
 				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
 				.Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
@@ -101,46 +101,46 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand OpenEditMemberOf => openEditMemberOf;
+		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
-        public ReactiveCommand GetAllGroups => getAllGroups;
+        public ReactiveCommand GetAllGroups => _getAllGroups;
 
 		public ReactiveCommand FindDirectGroup => _findDirectGroup;
 
 		public ReactiveCommand FindAllGroup => _findAllGroup;
 
-		public ReactiveList<string> AllGroups => allGroups;
+		public ReactiveList<string> AllGroups => _allGroups;
 
-        public ReactiveList<string> DirectGroups => directGroups;
+        public ReactiveList<string> DirectGroups => _directGroups;
 
-        public ListCollectionView AllGroupsCollectionView => allGroupsCollectionView;
+        public ListCollectionView AllGroupsCollectionView => _allGroupsCollectionView;
 
-        public ListCollectionView DirectGroupsCollectionView => directGroupsCollectionView;
+        public ListCollectionView DirectGroupsCollectionView => _directGroupsCollectionView;
 
-        public bool IsLoadingGroups => isLoadingGroups.Value;
+        public bool IsLoadingGroups => _isLoadingGroups.Value;
 
         public UserObject User
         {
-            get { return user; }
-            set { this.RaiseAndSetIfChanged(ref user, value); }
+            get { return _user; }
+            set { this.RaiseAndSetIfChanged(ref _user, value); }
         }
 
         public bool IsShowingDirectGroups
         {
-            get { return isShowingDirectGroups; }
-            set { this.RaiseAndSetIfChanged(ref isShowingDirectGroups, value); }
+            get { return _isShowingDirectGroups; }
+            set { this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
         }
 
         public bool IsShowingAllGroups
         {
-            get { return isShowingAllGroups; }
-            set { this.RaiseAndSetIfChanged(ref isShowingAllGroups, value); }
+            get { return _isShowingAllGroups; }
+            set { this.RaiseAndSetIfChanged(ref _isShowingAllGroups, value); }
         }
 
         public object SelectedDirectGroup
         {
-            get { return selectedDirectGroup; }
-            set { this.RaiseAndSetIfChanged(ref selectedDirectGroup, value); }
+            get { return _selectedDirectGroup; }
+            set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
         }
 
 		public object SelectedAllGroup
@@ -151,14 +151,14 @@ namespace SupportTool.ViewModels
 
 		public string GroupFilter
         {
-            get { return groupFilter; }
-            set { this.RaiseAndSetIfChanged(ref groupFilter, value); }
+            get { return _groupFilter; }
+            set { this.RaiseAndSetIfChanged(ref _groupFilter, value); }
         }
 
         public bool UseFuzzy
         {
-            get { return useFuzzy; }
-            set { this.RaiseAndSetIfChanged(ref useFuzzy, value); }
+            get { return _useFuzzy; }
+            set { this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
         }
 
 

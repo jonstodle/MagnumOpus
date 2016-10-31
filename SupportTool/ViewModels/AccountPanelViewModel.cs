@@ -17,111 +17,111 @@ namespace SupportTool.ViewModels
 {
 	public class AccountPanelViewModel : ReactiveObject
     {
-        private readonly ReactiveCommand<Unit, string> setNewPassword;
-        private readonly ReactiveCommand<Unit, string> setNewSimplePassword;
-        private readonly ReactiveCommand<Unit, string> setNewComplexPassword;
-        private readonly ReactiveCommand<Unit, Unit> expirePassword;
-        private readonly ReactiveCommand<Unit, Unit> unlockAccount;
-        private readonly ReactiveCommand<Unit, Unit> runLockoutStatus;
-        private readonly ReactiveCommand<Unit, Unit> openSplunk;
-        private readonly ReactiveCommand<Unit, Unit> openPermittedWorkstations;
-        private UserObject user;
-        private bool isShowingNewPasswordOptions;
-        private string newPassword;
+        private readonly ReactiveCommand<Unit, string> _setNewPassword;
+        private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
+        private readonly ReactiveCommand<Unit, string> _setNewComplexPassword;
+        private readonly ReactiveCommand<Unit, Unit> _expirePassword;
+        private readonly ReactiveCommand<Unit, Unit> _unlockAccount;
+        private readonly ReactiveCommand<Unit, Unit> _runLockoutStatus;
+        private readonly ReactiveCommand<Unit, Unit> _openSplunk;
+        private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
+        private UserObject _user;
+        private bool _isShowingNewPasswordOptions;
+        private string _newPassword;
 
 
 
         public AccountPanelViewModel()
         {
-            setNewPassword = ReactiveCommand.CreateFromObservable(
+            _setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
-            setNewPassword
+            _setNewPassword
                 .Subscribe(newPass => DialogService.ShowInfo($"New password is: {newPass}", "Password set"));
-            setNewPassword
+            _setNewPassword
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
 
-            setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
-            setNewSimplePassword
+            _setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
+            _setNewSimplePassword
                 .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
-            setNewSimplePassword
+            _setNewSimplePassword
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
 
-            setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
-            setNewComplexPassword
+            _setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
+            _setNewComplexPassword
                 .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
-            setNewComplexPassword
+            _setNewComplexPassword
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
 
-            expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
-            expirePassword
+            _expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
+            _expirePassword
                 .Subscribe(_ => DialogService.ShowInfo("User must change password at next login", "Password expired"));
-            expirePassword
+            _expirePassword
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
-            unlockAccount
+            _unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
+            _unlockAccount
                 .Subscribe(_ => 
                 {
-                    MessageBus.Current.SendMessage(user.CN, ApplicationActionRequest.Refresh.ToString());
+                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
                     DialogService.ShowInfo("Account unlocked");
                 });
-            unlockAccount
+            _unlockAccount
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message));
 
-            runLockoutStatus = ReactiveCommand.Create(() =>
+            _runLockoutStatus = ReactiveCommand.Create(() =>
             {
 				Helpers.EnsureExecutableIsAvailable("LockoutStatus.exe");
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 
-            openSplunk = ReactiveCommand.Create(() =>
+            _openSplunk = ReactiveCommand.Create(() =>
             {
                 Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
             });
 
-            openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.PermittedWorkstationsWindow>(user.Principal.SamAccountName));
+            _openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.PermittedWorkstationsWindow>(_user.Principal.SamAccountName));
         }
 
 
 
-        public ReactiveCommand SetNewPassword => setNewPassword;
+        public ReactiveCommand SetNewPassword => _setNewPassword;
 
-        public ReactiveCommand SetNewSimplePassword => setNewSimplePassword;
+        public ReactiveCommand SetNewSimplePassword => _setNewSimplePassword;
 
-        public ReactiveCommand SetNewComplexPassword => setNewComplexPassword;
+        public ReactiveCommand SetNewComplexPassword => _setNewComplexPassword;
 
-        public ReactiveCommand ExpirePassword => expirePassword;
+        public ReactiveCommand ExpirePassword => _expirePassword;
 
-        public ReactiveCommand UnlockAccount => unlockAccount;
+        public ReactiveCommand UnlockAccount => _unlockAccount;
 
-        public ReactiveCommand RunLockoutStatus => runLockoutStatus;
+        public ReactiveCommand RunLockoutStatus => _runLockoutStatus;
 
-        public ReactiveCommand OpenSplunk => openSplunk;
+        public ReactiveCommand OpenSplunk => _openSplunk;
 
-        public ReactiveCommand OpenPermittedWorkstations => openPermittedWorkstations;
+        public ReactiveCommand OpenPermittedWorkstations => _openPermittedWorkstations;
 
         public UserObject User
         {
-            get { return user; }
-            set { this.RaiseAndSetIfChanged(ref user, value); }
+            get { return _user; }
+            set { this.RaiseAndSetIfChanged(ref _user, value); }
         }
 
         public bool IsShowingNewPasswordOptions
         {
-            get { return isShowingNewPasswordOptions; }
-            set { this.RaiseAndSetIfChanged(ref isShowingNewPasswordOptions, value); }
+            get { return _isShowingNewPasswordOptions; }
+            set { this.RaiseAndSetIfChanged(ref _isShowingNewPasswordOptions, value); }
         }
 
         public string NewPassword
         {
-            get { return newPassword; }
-            set { this.RaiseAndSetIfChanged(ref newPassword, value); }
+            get { return _newPassword; }
+            set { this.RaiseAndSetIfChanged(ref _newPassword, value); }
         }
 
 

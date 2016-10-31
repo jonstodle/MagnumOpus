@@ -7,8 +7,8 @@ namespace SupportTool.Models
     {
         public UserObject(UserPrincipal principal) : base(principal) { }
 
-        public string Company => directoryEntry.Properties.Get<string>("company");
+        public string Company => _directoryEntry.Properties.Get<string>("company");
 
-        public string ProfilePath => directoryEntry.Properties.Get<string>("profilepath");
+        public string ProfilePath => _directoryEntry.Properties.Get<string>("profilepath");
     }
 }

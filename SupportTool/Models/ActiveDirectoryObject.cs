@@ -5,23 +5,23 @@ namespace SupportTool.Models
 {
 	public class ActiveDirectoryObject<T> where T : Principal
     {
-        protected T principal;
-        protected DirectoryEntry directoryEntry;
+        protected T _principal;
+        protected DirectoryEntry _directoryEntry;
 
 
 
         public ActiveDirectoryObject(T principal)
         {
-            this.principal = principal;
-            directoryEntry = principal.GetUnderlyingObject() as DirectoryEntry;
+			_principal = principal;
+            _directoryEntry = principal.GetUnderlyingObject() as DirectoryEntry;
         }
 
 
 
-        public T Principal => principal;
+        public T Principal => _principal;
 
-        public PropertyValueCollection MemberOf => directoryEntry.Properties["memberof"];
+        public PropertyValueCollection MemberOf => _directoryEntry.Properties["memberof"];
 
-        public string CN => directoryEntry.Properties.Get<string>("cn");
+        public string CN => _directoryEntry.Properties.Get<string>("cn");
     }
 }

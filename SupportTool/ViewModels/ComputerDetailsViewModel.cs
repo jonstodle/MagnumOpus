@@ -5,7 +5,7 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerDetailsViewModel : ReactiveObject
     {
-        private ComputerObject computer;
+        private ComputerObject _computer;
 
 
 
@@ -18,8 +18,8 @@ namespace SupportTool.ViewModels
 
         public ComputerObject Computer
         {
-            get { return computer; }
-            set { this.RaiseAndSetIfChanged(ref computer, value); }
+            get { return _computer; }
+            set { this.RaiseAndSetIfChanged(ref _computer, value); }
         }
     }
 }

@@ -11,38 +11,38 @@ namespace SupportTool.ViewModels
 {
 	public class PingPanelViewModel : ReactiveObject
 	{
-		private readonly ReactiveCommand<Unit, string> startPing;
-		private readonly ReactiveCommand<Unit, Unit> stopPing;
-		private readonly ReactiveList<string> pingResults;
-		private readonly ObservableAsPropertyHelper<string> mostRecentPingResult;
+		private readonly ReactiveCommand<Unit, string> _startPing;
+		private readonly ReactiveCommand<Unit, Unit> _stopPing;
+		private readonly ReactiveList<string> _pingResults;
+		private readonly ObservableAsPropertyHelper<string> _mostRecentPingResult;
 		private string _hostName;
-		private bool isPinging;
-		private bool isShowingPingResultDetails;
+		private bool _isPinging;
+		private bool _isShowingPingResultDetails;
 
 
 
 		public PingPanelViewModel()
 		{
-			pingResults = new ReactiveList<string>();
+			_pingResults = new ReactiveList<string>();
 
-			startPing = ReactiveCommand.CreateFromObservable(() =>
+			_startPing = ReactiveCommand.CreateFromObservable(() =>
 				{
 					PingResults.Clear();
-					return PingHost(_hostName).TakeUntil(stopPing);
+					return PingHost(_hostName).TakeUntil(_stopPing);
 				});
-			startPing
+			_startPing
 				.Subscribe(x => PingResults.Insert(0, x));
-			startPing
+			_startPing
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 
-			stopPing = ReactiveCommand.Create(() => { });
+			_stopPing = ReactiveCommand.Create(() => { });
 
 			Observable.Merge(
-				pingResults.ItemsAdded,
-				stopPing.Select(_ => ""),
+				_pingResults.ItemsAdded,
+				_stopPing.Select(_ => ""),
 				this.WhenAnyValue(x => x.HostName).WhereNotNull().Select(_ => ""))
-				.ToProperty(this, x => x.MostRecentPingResult, out mostRecentPingResult);
+				.ToProperty(this, x => x.MostRecentPingResult, out _mostRecentPingResult);
 
 			this
 				.WhenAnyValue(x => x.IsPinging)
@@ -52,13 +52,13 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand StartPing => startPing;
+		public ReactiveCommand StartPing => _startPing;
 
-		public ReactiveCommand StopPing => stopPing;
+		public ReactiveCommand StopPing => _stopPing;
 
-		public ReactiveList<string> PingResults => pingResults;
+		public ReactiveList<string> PingResults => _pingResults;
 
-		public string MostRecentPingResult => mostRecentPingResult.Value;
+		public string MostRecentPingResult => _mostRecentPingResult.Value;
 
 		public string HostName
 		{
@@ -68,14 +68,14 @@ namespace SupportTool.ViewModels
 
 		public bool IsPinging
 		{
-			get { return isPinging; }
-			set { this.RaiseAndSetIfChanged(ref isPinging, value); }
+			get { return _isPinging; }
+			set { this.RaiseAndSetIfChanged(ref _isPinging, value); }
 		}
 
 		public bool IsShowingPingResultDetails
 		{
-			get { return isShowingPingResultDetails; }
-			set { this.RaiseAndSetIfChanged(ref isShowingPingResultDetails, value); }
+			get { return _isShowingPingResultDetails; }
+			set { this.RaiseAndSetIfChanged(ref _isShowingPingResultDetails, value); }
 		}
 
 

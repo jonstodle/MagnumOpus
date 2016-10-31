@@ -14,30 +14,30 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerGroupsViewModel : ReactiveObject
     {
-		private readonly ReactiveCommand<Unit, Unit> openEditMemberOf;
+		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
-        private readonly ReactiveList<string> directGroups;
-        private readonly ListCollectionView directGroupsCollectionView;
-        private ComputerObject computer;
-        private bool isShowingDirectGroups;
+        private readonly ReactiveList<string> _directGroups;
+        private readonly ListCollectionView _directGroupsCollectionView;
+        private ComputerObject _computer;
+        private bool _isShowingDirectGroups;
 		private object _selectedDirectGroup;
 
 
 
         public ComputerGroupsViewModel()
         {
-            directGroups = new ReactiveList<string>();
+            _directGroups = new ReactiveList<string>();
 
-            directGroupsCollectionView = new ListCollectionView(directGroups);
-            directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
+            _directGroupsCollectionView = new ListCollectionView(_directGroups);
+            _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-			openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(computer.Principal.SamAccountName));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_computer.Principal.SamAccountName));
 
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.Computer).WhereNotNull(),
-               openEditMemberOf.Select(_ => Computer))
+               _openEditMemberOf.Select(_ => Computer))
                 .Do(_ => DirectGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
                 .ObserveOnDispatcher()
@@ -46,24 +46,24 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand OpenEditMemberOf => openEditMemberOf;
+		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
 		public ReactiveCommand FindDirectGroup => _findDirectGroup;
 
-        public ReactiveList<string> DirectGroups => directGroups;
+        public ReactiveList<string> DirectGroups => _directGroups;
 
-        public ListCollectionView DirectGroupsCollectionView => directGroupsCollectionView;
+        public ListCollectionView DirectGroupsCollectionView => _directGroupsCollectionView;
 
         public ComputerObject Computer
         {
-            get { return computer; }
-            set { this.RaiseAndSetIfChanged(ref computer, value); }
+            get { return _computer; }
+            set { this.RaiseAndSetIfChanged(ref _computer, value); }
         }
 
         public bool IsShowingDirectGroups
         {
-            get { return isShowingDirectGroups; }
-            set { this.RaiseAndSetIfChanged(ref isShowingDirectGroups, value); }
+            get { return _isShowingDirectGroups; }
+            set { this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
         }
 
 		public object SelectedDirectGroup
