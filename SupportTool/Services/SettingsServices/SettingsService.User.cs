@@ -11,13 +11,13 @@ namespace SupportTool.Services.SettingsServices
 	{
 		public int HistoryCountLimit
 		{
-			get { return Get<int>(nameof(HistoryCountLimit)); }
+			get { return Get<int>(nameof(HistoryCountLimit), 50); }
 			set { Set(nameof(HistoryCountLimit), value); }
 		}
 
 		public int DetailsWindowTimeoutLength
 		{
-			get { return Get<int>(nameof(DetailsWindowTimeoutLength)); }
+			get { return Get<int>(nameof(DetailsWindowTimeoutLength), 2); }
 			set { Set(nameof(DetailsWindowTimeoutLength), value); }
 		}
 	}

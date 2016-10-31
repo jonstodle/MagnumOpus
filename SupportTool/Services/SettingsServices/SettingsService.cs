@@ -40,7 +40,17 @@ namespace SupportTool.Services.SettingsServices
 
 
 
-		private T Get<T>(string key) => (T)_settings[key];
+		private T Get<T>(string key)
+		{
+			if (_settings.ContainsKey(key)) return (T)_settings[key];
+			else return default(T);
+		}
+
+		private T Get<T>(string key, T defaultValue)
+		{
+			if (_settings.ContainsKey(key)) return (T)_settings[key];
+			else return defaultValue;
+		}
 
 		private async void Set(string key, object value)
 		{
