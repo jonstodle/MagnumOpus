@@ -11,6 +11,8 @@ namespace SupportTool.Services.FileServices
 		private static readonly string LocalAppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Magnum Opus");
 		private static readonly string AppData = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Magnum Opus");
 
+
+
 		public static IObservable<Unit> WriteToLocalAppData(string key, string data) => Observable.Start(() =>
 		{
 			Directory.CreateDirectory(LocalAppData);
@@ -26,6 +28,8 @@ namespace SupportTool.Services.FileServices
 		public static IObservable<string> ReadFromLocalAppData(string key) => Observable.Start(() => File.ReadAllText(Path.Combine(LocalAppData, $"{key}.txt")));
 
 		public static IObservable<string> ReadFromAppData(string key) => Observable.Start(() => File.ReadAllText(Path.Combine(AppData, $"{key}.txt")));
+
+
 
 		public static IObservable<Unit> SerializeToDisk<T>(string key, T data) => WriteToLocalAppData(key, JsonConvert.SerializeObject(data));
 
