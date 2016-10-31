@@ -26,7 +26,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 		{
 			var disposed = false;
 
-			using (var directoryEntry = new DirectoryEntry($"LDAP://{_currentDomain}"))
+			using (var directoryEntry = GetDomainDirectoryEntry())
 			using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm}*)(distinguishedName={searchTerm}*)(name={searchTerm}*)))"))
 			{
 				foreach (SearchResult result in searcher.FindAll())
@@ -39,5 +39,8 @@ namespace SupportTool.Services.ActiveDirectoryServices
 			observer.OnCompleted();
 			return () => disposed = true;
 		});
-    }
+
+		private DirectoryEntry GetDomainDirectoryEntry() => new DirectoryEntry($"LDAP://{_currentDomain}");
+
+	}
 }

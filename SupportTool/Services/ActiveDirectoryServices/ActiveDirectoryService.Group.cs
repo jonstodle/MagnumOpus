@@ -10,8 +10,6 @@ namespace SupportTool.Services.ActiveDirectoryServices
 {
 	public partial class ActiveDirectoryService
     {
-        private DirectoryEntry directoryEntry = new DirectoryEntry("LDAP://sikt.sykehuspartner.no");
-
         public IObservable<GroupObject> GetGroup(string identity) => Observable.Start(() =>
         {
             var up = GroupPrincipal.FindByIdentity(_principalContext, identity);
@@ -22,6 +20,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
         {
             var disposed = false;
 
+			using (var directoryEntry = GetDomainDirectoryEntry())
             using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory=group)({searchProperty}={searchTerm}))", propertiesToLoad))
             {
                 searcher.PageSize = 1000;

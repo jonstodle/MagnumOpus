@@ -22,6 +22,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 		{
 			var disposed = false;
 
+			using (var directoryEntry = GetDomainDirectoryEntry())
 			using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory=user)({searchTerm}))", propertiesToLoad))
 			{
 				searcher.PageSize = 1000;
