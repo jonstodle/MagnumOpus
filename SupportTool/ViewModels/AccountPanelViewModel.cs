@@ -23,9 +23,9 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _expirePassword;
         private readonly ReactiveCommand<Unit, Unit> _unlockAccount;
         private readonly ReactiveCommand<Unit, Unit> _runLockoutStatus;
-        private readonly ReactiveCommand<Unit, Unit> _openSplunk;
         private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
-        private UserObject _user;
+		private readonly ReactiveCommand<Unit, Unit> _openSplunk;
+		private UserObject _user;
         private bool _isShowingNewPasswordOptions;
         private string _newPassword;
 
@@ -80,12 +80,12 @@ namespace SupportTool.ViewModels
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 
-            _openSplunk = ReactiveCommand.Create(() =>
+			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.PermittedWorkstationsWindow>(_user.Principal.SamAccountName));
+
+			_openSplunk = ReactiveCommand.Create(() =>
             {
                 Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
             });
-
-            _openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.PermittedWorkstationsWindow>(_user.Principal.SamAccountName));
         }
 
 
@@ -102,11 +102,11 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand RunLockoutStatus => _runLockoutStatus;
 
-        public ReactiveCommand OpenSplunk => _openSplunk;
-
         public ReactiveCommand OpenPermittedWorkstations => _openPermittedWorkstations;
 
-        public UserObject User
+		public ReactiveCommand OpenSplunk => _openSplunk;
+
+		public UserObject User
         {
             get { return _user; }
             set { this.RaiseAndSetIfChanged(ref _user, value); }
