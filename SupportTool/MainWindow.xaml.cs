@@ -76,6 +76,7 @@ namespace SupportTool
 						HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
 						HistoryButtonContextMenu.IsOpen = true;
 					}));
+				d(this.BindCommand(ViewModel, vm => vm.OpenSettings, v => v.SettingsButton));
 			});
 		}
 

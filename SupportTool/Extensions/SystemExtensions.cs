@@ -41,5 +41,9 @@ namespace System
         public static bool HasValue(this string s, int minLength = 1) => !string.IsNullOrWhiteSpace(s) && s.Length >= minLength;
 
 		public static bool IsIPAddress(this string s) => Regex.IsMatch(s, @"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$");
+
+		public static bool IsInt(this string s) { int tempInt; return int.TryParse(s, out tempInt); }
+
+		public static bool IsLong(this string s) { long tempLong; return long.TryParse(s, out tempLong); }
 	}
 }

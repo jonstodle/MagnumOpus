@@ -9,15 +9,15 @@ namespace SupportTool.Services.SettingsServices
 {
 	public partial class SettingsService
 	{
-		public int HistoryCountLimit
+		public long HistoryCountLimit
 		{
-			get { return Get<int>(nameof(HistoryCountLimit), 50); }
+			get { return Get(nameof(HistoryCountLimit), 50L); }
 			set { Set(nameof(HistoryCountLimit), value); }
 		}
 
-		public int DetailsWindowTimeoutLength
+		public long DetailsWindowTimeoutLength
 		{
-			get { return Get<int>(nameof(DetailsWindowTimeoutLength), 2); }
+			get { return Get(nameof(DetailsWindowTimeoutLength), 2L); }
 			set { Set(nameof(DetailsWindowTimeoutLength), value); }
 		}
 	}

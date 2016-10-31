@@ -22,6 +22,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _paste;
 		private readonly ReactiveCommand<Unit, Unit> _open;
+		private readonly ReactiveCommand<Unit, Unit> _openSettings;
 		private readonly ReactiveList<DirectoryEntry> _searchResults;
 		private readonly ReactiveList<string> _history;
 		private readonly ListCollectionView _searchResultsView;
@@ -72,6 +73,8 @@ namespace SupportTool.ViewModels
 				},
 				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
+			_openSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
+
 			this.WhenAnyValue(x => x.ListSortDescription)
 				.Subscribe(x =>
 				{
@@ -95,7 +98,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _history.Add(x));
 
 			_history.CountChanged
-				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take(SettingsService.Current.HistoryCountLimit))))
+				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take((int)SettingsService.Current.HistoryCountLimit))))
 				.Subscribe();
 		}
 
@@ -106,6 +109,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand<Unit, Unit> Paste => _paste;
 
 		public ReactiveCommand Open => _open;
+
+		public ReactiveCommand OpenSettings => _openSettings;
 
 		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
 

@@ -52,7 +52,7 @@ namespace SupportTool.Services.SettingsServices
 			else return defaultValue;
 		}
 
-		private async void Set(string key, object value)
+		private async void Set<T>(string key, T value)
 		{
 			_settings[key] = value;
 			await _saveSettings.Execute();
