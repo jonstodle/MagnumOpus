@@ -279,6 +279,7 @@ namespace SupportTool.ViewModels
 					if (userObject.Properties["LocalPath"].Value.ToString() == Path.Combine(@"C:\", "Users", usr.Principal.SamAccountName))
 					{
 						userObject.Delete();
+						observer.OnNext(CreateLogString("Deleted local profile references"));
 					}
 				} 
 			}
