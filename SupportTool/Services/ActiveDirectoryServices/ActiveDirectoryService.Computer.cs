@@ -9,7 +9,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
     {
         public IObservable<ComputerObject> GetComputer(string identity) => Observable.Start(() =>
         {
-            var cp = ComputerPrincipal.FindByIdentity(principalContext, identity);
+            var cp = ComputerPrincipal.FindByIdentity(_principalContext, identity);
             return cp != null ? new ComputerObject(cp) : null;
         });
     }

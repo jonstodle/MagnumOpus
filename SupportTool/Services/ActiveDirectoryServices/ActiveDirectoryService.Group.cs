@@ -14,7 +14,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
         public IObservable<GroupObject> GetGroup(string identity) => Observable.Start(() =>
         {
-            var up = GroupPrincipal.FindByIdentity(principalContext, identity);
+            var up = GroupPrincipal.FindByIdentity(_principalContext, identity);
             return up != null ? new GroupObject(up) : null;
         });
 

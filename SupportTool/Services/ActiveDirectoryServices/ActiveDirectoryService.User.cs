@@ -14,7 +14,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
     {
         public IObservable<UserObject> GetUser(string identity) => Observable.Start(() =>
         {
-            var up = UserPrincipal.FindByIdentity(principalContext, identity);
+            var up = UserPrincipal.FindByIdentity(_principalContext, identity);
             return up != null ? new UserObject(up) : null;
         });
 
