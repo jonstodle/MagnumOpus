@@ -1,4 +1,5 @@
 ﻿using SupportTool.Services.LogServices;
+using SupportTool.Services.SettingsServices;
 using System.Windows;
 
 namespace SupportTool
@@ -11,6 +12,7 @@ namespace SupportTool
 		public App()
 		{
 			LogService.Info("Application start");
+			SettingsService.Init();
 		}
     }
 }

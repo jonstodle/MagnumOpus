@@ -3,6 +3,7 @@ using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.NavigationServices;
+using SupportTool.Services.SettingsServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -94,7 +95,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _history.Add(x));
 
 			_history.CountChanged
-				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take(50))))
+				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take(SettingsService.Current.HistoryCountLimit))))
 				.Subscribe();
 		}
 

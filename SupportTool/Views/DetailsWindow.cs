@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SupportTool.Services.SettingsServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -16,7 +17,7 @@ namespace SupportTool.Views
 
 		public DetailsWindow()
 		{
-			Observable.Interval(TimeSpan.FromHours(2), Scheduler.TaskPool)
+			Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), Scheduler.TaskPool)
 				.ObserveOnDispatcher()
 				.Subscribe(x => this.Close())
 				.AddTo(_subscriptions);
