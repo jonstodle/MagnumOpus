@@ -24,6 +24,22 @@
 
 			<TextBlock Text="Close detail windows after (hours)" Style="{StaticResource SettingsHeaderStyle}"/>
 			<TextBox x:Name="DetailWindowTimeoutLengthTextBox" Margin="2"/>
+
+			<TextBlock Text="Where to run RC2012" Style="{StaticResource SettingsHeaderStyle}"/>
+			<Grid Height="100">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+
+				<TextBox x:Name="HFNameTextBox" CharacterCasing="Upper" Margin="2"/>
+				<Button x:Name="AddHFNameButton" Content="Add" Grid.Column="1" Margin="2"/>
+				<ListView x:Name="RemoteControl2012HFsListView" ItemTemplate="{StaticResource StringDataTemplate}" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
+			</Grid>
 		</StackPanel>
 	</ScrollViewer>
 </Window>

@@ -1,9 +1,11 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
+using SupportTool.Services.SettingsServices;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -118,9 +120,7 @@ namespace SupportTool.ViewModels
 			var fileName = @"C:\SCCM Remote Control\rc.exe";
 			var arguments = $"1 {computer.CN}";
 
-			if (computer.Company == "SIHF"
-				|| computer.Company == "REV"
-				|| computer.Company == "SOHF")
+			if (SettingsService.Current.RemoteControl2012HFs.Any(x => x.ToUpperInvariant() == computer.Company.ToUpperInvariant()))
 			{
 				fileName = @"C:\RemoteControl2012\CmRcViewer.exe";
 				arguments = computer.CN;
