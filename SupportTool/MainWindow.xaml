@@ -62,16 +62,19 @@
 		<Grid Grid.Row="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
-			<TextBlock x:Name="SearchResultsCountTextBox" Margin="2"/>
+			<StackPanel x:Name="SearchResultsStackPanel" Orientation="Horizontal">
+				<TextBlock x:Name="SearchResultsCountTextBox" Margin="2"/>
 
-			<TextBlock Text=" (maximum 1000)" Opacity=".5" Grid.Column="1" Margin="2"/>
+				<TextBlock Text=" (maximum 1000)" Opacity=".5" Margin="2"/>
+			</StackPanel>
 
-			<Button x:Name="SettingsButton" Content="Settings" Grid.Column="3" Margin="2"/>
+			<TextBlock x:Name="VersionTextBlock" Opacity="0" IsHitTestVisible="False"/>
+
+			<Button x:Name="SettingsButton" Content="Settings" Grid.Column="2" Margin="2"/>
 		</Grid>
     </Grid>
 </Window>

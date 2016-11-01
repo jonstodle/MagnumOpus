@@ -12,6 +12,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
 
@@ -23,12 +24,15 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _paste;
 		private readonly ReactiveCommand<Unit, Unit> _open;
 		private readonly ReactiveCommand<Unit, Unit> _openSettings;
+		private readonly ReactiveCommand<Unit, bool> _toggleShowVersion;
 		private readonly ReactiveList<DirectoryEntry> _searchResults;
 		private readonly ReactiveList<string> _history;
 		private readonly ListCollectionView _searchResultsView;
+		private readonly ObservableAsPropertyHelper<bool> _showVersion;
 		private SortDescription _listSortDescription;
 		private string _searchQuery;
 		private object _selectedSearchResult;
+		private string _version;
 
 
 
@@ -40,6 +44,10 @@ namespace SupportTool.ViewModels
 			{
 				SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) }
 			};
+
+			var version = Assembly.GetExecutingAssembly().GetName().Version;
+			var assemblyTime = Assembly.GetExecutingAssembly().GetLinkerTime();
+			_version = $"{version.Major}.{version.Minor}.{assemblyTime.Day.ToString("00")}{assemblyTime.Month.ToString("00")}{assemblyTime.Year.ToString("00")}.{assemblyTime.Hour.ToString("00")}{assemblyTime.Minute.ToString("00")}{assemblyTime.Second.ToString("00")}";
 
 			_search = ReactiveCommand.CreateFromTask(async () =>
 			{
@@ -74,6 +82,11 @@ namespace SupportTool.ViewModels
 				this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
 			_openSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
+
+			_toggleShowVersion = ReactiveCommand.Create<Unit, bool>(_ => !_showVersion.Value);
+
+			_showVersion = _toggleShowVersion
+				.ToProperty(this, x => x.ShowVersion, false);
 
 			this.WhenAnyValue(x => x.ListSortDescription)
 				.Subscribe(x =>
@@ -112,11 +125,17 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand OpenSettings => _openSettings;
 
+		public ReactiveCommand ToggleShowVersion => _toggleShowVersion;
+
 		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
 
 		public ReactiveList<string> History => _history;
 
 		public ListCollectionView SearchResultsView => _searchResultsView;
+
+		public bool ShowVersion => _showVersion.Value;
+
+		public string Version => _version;
 
 		public SortDescription ListSortDescription
 		{
