@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Newtonsoft.Json;
+using ReactiveUI;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.LogServices;
 using System;
@@ -42,13 +43,13 @@ namespace SupportTool.Services.SettingsServices
 
 		private T Get<T>(string key)
 		{
-			if (_settings.ContainsKey(key)) return (T)_settings[key];
+			if (_settings.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(_settings[key].ToString());
 			else return default(T);
 		}
 
 		private T Get<T>(string key, T defaultValue)
 		{
-			if (_settings.ContainsKey(key)) return (T)_settings[key];
+			if (_settings.ContainsKey(key)) return Get<T>(key);
 			else return defaultValue;
 		}
 
