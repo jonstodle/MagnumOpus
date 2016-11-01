@@ -111,7 +111,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _history.Add(x));
 
 			_history.CountChanged
-				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take((int)SettingsService.Current.HistoryCountLimit))))
+				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take(SettingsService.Current.HistoryCountLimit))))
 				.Subscribe();
 		}
 

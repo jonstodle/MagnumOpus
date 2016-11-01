@@ -46,13 +46,13 @@ namespace SupportTool.ViewModels
 
 			this.WhenAnyValue(x => x.HistoryCountLimit)
 				.Where(x => x.IsLong())
-				.Select(x => long.Parse(x))
+				.Select(x => int.Parse(x))
 				.Where(x => x > 0)
 				.Subscribe(x => SettingsService.Current.HistoryCountLimit = x);
 
 			this.WhenAnyValue(x => x.DetailWindowTimeoutLength)
 				.Where(x => x.IsLong())
-				.Select(x => long.Parse(x))
+				.Select(x => int.Parse(x))
 				.Where(x => x > 0)
 				.Subscribe(x => SettingsService.Current.DetailsWindowTimeoutLength = x);
 
