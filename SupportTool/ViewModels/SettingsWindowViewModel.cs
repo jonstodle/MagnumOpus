@@ -35,8 +35,10 @@ namespace SupportTool.ViewModels
 			};
 
 			_addHFName = ReactiveCommand.Create(
-				() => { HFName = ""; _remoteControl2012HFs.Add(_hfName.Trim()); },
+				() => _remoteControl2012HFs.Add(_hfName.Trim()),
 				this.WhenAnyValue(x => x.HFName, x => x.HasValue(3)));
+			_addHFName
+				.Subscribe(_ => HFName = "");
 
 			_removeHFName = ReactiveCommand.Create(
 				() => { _remoteControl2012HFs.Remove((string)_selectedRemoteControl2012HF); },
