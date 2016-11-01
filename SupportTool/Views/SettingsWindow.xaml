@@ -10,7 +10,7 @@
 
 	<Window.Resources>
 		<Style x:Key="SettingsHeaderStyle" TargetType="TextBlock">
-			<Setter Property="Margin" Value="2,6,2,2"/>
+			<Setter Property="Margin" Value="2,10,2,2"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 	</Window.Resources>
