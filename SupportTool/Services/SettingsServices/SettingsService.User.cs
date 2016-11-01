@@ -23,7 +23,7 @@ namespace SupportTool.Services.SettingsServices
 
 		public IEnumerable<string> RemoteControl2012HFs
 		{
-			get { return Get(nameof(RemoteControl2012HFs), new List<string> { "SIHF", "SOHF", "REV", "VVHF" }); }
+			get { return Get(nameof(RemoteControl2012HFs), (new List<string> { "SIHF", "SOHF", "REV", "VVHF", "SBHF" }).AsEnumerable()); }
 			set { Set(nameof(RemoteControl2012HFs), value); }
 		}
 	}
