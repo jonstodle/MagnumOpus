@@ -1,7 +1,9 @@
-﻿using ReactiveUI;
+﻿using Microsoft.Win32;
+using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
+using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.ComponentModel;
@@ -17,10 +19,13 @@ namespace SupportTool.ViewModels
 	public class GroupGroupsViewModel : ReactiveObject
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
 		private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
+		private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
 		private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
+		private readonly ReactiveCommand<Unit, Unit> _saveMembers;
 		private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
 		private readonly ReactiveList<string> _directMemberOfGroups;
 		private readonly ReactiveList<string> _allMemberOfGroups;
@@ -64,6 +69,15 @@ namespace SupportTool.ViewModels
 
 			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_group.CN));
 
+			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
+			{
+				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				if (saveFileDialog.ShowDialog() == true)
+				{
+					await ExcelService.SaveGroupsToExcelFile(_directMemberOfGroups, saveFileDialog.FileName);
+				}
+			});
+
 			_findDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup as string));
 
 			_getAllMemberOfGroups = ReactiveCommand.CreateFromObservable(
@@ -83,7 +97,25 @@ namespace SupportTool.ViewModels
 
 			_findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup as string));
 
+			_saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
+			{
+				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				if (saveFileDialog.ShowDialog() == true)
+				{
+					await ExcelService.SaveGroupsToExcelFile(_allMemberOfGroups, saveFileDialog.FileName);
+				}
+			});
+
 			_openEditMembers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMembersWindow>(_group.CN));
+
+			_saveMembers = ReactiveCommand.CreateFromTask(async () =>
+			{
+				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				if (saveFileDialog.ShowDialog() == true)
+				{
+					await ExcelService.SaveUsersToExcelFile(_memberUsers, saveFileDialog.FileName);
+				}
+			});
 
 			_findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedMemberUser as string));
 
@@ -123,13 +155,19 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
+		public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
+
 		public ReactiveCommand FindDirectMemberOfGroup => _findDirectMemberOfGroup;
 
 		public ReactiveCommand GetAllGroups => _getAllMemberOfGroups;
 
 		public ReactiveCommand FindAllMemberOfGroup => _findAllMemberOfGroup;
 
+		public ReactiveCommand SaveAllGroups => _saveAllGroups;
+
 		public ReactiveCommand OpenEditMembers => _openEditMembers;
+
+		public ReactiveCommand SaveMembers => _saveMembers;
 
 		public ReactiveCommand FindMemberUser => _findMemberUser;
 

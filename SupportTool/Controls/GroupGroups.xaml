@@ -26,7 +26,16 @@
 
 			<ListView x:Name="DirectMemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Button x:Name="EditDirectGroupsButton" Content="Edit" Grid.Row="1" Margin="2"/>
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button x:Name="EditDirectGroupsButton" Content="Edit" Margin="2"/>
+
+				<Button x:Name="SaveDirectGroupsButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
 		</Grid>
 
 		<Grid x:Name="MemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -52,6 +61,8 @@
                         <Run Text=" of "/>
                         <Run x:Name="TotalCountRun"/>
 			</TextBlock>
+
+			<Button x:Name="SaveAllGroupsButton" Content="Save" Grid.Row="2" Grid.Column="1" Margin="2"/>
 		</Grid>
 
 		<Grid x:Name="MembersGrid" Background="{StaticResource SubSectionBackgroundBrush}">
@@ -62,7 +73,16 @@
 
 			<ListView x:Name="MembersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Button x:Name="MembersButton" Content="Edit" Grid.Row="1" Margin="2"/>
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
+				<Button x:Name="MembersButton" Content="Edit" Margin="2"/>
+
+				<Button x:Name="SaveMembersButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
 		</Grid>
 	</StackPanel>
 </UserControl>
