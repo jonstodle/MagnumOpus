@@ -110,6 +110,11 @@ namespace SupportTool.ViewModels
                 .ObserveOnDispatcher()
                 .Subscribe(x => DirectGroups.Add(x.Properties.Get<string>("cn")));
 
+			Observable.Merge(
+				_saveAllGroups.ThrownExceptions,
+				_saveDirectGroups.ThrownExceptions)
+				.Subscribe(x => DialogService.ShowError(x.Message));
+
             this
                 .WhenAnyValue(x => x.IsShowingDirectGroups)
                 .Where(x => x)
