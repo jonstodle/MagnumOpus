@@ -17,7 +17,16 @@
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
 			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Button x:Name="EditDirectGroupsButton" Content="Edit" Margin="2"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button x:Name="EditDirectGroupsButton" Content="Edit" Margin="2"/>
+
+				<Button x:Name="SaveDirectGroupsButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
 		</StackPanel>
     </StackPanel>
 </UserControl>

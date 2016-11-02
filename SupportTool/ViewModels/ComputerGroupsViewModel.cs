@@ -1,6 +1,9 @@
-﻿using ReactiveUI;
+﻿using Microsoft.Win32;
+using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
+using SupportTool.Services.DialogServices;
+using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.ComponentModel;
@@ -15,6 +18,7 @@ namespace SupportTool.ViewModels
 	public class ComputerGroupsViewModel : ReactiveObject
     {
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
         private readonly ReactiveList<string> _directGroups;
         private readonly ListCollectionView _directGroupsCollectionView;
@@ -33,6 +37,18 @@ namespace SupportTool.ViewModels
 
 			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_computer.Principal.SamAccountName));
 
+			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
+			{
+				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				if (saveFileDialog.ShowDialog()  == true)
+				{
+					await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
+				}
+			});
+			_saveDirectGroups
+				.ThrownExceptions
+				.Subscribe(x => DialogService.ShowError(x.Message));
+
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 
             Observable.Merge(
@@ -47,6 +63,8 @@ namespace SupportTool.ViewModels
 
 
 		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
+
+		public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
 
 		public ReactiveCommand FindDirectGroup => _findDirectGroup;
 
