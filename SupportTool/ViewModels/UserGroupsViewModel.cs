@@ -19,7 +19,8 @@ namespace SupportTool.ViewModels
     {
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-        private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
+		private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
+		private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
 		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
 		private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
 		private readonly ReactiveList<string> _allGroups;
@@ -60,6 +61,15 @@ namespace SupportTool.ViewModels
 				if (saveFileDialog.ShowDialog() == true)
 				{
 					await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
+				}
+			});
+
+			_saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
+			{
+				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				if (saveFileDialog.ShowDialog() == true)
+				{
+					await ExcelService.SaveGroupsToExcelFile(_allGroups, saveFileDialog.FileName);
 				}
 			});
 
@@ -116,6 +126,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
 		public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
+
+		public ReactiveCommand SaveAllGroups => _saveAllGroups;
 
 		public ReactiveCommand GetAllGroups => _getAllGroups;
 

@@ -62,6 +62,8 @@
                         <Run Text=" of "/>
                         <Run x:Name="TotalCountRun"/>
             </TextBlock>
-        </Grid>
+
+			<Button x:Name="SaveAllGroupsButton" Content="Save" Grid.Row="3" Grid.Column="1" Margin="2"/>
+		</Grid>
     </StackPanel>
 </UserControl>
