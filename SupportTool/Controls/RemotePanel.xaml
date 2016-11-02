@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SupportTool.Controls"
+			 xmlns:ext="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
@@ -21,7 +22,16 @@
 
 			<Button x:Name="RebootButton" Content="Reboot" Margin="2"/>
 
-			<Button x:Name="RemoteControlButton" Content="Remote control" Margin="2"/>
+			<!--<Button x:Name="RemoteControlButton" Content="Remote control" Margin="2"/>-->
+
+			<ext:SplitButton x:Name="RemoteControlButton" Content="Remote control" Margin="2">
+				<ext:SplitButton.DropDownContent>
+					<StackPanel>
+						<Button x:Name="RemoteControlClassicButton" Content="Remote Control Classic" Margin="2"/>
+						<Button x:Name="RemoteControl2012Button" Content="Remote Control 2012" Margin="2"/>
+					</StackPanel>
+				</ext:SplitButton.DropDownContent>
+			</ext:SplitButton>
 
 			<Button x:Name="KillRemoteControlButton" Content="Kill RC" Margin="2"/>
 

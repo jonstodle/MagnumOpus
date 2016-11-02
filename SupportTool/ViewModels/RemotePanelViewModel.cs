@@ -21,6 +21,8 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _openCDrive;
 		private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
+		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
+		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
 		private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
@@ -63,6 +65,10 @@ namespace SupportTool.ViewModels
 
 			_startRemoteControl = ReactiveCommand.Create(() => StartRemoteControlImpl(_computer));
 
+			_startRemoteControlClassic = ReactiveCommand.Create(() => StartRemoteControlClassicImpl(_computer));
+
+			_startRemoteControl2012 = ReactiveCommand.Create(() => StartRemoteControl2012Impl(_computer));
+
 			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im rcagent.exe /f"));
 
 			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\msra.exe", $"/offerra {_computer.CN}"));
@@ -93,6 +99,10 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand StartRemoteControl => _startRemoteControl;
 
+		public ReactiveCommand StartRemoteControlClassic => _startRemoteControlClassic;
+
+		public ReactiveCommand StartRemoteControl2012 => _startRemoteControl2012;
+
 		public ReactiveCommand KillRemoteControl => _killRemoteControl;
 
 		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
@@ -117,16 +127,12 @@ namespace SupportTool.ViewModels
 
 		private void StartRemoteControlImpl(ComputerObject computer)
 		{
-			var fileName = @"C:\SCCM Remote Control\rc.exe";
-			var arguments = $"1 {computer.CN}";
-
-			if (SettingsService.Current.RemoteControl2012HFs.Any(x => x.ToUpperInvariant() == computer.Company.ToUpperInvariant()))
-			{
-				fileName = @"C:\RemoteControl2012\CmRcViewer.exe";
-				arguments = computer.CN;
-			}
-
-			ExecuteFile(fileName, arguments);
+			if (SettingsService.Current.RemoteControl2012HFs.Any(x => x.ToUpperInvariant() == computer.Company.ToUpperInvariant())) StartRemoteControl2012Impl(computer);
+			else StartRemoteControlClassicImpl(computer);
 		}
+
+		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {computer.CN}");
+
+		private void StartRemoteControl2012Impl(ComputerObject computer) => ExecuteFile(@"C:\RemoteControl2012\CmRcViewer.exe", computer.CN);
 	}
 }
