@@ -40,6 +40,7 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.DirectGroupsListView, nameof(ListView.MouseDoubleClick)));
 				d(this.BindCommand(ViewModel, vm => vm.FindAllGroup, v => v.AllGroupsListView, nameof(ListView.MouseDoubleClick)));
 				d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditGroupsButton));
+				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveGroupsButton));
 
 				d(ViewModel
 				.WhenAnyValue(x => x.IsShowingAllGroups)
