@@ -166,6 +166,7 @@
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
     <Compile Include="Models\ComputerObject.cs" />
+    <Compile Include="Models\DirectoryEntryInfo.cs" />
     <Compile Include="Models\GroupObject.cs" />
     <Compile Include="Models\UserObject.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Computer.cs" />

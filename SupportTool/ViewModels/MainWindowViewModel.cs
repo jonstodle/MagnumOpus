@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
@@ -20,12 +21,12 @@ namespace SupportTool.ViewModels
 {
 	public partial class MainWindowViewModel : ReactiveObject
 	{
-		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _paste;
 		private readonly ReactiveCommand<Unit, Unit> _open;
 		private readonly ReactiveCommand<Unit, Unit> _openSettings;
 		private readonly ReactiveCommand<Unit, bool> _toggleShowVersion;
-		private readonly ReactiveList<DirectoryEntry> _searchResults;
+		private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
 		private readonly ReactiveList<string> _history;
 		private readonly ListCollectionView _searchResultsView;
 		private readonly ObservableAsPropertyHelper<bool> _showVersion;
@@ -38,7 +39,7 @@ namespace SupportTool.ViewModels
 
 		public MainWindowViewModel()
 		{
-			_searchResults = new ReactiveList<DirectoryEntry>();
+			_searchResults = new ReactiveList<DirectoryEntryInfo>();
 			_history = new ReactiveList<string>();
 			_searchResultsView = new ListCollectionView(_searchResults)
 			{
@@ -54,9 +55,9 @@ namespace SupportTool.ViewModels
 				if (_searchQuery.IsIPAddress())
 				{
 					await NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery);
-					return Observable.Empty<DirectoryEntry>();
+					return Observable.Empty<DirectoryEntryInfo>();
 				}
-				else return ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler);
+				else return ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)).SubscribeOn(RxApp.TaskpoolScheduler);
 			});
 			_search
 				.Do(_ => _searchResults.Clear())
@@ -69,8 +70,8 @@ namespace SupportTool.ViewModels
 			_open = ReactiveCommand.CreateFromTask(
 				async () => 
 				{
-					var de = _selectedSearchResult as DirectoryEntry;
-					var cn = de.Properties.Get<string>("cn");
+					var de = _selectedSearchResult as DirectoryEntryInfo;
+					var cn = de.CN;
 					var principal = await ActiveDirectoryService.Current.GetPrincipal(cn);
 
 					if (principal is UserPrincipal) await NavigationService.ShowWindow<Views.UserWindow>(principal.SamAccountName);
@@ -127,7 +128,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand ToggleShowVersion => _toggleShowVersion;
 
-		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
+		public ReactiveList<DirectoryEntryInfo> SearchResults => _searchResults;
 
 		public ReactiveList<string> History => _history;
 

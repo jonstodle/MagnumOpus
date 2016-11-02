@@ -51,9 +51,9 @@
 			<ListView.View>
 				<GridView>
 					<GridView.Columns>
-						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
-						<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
-						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" Width="200"/>
+						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="{StaticResource NameColumnWidth}"/>
+						<GridViewColumn Header="ID" DisplayMemberBinding="{Binding SamAccountName}" Width="{StaticResource IDColumnWidth}"/>
+						<GridViewColumn Header="Path" DisplayMemberBinding="{Binding AdsPath}" Width="200"/>
 					</GridView.Columns>
 				</GridView>
 			</ListView.View>
