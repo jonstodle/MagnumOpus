@@ -21,7 +21,7 @@ namespace SupportTool.Services.ExportServices
 
 		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<DirectoryEntry> users, string path) => Observable.Start(() =>
 		{
-			var table = new DataTable
+			var table = new DataTable("Sheet 1")
 			{
 				Columns =
 				{
@@ -52,12 +52,12 @@ namespace SupportTool.Services.ExportServices
 
 		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<string> groups, string path) => Observable.Start(() =>
 		{
-			SaveUsersToExcelFile(groups.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);
+			SaveGroupsToExcelFile(groups.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);
 		});
 
 		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<DirectoryEntry> groups, string path) => Observable.Start(() =>
 		{
-			var table = new DataTable
+			var table = new DataTable("Sheet 1")
 			{
 				Columns =
 				{
@@ -70,9 +70,9 @@ namespace SupportTool.Services.ExportServices
 			foreach (var group in groups)
 			{
 				table.Rows.Add(
-					group.Properties["cn"].Value?.ToString() ?? "",
-					group.Properties["description"].Value?.ToString() ?? "",
-					group.Properties["info"].Value?.ToString() ?? "");
+					(group.Properties["cn"].Value?.ToString() ?? ""),
+					(group.Properties["description"].Value?.ToString() ?? ""),
+					(group.Properties["info"].Value?.ToString() ?? ""));
 			}
 
 			var workBook = new XLWorkbook();
