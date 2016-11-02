@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using SupportTool.Services.ActiveDirectoryServices;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,6 +14,11 @@ namespace SupportTool.Services.ExportServices
 {
 	public class ExcelService
 	{
+		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<string> users, string path) => Observable.Start(() =>
+		{
+			SaveUsersToExcelFile(users.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);
+		});
+
 		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<DirectoryEntry> users, string path) => Observable.Start(() =>
 		{
 			var table = new DataTable
@@ -44,7 +50,12 @@ namespace SupportTool.Services.ExportServices
 			workBook.SaveAs(path);
 		});
 
-		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<DirectoryEntry> users, string path) => Observable.Start(() =>
+		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<string> groups, string path) => Observable.Start(() =>
+		{
+			SaveUsersToExcelFile(groups.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);
+		});
+
+		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<DirectoryEntry> groups, string path) => Observable.Start(() =>
 		{
 			var table = new DataTable
 			{
@@ -56,12 +67,12 @@ namespace SupportTool.Services.ExportServices
 				}
 			};
 
-			foreach (var user in users)
+			foreach (var group in groups)
 			{
 				table.Rows.Add(
-					user.Properties["cn"].Value?.ToString() ?? "",
-					user.Properties["description"].Value?.ToString() ?? "",
-					user.Properties["info"].Value?.ToString() ?? "");
+					group.Properties["cn"].Value?.ToString() ?? "",
+					group.Properties["description"].Value?.ToString() ?? "",
+					group.Properties["info"].Value?.ToString() ?? "");
 			}
 
 			var workBook = new XLWorkbook();
