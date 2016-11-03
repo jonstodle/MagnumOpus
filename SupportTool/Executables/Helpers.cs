@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SupportTool.Services.FileServices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace SupportTool.Executables
 		public static void WriteExecutableToDisk(string executable)
 		{
 			var rStream = Application.GetResourceStream(new Uri($"pack://application:,,,/Executables/{executable}"));
-			using (var fs = new FileStream(executable, FileMode.Create, FileAccess.Write))
+			using (var fs = new FileStream(Path.Combine(FileService.LocalAppData, executable), FileMode.Create, FileAccess.Write))
 			using (var stream = new MemoryStream())
 			using (var writer = new BinaryWriter(fs))
 			{
@@ -25,7 +26,7 @@ namespace SupportTool.Executables
 
 		public static void EnsureExecutableIsAvailable(string executable)
 		{
-			if (!File.Exists(executable))
+			if (!File.Exists(Path.Combine(FileService.LocalAppData, executable)))
 			{
 				WriteExecutableToDisk(executable);
 			}

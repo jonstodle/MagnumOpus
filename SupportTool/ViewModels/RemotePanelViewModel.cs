@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
+using SupportTool.Services.FileServices;
 using SupportTool.Services.SettingsServices;
 using System;
 using System.Diagnostics;
@@ -35,19 +36,19 @@ namespace SupportTool.ViewModels
 			_openLoggedOn = ReactiveCommand.Create(() =>
 			{
 				EnsureExecutableIsAvailable("PsLoggedon.exe");
-				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_computer.CN}");
+				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsLoggedon.exe")}\"", $@"\\{_computer.CN}");
 			});
 
 			_openLoggedOnPlus = ReactiveCommand.Create(() =>
 			{
 				EnsureExecutableIsAvailable("PsExec.exe");
-				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user");
+				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user");
 			});
 
 			_openRemoteExecution = ReactiveCommand.Create(() =>
 			{
 				EnsureExecutableIsAvailable("PsExec.exe");
-				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_computer.CN} C:\Windows\System32\cmd.exe");
+				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe");
 			});
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
