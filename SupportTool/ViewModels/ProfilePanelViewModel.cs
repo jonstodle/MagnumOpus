@@ -395,9 +395,6 @@ namespace SupportTool.ViewModels
 			}
 		}
 
-		[DllImport("userenv.dll", CharSet = CharSet.Unicode, ExactSpelling = false, SetLastError = true)]
-		public static extern bool DeleteProfile(string sidString, string profilePath, string computerName);
-
 		private string CreateLogString(string logMessage) => $"{DateTimeOffset.Now.ToString("T")} - {logMessage}";
 	}
 }
