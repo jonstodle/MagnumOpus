@@ -80,6 +80,8 @@ namespace SupportTool.ViewModels
 				_openLoggedOn.ThrownExceptions,
 				_openRemoteExecution.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
+				_startRemoteControlClassic.ThrownExceptions,
+				_startRemoteControl2012.ThrownExceptions,
 				_killRemoteControl.ThrownExceptions,
 				_startRemoteAssistance.ThrownExceptions,
 				_startRdp.ThrownExceptions)
