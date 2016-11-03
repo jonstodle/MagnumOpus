@@ -24,6 +24,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _openLocalProfileDirectory;
 		private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> _searchForProfiles;
 		private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
+		private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
 		private readonly ReactiveList<string> _resetMessages;
 		private readonly ReactiveList<DirectoryInfo> _profiles;
 		private UserObject _user;
@@ -124,6 +125,13 @@ namespace SupportTool.ViewModels
 				.ThrownExceptions
 				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not restore profile"));
 
+			_resetCitrixProfile = ReactiveCommand.CreateFromObservable(() => ResetCitrixProfileImpl(_user));
+			_resetCitrixProfile
+				.Subscribe(_ => DialogService.ShowInfo("Profile reset", "Success"));
+			_resetCitrixProfile
+				.ThrownExceptions
+				.Subscribe(ex => DialogService.ShowError(ex.Message));
+
 			this
 				.WhenAnyValue(x => x.IsShowingResetProfile)
 				.Where(x => x)
@@ -148,6 +156,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand SearchForProfiles => _searchForProfiles;
 
 		public ReactiveCommand RestoreProfile => _restoreProfile;
+
+		public ReactiveCommand ResetCitrixProfile => _resetCitrixProfile;
 
 		public ReactiveList<string> ResetMessages => _resetMessages;
 
@@ -314,6 +324,19 @@ namespace SupportTool.ViewModels
 			if (ShouldRestoreWindowsExplorerFavorites) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, "Links"); }
 
 			if (ShouldRestoreStickyNotes) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, @"AppData\Roaming\Microsoft\Sticky Notes"); }
+		});
+
+		private IObservable<Unit> ResetCitrixProfileImpl(UserObject user) => Observable.Start(() =>
+		{
+			var  destination = Path.Combine(user.HomeDirectory, "windows");
+			if (!Directory.Exists(destination)) throw new Exception("Citrix profile directory not found");
+
+			while (Directory.Exists(destination))
+			{
+				destination = destination.Insert(destination.ToLowerInvariant().IndexOf("windows"), "!");
+			}
+
+			Directory.Move(Path.Combine(user.HomeDirectory, "windows"), destination);
 		});
 
 

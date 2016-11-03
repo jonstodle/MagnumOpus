@@ -13,8 +13,10 @@
         <WrapPanel>
             <ToggleButton x:Name="ResetProfileToggleButton" Content="Reset profile" Margin="2"/>
 
-            <ToggleButton x:Name="RestoreProfileToggleButton" Content="Restore profile" Margin="2"/>
-        </WrapPanel>
+			<ToggleButton x:Name="RestoreProfileToggleButton" Content="Restore profile" Margin="2"/>
+
+			<Button x:Name="ResetCitrixProfileButton" Content="Reset citrix profile" Margin="2"/>
+		</WrapPanel>
 
         <Grid x:Name="ResetProfileGrid" Background="{StaticResource SubSectionBackgroundBrush}">
             <Grid.ColumnDefinitions>

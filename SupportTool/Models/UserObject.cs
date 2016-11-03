@@ -10,5 +10,7 @@ namespace SupportTool.Models
         public string Company => _directoryEntry.Properties.Get<string>("company");
 
         public string ProfilePath => _directoryEntry.Properties.Get<string>("profilepath");
+
+		public string HomeDirectory => _directoryEntry.Properties.Get<string>("homedirectory");
     }
 }

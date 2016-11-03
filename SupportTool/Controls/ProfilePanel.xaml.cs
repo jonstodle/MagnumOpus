@@ -49,7 +49,8 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.OpenLocalProfileDirectory, v => v.OpenLocalProfileDirectoryButton));
                 d(this.BindCommand(ViewModel, vm => vm.SearchForProfiles, v => v.SearchButton));
                 d(this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton));
-                d(ResetProfileComputerNameTextBox.Events()
+				d(this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton));
+				d(ResetProfileComputerNameTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
