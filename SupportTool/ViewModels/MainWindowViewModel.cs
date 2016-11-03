@@ -102,7 +102,8 @@ namespace SupportTool.ViewModels
 			Observable.Merge(
 				_search.ThrownExceptions,
 				_paste.ThrownExceptions,
-				_open.ThrownExceptions)
+				_open.ThrownExceptions,
+				_openSettings.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 
 			FileService.DeserializeFromDisk<IEnumerable<string>>(nameof(_history))
