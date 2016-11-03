@@ -36,7 +36,7 @@ namespace SupportTool.ViewModels
 
 			_addHFName = ReactiveCommand.Create(
 				() => _remoteControl2012HFs.Add(_hfName.Trim()),
-				this.WhenAnyValue(x => x.HFName, x => x.HasValue(3)));
+				this.WhenAnyValue(x => x.HFName, x => x.HasValue(2)));
 			_addHFName
 				.Subscribe(_ => HFName = "");
 
