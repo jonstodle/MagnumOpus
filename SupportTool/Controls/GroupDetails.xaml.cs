@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,7 +19,7 @@ namespace SupportTool.Controls
 			ViewModel = new GroupDetailsViewModel();
 
             this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text);
-			this.OneWayBind(ViewModel, vm => vm.Group.Principal.Description, v => v.DescriptionTextBlock.Text);
+			this.OneWayBind(ViewModel, vm => vm.Group.Principal.Description, v => v.DescriptionTextBlock.Text, x => x.HasValue() ? x : "No description");
 		}
 
         public GroupObject Group
