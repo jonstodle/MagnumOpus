@@ -89,7 +89,9 @@ namespace SupportTool.ViewModels
 					x.Dispose();
 					return cn;
 				})
-                .Subscribe(x => AllGroups.Add(x));
+                .Subscribe(
+				x => AllGroups.Add(x),
+				() => System.Diagnostics.Debug.WriteLine("Completed"));
             _getAllGroups
                 .ThrownExceptions
                 .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
