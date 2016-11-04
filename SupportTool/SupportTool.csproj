@@ -189,6 +189,7 @@
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
+    <Compile Include="Models\OperatingSystemInfo.cs" />
     <Compile Include="Models\ComputerObject.cs" />
     <Compile Include="Models\DirectoryEntryInfo.cs" />
     <Compile Include="Models\GroupObject.cs" />

@@ -13,12 +13,16 @@
             <TextBlock Text="Computer"/>
             <TextBlock Text=" | "/>
             <TextBlock x:Name="CompanyTextBlock"/>
-            <!--<TextBlock Text=" | "/>
-            <TextBlock x:Name="ExpirationTextBlock"/>
             <TextBlock Text=" | "/>
-            <TextBlock x:Name="AccountLockedTextBlock"/>
+			<TextBlock>
+				<Run x:Name="OperatingSystemRun"/>
+				<Run x:Name="OperatingSystemCSDRun"/>
+				<Run x:Name="OperatingSystemArchitectureRun"/>
+			</TextBlock>
             <TextBlock Text=" | "/>
-            <TextBlock x:Name="PasswordAgeTextBlock"/>-->
-        </WrapPanel>
+            <TextBlock x:Name="LastBootTextBlock"/>
+            <TextBlock Text=" | "/>
+			<TextBlock x:Name="InstallDateTextBlock"/>
+		</WrapPanel>
     </StackPanel>
 </UserControl>
