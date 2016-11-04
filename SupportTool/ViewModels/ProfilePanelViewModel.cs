@@ -280,7 +280,7 @@ namespace SupportTool.ViewModels
 				observer.OnNext(CreateLogString($"Renamed folder {dir.FullName}"));
 			}
 
-			var scope = new ManagementScope(@"\\PC26678\root\cimv2");
+			var scope = new ManagementScope($@"\\{cpr}\root\cimv2");
 			scope.Connect();
 			using (var searcher = new ManagementObjectSearcher(scope, new ObjectQuery("SELECT * FROM Win32_UserProfile")))
 			{
