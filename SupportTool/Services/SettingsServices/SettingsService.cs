@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Akavache;
+using Newtonsoft.Json;
 using ReactiveUI;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.LogServices;
@@ -26,37 +27,24 @@ namespace SupportTool.Services.SettingsServices
 		{
 			LogService.Info("Loading settings");
 
-			_settings = FileService.DeserializeFromDisk<Dictionary<string, object>>(SettingsIdentifier)
-				.Catch(Observable.Return(new Dictionary<string, object>()))
-				.Wait();
-
-			_saveSettings = ReactiveCommand.Create(() => FileService.SerializeToDisk(SettingsIdentifier, _settings));
-			_saveSettings
-				.Throttle(TimeSpan.FromSeconds(2))
-				.Switch()
-				.Subscribe(_ => LogService.Info("Saved settings"));
+			BlobCache.ApplicationName = "Magnum Opus";
 		}
 
 		public static void Init() => Current = new SettingsService();
 
 
 
-		private T Get<T>(string key)
+		private T Get<T>(string key, T defaultValue = default(T))
 		{
-			if (_settings.ContainsKey(key)) return JsonConvert.DeserializeObject<T>(_settings[key].ToString());
-			else return default(T);
+			return BlobCache.LocalMachine.GetObject<T>(key)
+				.Catch(Observable.Return(defaultValue))
+				.Wait();
 		}
 
-		private T Get<T>(string key, T defaultValue)
+		private void Set<T>(string key, T value)
 		{
-			if (_settings.ContainsKey(key)) return Get<T>(key);
-			else return defaultValue;
-		}
-
-		private async void Set<T>(string key, T value)
-		{
-			_settings[key] = value;
-			await _saveSettings.Execute();
+			BlobCache.LocalMachine.InsertObject(key, value)
+				.Subscribe();
 		}
 	}
 }
