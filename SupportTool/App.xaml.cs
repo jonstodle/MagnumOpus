@@ -1,6 +1,8 @@
 ﻿using SupportTool.Services.LogServices;
 using SupportTool.Services.SettingsServices;
 using System.Windows;
+using System;
+using Akavache;
 
 namespace SupportTool
 {
@@ -13,6 +15,10 @@ namespace SupportTool
 		{
 			LogService.Info("Application start");
 			SettingsService.Init();
+
+			this.Events()
+				.Exit
+				.Subscribe(_ => BlobCache.Shutdown().Wait());
 		}
     }
 }
