@@ -18,7 +18,7 @@ namespace SupportTool.ViewModels
         {
 			_operatingSystemInfo = this.WhenAnyValue(x => x.Computer)
 				.WhereNotNull()
-				.SelectMany(x => GetOSInfo(x))
+				.SelectMany(x => GetOSInfo(x).Catch(Observable.Return<OperatingSystemInfo>(null)))
 				.ToProperty(this, x => x.OperatingSystemInfo, null, scheduler: DispatcherScheduler.Current);
         }
 
