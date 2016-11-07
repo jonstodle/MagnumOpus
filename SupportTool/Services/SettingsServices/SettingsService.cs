@@ -19,10 +19,6 @@ namespace SupportTool.Services.SettingsServices
 
 
 
-		private const string SettingsIdentifier = "settings";
-		private Dictionary<string, object> _settings;
-		private readonly ReactiveCommand<Unit, IObservable<Unit>> _saveSettings;
-
 		private SettingsService()
 		{
 			LogService.Info("Loading settings");
