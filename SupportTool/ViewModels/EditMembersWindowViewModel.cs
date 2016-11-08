@@ -180,7 +180,7 @@ namespace SupportTool.ViewModels
 				var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
 
 				try { group.Principal.Members.Add(member); }
-				catch (Exception ex) { result.Add(ex.Message); }
+				catch (Exception ex) { result.Add($"{member.SamAccountName} - {ex.Message}"); }
 			}
 
 			foreach (var memberDe in membersToRemove)
@@ -188,7 +188,7 @@ namespace SupportTool.ViewModels
 				var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
 
 				try { group.Principal.Members.Remove(member); }
-				catch (Exception ex) { result.Add(ex.Message); }
+				catch (Exception ex) { result.Add($"{member.SamAccountName} - {ex.Message}"); }
 			}
 
 			group.Principal.Save();

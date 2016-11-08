@@ -187,7 +187,7 @@ namespace SupportTool.ViewModels
 					group.Principal.Members.Add(principal);
 					group.Principal.Save();
 				}
-				catch (Exception ex) { result.Add(ex.Message); }
+				catch (Exception ex) { result.Add($"{group.CN} - {ex.Message}"); }
 			}
 
 			foreach (var groupDe in membersToRemove)
@@ -199,7 +199,7 @@ namespace SupportTool.ViewModels
 					group.Principal.Members.Remove(principal);
 					group.Principal.Save();
 				}
-				catch { result.Add(group.CN); }
+				catch (Exception ex) { result.Add($"{group.CN} - {ex.Message}"); }
 			}
 
 			return result;
