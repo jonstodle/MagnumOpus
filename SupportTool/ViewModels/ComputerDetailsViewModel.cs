@@ -1,7 +1,10 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using System;
+using System.Linq;
 using System.Management;
+using System.Net;
+using System.Net.Sockets;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
@@ -10,6 +13,7 @@ namespace SupportTool.ViewModels
 	public class ComputerDetailsViewModel : ReactiveObject
     {
 		private readonly ObservableAsPropertyHelper<OperatingSystemInfo> _operatingSystemInfo;
+		private readonly ObservableAsPropertyHelper<string> _ipAddress;
 		private ComputerObject _computer;
 
 
@@ -20,11 +24,19 @@ namespace SupportTool.ViewModels
 				.WhereNotNull()
 				.SelectMany(x => GetOSInfo(x).Catch(Observable.Return<OperatingSystemInfo>(null)))
 				.ToProperty(this, x => x.OperatingSystemInfo, null, scheduler: DispatcherScheduler.Current);
+
+			_ipAddress = this.WhenAnyValue(x => x.Computer)
+				.WhereNotNull()
+				.SelectMany(x => x.GetIPAddress())
+				.ObserveOnDispatcher()
+				.ToProperty(this, x => x.IPAddress, null);
         }
 
 
 
 		public OperatingSystemInfo OperatingSystemInfo => _operatingSystemInfo.Value;
+
+		public string IPAddress => _ipAddress.Value; 
 
         public ComputerObject Computer
         {

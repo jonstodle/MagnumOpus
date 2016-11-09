@@ -25,6 +25,7 @@ namespace SupportTool.Controls
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Caption, v => v.OperatingSystemRun.Text);
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.CSDVersion, v => v.OperatingSystemCSDRun.Text);
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Architecture, v => v.OperatingSystemArchitectureRun.Text);
+			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text);
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.LastBootTime, v => v.LastBootTextBlock.Text, x => x != null ? $"Last boot: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}" : "Could not get last boot");
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.InstallDate, v => v.InstallDateTextBlock.Text, x => x != null ? $"Last install: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}" : "Could not get last install");
 		}

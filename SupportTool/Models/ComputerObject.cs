@@ -1,4 +1,8 @@
-﻿using System.DirectoryServices.AccountManagement;
+﻿using System;
+using System.DirectoryServices.AccountManagement;
+using System.Linq;
+using System.Net;
+using System.Reactive.Linq;
 
 namespace SupportTool.Models
 {
@@ -46,5 +50,11 @@ namespace SupportTool.Models
                 return "";
             }
         }
+
+
+
+		public IObservable<string> GetIPAddress() => Observable.Start(() => 
+			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString())
+			.Catch(Observable.Return(""));
     }
 }

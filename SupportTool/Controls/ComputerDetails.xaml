@@ -19,7 +19,9 @@
 				<Run x:Name="OperatingSystemCSDRun"/>
 				<Run x:Name="OperatingSystemArchitectureRun"/>
 			</TextBlock>
-            <TextBlock Text=" | "/>
+			<TextBlock Text=" | "/>
+			<TextBox x:Name="IPAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
+			<TextBlock Text=" | "/>
             <TextBlock x:Name="LastBootTextBlock"/>
             <TextBlock Text=" | "/>
 			<TextBlock x:Name="InstallDateTextBlock"/>
