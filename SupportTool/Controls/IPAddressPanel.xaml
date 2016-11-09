@@ -8,7 +8,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 	<StackPanel>
-		<TextBox x:Name="IPAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}" FontSize="20" Margin="2"/>
+		<StackPanel Orientation="Horizontal">
+			<TextBox x:Name="IPAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}" FontSize="20" Margin="2"/>
+			
+			<TextBox x:Name="HostNameTextBlock" Style="{StaticResource TextBlockTextBoxStyle}" FontSize="20" Opacity=".5" Margin="2"/>
+		</StackPanel>
 
 		<TextBlock Text="Remote" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 

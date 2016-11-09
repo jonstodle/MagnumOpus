@@ -3,6 +3,7 @@ using SupportTool.Services.DialogServices;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -22,6 +23,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
+		private readonly ObservableAsPropertyHelper<string> _hostName;
 		private string _ipAddress;
 
 
@@ -69,6 +71,12 @@ namespace SupportTool.ViewModels
 
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\mstsc.exe", $"/v {_ipAddress}"));
 
+			_hostName = this.WhenAnyValue(x => x.IPAddress)
+				.Where(x => x.HasValue())
+				.Select(x => Dns.GetHostEntry(x).HostName)
+				.Catch(Observable.Return(""))
+				.ToProperty(this, x => x.HostName, null);
+
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
 				_openRemoteExecution.ThrownExceptions,
@@ -98,6 +106,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
 
 		public ReactiveCommand StartRdp => _startRdp;
+
+		public string HostName => _hostName.Value;
 
 		public string IPAddress
 		{

@@ -17,6 +17,7 @@ namespace SupportTool.Controls
 			ViewModel = new IPAddressPanelViewModel();
 
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}");
+			this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})");
 
 			this.WhenActivated(d =>
 			{
