@@ -1,6 +1,7 @@
 ﻿using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.DirectoryServices.ActiveDirectory;
 using System.Net.NetworkInformation;
 using System.Reactive.Linq;
 
@@ -13,7 +14,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
 
         private readonly PrincipalContext _principalContext = new PrincipalContext(ContextType.Domain);
-		private readonly string _currentDomain = IPGlobalProperties.GetIPGlobalProperties().DomainName;
+		private readonly string _currentDomain = Domain.GetCurrentDomain().Name;
 
 
 		private ActiveDirectoryService() { }
