@@ -25,6 +25,8 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> _searchForProfiles;
 		private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
 		private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
+		private readonly ReactiveCommand<Unit, Unit> _openGlobalProfile;
+		private readonly ReactiveCommand<Unit, Unit> _openHomeFolder;
 		private readonly ReactiveList<string> _resetMessages;
 		private readonly ReactiveList<DirectoryInfo> _profiles;
 		private UserObject _user;
@@ -84,9 +86,6 @@ namespace SupportTool.ViewModels
 					if (gpdPath == null || !gpdPath.Exists) throw new Exception($"Could not find global profile folder");
 					Process.Start(gpdPath.FullName);
 				});
-			_openGlobalProfileDirectory
-				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open directory"));
 
 			_openLocalProfileDirectory = ReactiveCommand.Create(
 				() =>
@@ -96,9 +95,6 @@ namespace SupportTool.ViewModels
 					Process.Start(lpd.FullName);
 				},
 				this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
-			_openLocalProfileDirectory
-				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open directory"));
 
 			_searchForProfiles = ReactiveCommand.CreateFromObservable(() =>
 			{
@@ -112,9 +108,6 @@ namespace SupportTool.ViewModels
 					NewProfileDirectory = x.Item1;
 					using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.Item2);
 				});
-			_searchForProfiles
-				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
 
 			_restoreProfile = ReactiveCommand.CreateFromObservable(
 				() => RestoreProfileImpl(NewProfileDirectory, _profiles[SelectedProfileIndex]),
@@ -128,8 +121,23 @@ namespace SupportTool.ViewModels
 			_resetCitrixProfile = ReactiveCommand.CreateFromObservable(() => ResetCitrixProfileImpl(_user));
 			_resetCitrixProfile
 				.Subscribe(_ => DialogService.ShowInfo("Profile reset", "Success"));
-			_resetCitrixProfile
-				.ThrownExceptions
+
+			_openGlobalProfile = ReactiveCommand.Create(() =>
+			{
+				var newProfile = _user.ProfilePath + ".V2";
+				if (Directory.Exists(newProfile)) Process.Start(newProfile);
+				else Process.Start(_user.ProfilePath);
+			});
+
+			_openHomeFolder = ReactiveCommand.Create(() => { Process.Start(_user.HomeDirectory); });
+
+			Observable.Merge(
+				_openGlobalProfileDirectory.ThrownExceptions,
+				_openLocalProfileDirectory.ThrownExceptions,
+				_searchForProfiles.ThrownExceptions,
+				_resetCitrixProfile.ThrownExceptions,
+				_openGlobalProfile.ThrownExceptions,
+				_openHomeFolder.ThrownExceptions)
 				.Subscribe(ex => DialogService.ShowError(ex.Message));
 
 			this
@@ -158,6 +166,10 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand RestoreProfile => _restoreProfile;
 
 		public ReactiveCommand ResetCitrixProfile => _resetCitrixProfile;
+
+		public ReactiveCommand OpenGlobalProfile => _openGlobalProfile;
+
+		public ReactiveCommand OpenHomeFolder => _openHomeFolder;
 
 		public ReactiveList<string> ResetMessages => _resetMessages;
 
