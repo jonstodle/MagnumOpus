@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Microsoft.Win32;
+using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
@@ -130,8 +131,12 @@ namespace SupportTool.ViewModels
 
 		private void StartRemoteControlImpl(ComputerObject computer)
 		{
-			if (SettingsService.Current.RemoteControl2012HFs.Any(x => x.ToUpperInvariant() == computer.Company.ToUpperInvariant())) StartRemoteControl2012Impl(computer);
-			else StartRemoteControlClassicImpl(computer);
+			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computer.CN}", RegistryView.Registry64);
+			var regKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\SMS\Mobile Client", false);
+			var sccmMajorVersion = int.Parse(regKey.GetValue("ProductVersion").ToString().Substring(0, 1));
+
+			if (sccmMajorVersion == 4) StartRemoteControlClassicImpl(computer);
+			else StartRemoteControl2012Impl(computer);
 		}
 
 		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {computer.CN}");

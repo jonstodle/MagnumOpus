@@ -15,10 +15,6 @@ namespace SupportTool.ViewModels
 {
 	public class SettingsWindowViewModel : ReactiveObject, IDialog
 	{
-		private readonly ReactiveCommand<Unit, Unit> _addHFName;
-		private readonly ReactiveCommand<Unit, Unit> _removeHFName;
-		private readonly ReactiveList<string> _remoteControl2012HFs = new ReactiveList<string>(SettingsService.Current.RemoteControl2012HFs);
-		private readonly ListCollectionView _remoteControl2012HFsView;
 		private string _historyCountLimit = SettingsService.Current.HistoryCountLimit.ToString();
 		private string _detailWindowTimeoutLength = SettingsService.Current.DetailsWindowTimeoutLength.ToString();
 		private string _hfName;
@@ -29,21 +25,6 @@ namespace SupportTool.ViewModels
 
 		public SettingsWindowViewModel()
 		{
-			_remoteControl2012HFsView = new ListCollectionView(_remoteControl2012HFs)
-			{
-				SortDescriptions = { new SortDescription() }
-			};
-
-			_addHFName = ReactiveCommand.Create(
-				() => _remoteControl2012HFs.Add(_hfName.Trim()),
-				this.WhenAnyValue(x => x.HFName, x => x.HasValue(2)));
-			_addHFName
-				.Subscribe(_ => HFName = "");
-
-			_removeHFName = ReactiveCommand.Create(
-				() => { _remoteControl2012HFs.Remove((string)_selectedRemoteControl2012HF); },
-				this.WhenAnyValue(x => x.SelectedRemoteControl2012HF).IsNotNull());
-
 			this.WhenAnyValue(x => x.HistoryCountLimit)
 				.Where(x => x.IsLong())
 				.Select(x => int.Parse(x))
@@ -55,21 +36,9 @@ namespace SupportTool.ViewModels
 				.Select(x => int.Parse(x))
 				.Where(x => x > 0)
 				.Subscribe(x => SettingsService.Current.DetailsWindowTimeoutLength = x);
-
-			this.WhenAnyObservable(x => x._remoteControl2012HFs.Changed)
-				.Select(x => _remoteControl2012HFs)
-				.Subscribe(x => SettingsService.Current.RemoteControl2012HFs = x);
 		}
 
 
-
-		public ReactiveCommand AddHFName => _addHFName;
-
-		public ReactiveCommand RemoveHFName => _removeHFName;
-
-		public ReactiveList<string> RemoteControl2012HFs => _remoteControl2012HFs;
-
-		public ListCollectionView RemoteControl2012HFsView => _remoteControl2012HFsView;
 
 		public string HistoryCountLimit
 		{
