@@ -23,6 +23,8 @@
 			<TextBlock x:Name="LastBootTextBlock"/>
 			<TextBlock Text=" | "/>
 			<TextBlock x:Name="InstallDateTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="ADCreateDateTextBlock"/>
 		</WrapPanel>
 	</StackPanel>
 </UserControl>

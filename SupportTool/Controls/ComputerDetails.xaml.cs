@@ -28,6 +28,7 @@ namespace SupportTool.Controls
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text);
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.LastBootTime, v => v.LastBootTextBlock.Text, x => x != null ? $"Last boot: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}" : "Could not get last boot");
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.InstallDate, v => v.InstallDateTextBlock.Text, x => x != null ? $"Last install: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}" : "Could not get last install");
+			this.OneWayBind(ViewModel, vm => vm.Computer.WhenCreated, v => v.ADCreateDateTextBlock.Text, x => x != null ? $"Created in AD: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}": "");
 		}
 
         public ComputerObject Computer
