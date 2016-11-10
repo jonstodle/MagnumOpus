@@ -1,4 +1,5 @@
-﻿using System.DirectoryServices;
+﻿using System;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 
 namespace SupportTool.Models
@@ -23,5 +24,7 @@ namespace SupportTool.Models
         public PropertyValueCollection MemberOf => _directoryEntry.Properties["memberof"];
 
         public string CN => _directoryEntry.Properties.Get<string>("cn");
+
+		public DateTime? WhenCreated => _directoryEntry.Properties.Get<DateTime?>("whencreated");
     }
 }
