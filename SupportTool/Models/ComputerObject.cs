@@ -1,4 +1,5 @@
 ﻿using System;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,10 @@ namespace SupportTool.Models
         }
 
 
+
+		public string OperatingSystem => _directoryEntry.Properties.Get<string>("operatingsystem");
+
+		public string ServicePack => _directoryEntry.Properties.Get<string>("operatingsystemservicepack");
 
         public string Company
         {
