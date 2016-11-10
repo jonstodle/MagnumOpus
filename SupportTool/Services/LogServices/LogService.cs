@@ -21,7 +21,7 @@ namespace SupportTool.Services.LogServices
 			if (!Directory.Exists(LogDirectoryPath)) Directory.CreateDirectory(LogDirectoryPath);
 
 			var now = DateTimeOffset.Now;
-			_logFileName = $"{WindowsIdentity.GetCurrent().Name.Split('\\').Last()}-{$"{now.Year}{now.Month.ToString("D2")}{now.Day}-{now.Hour}{now.Minute}{now.Second}"}.txt";
+			_logFileName = $"{WindowsIdentity.GetCurrent().Name.Split('\\').Last()}-{$"{now.Year}{now.Month.ToString("00")}{now.Day.ToString("00")}-{now.Hour.ToString("00")}{now.Minute.ToString("00")}{now.Second.ToString("00")}"}.txt";
 
 			_logger = new Subject<string>();
 			_logger
