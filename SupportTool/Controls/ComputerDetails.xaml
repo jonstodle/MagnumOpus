@@ -6,25 +6,23 @@
              xmlns:local="clr-namespace:SupportTool.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
-        <TextBox x:Name="CNTextBlock" FontSize="20" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>
+	<StackPanel>
+		<TextBox x:Name="CNTextBlock" FontSize="20" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>
 
-        <WrapPanel Opacity=".5" Margin="2">
-            <TextBlock Text="Computer"/>
-            <TextBlock Text=" | "/>
-            <TextBlock x:Name="CompanyTextBlock"/>
-            <TextBlock Text=" | "/>
-			<TextBlock>
-				<Run x:Name="OperatingSystemRun"/>
-				<Run x:Name="OperatingSystemCSDRun"/>
-				<Run x:Name="OperatingSystemArchitectureRun"/>
-			</TextBlock>
+		<WrapPanel Opacity=".5" Margin="2">
+			<TextBlock Text="Computer"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="CompanyTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="OperatingSystemTextBlock"/>
+			<TextBlock x:Name="OperatingSystemCSDTextBlock"/>
+			<TextBlock x:Name="OperatingSystemArchitectureTextBlock"/>
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="IPAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 			<TextBlock Text=" | "/>
-            <TextBlock x:Name="LastBootTextBlock"/>
-            <TextBlock Text=" | "/>
+			<TextBlock x:Name="LastBootTextBlock"/>
+			<TextBlock Text=" | "/>
 			<TextBlock x:Name="InstallDateTextBlock"/>
 		</WrapPanel>
-    </StackPanel>
+	</StackPanel>
 </UserControl>
