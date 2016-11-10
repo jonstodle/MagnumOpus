@@ -22,8 +22,8 @@ namespace SupportTool.Controls
 
 			this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.CNTextBlock.Text);
 			this.OneWayBind(ViewModel, vm => vm.Computer.Company, v => v.CompanyTextBlock.Text);
-			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Caption, v => v.OperatingSystemTextBlock.Text);
-			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.CSDVersion, v => v.OperatingSystemCSDTextBlock.Text, x => x.HasValue() ? $" {x}" : "");
+			this.OneWayBind(ViewModel, vm => vm.Computer.OperatingSystem, v => v.OperatingSystemTextBlock.Text);
+			this.OneWayBind(ViewModel, vm => vm.Computer.ServicePack, v => v.OperatingSystemCSDTextBlock.Text, x => x.HasValue() ? $" {x}" : "");
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Architecture, v => v.OperatingSystemArchitectureTextBlock.Text, x => x.HasValue() ? $" {x}" : "");
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text);
 			this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.LastBootTime, v => v.LastBootTextBlock.Text, x => x != null ? $"Last boot: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}" : "Could not get last boot");
