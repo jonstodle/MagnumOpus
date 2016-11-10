@@ -12,6 +12,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 
 using static SupportTool.Executables.Helpers;
+using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
 {
@@ -19,9 +20,6 @@ namespace SupportTool.ViewModels
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
-		private readonly ReactiveCommand<Unit, Unit> _openRemoteExecution;
-		private readonly ReactiveCommand<Unit, Unit> _openCDrive;
-		private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
@@ -46,25 +44,6 @@ namespace SupportTool.ViewModels
 				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user");
 			});
 
-			_openRemoteExecution = ReactiveCommand.Create(() =>
-			{
-				EnsureExecutableIsAvailable("PsExec.exe");
-				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe");
-			});
-
-			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
-			_openCDrive
-				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open location"));
-
-			_rebootComputer = ReactiveCommand.Create(() =>
-			{
-				if (DialogService.ShowPrompt($"Reboot {_computer.CN}?"))
-				{
-					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_computer.CN} -t 0");
-				}
-			});
-
 			_startRemoteControl = ReactiveCommand.Create(() => StartRemoteControlImpl(_computer));
 
 			_startRemoteControlClassic = ReactiveCommand.Create(() => StartRemoteControlClassicImpl(_computer));
@@ -79,7 +58,6 @@ namespace SupportTool.ViewModels
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
-				_openRemoteExecution.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
 				_startRemoteControlClassic.ThrownExceptions,
 				_startRemoteControl2012.ThrownExceptions,
@@ -94,12 +72,6 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand OpenLoggedOn => _openLoggedOn;
 
 		public ReactiveCommand OpenLoggedOnPlus => _openLoggedOnPlus;
-
-		public ReactiveCommand OpenRemoteExecution => _openRemoteExecution;
-
-		public ReactiveCommand OpenCDrive => _openCDrive;
-
-		public ReactiveCommand RebootComputer => _rebootComputer;
 
 		public ReactiveCommand StartRemoteControl => _startRemoteControl;
 
@@ -120,14 +92,6 @@ namespace SupportTool.ViewModels
 		}
 
 
-
-		private void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(@"C:\Windows\System32\cmd.exe", $@"/K {fileName} {arguments}");
-
-		private void ExecuteFile(string fileName, string arguments = "")
-		{
-			if (File.Exists(fileName)) Process.Start(fileName, arguments);
-			else throw new ArgumentException($"Could not find {fileName}");
-		}
 
 		private void StartRemoteControlImpl(ComputerObject computer)
 		{

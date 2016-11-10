@@ -16,14 +16,6 @@
 
             <Button x:Name="LoggedOnPlusButton" Content="Logged on +" Margin="2"/>
 
-            <Button x:Name="RemoteExecutionButton" Content="PSExec" Margin="2"/>
-
-            <Button x:Name="OpenCButton" Content="Open C:" Margin="2"/>
-
-			<Button x:Name="RebootButton" Content="Reboot" Margin="2"/>
-
-			<!--<Button x:Name="RemoteControlButton" Content="Remote control" Margin="2"/>-->
-
 			<ext:SplitButton x:Name="RemoteControlButton" Content="Remote control" Margin="2">
 				<ext:SplitButton.DropDownContent>
 					<StackPanel>

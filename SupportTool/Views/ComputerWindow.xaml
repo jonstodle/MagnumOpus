@@ -16,6 +16,8 @@
 
 				<controls:RemotePanel x:Name="RemotePanel"/>
 
+				<controls:ComputerManagement x:Name="ComputerManagement"/>
+
 				<controls:PingPanel x:Name="PingPanel"/>
 
 				<controls:ComputerGroups x:Name="ComputerGroups"/>
