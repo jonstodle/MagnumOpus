@@ -159,6 +159,9 @@
     <Compile Include="Controls\ComputerManagement.xaml.cs">
       <DependentUpon>ComputerManagement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogControl.xaml.cs">
+      <DependentUpon>DialogControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GroupDetails.xaml.cs">
       <DependentUpon>GroupDetails.xaml</DependentUpon>
     </Compile>
@@ -272,6 +275,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ComputerManagement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DialogControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

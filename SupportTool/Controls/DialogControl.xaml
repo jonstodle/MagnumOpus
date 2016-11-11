@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="SupportTool.Controls.DialogControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SupportTool.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="300">
+
+	<UserControl.Resources>
+		<Style TargetType="Button">
+			<Setter Property="Margin" Value="2,4"/>
+			<Setter Property="Padding" Value="20,5"/>
+		</Style>
+	</UserControl.Resources>
+	
+	<Border x:Name="OverlayGrid">
+		<Border.Background>
+			<SolidColorBrush Color="Black" Opacity=".7"/>
+		</Border.Background>
+
+		<Grid x:Name="ContainerGrid" Background="White" MinWidth="200" MinHeight="100" MaxWidth="400" MaxHeight="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition Height="40"/>
+			</Grid.RowDefinitions>
+
+			<Grid x:Name="ContentGrid" Margin="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock x:Name="MessageTextBlock" VerticalAlignment="Center" Margin="2"/>
+			</Grid>
+
+			<Border Grid.Row="1" Background="LightGray">
+				<StackPanel x:Name="ButtonStackPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="2">
+				</StackPanel>
+			</Border>
+		</Grid>
+	</Border>
+</UserControl>
