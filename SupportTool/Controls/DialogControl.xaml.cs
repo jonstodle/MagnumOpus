@@ -29,25 +29,29 @@ namespace SupportTool.Controls
 			InitializeComponent();
 		}
 
-		public DialogControl(Grid parent, string text, params string[] buttonTitles)
+		public DialogControl(Grid parent, string message, IEnumerable<DialogButtonInfo> buttons)
 		{
 			InitializeComponent();
 
-			SetValue(Grid.RowSpanProperty, parent.RowDefinitions.Count > 0 ? parent.RowDefinitions.Count : 1);
-			SetValue(Grid.ColumnSpanProperty, parent.ColumnDefinitions.Count > 0 ? parent.ColumnDefinitions.Count : 1);
+			_parent = parent;
+			_buttons = new List<DialogButtonInfo>(buttons);
 
-			MessageTextBlock.Text = text;
+			SetValue(Grid.RowSpanProperty, _parent.RowDefinitions.Count > 0 ? _parent.RowDefinitions.Count : 1);
+			SetValue(Grid.ColumnSpanProperty, _parent.ColumnDefinitions.Count > 0 ? _parent.ColumnDefinitions.Count : 1);
 
-			_buttonTitles = buttonTitles;
-			foreach (var buttonTitle in _buttonTitles)
+			MessageTextBlock.Text = message;
+
+			foreach (var buttonInfo in _buttons)
 			{
-				var button = new Button { Content = buttonTitle };
+				var button = new Button { Content = buttonInfo.Text, Tag = buttonInfo.Id };
 				button.Click += HandleButtonClick;
 				ButtonStackPanel.Children.Add(button);
 			}
 
-			parent.Children.Add(this);
-		public DialogControl(Grid parent, string caption, string message, IEnumerable<string> buttons) : this(parent, message, buttons)
+			_parent.Children.Add(this);
+		}
+
+		public DialogControl(Grid parent, string caption, string message, IEnumerable<DialogButtonInfo> buttons) : this(parent, message, buttons)
 		{
 			CaptionTextBlock.Text = caption;
 			CaptionTextBlock.Visibility = Visibility.Visible;
@@ -57,21 +61,46 @@ namespace SupportTool.Controls
 
 		private void HandleButtonClick(object sender, RoutedEventArgs args)
 		{
-			if (_resultSubject == null) return;
+			if (_resultSubject != null)
+			{
+				var tag = (sender as Button).Tag as Guid?;
+				if (tag == null) return;
 
-			var content = (sender as Button).Content as string;
-			if (content == null) return;
+				var dbi = _buttons.First(x => x.Id == tag);
 
-			_resultSubject.OnNext(Array.IndexOf(_buttonTitles, content));
-			_resultSubject.OnCompleted();
-			_resultSubject = null;
-			
-			//TODO: Close dialog
+				_resultSubject.OnNext(_buttons.IndexOf(dbi));
+				_resultSubject.OnCompleted();
+				_resultSubject = null; 
+			}
+
+			Close();
+		}
+
+		private void Close()
+		{
+			_resultSubject?.OnNext(-1);
+			_resultSubject?.OnCompleted();
+			_parent.Children.Remove(this);
 		}
 
 
 
 		private ISubject<int> _resultSubject = new Subject<int>();
-		private string[] _buttonTitles;
+		private Grid _parent;
+		private List<DialogButtonInfo> _buttons;
+	}
+
+	public struct DialogButtonInfo
+	{
+		public Guid Id { get; private set; }
+		public string Text { get; private set; }
+		public bool CloseDialog { get; private set; }
+
+		public DialogButtonInfo(string text, bool closeDialog)
+		{
+			Id = Guid.NewGuid();
+			Text = text;
+			CloseDialog = closeDialog;
+		}
 	}
 }
