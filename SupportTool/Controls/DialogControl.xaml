@@ -31,7 +31,11 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 
-				<TextBlock x:Name="MessageTextBlock" VerticalAlignment="Center" Margin="2"/>
+				<StackPanel VerticalAlignment="Center" Grid.Column="1">
+					<TextBlock x:Name="CaptionTextBlock" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
+
+					<TextBlock x:Name="MessageTextBlock" Margin="2"/>
+				</StackPanel>
 			</Grid>
 
 			<Border Grid.Row="1" Background="LightGray">

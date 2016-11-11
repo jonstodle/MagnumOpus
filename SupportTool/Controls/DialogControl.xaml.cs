@@ -47,6 +47,10 @@ namespace SupportTool.Controls
 			}
 
 			parent.Children.Add(this);
+		public DialogControl(Grid parent, string caption, string message, IEnumerable<string> buttons) : this(parent, message, buttons)
+		{
+			CaptionTextBlock.Text = caption;
+			CaptionTextBlock.Visibility = Visibility.Visible;
 		}
 
 
