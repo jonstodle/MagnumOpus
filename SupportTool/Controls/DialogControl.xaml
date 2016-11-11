@@ -19,7 +19,7 @@
 			<SolidColorBrush Color="Black" Opacity=".7"/>
 		</Border.Background>
 
-		<Grid x:Name="ContainerGrid" Background="White" MinWidth="200" MinHeight="100" MaxWidth="400" MaxHeight="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<Grid x:Name="ContainerGrid" Background="White" MinWidth="200" MinHeight="100" MaxHeight="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50,0">
 			<Grid.RowDefinitions>
 				<RowDefinition/>
 				<RowDefinition Height="40"/>
@@ -31,8 +31,8 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 
-				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="10,0,0,0">
-					<TextBlock x:Name="CaptionTextBlock" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
+				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="10,0">
+					<TextBlock x:Name="CaptionTextBlock" FontSize="14" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
 
 					<TextBlock x:Name="MessageTextBlock" Margin="2"/>
 				</StackPanel>
