@@ -34,18 +34,6 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
-				d(ViewModel
-					.InfoInteraction
-					.RegisterHandler(async interaction =>
-					{
-						DialogControl dialog;
-
-						if (interaction.Input.Item1) dialog = DialogControl.InfoOKDialog(ContainerGrid, interaction.Input.Item2, interaction.Input.Item3);
-						else dialog = DialogControl.ErrorDialog(ContainerGrid, interaction.Input.Item2, interaction.Input.Item3);
-
-						await dialog.Result.Take(1);
-						interaction.SetOutput(Unit.Default);
-					}));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewComplexPassword, v => v.SetNewComplexPasswordButton));
@@ -62,7 +50,11 @@ namespace SupportTool.Controls
             });
         }
 
-        public UserObject User
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public UserObject User
         {
             get { return (UserObject)GetValue(UserProperty); }
             set { SetValue(UserProperty, value); }
