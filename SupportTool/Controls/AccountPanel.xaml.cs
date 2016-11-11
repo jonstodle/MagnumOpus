@@ -34,6 +34,14 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+				d(ViewModel
+					.InfoInteraction
+					.RegisterHandler(async interaction =>
+					{
+						var dialog = DialogControl.InfoOKDialog(ContainerGrid, interaction.Input.Item1, interaction.Input.Item2);
+						await dialog.Result.Take(1);
+						interaction.SetOutput(Unit.Default);
+					}));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewComplexPassword, v => v.SetNewComplexPasswordButton));

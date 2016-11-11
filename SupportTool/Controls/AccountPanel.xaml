@@ -6,43 +6,45 @@
              xmlns:local="clr-namespace:SupportTool.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
-        <TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
+	<Grid x:Name="ContainerGrid">
+		<StackPanel>
+			<TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
-        <WrapPanel>
-            <ToggleButton x:Name="NewPasswordToggleButton" Content="New password" Margin="2"/>
+			<WrapPanel>
+				<ToggleButton x:Name="NewPasswordToggleButton" Content="New password" Margin="2"/>
 
-            <Button x:Name="ExpirePasswordButton" Content="Expire password" Margin="2"/>
+				<Button x:Name="ExpirePasswordButton" Content="Expire password" Margin="2"/>
 
-            <Button x:Name="UnlockAccountButton" Content="Unlock account" Margin="2"/>
+				<Button x:Name="UnlockAccountButton" Content="Unlock account" Margin="2"/>
 
-            <Button x:Name="LockOutStatusButton" Content="LockOutStatus" Margin="2"/>
+				<Button x:Name="LockOutStatusButton" Content="LockOutStatus" Margin="2"/>
 
-            <Button x:Name="PermittedWorkstationsButton" Content="Log on to" Margin="2"/>
+				<Button x:Name="PermittedWorkstationsButton" Content="Log on to" Margin="2"/>
 
-            <Button x:Name="SplunkButton" Content="Splunk" Margin="2"/>
-        </WrapPanel>
+				<Button x:Name="SplunkButton" Content="Splunk" Margin="2"/>
+			</WrapPanel>
 
-        <Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+			<Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
 
-            <StackPanel>
-                <StackPanel Margin="2">
-                    <TextBlock Text="New password" FontSize="10"/>
-                    <TextBox x:Name="NewPasswordTextBox" Grid.Row="1"/>
-                </StackPanel>
+				<StackPanel>
+					<StackPanel Margin="2">
+						<TextBlock Text="New password" FontSize="10"/>
+						<TextBox x:Name="NewPasswordTextBox" Grid.Row="1"/>
+					</StackPanel>
 
-                <Button x:Name="SetNewPasswordButton" Content="Set password" Margin="2"/>
-            </StackPanel>
+					<Button x:Name="SetNewPasswordButton" Content="Set password" Margin="2"/>
+				</StackPanel>
 
-            <StackPanel Grid.Column="1" VerticalAlignment="Bottom">
-                <Button x:Name="SetNewSimplePasswordButton" Content="Set simple password" Margin="2"/>
+				<StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+					<Button x:Name="SetNewSimplePasswordButton" Content="Set simple password" Margin="2"/>
 
-                <Button x:Name="SetNewComplexPasswordButton" Content="Set complex password" Margin="2"/>
-            </StackPanel>
-        </Grid>
-    </StackPanel>
+					<Button x:Name="SetNewComplexPasswordButton" Content="Set complex password" Margin="2"/>
+				</StackPanel>
+			</Grid>
+		</StackPanel>
+	</Grid>
 </UserControl>

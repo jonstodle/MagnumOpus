@@ -205,7 +205,6 @@
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Group.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
-    <Compile Include="Services\DialogServices\DialogService.cs" />
     <Compile Include="Services\ExportServices\ExcelService.cs" />
     <Compile Include="Services\FileServices\ExecutionService.cs" />
     <Compile Include="Services\FileServices\FileService.cs" />
