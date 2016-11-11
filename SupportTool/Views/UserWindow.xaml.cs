@@ -40,31 +40,13 @@ namespace SupportTool.Views
 					UserAccountPanel.InfoMessages,
 					UserProfilePanel.InfoMessages,
 					UserGroups.InfoMessages
-				}
-				.Aggregate(new CompositeDisposable(), (acc, input) =>
-				{
-					acc.Add(input.RegisterHandler(async interaction =>
-					{
-						await DialogControl.InfoOKDialog(ContainerGrid, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
-						interaction.SetOutput(Unit.Default);
-					}));
-					return acc;
-				}));
+				}.RegisterInfoHandler(ContainerGrid));
 				d(new List<Interaction<MessageInfo, Unit>>
 				{
 					UserAccountPanel.ErrorMessages,
 					UserProfilePanel.ErrorMessages,
 					UserGroups.ErrorMessages
-				}
-				.Aggregate(new CompositeDisposable(), (acc, input) =>
-				{
-					acc.Add(input.RegisterHandler(async interaction =>
-					{
-						await DialogControl.ErrorDialog(ContainerGrid, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
-						interaction.SetOutput(Unit.Default);
-					}));
-					return acc;
-				}));
+				}.RegisterErrorHandler(ContainerGrid));
 			});
 		}
 
