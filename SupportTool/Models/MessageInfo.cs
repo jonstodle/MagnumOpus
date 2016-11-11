@@ -1,9 +1,14 @@
-﻿using SupportTool.Controls;
+﻿using ReactiveUI;
+using SupportTool.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace SupportTool.Models
 {
@@ -33,5 +38,28 @@ namespace SupportTool.Models
 		public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
 
 		public static MessageInfo PasswordSetErrorMessageInfo(string message = null) => new MessageInfo(message ?? $"Could not set password", "Password not set");
+	}
+
+	public static class MessageInfoHelpers
+	{
+		public static IDisposable RegisterInfoHandler(this IEnumerable<Interaction<MessageInfo, Unit>> source, Grid parent) => source.Aggregate(new CompositeDisposable(), (acc, input) =>
+		{
+			acc.Add(input.RegisterHandler(async interaction =>
+			{
+				await DialogControl.InfoOKDialog(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
+				interaction.SetOutput(Unit.Default);
+			}));
+			return acc;
+		});
+
+		public static IDisposable RegisterErrorHandler(this IEnumerable<Interaction<MessageInfo, Unit>> source, Grid parent) => source.Aggregate(new CompositeDisposable(), (acc, input) =>
+		{
+			acc.Add(input.RegisterHandler(async interaction =>
+			{
+				await DialogControl.ErrorDialog(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
+				interaction.SetOutput(Unit.Default);
+			}));
+			return acc;
+		});
 	}
 }
