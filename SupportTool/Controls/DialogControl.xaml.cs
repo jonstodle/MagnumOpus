@@ -59,6 +59,12 @@ namespace SupportTool.Controls
 
 
 
+		public static DialogControl InfoOKDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK"));
+
+		public static DialogControl ErrorDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK"));
+
+
+
 		private void HandleButtonClick(object sender, RoutedEventArgs args)
 		{
 			if (_resultSubject != null)
