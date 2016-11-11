@@ -37,7 +37,9 @@ namespace SupportTool.Views
 				d(this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)));
 				d(new List<Interaction<MessageInfo, Unit>>
 				{
-					UserAccountPanel.InfoMessages
+					UserAccountPanel.InfoMessages,
+					UserProfilePanel.InfoMessages,
+					UserGroups.InfoMessages
 				}
 				.Aggregate(new CompositeDisposable(), (acc, input) =>
 				{
@@ -50,7 +52,9 @@ namespace SupportTool.Views
 				}));
 				d(new List<Interaction<MessageInfo, Unit>>
 				{
-					UserAccountPanel.ErrorMessages
+					UserAccountPanel.ErrorMessages,
+					UserProfilePanel.ErrorMessages,
+					UserGroups.ErrorMessages
 				}
 				.Aggregate(new CompositeDisposable(), (acc, input) =>
 				{

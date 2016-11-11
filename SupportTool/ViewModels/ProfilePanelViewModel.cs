@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.DialogServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,6 +16,8 @@ namespace SupportTool.ViewModels
 {
 	public class ProfilePanelViewModel : ReactiveObject
 	{
+		private readonly Interaction<MessageInfo, Unit> _infoMessages;
+		private readonly Interaction<MessageInfo, Unit> _errorMessages;
 		private readonly ReactiveCommand<Unit, string> _resetGlobalProfile;
 		private readonly ReactiveCommand<Unit, string> _resetLocalProfile;
 		private readonly ReactiveCommand<Unit, Unit> _openGlobalProfileDirectory;
@@ -46,6 +47,8 @@ namespace SupportTool.ViewModels
 
 		public ProfilePanelViewModel()
 		{
+			_infoMessages = new Interaction<MessageInfo, Unit>();
+			_errorMessages = new Interaction<MessageInfo, Unit>();
 			_resetMessages = new ReactiveList<string>();
 			_profiles = new ReactiveList<DirectoryInfo>();
 			_shouldRestoreDesktopItems = true;
@@ -59,10 +62,10 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _resetMessages.Insert(0, x));
 			_resetGlobalProfile
 				.ThrownExceptions
-				.Subscribe(ex =>
+				.Subscribe(async ex =>
 				{
 					_resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
-					DialogService.ShowError(ex.Message);
+					await _errorMessages.Handle(new MessageInfo(ex.Message));
 				});
 
 			_resetLocalProfile = ReactiveCommand.CreateFromObservable(
@@ -72,10 +75,10 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _resetMessages.Insert(0, x));
 			_resetLocalProfile
 				.ThrownExceptions
-				.Subscribe(ex =>
+				.Subscribe(async ex =>
 				{
 					_resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
-					DialogService.ShowError(ex.Message);
+					await _errorMessages.Handle(new MessageInfo(ex.Message));
 				});
 
 			_openGlobalProfileDirectory = ReactiveCommand.Create(
@@ -112,14 +115,14 @@ namespace SupportTool.ViewModels
 				() => RestoreProfileImpl(NewProfileDirectory, _profiles[SelectedProfileIndex]),
 				this.WhenAnyValue(x => x.NewProfileDirectory, y => y.SelectedProfileIndex, (x, y) => x != null && y >= 0));
 			_restoreProfile
-				.Subscribe(_ => DialogService.ShowInfo("Profile restored", "Success"));
+				.Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile restored", "Success")));
 			_restoreProfile
 				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not restore profile"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not restore profile")));
 
 			_resetCitrixProfile = ReactiveCommand.CreateFromObservable(() => ResetCitrixProfileImpl(_user));
 			_resetCitrixProfile
-				.Subscribe(_ => DialogService.ShowInfo("Profile reset", "Success"));
+				.Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile reset", "Success")));
 
 			_openGlobalProfile = ReactiveCommand.Create(() =>
 			{
@@ -137,7 +140,7 @@ namespace SupportTool.ViewModels
 				_resetCitrixProfile.ThrownExceptions,
 				_openGlobalProfile.ThrownExceptions,
 				_openHomeFolder.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			this
 				.WhenAnyValue(x => x.IsShowingResetProfile)
@@ -151,6 +154,10 @@ namespace SupportTool.ViewModels
 		}
 
 
+
+		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => _errorMessages;
 
 		public ReactiveCommand ResetGlobalProfile => _resetGlobalProfile;
 
