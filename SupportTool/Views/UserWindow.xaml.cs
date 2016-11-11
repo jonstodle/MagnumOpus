@@ -1,7 +1,12 @@
 ﻿using ReactiveUI;
+using SupportTool.Controls;
 using SupportTool.Models;
 using SupportTool.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 
@@ -30,6 +35,32 @@ namespace SupportTool.Views
 					.Where(x => x == ViewModel.User?.CN)
 					.InvokeCommand(ViewModel, x => x.SetUser));
 				d(this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					UserAccountPanel.InfoMessages
+				}
+				.Aggregate(new CompositeDisposable(), (acc, input) =>
+				{
+					acc.Add(input.RegisterHandler(async interaction =>
+					{
+						await DialogControl.InfoOKDialog(ContainerGrid, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
+						interaction.SetOutput(Unit.Default);
+					}));
+					return acc;
+				}));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					UserAccountPanel.ErrorMessages
+				}
+				.Aggregate(new CompositeDisposable(), (acc, input) =>
+				{
+					acc.Add(input.RegisterHandler(async interaction =>
+					{
+						await DialogControl.ErrorDialog(ContainerGrid, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
+						interaction.SetOutput(Unit.Default);
+					}));
+					return acc;
+				}));
 			});
 		}
 
