@@ -53,8 +53,11 @@ namespace SupportTool.Controls
 
 		public DialogControl(Grid parent, string caption, string message, params DialogButtonInfo[] buttons) : this(parent, message, buttons)
 		{
-			CaptionTextBlock.Text = caption;
-			CaptionTextBlock.Visibility = Visibility.Visible;
+			if (caption.HasValue())
+			{
+				CaptionTextBlock.Text = caption;
+				CaptionTextBlock.Visibility = Visibility.Visible; 
+			}
 		}
 
 
