@@ -96,7 +96,7 @@ namespace SupportTool.Controls
 		public string Text { get; private set; }
 		public bool CloseDialog { get; private set; }
 
-		public DialogButtonInfo(string text, bool closeDialog)
+		public DialogButtonInfo(string text, bool closeDialog = true)
 		{
 			Id = Guid.NewGuid();
 			Text = text;
