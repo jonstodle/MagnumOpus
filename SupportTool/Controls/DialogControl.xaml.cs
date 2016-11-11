@@ -29,7 +29,7 @@ namespace SupportTool.Controls
 			InitializeComponent();
 		}
 
-		public DialogControl(Grid parent, string message, IEnumerable<DialogButtonInfo> buttons)
+		public DialogControl(Grid parent, string message, params DialogButtonInfo[] buttons)
 		{
 			InitializeComponent();
 
@@ -51,7 +51,7 @@ namespace SupportTool.Controls
 			_parent.Children.Add(this);
 		}
 
-		public DialogControl(Grid parent, string caption, string message, IEnumerable<DialogButtonInfo> buttons) : this(parent, message, buttons)
+		public DialogControl(Grid parent, string caption, string message, params DialogButtonInfo[] buttons) : this(parent, message, buttons)
 		{
 			CaptionTextBlock.Text = caption;
 			CaptionTextBlock.Visibility = Visibility.Visible;
