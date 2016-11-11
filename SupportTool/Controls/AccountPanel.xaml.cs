@@ -38,7 +38,11 @@ namespace SupportTool.Controls
 					.InfoInteraction
 					.RegisterHandler(async interaction =>
 					{
-						var dialog = DialogControl.InfoOKDialog(ContainerGrid, interaction.Input.Item1, interaction.Input.Item2);
+						DialogControl dialog;
+
+						if (interaction.Input.Item1) dialog = DialogControl.InfoOKDialog(ContainerGrid, interaction.Input.Item2, interaction.Input.Item3);
+						else dialog = DialogControl.ErrorDialog(ContainerGrid, interaction.Input.Item2, interaction.Input.Item3);
+
 						await dialog.Result.Take(1);
 						interaction.SetOutput(Unit.Default);
 					}));
