@@ -31,7 +31,7 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 
-				<StackPanel VerticalAlignment="Center" Grid.Column="1">
+				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="10,0,0,0">
 					<TextBlock x:Name="CaptionTextBlock" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
 
 					<TextBlock x:Name="MessageTextBlock" Margin="2"/>
