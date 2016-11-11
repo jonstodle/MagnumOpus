@@ -84,7 +84,7 @@ namespace SupportTool.ViewModels
 				_setNewPassword.ThrownExceptions,
 				_setNewSimplePassword.ThrownExceptions,
 				_setNewComplexPassword.ThrownExceptions)
-				.Subscribe(ex => _userInteraction.Handle(GetPasswordSetErrorTuple(ex.Message)));
+				.Subscribe(async ex => await _userInteraction.Handle(GetPasswordSetErrorTuple(ex.Message)));
 		}
 
 
