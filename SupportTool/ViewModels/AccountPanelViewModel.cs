@@ -16,7 +16,8 @@ namespace SupportTool.ViewModels
 {
 	public class AccountPanelViewModel : ReactiveObject
     {
-		private readonly Interaction<Tuple<bool, string, string>, Unit> _userInteraction;
+		private readonly Interaction<MessageInfo, Unit> _infoMessages;
+		private readonly Interaction<MessageInfo, Unit> _errorMessages;
         private readonly ReactiveCommand<Unit, string> _setNewPassword;
         private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
         private readonly ReactiveCommand<Unit, string> _setNewComplexPassword;
@@ -33,39 +34,40 @@ namespace SupportTool.ViewModels
 
         public AccountPanelViewModel()
         {
-			_userInteraction = new Interaction<Tuple<bool, string, string>, Unit>();
+			_infoMessages = new Interaction<MessageInfo, Unit>();
+			_errorMessages = new Interaction<MessageInfo, Unit>();
 
-            _setNewPassword = ReactiveCommand.CreateFromObservable(
+			_setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
             _setNewPassword
-                .Subscribe(newPass => _userInteraction.Handle(Tuple.Create(true, $"New password is: {newPass}", "Password set")));
+                .Subscribe(async newPass => await _infoMessages.Handle(new MessageInfo($"New password is: {newPass}", "Password set")));
 
             _setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
             _setNewSimplePassword
-                .Subscribe(newPass => _userInteraction.Handle(GetPasswordSetTuple(newPass)));
+                .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)));
 
             _setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
             _setNewComplexPassword
-                .Subscribe(newPass => _userInteraction.Handle(GetPasswordSetTuple(newPass)));
+                .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)));
 
             _expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
             _expirePassword
-                .Subscribe(_ => _userInteraction.Handle(Tuple.Create(true, "User must change password at next login", "Password expired")));
+                .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("User must change password at next login", "Password expired")));
 			_expirePassword
 				.ThrownExceptions
-				.Subscribe(ex => _userInteraction.Handle(Tuple.Create(false, "", ex.Message)));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             _unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
             _unlockAccount
-                .Subscribe(_ => 
+                .Subscribe(async _ => 
                 {
                     MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
-					_userInteraction.Handle(Tuple.Create(true, "", "Account unlocked"));
+					await _infoMessages.Handle(new MessageInfo("Account unlocked"));
                 });
             _unlockAccount
                 .ThrownExceptions
-                .Subscribe(ex => _userInteraction.Handle(Tuple.Create(false, "", ex.Message)));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             _runLockoutStatus = ReactiveCommand.Create(() =>
             {
@@ -84,14 +86,16 @@ namespace SupportTool.ViewModels
 				_setNewPassword.ThrownExceptions,
 				_setNewSimplePassword.ThrownExceptions,
 				_setNewComplexPassword.ThrownExceptions)
-				.Subscribe(async ex => await _userInteraction.Handle(GetPasswordSetErrorTuple(ex.Message)));
+				.Subscribe(async ex => await _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)));
 		}
 
 
 
-		public Interaction<Tuple<bool, string, string>, Unit> InfoInteraction => _userInteraction;
+		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
 
-        public ReactiveCommand SetNewPassword => _setNewPassword;
+		public Interaction<MessageInfo, Unit> ErrorMessages => _errorMessages;
+
+		public ReactiveCommand SetNewPassword => _setNewPassword;
 
         public ReactiveCommand SetNewSimplePassword => _setNewSimplePassword;
 
@@ -159,11 +163,5 @@ namespace SupportTool.ViewModels
 
             return password;
         });
-
-
-
-		private Tuple<bool, string, string> GetPasswordSetTuple(string password) => Tuple.Create(true, "Password set", $"New password is: {password}\nMust be changed at next logon");
-		
-		private Tuple<bool, string, string> GetPasswordSetErrorTuple(string message = null) => Tuple.Create(false, "Password not set", message ?? $"Could not set password");
 	}
 }
