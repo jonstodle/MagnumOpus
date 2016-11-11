@@ -17,8 +17,8 @@ namespace SupportTool.Models
 			Caption = caption;
 		}
 
-		public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo("Password set", $"New password is: {password}\nMust be changed at next logon");
+		public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
 
-		public static MessageInfo PasswordSetErrorMessageInfo(string message = null) => new MessageInfo("Password not set", message ?? $"Could not set password");
+		public static MessageInfo PasswordSetErrorMessageInfo(string message = null) => new MessageInfo(message ?? $"Could not set password", "Password not set");
 	}
 }
