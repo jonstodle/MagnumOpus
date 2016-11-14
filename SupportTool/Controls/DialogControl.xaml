@@ -34,7 +34,7 @@
 				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="10,0">
 					<TextBlock x:Name="CaptionTextBlock" FontSize="14" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
 
-					<TextBlock x:Name="MessageTextBlock" Margin="2"/>
+					<TextBlock x:Name="MessageTextBlock" TextWrapping="Wrap" Margin="2"/>
 				</StackPanel>
 			</Grid>
 
