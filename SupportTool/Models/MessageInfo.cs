@@ -42,7 +42,7 @@ namespace SupportTool.Models
 
 	public static class MessageInfoHelpers
 	{
-		public static IDisposable RegisterPromptHandler(this Interaction<MessageInfo, int> source, Grid parent) => source.RegisterHandler(async interaction => await new DialogControl(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message, interaction.Input.Buttons).Result.Take(1));
+		public static IDisposable RegisterPromptHandler(this Interaction<MessageInfo, int> source, Grid parent) => source.RegisterHandler(async interaction => { interaction.SetOutput(await new DialogControl(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message, interaction.Input.Buttons).Result.Take(1)); });
 
 		public static IDisposable RegisterPromptHandler(this IEnumerable<Interaction<MessageInfo, int>> source, Grid parent) => source.Aggregate(new CompositeDisposable(), (acc, input) =>
 		{
