@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerWindowViewModel : ReactiveObject, INavigable
+	public class ComputerWindowViewModel : ViewModelBase, INavigable
 	{
 		private readonly ReactiveCommand<string, ComputerObject> _setComputer;
 		private readonly ObservableAsPropertyHelper<ComputerObject> _computer;

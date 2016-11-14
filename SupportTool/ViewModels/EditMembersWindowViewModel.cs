@@ -17,7 +17,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMembersWindowViewModel : ReactiveObject, IDialog
+	public class EditMembersWindowViewModel : ViewModelBase, IDialog
 	{
 		private readonly ReactiveCommand<string, GroupObject> _setGroup;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;

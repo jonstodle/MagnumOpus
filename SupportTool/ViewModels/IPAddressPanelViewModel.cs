@@ -11,7 +11,7 @@ using static SupportTool.Executables.Helpers;
 
 namespace SupportTool.ViewModels
 {
-	public class IPAddressPanelViewModel : ReactiveObject
+	public class IPAddressPanelViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;

@@ -15,7 +15,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerGroupsViewModel : ReactiveObject
+	public class ComputerGroupsViewModel : ViewModelBase
     {
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;

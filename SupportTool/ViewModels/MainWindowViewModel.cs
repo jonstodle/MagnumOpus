@@ -19,7 +19,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public partial class MainWindowViewModel : ReactiveObject
+	public partial class MainWindowViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _paste;

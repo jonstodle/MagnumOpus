@@ -16,7 +16,7 @@ using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
 {
-	public class RemotePanelViewModel : ReactiveObject
+	public class RemotePanelViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;

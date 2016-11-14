@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace SupportTool.ViewModels
 {
-	public class ProfilePanelViewModel : ReactiveObject
+	public class ProfilePanelViewModel : ViewModelBase
 	{
 		private readonly Interaction<MessageInfo, Unit> _infoMessages;
 		private readonly Interaction<MessageInfo, Unit> _errorMessages;

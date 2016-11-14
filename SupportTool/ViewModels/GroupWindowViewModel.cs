@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-	public class GroupWindowViewModel : ReactiveObject, INavigable
+	public class GroupWindowViewModel : ViewModelBase, INavigable
 	{
 		private readonly ReactiveCommand<string, GroupObject> _setGroup;
 		private readonly ObservableAsPropertyHelper<GroupObject> _group;

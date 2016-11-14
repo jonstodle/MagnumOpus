@@ -14,7 +14,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class PermittedWorkstationsWindowViewModel : ReactiveObject, IDialog
+	public class PermittedWorkstationsWindowViewModel : ViewModelBase, IDialog
     {
         private readonly ReactiveCommand<Unit, string> _addComputer;
         private readonly ReactiveCommand<Unit, bool> _removeComputer;

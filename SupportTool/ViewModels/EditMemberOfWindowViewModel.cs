@@ -17,7 +17,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMemberOfWindowViewModel : ReactiveObject, IDialog
+	public class EditMemberOfWindowViewModel : ViewModelBase, IDialog
 	{
 		private readonly ReactiveCommand<string, Principal> _setPrincipal;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;

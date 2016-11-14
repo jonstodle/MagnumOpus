@@ -14,7 +14,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class UserGroupsViewModel : ReactiveObject
+	public class UserGroupsViewModel : ViewModelBase
 	{
 		private readonly Interaction<MessageInfo, Unit> _infoMessages;
 		private readonly Interaction<MessageInfo, Unit> _errorMessages;

@@ -17,7 +17,7 @@ using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerManagementViewModel : ReactiveObject
+	public class ComputerManagementViewModel : ViewModelBase
 	{
 		private ReactiveCommand<Unit, Unit> _rebootComputer;
 		private ReactiveCommand<Unit, Unit> _runPSExec;

@@ -9,7 +9,7 @@ using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
 {
-	public class PingPanelViewModel : ReactiveObject
+	public class PingPanelViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, string> _startPing;
 		private readonly ReactiveCommand<Unit, Unit> _stopPing;

@@ -14,10 +14,8 @@ using System.Windows.Resources;
 
 namespace SupportTool.ViewModels
 {
-	public class AccountPanelViewModel : ReactiveObject
+	public class AccountPanelViewModel : ViewModelBase
     {
-		private readonly Interaction<MessageInfo, Unit> _infoMessages;
-		private readonly Interaction<MessageInfo, Unit> _errorMessages;
         private readonly ReactiveCommand<Unit, string> _setNewPassword;
         private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
         private readonly ReactiveCommand<Unit, string> _setNewComplexPassword;
@@ -34,9 +32,6 @@ namespace SupportTool.ViewModels
 
         public AccountPanelViewModel()
         {
-			_infoMessages = new Interaction<MessageInfo, Unit>();
-			_errorMessages = new Interaction<MessageInfo, Unit>();
-
 			_setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
@@ -90,10 +85,6 @@ namespace SupportTool.ViewModels
 		}
 
 
-
-		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => _errorMessages;
 
 		public ReactiveCommand SetNewPassword => _setNewPassword;
 
