@@ -42,23 +42,27 @@ namespace SupportTool.Models
 
 	public static class MessageInfoHelpers
 	{
+		public static IDisposable RegisterInfoHandler(this Interaction<MessageInfo, Unit> source, Grid parent) => source.RegisterHandler(async interaction =>
+		{
+			await DialogControl.InfoOKDialog(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
+			interaction.SetOutput(Unit.Default);
+		});
+
 		public static IDisposable RegisterInfoHandler(this IEnumerable<Interaction<MessageInfo, Unit>> source, Grid parent) => source.Aggregate(new CompositeDisposable(), (acc, input) =>
 		{
-			acc.Add(input.RegisterHandler(async interaction =>
-			{
-				await DialogControl.InfoOKDialog(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
-				interaction.SetOutput(Unit.Default);
-			}));
+			acc.Add(input.RegisterInfoHandler(parent));
 			return acc;
+		});
+
+		public static IDisposable RegisterErrorHandler(this Interaction<MessageInfo, Unit> source, Grid parent) => source.RegisterHandler(async interaction =>
+		{
+			await DialogControl.ErrorDialog(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
+			interaction.SetOutput(Unit.Default);
 		});
 
 		public static IDisposable RegisterErrorHandler(this IEnumerable<Interaction<MessageInfo, Unit>> source, Grid parent) => source.Aggregate(new CompositeDisposable(), (acc, input) =>
 		{
-			acc.Add(input.RegisterHandler(async interaction =>
-			{
-				await DialogControl.ErrorDialog(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message).Result.Take(1);
-				interaction.SetOutput(Unit.Default);
-			}));
+			acc.Add(input.RegisterErrorHandler(parent));
 			return acc;
 		});
 	}
