@@ -28,9 +28,9 @@ namespace SupportTool.ViewModels
 
 		public ComputerManagementViewModel()
 		{
-			_rebootComputer = ReactiveCommand.Create(() =>
+			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
 			{
-				if (_promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No")).Wait() == 0)
+				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No")) == 0)
 				{
 					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_computer.CN} -t 0");
 				}
