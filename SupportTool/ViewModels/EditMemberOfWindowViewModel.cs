@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -95,7 +94,7 @@ namespace SupportTool.ViewModels
 					{
 						var builder = new StringBuilder();
 						foreach (var message in x) builder.AppendLine(message);
-						DialogService.ShowInfo($"The following messages were generated:\n{builder.ToString()}");
+						_infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}")).Wait();
 					}
 
 					_close();
@@ -106,7 +105,7 @@ namespace SupportTool.ViewModels
 					_addToPrincipal.ThrownExceptions,
 					_removeFromPrincipal.ThrownExceptions,
 					_save.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

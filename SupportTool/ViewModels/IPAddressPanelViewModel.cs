@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
-using SupportTool.Services.DialogServices;
+using SupportTool.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -51,7 +51,7 @@ namespace SupportTool.ViewModels
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
 			_openCDrive
 				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open location"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")));
 
 			_rebootComputer = ReactiveCommand.Create(() =>
 			{
@@ -82,7 +82,7 @@ namespace SupportTool.ViewModels
 				_openRemoteExecution.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
 				_startRdp.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not launch external program"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
 		}
 
 

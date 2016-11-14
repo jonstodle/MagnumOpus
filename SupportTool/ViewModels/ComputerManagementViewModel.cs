@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,7 @@ namespace SupportTool.ViewModels
 				_runPSExec.ThrownExceptions,
 				_openCDrive.ThrownExceptions,
 				_openSccm.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

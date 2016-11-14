@@ -2,7 +2,6 @@
 using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
@@ -47,7 +46,7 @@ namespace SupportTool.ViewModels
 			});
 			_saveDirectGroups
 				.ThrownExceptions
-				.Subscribe(x => DialogService.ShowError(x.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 

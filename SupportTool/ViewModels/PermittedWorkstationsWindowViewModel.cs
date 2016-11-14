@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -45,28 +44,28 @@ namespace SupportTool.ViewModels
                 .Subscribe(x => _computers.Add(x));
             _addComputer
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not add computer"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not add computer")));
 
             _removeComputer = ReactiveCommand.Create(
             () => _computers.Remove(SelectedComputer as string),
             this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
             _removeComputer
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove computer"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not remove computer")));
 
             _removeAllComputers = ReactiveCommand.Create(
                 () => _computers.Clear(),
             this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
             _removeAllComputers
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove computers"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not remove computers")));
 
             _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
             _save
                 .Subscribe(_ => _close());
             _save
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not save"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not save")));
 
             this
                 .WhenAnyValue(x => x.User)

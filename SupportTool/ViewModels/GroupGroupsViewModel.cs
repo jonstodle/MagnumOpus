@@ -2,7 +2,6 @@
 using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
@@ -93,7 +92,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _allMemberOfGroups.Add(x));
 			_getAllMemberOfGroups
 				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")));
 
 			_findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup as string));
 

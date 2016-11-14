@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.NavigationServices;
 using SupportTool.Services.SettingsServices;
@@ -104,7 +103,7 @@ namespace SupportTool.ViewModels
 				_paste.ThrownExceptions,
 				_open.ThrownExceptions,
 				_openSettings.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			FileService.DeserializeFromDisk<IEnumerable<string>>(nameof(_history))
 				.Catch(Observable.Return(Enumerable.Empty<string>()))
