@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,16 @@ namespace SupportTool.Views
 
 			this.Bind(ViewModel, vm => vm.HistoryCountLimit, v => v.HistoryCountLimitTextBox.Text);
 			this.Bind(ViewModel, vm => vm.DetailWindowTimeoutLength, v => v.DetailWindowTimeoutLengthTextBox.Text);
+
+			this.WhenActivated(d =>
+			{
+				d(ViewModel
+					.InfoMessages
+					.RegisterInfoHandler(ContainerGrid));
+				d(ViewModel
+					.ErrorMessages
+					.RegisterErrorHandler(ContainerGrid));
+			});
 		}
 
 		public SettingsWindowViewModel ViewModel

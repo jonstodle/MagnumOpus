@@ -14,16 +14,18 @@
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 	</Window.Resources>
-	
-	<ScrollViewer>
-		<StackPanel Margin="2">
-			<TextBlock Text="Settings" FontSize="20" Margin="2"/>
 
-			<TextBlock Text="Number of items in history" Style="{StaticResource SettingsHeaderStyle}"/>
-			<TextBox x:Name="HistoryCountLimitTextBox" Margin="2"/>
+	<Grid x:Name="ContainerGrid">
+		<ScrollViewer>
+			<StackPanel Margin="2">
+				<TextBlock Text="Settings" FontSize="20" Margin="2"/>
 
-			<TextBlock Text="Close detail windows after (hours)" Style="{StaticResource SettingsHeaderStyle}"/>
-			<TextBox x:Name="DetailWindowTimeoutLengthTextBox" Margin="2"/>
-		</StackPanel>
-	</ScrollViewer>
+				<TextBlock Text="Number of items in history" Style="{StaticResource SettingsHeaderStyle}"/>
+				<TextBox x:Name="HistoryCountLimitTextBox" Margin="2"/>
+
+				<TextBlock Text="Close detail windows after (hours)" Style="{StaticResource SettingsHeaderStyle}"/>
+				<TextBox x:Name="DetailWindowTimeoutLengthTextBox" Margin="2"/>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
 </Window>
