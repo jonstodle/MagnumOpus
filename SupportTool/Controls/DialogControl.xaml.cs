@@ -87,8 +87,11 @@ namespace SupportTool.Controls
 
 		private void Close()
 		{
-			_resultSubject?.OnNext(-1);
-			_resultSubject?.OnCompleted();
+			if (_resultSubject != null)
+			{
+				_resultSubject.OnNext(-1);
+				_resultSubject.OnCompleted(); 
+			}
 			_parent.Children.Remove(this);
 		}
 
