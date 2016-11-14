@@ -78,19 +78,19 @@ namespace SupportTool.Controls
 
 		private void HandleButtonClick(object sender, RoutedEventArgs args)
 		{
+			var tag = (sender as Button).Tag as Guid?;
+			if (tag == null) return;
+
+			var dbi = _buttons.First(x => x.Id == tag);
+
 			if (_resultSubject != null)
 			{
-				var tag = (sender as Button).Tag as Guid?;
-				if (tag == null) return;
-
-				var dbi = _buttons.First(x => x.Id == tag);
-
 				_resultSubject.OnNext(_buttons.IndexOf(dbi));
 				_resultSubject.OnCompleted();
 				_resultSubject = null; 
 			}
 
-			Close();
+			if(dbi.CloseDialog) Close();
 		}
 
 		private void Close()
