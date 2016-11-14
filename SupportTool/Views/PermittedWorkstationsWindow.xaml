@@ -6,42 +6,44 @@
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
         Title="PermittedWorkstationsWindow" Height="500" Width="300">
-    
-    <Grid x:Name="ContainerGrid" Margin="2">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
+	<Grid x:Name="ContainerGrid">
+		<Grid Margin="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
 
-            <TextBlock Text="Add computer: " Margin="2"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
 
-            <TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
+				<TextBlock Text="Add computer: " Margin="2"/>
 
-            <Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Grid.Column="2" Margin="2"/>
-        </Grid>
+				<TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
 
-		<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" Grid.Row="1" Margin="2"/>
+				<Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Grid.Column="2" Margin="2"/>
+			</Grid>
 
-		<Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" Grid.Row="1" Margin="2"/>
 
-            <Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
+			<Grid Grid.Row="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
 
-            <Button x:Name="RemoveComputerButton" Content="Remove" Grid.Column="1" Margin="2"/>
+				<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
 
-            <Button x:Name="SaveButton" Content="Save" Grid.Column="2" HorizontalAlignment="Right" Margin="2"/>
-        </Grid>
-    </Grid>
+				<Button x:Name="RemoveComputerButton" Content="Remove" Grid.Column="1" Margin="2"/>
+
+				<Button x:Name="SaveButton" Content="Save" Grid.Column="2" HorizontalAlignment="Right" Margin="2"/>
+			</Grid>
+		</Grid>
+	</Grid>
 </Window>

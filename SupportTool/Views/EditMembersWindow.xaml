@@ -8,51 +8,53 @@
 		Icon="/Assets/Icon.ico"
         Height="500" Width="700">
 
-	<Grid x:Name="ContainerGrid" Margin="2">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition/>
-			<ColumnDefinition/>
-		</Grid.ColumnDefinitions>
+	<Grid x:Name="ContainerGrid">
+		<Grid Margin="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
 
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
 
-			<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
+				<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
 
-			<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
-				<ListView.View>
-					<GridView>
-						<GridView.Columns>
-							<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
-							<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
-						</GridView.Columns>
-					</GridView>
-				</ListView.View>
-			</ListView>
-		</Grid>
+				<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
+					<ListView.View>
+						<GridView>
+							<GridView.Columns>
+								<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
+								<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
+							</GridView.Columns>
+						</GridView>
+					</ListView.View>
+				</ListView>
+			</Grid>
 
-		<Grid Grid.Column="1">
-			<Grid.RowDefinitions>
-				<RowDefinition/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
+			<Grid Grid.Column="1">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
 
-			<ListView x:Name="GroupMembersListView" Margin="2">
-				<ListView.View>
-					<GridView>
-						<GridView.Columns>
-							<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
-							<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
-						</GridView.Columns>
-					</GridView>
-				</ListView.View>
-			</ListView>
+				<ListView x:Name="GroupMembersListView" Margin="2">
+					<ListView.View>
+						<GridView>
+							<GridView.Columns>
+								<GridViewColumn Header="ID" DisplayMemberBinding="{Binding Properties[samaccountname][0]}" Width="{StaticResource IDColumnWidth}"/>
+								<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Properties[name][0]}" Width="{StaticResource NameColumnWidth}"/>
+							</GridView.Columns>
+						</GridView>
+					</ListView.View>
+				</ListView>
 
-			<Button x:Name="SaveButton" Content="&#x1F4BE; Save" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2" Margin="2"/>
+				<Button x:Name="SaveButton" Content="&#x1F4BE; Save" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2" Margin="2"/>
+			</Grid>
 		</Grid>
 	</Grid>
 </Window>
