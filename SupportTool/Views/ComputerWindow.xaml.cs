@@ -1,5 +1,8 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Windows;
 
 namespace SupportTool.Views
@@ -25,6 +28,22 @@ namespace SupportTool.Views
 			this.WhenActivated(d =>
 			{
 				d(this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					ComputerDetails.InfoMessages,
+					RemotePanel.InfoMessages,
+					ComputerManagement.InfoMessages,
+					PingPanel.InfoMessages,
+					ComputerGroups.InfoMessages
+				}.RegisterInfoHandler(ContainerGrid));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					ComputerDetails.ErrorMessages,
+					RemotePanel.ErrorMessages,
+					ComputerManagement.ErrorMessages,
+					PingPanel.ErrorMessages,
+					ComputerGroups.ErrorMessages
+				}.RegisterErrorHandler(ContainerGrid));
 			});
 		}
 
