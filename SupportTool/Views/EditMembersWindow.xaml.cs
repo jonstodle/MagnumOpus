@@ -63,6 +63,12 @@ namespace SupportTool.Views
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromGroup));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+				d(ViewModel
+					.InfoMessages
+					.RegisterInfoHandler(ContainerGrid));
+				d(ViewModel
+					.ErrorMessages
+					.RegisterErrorHandler(ContainerGrid));
 			});
 		}
 
