@@ -9,11 +9,13 @@
 		Icon="/Assets/Icon.ico"
         Height="600" Width="600">
 
-	<ScrollViewer>
-		<StackPanel Margin="2">
-			<controls:IPAddressPanel x:Name="IPAddressPanel"/>
+	<Grid x:Name="ContainerGrid">
+		<ScrollViewer>
+			<StackPanel Margin="2">
+				<controls:IPAddressPanel x:Name="IPAddressPanel"/>
 
-			<controls:PingPanel x:Name="PingPanel"/>
-		</StackPanel>
-	</ScrollViewer>
+				<controls:PingPanel x:Name="PingPanel"/>
+			</StackPanel>
+		</ScrollViewer>
+	</Grid>
 </local:DetailsWindow>

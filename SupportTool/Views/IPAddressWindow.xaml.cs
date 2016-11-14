@@ -1,5 +1,8 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Windows;
 
 namespace SupportTool.Views
@@ -18,6 +21,20 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
 			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName);
+
+			this.WhenActivated(d =>
+			{
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					IPAddressPanel.InfoMessages,
+					PingPanel.InfoMessages
+				}.RegisterInfoHandler(ContainerGrid));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					IPAddressPanel.ErrorMessages,
+					PingPanel.ErrorMessages
+				}.RegisterErrorHandler(ContainerGrid));
+			});
 		}
 
 		public IPAddressWindowViewModel ViewModel
