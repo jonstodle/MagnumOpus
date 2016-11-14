@@ -28,6 +28,9 @@ namespace SupportTool.Views
 			this.WhenActivated(d =>
 			{
 				d(this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)));
+				d(ComputerManagement
+					.PromptMessages
+					.RegisterPromptHandler(ContainerGrid));
 				d(new List<Interaction<MessageInfo, Unit>>
 				{
 					ComputerDetails.InfoMessages,

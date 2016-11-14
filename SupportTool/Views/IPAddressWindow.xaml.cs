@@ -24,6 +24,9 @@ namespace SupportTool.Views
 
 			this.WhenActivated(d =>
 			{
+				d(IPAddressPanel
+					.PromptMessages
+					.RegisterPromptHandler(ContainerGrid));
 				d(new List<Interaction<MessageInfo, Unit>>
 				{
 					IPAddressPanel.InfoMessages,
