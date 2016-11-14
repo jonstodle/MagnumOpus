@@ -11,10 +11,13 @@ namespace SupportTool.ViewModels
 {
 	public class ViewModelBase : ReactiveObject
 	{
+		protected readonly Interaction<MessageInfo, int> _promptMessages = new Interaction<MessageInfo, int>();
 		protected readonly Interaction<MessageInfo, Unit> _infoMessages = new Interaction<MessageInfo, Unit>();
 		protected readonly Interaction<MessageInfo, Unit> _errorMessages = new Interaction<MessageInfo, Unit>();
 
 
+
+		public Interaction<MessageInfo, int> PromptMessages => _promptMessages;
 
 		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
 
