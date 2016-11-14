@@ -55,7 +55,7 @@ namespace SupportTool.ViewModels
 
 			_rebootComputer = ReactiveCommand.Create(() =>
 			{
-				if (DialogService.ShowPrompt($"Reboot {_ipAddress}?"))
+				if (_promptMessages.Handle(new MessageInfo($"Reboot {_ipAddress}?", "", "Yes", "No")).Wait() == 0)
 				{
 					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_ipAddress} -t 0");
 				}

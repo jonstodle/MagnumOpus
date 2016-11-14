@@ -39,6 +39,8 @@ namespace SupportTool.Controls
 			});
 		}
 
+		public Interaction<MessageInfo, int> PromptMessages => ViewModel.PromptMessages;
+
 		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
 
 		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;

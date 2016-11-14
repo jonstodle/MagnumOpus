@@ -30,7 +30,7 @@ namespace SupportTool.ViewModels
 		{
 			_rebootComputer = ReactiveCommand.Create(() =>
 			{
-				if (DialogService.ShowPrompt($"Reboot {_computer.CN}?"))
+				if (_promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No")).Wait() == 0)
 				{
 					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_computer.CN} -t 0");
 				}
