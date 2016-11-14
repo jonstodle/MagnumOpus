@@ -41,7 +41,13 @@ namespace SupportTool.Views
                     .MouseDoubleClick
                     .Select(_ => Unit.Default)
                     .InvokeCommand(ViewModel, x => x.RemoveComputer));
-            });
+				d(ViewModel
+					.InfoMessages
+					.RegisterInfoHandler(ContainerGrid));
+				d(ViewModel
+					.ErrorMessages
+					.RegisterErrorHandler(ContainerGrid));
+			});
         }
 
         public PermittedWorkstationsWindowViewModel ViewModel

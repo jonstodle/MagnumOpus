@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="PermittedWorkstationsWindow" Height="500" Width="300">
     
-    <Grid Margin="2">
+    <Grid x:Name="ContainerGrid" Margin="2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
