@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
+using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,10 +25,13 @@ namespace SupportTool.Controls
             this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"Expires {((DateTime)x).ToShortDateString()}" : "Never expires");
             this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked");
             this.OneWayBind(ViewModel, vm => vm.PasswordAge, v => v.PasswordAgeTextBlock.Text, x => $"Password age: {x.Days}d {x.Hours}h {x.Minutes}m");
+		}
 
-        }
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
 
-        public UserObject User
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public UserObject User
         {
             get { return (UserObject)GetValue(UserProperty); }
             set { SetValue(UserProperty, value); }

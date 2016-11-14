@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.ViewModels;
+using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -28,9 +29,13 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton));
 				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
 			});
-        }
+		}
 
-        public ComputerObject Computer
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public ComputerObject Computer
         {
             get { return (ComputerObject)GetValue(ComputerProperty); }
             set { SetValue(ComputerProperty, value); }

@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
+using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -22,7 +23,11 @@ namespace SupportTool.Controls
 			this.OneWayBind(ViewModel, vm => vm.Group.Principal.Description, v => v.DescriptionTextBlock.Text, x => x.HasValue() ? x : "No description");
 		}
 
-        public GroupObject Group
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public GroupObject Group
         {
             get { return (GroupObject)GetValue(GroupProperty); }
             set { SetValue(GroupProperty, value); }

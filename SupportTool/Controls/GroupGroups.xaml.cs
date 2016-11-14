@@ -59,6 +59,10 @@ namespace SupportTool.Controls
 			});
 		}
 
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
 		public GroupObject Group
 		{
 			get { return (GroupObject)GetValue(GroupProperty); }

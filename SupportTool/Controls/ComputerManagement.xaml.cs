@@ -4,6 +4,7 @@ using SupportTool.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,6 +38,10 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.OpenSccm, v => v.OpenSccmButton));
 			});
 		}
+
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
 		public ComputerObject Computer
 		{

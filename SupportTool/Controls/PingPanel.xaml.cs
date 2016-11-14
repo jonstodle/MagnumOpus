@@ -49,7 +49,11 @@ namespace SupportTool.Controls
 					.ObserveOnDispatcher()
 					.InvokeCommand(ViewModel, x => x.StopPing));
             });
-        }
+		}
+
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
 		public string HostName
 		{
