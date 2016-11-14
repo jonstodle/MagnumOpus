@@ -60,6 +60,14 @@ namespace SupportTool.Controls
 			}
 		}
 
+		public DialogControl(Grid parent, string caption, string message, TimeSpan timeout, params DialogButtonInfo[] buttons) : this(parent, caption, message, buttons)
+		{
+			_timeoutObservable = Observable.Timer(timeout)
+				.TakeUntil(_resultSubject);
+			_timeoutObservable
+				.Subscribe(_ => Close());
+		}
+
 
 
 		public static DialogControl InfoDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK"));
@@ -100,6 +108,7 @@ namespace SupportTool.Controls
 		private ISubject<int> _resultSubject = new Subject<int>();
 		private Grid _parent;
 		private List<DialogButtonInfo> _buttons;
+		private IObservable<long> _timeoutObservable;
 	}
 
 	public struct DialogButtonInfo
