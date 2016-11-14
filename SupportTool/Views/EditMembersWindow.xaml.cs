@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Linq;
