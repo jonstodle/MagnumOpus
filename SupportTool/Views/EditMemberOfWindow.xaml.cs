@@ -1,7 +1,10 @@
 ﻿using ReactiveUI;
+using SupportTool.Controls;
+using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -63,6 +66,12 @@ namespace SupportTool.Views
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromPrincipal));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+				d(ViewModel
+					.InfoMessages
+					.RegisterInfoHandler(ContainerGrid));
+				d(ViewModel
+					.ErrorMessages
+					.RegisterErrorHandler(ContainerGrid));
 			});
 		}
 

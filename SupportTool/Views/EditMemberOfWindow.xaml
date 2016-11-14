@@ -8,7 +8,7 @@
 		Icon="/Assets/Icon.ico"
         Height="500" Width="700">
 
-	<Grid Margin="2">
+	<Grid x:Name="ContainerGrid" Margin="2">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
 			<ColumnDefinition/>
