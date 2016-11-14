@@ -88,13 +88,13 @@ namespace SupportTool.ViewModels
 				async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
 				Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
 			_save
-				.Subscribe(x =>
+				.Subscribe(async x =>
 				{
 					if (x.Count() > 0)
 					{
 						var builder = new StringBuilder();
 						foreach (var message in x) builder.AppendLine(message);
-						_infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}")).Wait();
+						await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
 					}
 
 					_close();
