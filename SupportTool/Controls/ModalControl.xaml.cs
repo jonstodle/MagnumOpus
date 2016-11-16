@@ -20,32 +20,11 @@ namespace SupportTool.Controls
 	/// </summary>
 	public partial class ModalControl : UserControl
 	{
-		public ModalControl(object parameters = null)
+		public ModalControl(Grid parent, object content, object parameters = null)
 		{
 			InitializeComponent();
 
-			_parameters = parameters;
+			ContentPresenter.Content = content;
 		}
-
-
-
-		public object DisplayContent
-		{
-			get { return (object)GetValue(DisplayContentProperty); }
-			set { SetValue(DisplayContentProperty, value); }
-		}
-
-		public static readonly DependencyProperty DisplayContentProperty = DependencyProperty.Register(nameof(DisplayContent), typeof(object), typeof(ModalControl), new PropertyMetadata(null, (d, e) => (d as ModalControl).PassParameters()));
-
-
-
-		private void PassParameters()
-		{
-
-		}
-
-
-
-		object _parameters;
 	}
 }

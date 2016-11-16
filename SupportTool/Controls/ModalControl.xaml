@@ -13,7 +13,7 @@
 		</Border.Background>
 
 		<Grid x:Name="ContainerGrid" Background="White" MinWidth="200" MinHeight="300" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
-			<ContentPresenter ContentSource="{Binding DisplayContent}"/>
+			<ContentPresenter x:Name="ContentPresenter"/>
 		</Grid>
 	</Border>
 </UserControl>
