@@ -14,7 +14,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
 
         private readonly PrincipalContext _principalContext = new PrincipalContext(ContextType.Domain);
-		private readonly string _currentDomain = Domain.GetCurrentDomain().Name;
+		public string CurrentDomain => Domain.GetCurrentDomain().Name;
 
 
 		private ActiveDirectoryService() { }
@@ -41,7 +41,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 			return () => disposed = true;
 		});
 
-		private DirectoryEntry GetDomainDirectoryEntry() => new DirectoryEntry($"LDAP://{_currentDomain}");
+		private DirectoryEntry GetDomainDirectoryEntry() => new DirectoryEntry($"LDAP://{CurrentDomain}");
 
 	}
 }

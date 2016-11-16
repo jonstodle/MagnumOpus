@@ -139,6 +139,8 @@ namespace SupportTool.ViewModels
 
 		public string Version => _version;
 
+		public string Domain => ActiveDirectoryService.Current.CurrentDomain;
+
 		public SortDescription ListSortDescription
 		{
 			get { return _listSortDescription; }

@@ -44,6 +44,7 @@ namespace SupportTool
 			this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.SearchResultsStackPanel.Opacity, x => x ? 0 : 1);
 			this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.VersionTextBlock.Opacity, x => x ? 1 : 0);
 			this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text);
+			this.OneWayBind(ViewModel, vm => vm.Domain, v => v.DomainTextBlock.Text);
 
 			this.WhenActivated(d =>
 			{
