@@ -171,6 +171,9 @@
     <Compile Include="Controls\IPAddressPanel.xaml.cs">
       <DependentUpon>IPAddressPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ModalControl.xaml.cs">
+      <DependentUpon>ModalControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PingPanel.xaml.cs">
       <DependentUpon>PingPanel.xaml</DependentUpon>
     </Compile>
@@ -292,6 +295,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\IPAddressPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ModalControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
