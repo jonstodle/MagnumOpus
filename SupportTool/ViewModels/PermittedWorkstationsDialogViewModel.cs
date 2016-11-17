@@ -13,7 +13,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class PermittedWorkstationsWindowViewModel : ViewModelBase, IDialog
+	public class PermittedWorkstationsDialogViewModel : ViewModelBase, IDialog
     {
         private readonly ReactiveCommand<Unit, string> _addComputer;
         private readonly ReactiveCommand<Unit, bool> _removeComputer;
@@ -29,7 +29,7 @@ namespace SupportTool.ViewModels
 
 
 
-        public PermittedWorkstationsWindowViewModel()
+        public PermittedWorkstationsDialogViewModel()
         {
             _computers = new ReactiveList<string>();
 
