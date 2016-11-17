@@ -16,7 +16,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMembersWindowViewModel : ViewModelBase, IDialog
+	public class EditMembersDialogViewModel : ViewModelBase, IDialog
 	{
 		private readonly ReactiveCommand<string, GroupObject> _setGroup;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
@@ -38,7 +38,7 @@ namespace SupportTool.ViewModels
 
 
 
-		public EditMembersWindowViewModel()
+		public EditMembersDialogViewModel()
 		{
 			_searchResults = new ReactiveList<DirectoryEntry>();
 			_groupMembers = new ReactiveList<DirectoryEntry>();
