@@ -30,7 +30,7 @@ namespace SupportTool.Controls
 
 			ViewModel = new EditMemberOfDialogViewModel();
 
-			//this.OneWayBind(ViewModel, vm => vm.Principal, v => v.Title, x => x != null ? $"Edit {x.Name}'s MemberOf" : "");
+			this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : "");
 
 			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
