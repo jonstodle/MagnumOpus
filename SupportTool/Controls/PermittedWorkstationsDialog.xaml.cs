@@ -31,7 +31,7 @@ namespace SupportTool.Controls
 
 			ViewModel = new PermittedWorkstationsDialogViewModel();
 
-			//this.OneWayBind(ViewModel, vm => vm.WindowTitle, v => v.Title, x => x != null ? x : "");
+			this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations");
 
 			this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.ComputersView, v => v.ComputersListView.ItemsSource);

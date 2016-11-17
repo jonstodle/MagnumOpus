@@ -21,7 +21,6 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _save;
         private readonly ReactiveList<string> _computers;
         private readonly ListCollectionView _computersView;
-        private readonly ObservableAsPropertyHelper<string> _windowTitle;
         private UserObject _user;
         private string _computerName;
         private object _selectedComputer;
@@ -70,12 +69,6 @@ namespace SupportTool.ViewModels
             this
                 .WhenAnyValue(x => x.User)
                 .WhereNotNull()
-                .Select(x => $"Add workstations to {x.Principal.DisplayName}")
-                .ToProperty(this, x => x.WindowTitle, out _windowTitle);
-
-            this
-                .WhenAnyValue(x => x.User)
-                .WhereNotNull()
                 .Select(x => x.Principal.PermittedWorkstations)
                 .Subscribe(x =>
                 {
@@ -96,8 +89,6 @@ namespace SupportTool.ViewModels
         public ReactiveList<string> Computers => _computers;
 
         public ListCollectionView ComputersView => _computersView;
-
-        public string WindowTitle => _windowTitle.Value;
 
         public UserObject User
         {
