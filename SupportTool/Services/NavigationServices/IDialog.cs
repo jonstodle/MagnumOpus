@@ -5,12 +5,12 @@ namespace SupportTool.Services.NavigationServices
 {
 	public interface IDialog
 	{
-		Task Opening(object parameter);
+		Task Opening(Action close, object parameter);
 	}
 
 	public interface IDialog<TResult>
 	{
-		Task Opening(object parameter);
+		Task Opening(Action<TResult> close, object parameter);
 		IObservable<TResult> Result { get; }
 	}
 }
