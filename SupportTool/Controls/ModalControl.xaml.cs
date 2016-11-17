@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ReactiveUI;
+using SupportTool.Services.NavigationServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +22,13 @@ namespace SupportTool.Controls
 	/// </summary>
 	public partial class ModalControl : UserControl
 	{
-		public ModalControl(Grid parent, object content, object parameters = null)
+		public ModalControl(Grid parent, object content, object parameter = null)
 		{
 			InitializeComponent();
+
+			var view = content as IViewFor;
+			var vm = view?.ViewModel as IDialog;
+			if (vm != null) vm.Opening(parameter);
 
 			ContentPresenter.Content = content;
 		}
