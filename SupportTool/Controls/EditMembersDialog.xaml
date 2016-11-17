@@ -13,8 +13,14 @@
 				<ColumnDefinition/>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
 
-			<Grid>
+			<TextBlock x:Name="TitleTextBlock" FontSize="20" Grid.ColumnSpan="2" Margin="2"/>
+
+			<Grid Grid.Row="1">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition/>
@@ -35,7 +41,7 @@
 				</ListView>
 			</Grid>
 
-			<Grid Grid.Column="1">
+			<Grid Grid.Row="1" Grid.Column="1">
 				<Grid.RowDefinitions>
 					<RowDefinition/>
 					<RowDefinition Height="Auto"/>
