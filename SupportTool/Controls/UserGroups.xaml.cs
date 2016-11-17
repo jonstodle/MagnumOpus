@@ -56,6 +56,8 @@ namespace SupportTool.Controls
 
 		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
+		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+
 		public UserObject User
         {
             get { return (UserObject)GetValue(UserProperty); }

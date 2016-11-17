@@ -35,6 +35,8 @@ namespace SupportTool.Controls
 
 		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
+		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+
 		public ComputerObject Computer
         {
             get { return (ComputerObject)GetValue(ComputerProperty); }

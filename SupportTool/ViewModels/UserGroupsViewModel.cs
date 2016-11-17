@@ -56,7 +56,7 @@ namespace SupportTool.ViewModels
             _directGroupsCollectionView = new ListCollectionView(_directGroups);
             _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_user.Principal.SamAccountName));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(typeof(Controls.EditMemberOfDialog), _user.Principal.SamAccountName)));
 
 			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
 			{

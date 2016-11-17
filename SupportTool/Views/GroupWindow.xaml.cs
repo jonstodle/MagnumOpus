@@ -35,6 +35,9 @@ namespace SupportTool.Views
 					GroupDetails.ErrorMessages,
 					GroupGroups.ErrorMessages
 				}.RegisterErrorHandler(ContainerGrid));
+				d(GroupGroups
+					.DialogRequests
+					.RegisterDialogHandler(ContainerGrid));
 			});
 		}
 

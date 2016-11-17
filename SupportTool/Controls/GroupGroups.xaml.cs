@@ -63,6 +63,8 @@ namespace SupportTool.Controls
 
 		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
+		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+
 		public GroupObject Group
 		{
 			get { return (GroupObject)GetValue(GroupProperty); }

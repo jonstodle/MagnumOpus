@@ -47,6 +47,9 @@ namespace SupportTool.Views
 					PingPanel.ErrorMessages,
 					ComputerGroups.ErrorMessages
 				}.RegisterErrorHandler(ContainerGrid));
+				d(ComputerGroups
+					.DialogRequests
+					.RegisterDialogHandler(ContainerGrid));
 			});
 		}
 

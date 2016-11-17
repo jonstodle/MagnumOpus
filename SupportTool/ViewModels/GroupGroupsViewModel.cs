@@ -66,7 +66,7 @@ namespace SupportTool.ViewModels
 				.WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
 				.Subscribe(_ => _allMemberOfGroupsView?.Refresh());
 
-			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_group.CN));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(typeof(Controls.EditMemberOfDialog), _group.CN)));
 
 			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
 			{
@@ -105,7 +105,7 @@ namespace SupportTool.ViewModels
 				}
 			});
 
-			_openEditMembers = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMembersWindow>(_group.CN));
+			_openEditMembers = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(typeof(Controls.EditMembersDialog), _group.CN)));
 
 			_saveMembers = ReactiveCommand.CreateFromTask(async () =>
 			{
