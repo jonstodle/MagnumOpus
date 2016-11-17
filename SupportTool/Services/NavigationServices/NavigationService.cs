@@ -30,22 +30,6 @@ namespace SupportTool.Services.NavigationServices
 			dialogWindow.ShowDialog();
 		}
 
-		public async static Task<TResult> ShowDialog<TWindow, TResult>(object parameter = null) where TWindow : Window, IViewFor, new()
-		{
-			var dialogWindow = new TWindow();
-			TResult resultValue = default(TResult);
-
-			await (dialogWindow.ViewModel as IDialog<TResult>)?.Opening(
-				(TResult result) =>
-				{
-					resultValue = result;
-					dialogWindow.Close();
-				}, parameter);
-
-			dialogWindow.ShowDialog();
-
-			return resultValue;
-		}
 
 		public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
 		{
