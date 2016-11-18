@@ -24,6 +24,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
 		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
+		private readonly ReactiveCommand<Unit, Unit> _cancel;
 		private readonly ReactiveList<DirectoryEntry> _searchResults;
 		private readonly ReactiveList<DirectoryEntry> _principalMembers;
 		private readonly ReactiveList<DirectoryEntry> _membersToAdd;
@@ -100,6 +101,8 @@ namespace SupportTool.ViewModels
 					_close();
 				});
 
+			_cancel = ReactiveCommand.Create(() => _close());
+
 			Observable.Merge(
 					_search.ThrownExceptions,
 					_addToPrincipal.ThrownExceptions,
@@ -121,6 +124,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand RemoveFromPrincipal => _removeFromPrincipal;
 
 		public ReactiveCommand Save => _save;
+
+		public ReactiveCommand Cancel => _cancel;
 
 		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
 

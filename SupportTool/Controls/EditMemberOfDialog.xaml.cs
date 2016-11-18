@@ -69,6 +69,7 @@ namespace SupportTool.Controls
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromPrincipal));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ViewModel
 					.InfoMessages
 					.RegisterInfoHandler(ContainerGrid));
