@@ -14,6 +14,8 @@ namespace SupportTool.Services.ExportServices
 {
 	public class ExcelService
 	{
+		public static string ExcelFileFilter = "Excel file (*.xlsx)|*.xlsx";
+
 		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<string> users, string path) => Observable.Start(() =>
 		{
 			SaveUsersToExcelFile(users.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);

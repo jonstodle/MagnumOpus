@@ -60,7 +60,7 @@ namespace SupportTool.ViewModels
 
 			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
 			{
-				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
 				if (saveFileDialog.ShowDialog() == true)
 				{
 					await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
@@ -69,7 +69,7 @@ namespace SupportTool.ViewModels
 
 			_saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
 			{
-				var saveFileDialog = new SaveFileDialog { Filter = "Excel file (*.xlsx)|*.xlsx" };
+				var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
 				if (saveFileDialog.ShowDialog() == true)
 				{
 					await ExcelService.SaveGroupsToExcelFile(_allGroups, saveFileDialog.FileName);
