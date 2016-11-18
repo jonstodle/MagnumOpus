@@ -49,9 +49,11 @@ namespace SupportTool.Views
 					UserProfilePanel.ErrorMessages,
 					UserGroups.ErrorMessages
 				}.RegisterErrorHandler(ContainerGrid));
-				d(UserGroups
-					.DialogRequests
-					.RegisterDialogHandler(ContainerGrid));
+				d(new List<Interaction<DialogInfo, Unit>>
+				{
+					UserAccountPanel.DialogRequests,
+					UserGroups.DialogRequests
+				}.RegisterDialogHandler(ContainerGrid));
 			});
 		}
 
