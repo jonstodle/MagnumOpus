@@ -85,6 +85,9 @@ namespace SupportTool
 					.MouseDown
 					.ToSignal()
 					.InvokeCommand(ViewModel.ToggleShowVersion));
+				d(this.Events()
+					.Closed
+					.Subscribe(_ => Application.Current.Shutdown()));
 			});
 		}
 
