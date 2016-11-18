@@ -58,7 +58,11 @@
 					</ListView.View>
 				</ListView>
 
-				<Button x:Name="SaveButton" Content="&#x1F4BE; Save" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2" Margin="2"/>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2">
+					<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
+					
+					<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+				</StackPanel>
 			</Grid>
 		</Grid>
 	</Grid>
