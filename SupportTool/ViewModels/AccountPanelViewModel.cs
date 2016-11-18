@@ -70,7 +70,7 @@ namespace SupportTool.ViewModels
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 
-			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(typeof(Controls.PermittedWorkstationsDialog), _user.Principal.SamAccountName)));
+			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
 			_openSplunk = ReactiveCommand.Create(() =>
             {
