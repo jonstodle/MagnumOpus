@@ -36,16 +36,21 @@
 
 			<Grid Grid.Row="3">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 
-				<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
+				<StackPanel Orientation="Horizontal">
+					<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
 
-				<Button x:Name="RemoveComputerButton" Content="Remove" Grid.Column="1" Margin="2"/>
+					<Button x:Name="RemoveComputerButton" Content="Remove" Margin="2"/>
+				</StackPanel>
 
-				<Button x:Name="SaveButton" Content="Save" Grid.Column="2" HorizontalAlignment="Right" Margin="2"/>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+					<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
+					
+					<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+				</StackPanel>
 			</Grid>
 		</Grid>
 	</Grid>

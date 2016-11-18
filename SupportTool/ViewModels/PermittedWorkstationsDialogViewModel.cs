@@ -19,7 +19,8 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, bool> _removeComputer;
         private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
         private readonly ReactiveCommand<Unit, Unit> _save;
-        private readonly ReactiveList<string> _computers;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+		private readonly ReactiveList<string> _computers;
         private readonly ListCollectionView _computersView;
         private UserObject _user;
         private string _computerName;
@@ -66,6 +67,8 @@ namespace SupportTool.ViewModels
                 .ThrownExceptions
                 .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not save")));
 
+			_cancel = ReactiveCommand.Create(() => _close());
+
             this
                 .WhenAnyValue(x => x.User)
                 .WhereNotNull()
@@ -86,7 +89,9 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand Save => _save;
 
-        public ReactiveList<string> Computers => _computers;
+		public ReactiveCommand Cancel => _cancel;
+
+		public ReactiveList<string> Computers => _computers;
 
         public ListCollectionView ComputersView => _computersView;
 

@@ -45,6 +45,7 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerButton));
 				d(this.BindCommand(ViewModel, vm => vm.RemoveAllComputers, v => v.RemoveAllComputersButton));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ComputersListView.Events()
 					.MouseDoubleClick
 					.Select(_ => Unit.Default)
