@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -30,6 +31,12 @@ namespace SupportTool.Models
 		{
 			new ModalControl(parent, interaction.Input.Control, interaction.Input.Parameter);
 			interaction.SetOutput(Unit.Default);
+		});
+
+		public static IDisposable RegisterDialogHandler(this IEnumerable<Interaction<DialogInfo, Unit>> source, Grid parent) => source.Aggregate(new CompositeDisposable(), (acc, input) =>
+		{
+			acc.Add(input.RegisterDialogHandler(parent));
+			return acc;
 		});
 	}
 }
