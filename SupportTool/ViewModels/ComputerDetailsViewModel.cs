@@ -10,7 +10,7 @@ using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerDetailsViewModel : ReactiveObject
+	public class ComputerDetailsViewModel : ViewModelBase
     {
 		private readonly ObservableAsPropertyHelper<OperatingSystemInfo> _operatingSystemInfo;
 		private readonly ObservableAsPropertyHelper<string> _ipAddress;

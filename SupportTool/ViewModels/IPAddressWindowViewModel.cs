@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-	public class IPAddressWindowViewModel : ReactiveObject, INavigable
+	public class IPAddressWindowViewModel : ViewModelBase, INavigable
 	{
 		private readonly ReactiveCommand<string, string> _setIPAddress;
 		private readonly ObservableAsPropertyHelper<string> _ipAddress;

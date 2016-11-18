@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.SettingsServices;
 using System;
@@ -16,7 +15,7 @@ using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
 {
-	public class RemotePanelViewModel : ReactiveObject
+	public class RemotePanelViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
@@ -64,7 +63,7 @@ namespace SupportTool.ViewModels
 				_killRemoteControl.ThrownExceptions,
 				_startRemoteAssistance.ThrownExceptions,
 				_startRdp.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not launch external program"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
 		}
 
 

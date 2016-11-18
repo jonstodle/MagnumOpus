@@ -66,6 +66,8 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
+			<TextBlock x:Name="DomainTextBlock" TextAlignment="Center" Opacity=".5" Grid.ColumnSpan="3" Margin="2"/>
+
 			<StackPanel x:Name="SearchResultsStackPanel" Orientation="Horizontal">
 				<TextBlock x:Name="SearchResultsCountTextBox" Margin="2"/>
 
@@ -73,8 +75,6 @@
 			</StackPanel>
 
 			<TextBlock x:Name="VersionTextBlock" Opacity="0" IsHitTestVisible="False" Margin="2"/>
-
-			<TextBlock x:Name="DomainTextBlock" TextAlignment="Center" Opacity=".5" Grid.ColumnSpan="3" Margin="2"/>
 
 			<Button x:Name="SettingsButton" Content="Settings" Grid.Column="2" Margin="2"/>
 		</Grid>

@@ -159,6 +159,15 @@
     <Compile Include="Controls\ComputerManagement.xaml.cs">
       <DependentUpon>ComputerManagement.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DialogControl.xaml.cs">
+      <DependentUpon>DialogControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EditMemberOfDialog.xaml.cs">
+      <DependentUpon>EditMemberOfDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\EditMembersDialog.xaml.cs">
+      <DependentUpon>EditMembersDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GroupDetails.xaml.cs">
       <DependentUpon>GroupDetails.xaml</DependentUpon>
     </Compile>
@@ -167,6 +176,12 @@
     </Compile>
     <Compile Include="Controls\IPAddressPanel.xaml.cs">
       <DependentUpon>IPAddressPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ModalControl.xaml.cs">
+      <DependentUpon>ModalControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PermittedWorkstationsDialog.xaml.cs">
+      <DependentUpon>PermittedWorkstationsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\PingPanel.xaml.cs">
       <DependentUpon>PingPanel.xaml</DependentUpon>
@@ -192,6 +207,8 @@
     <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
+    <Compile Include="Models\DialogInfo.cs" />
+    <Compile Include="Models\MessageInfo.cs" />
     <Compile Include="Models\OperatingSystemInfo.cs" />
     <Compile Include="Models\ComputerObject.cs" />
     <Compile Include="Models\DirectoryEntryInfo.cs" />
@@ -202,7 +219,6 @@
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Group.cs" />
     <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
-    <Compile Include="Services\DialogServices\DialogService.cs" />
     <Compile Include="Services\ExportServices\ExcelService.cs" />
     <Compile Include="Services\FileServices\ExecutionService.cs" />
     <Compile Include="Services\FileServices\FileService.cs" />
@@ -217,8 +233,8 @@
     <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
     <Compile Include="ViewModels\ComputerManagementViewModel.cs" />
     <Compile Include="ViewModels\ComputerWindowViewModel.cs" />
-    <Compile Include="ViewModels\EditMemberOfWindowViewModel.cs" />
-    <Compile Include="ViewModels\EditMembersWindowViewModel.cs" />
+    <Compile Include="ViewModels\EditMemberOfDialogViewModel.cs" />
+    <Compile Include="ViewModels\EditMembersDialogViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupWindowViewModel.cs" />
@@ -226,7 +242,7 @@
     <Compile Include="ViewModels\IPAddressWindowViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\AccountPanelViewModel.cs" />
-    <Compile Include="ViewModels\PermittedWorkstationsWindowViewModel.cs" />
+    <Compile Include="ViewModels\PermittedWorkstationsDialogViewModel.cs" />
     <Compile Include="ViewModels\PingPanelViewModel.cs" />
     <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
     <Compile Include="ViewModels\RemotePanelViewModel.cs" />
@@ -234,24 +250,16 @@
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
     <Compile Include="ViewModels\UserWindowViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\ComputerWindow.xaml.cs">
       <DependentUpon>ComputerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DetailsWindow.cs" />
-    <Compile Include="Views\EditMemberOfWindow.xaml.cs">
-      <DependentUpon>EditMemberOfWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\EditMembersWindow.xaml.cs">
-      <DependentUpon>EditMembersWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\GroupWindow.xaml.cs">
       <DependentUpon>GroupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\IPAddressWindow.xaml.cs">
       <DependentUpon>IPAddressWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PermittedWorkstationsWindow.xaml.cs">
-      <DependentUpon>PermittedWorkstationsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
@@ -275,6 +283,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\DialogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\EditMemberOfDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\EditMembersDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\GroupDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -284,6 +304,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\IPAddressPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ModalControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PermittedWorkstationsDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -323,23 +351,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditMemberOfWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\EditMembersWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\GroupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\IPAddressWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PermittedWorkstationsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

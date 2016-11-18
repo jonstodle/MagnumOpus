@@ -9,17 +9,19 @@
 		Icon="/Assets/Icon.ico"
         Height="600" Width="600">
 
-	<ScrollViewer>
-		<Grid Margin="2">
-			<StackPanel>
-				<controls:GroupDetails x:Name="GroupDetails"/>
+	<Grid x:Name="ContainerGrid">
+		<ScrollViewer>
+			<Grid Margin="2">
+				<StackPanel>
+					<controls:GroupDetails x:Name="GroupDetails"/>
 
-				<controls:GroupGroups x:Name="GroupGroups"/>
-			</StackPanel>
+					<controls:GroupGroups x:Name="GroupGroups"/>
+				</StackPanel>
 
-			<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
+				<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
 				<Hyperlink x:Name="RefreshHyperlink">Refresh</Hyperlink>
-			</TextBlock>
-		</Grid>
-	</ScrollViewer>
+				</TextBlock>
+			</Grid>
+		</ScrollViewer>
+	</Grid>
 </local:DetailsWindow>

@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.NavigationServices;
 using SupportTool.Services.SettingsServices;
@@ -19,7 +18,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public partial class MainWindowViewModel : ReactiveObject
+	public partial class MainWindowViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> _search;
 		private readonly ReactiveCommand<Unit, Unit> _paste;
@@ -104,7 +103,7 @@ namespace SupportTool.ViewModels
 				_paste.ThrownExceptions,
 				_open.ThrownExceptions,
 				_openSettings.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			FileService.DeserializeFromDisk<IEnumerable<string>>(nameof(_history))
 				.Catch(Observable.Return(Enumerable.Empty<string>()))

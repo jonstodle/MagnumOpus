@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.DialogServices;
 using System;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -9,7 +8,7 @@ using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
 {
-	public class PingPanelViewModel : ReactiveObject
+	public class PingPanelViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, string> _startPing;
 		private readonly ReactiveCommand<Unit, Unit> _stopPing;
@@ -34,7 +33,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => PingResults.Insert(0, x));
 			_startPing
 				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			_stopPing = ReactiveCommand.Create(() => { });
 

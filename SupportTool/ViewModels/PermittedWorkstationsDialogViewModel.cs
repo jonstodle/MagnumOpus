@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -14,15 +13,15 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class PermittedWorkstationsWindowViewModel : ReactiveObject, IDialog
+	public class PermittedWorkstationsDialogViewModel : ViewModelBase, IDialog
     {
         private readonly ReactiveCommand<Unit, string> _addComputer;
         private readonly ReactiveCommand<Unit, bool> _removeComputer;
         private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
         private readonly ReactiveCommand<Unit, Unit> _save;
-        private readonly ReactiveList<string> _computers;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+		private readonly ReactiveList<string> _computers;
         private readonly ListCollectionView _computersView;
-        private readonly ObservableAsPropertyHelper<string> _windowTitle;
         private UserObject _user;
         private string _computerName;
         private object _selectedComputer;
@@ -30,7 +29,7 @@ namespace SupportTool.ViewModels
 
 
 
-        public PermittedWorkstationsWindowViewModel()
+        public PermittedWorkstationsDialogViewModel()
         {
             _computers = new ReactiveList<string>();
 
@@ -45,34 +44,30 @@ namespace SupportTool.ViewModels
                 .Subscribe(x => _computers.Add(x));
             _addComputer
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not add computer"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not add computer")));
 
             _removeComputer = ReactiveCommand.Create(
             () => _computers.Remove(SelectedComputer as string),
             this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
             _removeComputer
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove computer"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not remove computer")));
 
             _removeAllComputers = ReactiveCommand.Create(
                 () => _computers.Clear(),
             this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
             _removeAllComputers
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not remove computers"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not remove computers")));
 
             _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
             _save
                 .Subscribe(_ => _close());
             _save
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Could not save"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not save")));
 
-            this
-                .WhenAnyValue(x => x.User)
-                .WhereNotNull()
-                .Select(x => $"Add workstations to {x.Principal.DisplayName}")
-                .ToProperty(this, x => x.WindowTitle, out _windowTitle);
+			_cancel = ReactiveCommand.Create(() => _close());
 
             this
                 .WhenAnyValue(x => x.User)
@@ -94,11 +89,11 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand Save => _save;
 
-        public ReactiveList<string> Computers => _computers;
+		public ReactiveCommand Cancel => _cancel;
+
+		public ReactiveList<string> Computers => _computers;
 
         public ListCollectionView ComputersView => _computersView;
-
-        public string WindowTitle => _windowTitle.Value;
 
         public UserObject User
         {

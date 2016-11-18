@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.FileServices;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerManagementViewModel : ReactiveObject
+	public class ComputerManagementViewModel : ViewModelBase
 	{
 		private ReactiveCommand<Unit, Unit> _rebootComputer;
 		private ReactiveCommand<Unit, Unit> _runPSExec;
@@ -29,9 +28,9 @@ namespace SupportTool.ViewModels
 
 		public ComputerManagementViewModel()
 		{
-			_rebootComputer = ReactiveCommand.Create(() =>
+			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
 			{
-				if (DialogService.ShowPrompt($"Reboot {_computer.CN}?"))
+				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No")) == 0)
 				{
 					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_computer.CN} -t 0");
 				}
@@ -52,7 +51,7 @@ namespace SupportTool.ViewModels
 				_runPSExec.ThrownExceptions,
 				_openCDrive.ThrownExceptions,
 				_openSccm.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

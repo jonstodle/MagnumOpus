@@ -3,8 +3,8 @@ using SupportTool.Models;
 
 namespace SupportTool.ViewModels
 {
-	public class GroupDetailsViewModel : ReactiveObject
-    {
+	public class GroupDetailsViewModel : ViewModelBase
+	{
         private GroupObject _group;
 
 

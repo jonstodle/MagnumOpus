@@ -2,7 +2,6 @@
 using SupportTool.Executables;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Diagnostics;
@@ -15,7 +14,7 @@ using System.Windows.Resources;
 
 namespace SupportTool.ViewModels
 {
-	public class AccountPanelViewModel : ReactiveObject
+	public class AccountPanelViewModel : ViewModelBase
     {
         private readonly ReactiveCommand<Unit, string> _setNewPassword;
         private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
@@ -33,46 +32,37 @@ namespace SupportTool.ViewModels
 
         public AccountPanelViewModel()
         {
-            _setNewPassword = ReactiveCommand.CreateFromObservable(
+			_setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
             _setNewPassword
-                .Subscribe(newPass => DialogService.ShowInfo($"New password is: {newPass}", "Password set"));
-            _setNewPassword
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
+                .Subscribe(async newPass => await _infoMessages.Handle(new MessageInfo($"New password is: {newPass}", "Password set")));
 
             _setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
             _setNewSimplePassword
-                .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
-            _setNewSimplePassword
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
+                .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)));
 
             _setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
             _setNewComplexPassword
-                .Subscribe(newPass => DialogService.ShowPasswordSetMessage(newPass));
-            _setNewComplexPassword
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowPasswordSetErrorMessage(ex.Message));
+                .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)));
 
             _expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
             _expirePassword
-                .Subscribe(_ => DialogService.ShowInfo("User must change password at next login", "Password expired"));
-            _expirePassword
-                .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message));
+                .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("User must change password at next login", "Password expired")));
+			_expirePassword
+				.ThrownExceptions
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             _unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
             _unlockAccount
-                .Subscribe(_ => 
+                .Subscribe(async _ => 
                 {
                     MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
-                    DialogService.ShowInfo("Account unlocked");
+					await _infoMessages.Handle(new MessageInfo("Account unlocked"));
                 });
             _unlockAccount
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             _runLockoutStatus = ReactiveCommand.Create(() =>
             {
@@ -80,17 +70,23 @@ namespace SupportTool.ViewModels
                 Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
             });
 
-			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.PermittedWorkstationsWindow>(_user.Principal.SamAccountName));
+			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
 			_openSplunk = ReactiveCommand.Create(() =>
             {
                 Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
             });
-        }
+
+			Observable.Merge(
+				_setNewPassword.ThrownExceptions,
+				_setNewSimplePassword.ThrownExceptions,
+				_setNewComplexPassword.ThrownExceptions)
+				.Subscribe(async ex => await _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)));
+		}
 
 
 
-        public ReactiveCommand SetNewPassword => _setNewPassword;
+		public ReactiveCommand SetNewPassword => _setNewPassword;
 
         public ReactiveCommand SetNewSimplePassword => _setNewSimplePassword;
 
@@ -158,5 +154,5 @@ namespace SupportTool.ViewModels
 
             return password;
         });
-    }
+	}
 }

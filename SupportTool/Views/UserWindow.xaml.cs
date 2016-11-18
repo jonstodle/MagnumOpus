@@ -1,7 +1,12 @@
 ﻿using ReactiveUI;
+using SupportTool.Controls;
 using SupportTool.Models;
 using SupportTool.ViewModels;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 
@@ -30,6 +35,25 @@ namespace SupportTool.Views
 					.Where(x => x == ViewModel.User?.CN)
 					.InvokeCommand(ViewModel, x => x.SetUser));
 				d(this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					UserDetails.InfoMessages,
+					UserAccountPanel.InfoMessages,
+					UserProfilePanel.InfoMessages,
+					UserGroups.InfoMessages
+				}.RegisterInfoHandler(ContainerGrid));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					UserDetails.ErrorMessages,
+					UserAccountPanel.ErrorMessages,
+					UserProfilePanel.ErrorMessages,
+					UserGroups.ErrorMessages
+				}.RegisterErrorHandler(ContainerGrid));
+				d(new List<Interaction<DialogInfo, Unit>>
+				{
+					UserAccountPanel.DialogRequests,
+					UserGroups.DialogRequests
+				}.RegisterDialogHandler(ContainerGrid));
 			});
 		}
 

@@ -1,5 +1,5 @@
 ﻿using ReactiveUI;
-using SupportTool.Services.DialogServices;
+using SupportTool.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +11,7 @@ using static SupportTool.Executables.Helpers;
 
 namespace SupportTool.ViewModels
 {
-	public class IPAddressPanelViewModel : ReactiveObject
+	public class IPAddressPanelViewModel : ViewModelBase
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
@@ -51,11 +51,11 @@ namespace SupportTool.ViewModels
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
 			_openCDrive
 				.ThrownExceptions
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not open location"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")));
 
-			_rebootComputer = ReactiveCommand.Create(() =>
+			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
 			{
-				if (DialogService.ShowPrompt($"Reboot {_ipAddress}?"))
+				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_ipAddress}?", "", "Yes", "No")) == 0)
 				{
 					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_ipAddress} -t 0");
 				}
@@ -82,7 +82,7 @@ namespace SupportTool.ViewModels
 				_openRemoteExecution.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
 				_startRdp.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message, "Could not launch external program"));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
 		}
 
 

@@ -11,5 +11,6 @@ namespace SupportTool.Services.NavigationServices
 	public interface IDialog<TResult>
 	{
 		Task Opening(Action<TResult> close, object parameter);
+		IObservable<TResult> Result { get; }
 	}
 }

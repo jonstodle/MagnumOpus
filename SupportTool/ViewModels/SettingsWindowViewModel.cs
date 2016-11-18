@@ -13,7 +13,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class SettingsWindowViewModel : ReactiveObject, IDialog
+	public class SettingsWindowViewModel : ViewModelBase, IDialog
 	{
 		private string _historyCountLimit = SettingsService.Current.HistoryCountLimit.ToString();
 		private string _detailWindowTimeoutLength = SettingsService.Current.DetailsWindowTimeoutLength.ToString();

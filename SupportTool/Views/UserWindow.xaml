@@ -9,21 +9,23 @@
 		Icon="/Assets/Icon.ico"
         Height="600" Width="600">
 
-	<ScrollViewer>
-		<Grid Margin="2">
-			<StackPanel>
-				<controls:UserDetails x:Name="UserDetails"/>
+	<Grid x:Name="ContainerGrid">
+		<ScrollViewer>
+			<Grid Margin="2">
+				<StackPanel>
+					<controls:UserDetails x:Name="UserDetails"/>
 
-				<controls:AccountPanel x:Name="UserAccountPanel"/>
+					<controls:AccountPanel x:Name="UserAccountPanel"/>
 
-				<controls:ProfilePanel x:Name="UserProfilePanel"/>
+					<controls:ProfilePanel x:Name="UserProfilePanel"/>
 
-				<controls:UserGroups x:Name="UserGroups"/>
-			</StackPanel>
+					<controls:UserGroups x:Name="UserGroups"/>
+				</StackPanel>
 
-			<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
+				<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
 				<Hyperlink x:Name="RefreshHyperLink">Refresh</Hyperlink>
-			</TextBlock>
-		</Grid>
-	</ScrollViewer>
+				</TextBlock>
+			</Grid>
+		</ScrollViewer>
+	</Grid>
 </local:DetailsWindow>

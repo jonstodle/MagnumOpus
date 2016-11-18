@@ -2,7 +2,6 @@
 using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
@@ -15,7 +14,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerGroupsViewModel : ReactiveObject
+	public class ComputerGroupsViewModel : ViewModelBase
     {
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
@@ -35,7 +34,7 @@ namespace SupportTool.ViewModels
             _directGroupsCollectionView = new ListCollectionView(_directGroups);
             _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_computer.Principal.SamAccountName));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
 
 			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
 			{
@@ -47,7 +46,7 @@ namespace SupportTool.ViewModels
 			});
 			_saveDirectGroups
 				.ThrownExceptions
-				.Subscribe(x => DialogService.ShowError(x.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
 

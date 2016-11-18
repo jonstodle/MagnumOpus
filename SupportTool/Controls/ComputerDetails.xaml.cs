@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
+using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -31,7 +32,11 @@ namespace SupportTool.Controls
 			this.OneWayBind(ViewModel, vm => vm.Computer.WhenCreated, v => v.ADCreateDateTextBlock.Text, x => x != null ? $"Created in AD: {(((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy"))}": "");
 		}
 
-        public ComputerObject Computer
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public ComputerObject Computer
         {
             get { return (ComputerObject)GetValue(ComputerProperty); }
             set { SetValue(ComputerProperty, value); }

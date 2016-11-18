@@ -50,9 +50,15 @@ namespace SupportTool.Controls
 				.ObserveOnDispatcher()
 				.InvokeCommand(ViewModel, x => x.GetAllGroups));
             });
-        }
+		}
 
-        public UserObject User
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+
+		public UserObject User
         {
             get { return (UserObject)GetValue(UserProperty); }
             set { SetValue(UserProperty, value); }

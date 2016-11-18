@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMembersWindowViewModel : ReactiveObject, IDialog
+	public class EditMembersDialogViewModel : ViewModelBase, IDialog
 	{
 		private readonly ReactiveCommand<string, GroupObject> _setGroup;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
@@ -25,6 +24,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _addToGroup;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
 		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
+		private readonly ReactiveCommand<Unit, Unit> _cancel;
 		private readonly ReactiveList<DirectoryEntry> _searchResults;
 		private readonly ReactiveList<DirectoryEntry> _groupMembers;
 		private readonly ReactiveList<DirectoryEntry> _membersToAdd;
@@ -39,7 +39,7 @@ namespace SupportTool.ViewModels
 
 
 
-		public EditMembersWindowViewModel()
+		public EditMembersDialogViewModel()
 		{
 			_searchResults = new ReactiveList<DirectoryEntry>();
 			_groupMembers = new ReactiveList<DirectoryEntry>();
@@ -89,24 +89,26 @@ namespace SupportTool.ViewModels
 				async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
 				Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
 			_save
-				.Subscribe(x =>
+				.Subscribe(async x =>
 				{
 					if (x.Count() > 0)
 					{
 						var builder = new StringBuilder();
 						foreach (var message in x) builder.AppendLine(message);
-						DialogService.ShowInfo($"The following messages were generated:\n{builder.ToString()}");
+						await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
 					}
 
 					_close();
 				});
+
+			_cancel = ReactiveCommand.Create(() => _close());
 
 			Observable.Merge(
 					_search.ThrownExceptions,
 					_addToGroup.ThrownExceptions,
 					_removeFromGroup.ThrownExceptions,
 					_save.ThrownExceptions)
-				.Subscribe(ex => DialogService.ShowError(ex.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 
@@ -122,6 +124,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand RemoveFromGroup => _removeFromGroup;
 
 		public ReactiveCommand Save => _save;
+
+		public ReactiveCommand Cancel => _cancel;
 
 		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
 

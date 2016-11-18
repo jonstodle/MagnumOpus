@@ -2,7 +2,6 @@
 using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.DialogServices;
 using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
@@ -15,8 +14,10 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class UserGroupsViewModel : ReactiveObject
-    {
+	public class UserGroupsViewModel : ViewModelBase
+	{
+		private readonly Interaction<MessageInfo, Unit> _infoMessages;
+		private readonly Interaction<MessageInfo, Unit> _errorMessages;
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
 		private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
@@ -39,8 +40,10 @@ namespace SupportTool.ViewModels
 
 
         public UserGroupsViewModel()
-        {
-            _allGroups = new ReactiveList<string>();
+		{
+			_infoMessages = new Interaction<MessageInfo, Unit>();
+			_errorMessages = new Interaction<MessageInfo, Unit>();
+			_allGroups = new ReactiveList<string>();
             _directGroups = new ReactiveList<string>();
 
             _allGroupsCollectionView = new ListCollectionView(_allGroups);
@@ -53,7 +56,7 @@ namespace SupportTool.ViewModels
             _directGroupsCollectionView = new ListCollectionView(_directGroups);
             _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
 
-			_openEditMemberOf = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.EditMemberOfWindow>(_user.Principal.SamAccountName));
+			_openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
 
 			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
 			{
@@ -92,7 +95,7 @@ namespace SupportTool.ViewModels
                 .Subscribe(x => AllGroups.Add(x));
             _getAllGroups
                 .ThrownExceptions
-                .Subscribe(ex => DialogService.ShowError(ex.Message, "Couldn't get groups"));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")));
             _getAllGroups
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups, out _isLoadingGroups);
@@ -113,7 +116,7 @@ namespace SupportTool.ViewModels
 			Observable.Merge(
 				_saveAllGroups.ThrownExceptions,
 				_saveDirectGroups.ThrownExceptions)
-				.Subscribe(x => DialogService.ShowError(x.Message));
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             this
                 .WhenAnyValue(x => x.IsShowingDirectGroups)
@@ -127,6 +130,10 @@ namespace SupportTool.ViewModels
         }
 
 
+
+		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => _errorMessages;
 
 		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 

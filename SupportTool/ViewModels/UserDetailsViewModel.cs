@@ -6,8 +6,8 @@ using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
 {
-	public class UserDetailsViewModel : ReactiveObject
-    {
+	public class UserDetailsViewModel : ViewModelBase
+	{
         private readonly ObservableAsPropertyHelper<bool> _isAccountLocked;
         private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;
         private UserObject user;

@@ -1,5 +1,8 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
+using System.Collections.Generic;
+using System.Reactive;
 using System.Windows;
 
 namespace SupportTool.Views
@@ -22,6 +25,19 @@ namespace SupportTool.Views
 			this.WhenActivated(d =>
 			{
 				d(this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Group.CN)));
+			d(new List<Interaction<MessageInfo, Unit>>
+				{
+					GroupDetails.InfoMessages,
+					GroupGroups.InfoMessages
+				}.RegisterInfoHandler(ContainerGrid));
+				d(new List<Interaction<MessageInfo, Unit>>
+				{
+					GroupDetails.ErrorMessages,
+					GroupGroups.ErrorMessages
+				}.RegisterErrorHandler(ContainerGrid));
+				d(GroupGroups
+					.DialogRequests
+					.RegisterDialogHandler(ContainerGrid));
 			});
 		}
 

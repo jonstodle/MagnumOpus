@@ -1,8 +1,12 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,21 +14,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace SupportTool.Views
+namespace SupportTool.Controls
 {
 	/// <summary>
-	/// Interaction logic for EditMembers.xaml
+	/// Interaction logic for EditMembersDialog.xaml
 	/// </summary>
-	public partial class EditMembersWindow : Window, IViewFor<EditMembersWindowViewModel>
+	public partial class EditMembersDialog : UserControl, IViewFor<EditMembersDialogViewModel>
 	{
-		public EditMembersWindow()
+		public EditMembersDialog()
 		{
 			InitializeComponent();
 
-			ViewModel = new EditMembersWindowViewModel();
+			ViewModel = new EditMembersDialogViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.Group, v => v.Title, x => x != null ? $"Edit {x.Principal.Name}'s Members" : "");
+			this.OneWayBind(ViewModel, vm => vm.Group, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Principal.Name}'s Members" : "");
 
 			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.SearchResultsView, v => v.SearchResultsListView.ItemsSource);
@@ -63,21 +69,28 @@ namespace SupportTool.Views
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromGroup));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
+				d(ViewModel
+					.InfoMessages
+					.RegisterInfoHandler(ContainerGrid));
+				d(ViewModel
+					.ErrorMessages
+					.RegisterErrorHandler(ContainerGrid));
 			});
 		}
 
-		public EditMembersWindowViewModel ViewModel
+		public EditMembersDialogViewModel ViewModel
 		{
-			get { return (EditMembersWindowViewModel)GetValue(ViewModelProperty); }
+			get { return (EditMembersDialogViewModel)GetValue(ViewModelProperty); }
 			set { SetValue(ViewModelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(EditMembersWindowViewModel), typeof(EditMembersWindow), new PropertyMetadata(null));
+		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(EditMembersDialogViewModel), typeof(EditMembersDialog), new PropertyMetadata(null));
 
 		object IViewFor.ViewModel
 		{
 			get { return ViewModel; }
-			set { ViewModel = value as EditMembersWindowViewModel; }
+			set { ViewModel = value as EditMembersDialogViewModel; }
 		}
 	}
 }

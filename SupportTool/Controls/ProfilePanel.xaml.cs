@@ -63,9 +63,13 @@ namespace SupportTool.Controls
                     .Select(_ => Unit.Default)
                     .InvokeCommand(ViewModel, x => x.SearchForProfiles));
             });
-        }
+		}
 
-        public UserObject User
+		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+		public UserObject User
         {
             get { return (UserObject)GetValue(UserProperty); }
             set { SetValue(UserProperty, value); }

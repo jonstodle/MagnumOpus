@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-	public class UserWindowViewModel : ReactiveObject, INavigable
+	public class UserWindowViewModel : ViewModelBase, INavigable
 	{
 		private readonly ReactiveCommand<string, UserObject> _setUser;
 		private readonly ObservableAsPropertyHelper<UserObject> _user;
