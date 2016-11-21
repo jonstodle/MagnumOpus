@@ -214,11 +214,10 @@ namespace SupportTool.ViewModels
 
         private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName)
         {
-            var groups = ActiveDirectoryService.Current.GetUser(samAccountName).Wait().MemberOf.ToEnumerable<string>()
+            var groups = ActiveDirectoryService.Current.GetUser(samAccountName).Wait().Principal.GetGroups()
             .ToObservable()
-            .SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
+            .SelectMany(x => ActiveDirectoryService.Current.GetParents(x.Name))
             .Distinct(x => x.Path)
-			.Replay()
 			.Publish()
 			.RefCount();
 

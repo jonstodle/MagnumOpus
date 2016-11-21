@@ -258,9 +258,9 @@ namespace SupportTool.ViewModels
 
 		private IObservable<string> GetAllGroupsImpl(string identity)
 		{
-			var groups = ActiveDirectoryService.Current.GetGroup(identity).Wait().MemberOf.ToEnumerable<string>()
+			var groups = ActiveDirectoryService.Current.GetGroup(identity).Wait().Principal.GetGroups()
 			.ToObservable()
-			.SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
+			.SelectMany(x => ActiveDirectoryService.Current.GetParents(x.Name))
 			.Select(x =>
 			{
 				var name = x.Properties.Get<string>("name");
@@ -268,7 +268,6 @@ namespace SupportTool.ViewModels
 				return name;
 			})
 			.Distinct()
-			.Replay()
 			.Publish()
 			.RefCount();
 
