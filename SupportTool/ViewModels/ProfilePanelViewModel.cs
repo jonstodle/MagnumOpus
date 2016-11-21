@@ -16,8 +16,6 @@ namespace SupportTool.ViewModels
 {
 	public class ProfilePanelViewModel : ViewModelBase
 	{
-		private readonly Interaction<MessageInfo, Unit> _infoMessages;
-		private readonly Interaction<MessageInfo, Unit> _errorMessages;
 		private readonly ReactiveCommand<Unit, string> _resetGlobalProfile;
 		private readonly ReactiveCommand<Unit, string> _resetLocalProfile;
 		private readonly ReactiveCommand<Unit, Unit> _openGlobalProfileDirectory;
@@ -47,8 +45,6 @@ namespace SupportTool.ViewModels
 
 		public ProfilePanelViewModel()
 		{
-			_infoMessages = new Interaction<MessageInfo, Unit>();
-			_errorMessages = new Interaction<MessageInfo, Unit>();
 			_resetMessages = new ReactiveList<string>();
 			_profiles = new ReactiveList<DirectoryInfo>();
 			_shouldRestoreDesktopItems = true;
@@ -154,10 +150,6 @@ namespace SupportTool.ViewModels
 		}
 
 
-
-		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => _errorMessages;
 
 		public ReactiveCommand ResetGlobalProfile => _resetGlobalProfile;
 
