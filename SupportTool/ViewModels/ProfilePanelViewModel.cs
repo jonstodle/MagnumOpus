@@ -435,10 +435,11 @@ namespace SupportTool.ViewModels
 		{
 			var returnCollection = new List<string>();
 
-			var conOptions = new ConnectionOptions();
-			conOptions.Impersonation = ImpersonationLevel.Impersonate;
-			conOptions.EnablePrivileges = true;
-
+			var conOptions = new ConnectionOptions()
+			{
+				Impersonation = ImpersonationLevel.Impersonate,
+				EnablePrivileges = true
+			};
 			var scope = new ManagementScope($"\\\\{hostName}\\ROOT\\CIMV2", conOptions);
 			scope.Connect();
 
