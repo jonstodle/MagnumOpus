@@ -16,8 +16,6 @@ namespace SupportTool.ViewModels
 {
 	public class UserGroupsViewModel : ViewModelBase
 	{
-		private readonly Interaction<MessageInfo, Unit> _infoMessages;
-		private readonly Interaction<MessageInfo, Unit> _errorMessages;
 		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
 		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
 		private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
@@ -41,8 +39,6 @@ namespace SupportTool.ViewModels
 
         public UserGroupsViewModel()
 		{
-			_infoMessages = new Interaction<MessageInfo, Unit>();
-			_errorMessages = new Interaction<MessageInfo, Unit>();
 			_allGroups = new ReactiveList<string>();
             _directGroups = new ReactiveList<string>();
 
@@ -130,10 +126,6 @@ namespace SupportTool.ViewModels
         }
 
 
-
-		public Interaction<MessageInfo, Unit> InfoMessages => _infoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => _errorMessages;
 
 		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
