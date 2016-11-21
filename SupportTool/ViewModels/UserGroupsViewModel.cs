@@ -193,24 +193,9 @@ namespace SupportTool.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Create<DirectoryEntry>(async observer =>
-        {
-            var disposed = false;
-
-            var usr = await ActiveDirectoryService.Current.GetUser(identity);
-
-            foreach (string item in usr.MemberOf)
-            {
-                var de = await ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1);
-
-                if (disposed) break;
-                observer.OnNext(de);
-            }
-
-            observer.OnCompleted();
-
-            return () => disposed = true;
-        });
+		private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Return(ActiveDirectoryService.Current.GetUser(identity).Wait())
+			.SelectMany(x => x.Principal.GetGroups().ToObservable())
+			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 
         private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName)
         {

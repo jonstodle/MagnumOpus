@@ -162,21 +162,9 @@ namespace SupportTool.ViewModels
 
 
 
-		private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal) => Observable.Create<DirectoryEntry>(observer =>
-		{
-			var disposed = false;
-
-			var obj = new ActiveDirectoryObject<Principal>(principal);
-			foreach (string item in obj.MemberOf)
-			{
-				var de = ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1).Wait();
-
-				if (disposed) break;
-				observer.OnNext(de);
-			}
-
-			return () => disposed = true;
-		});
+		private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal) => principal.GetGroups()
+			.ToObservable()
+			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 
 		private IObservable<IEnumerable<string>> SaveImpl(Principal principal, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
 		{

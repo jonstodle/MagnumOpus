@@ -91,20 +91,8 @@ namespace SupportTool.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer) => Observable.Create<DirectoryEntry>(async observer =>
-        {
-            var disposed = false;
-
-            foreach (string item in computer.MemberOf)
-            {
-                var de = await ActiveDirectoryService.Current.GetGroups("distinguishedname", item).Take(1);
-
-                if (disposed) break;
-                observer.OnNext(de);
-            }
-
-            observer.OnCompleted();
-            return () => disposed = true;
-        });
+        private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer) => computer.Principal.GetGroups()
+			.ToObservable()
+			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
     }
 }

@@ -21,8 +21,6 @@ namespace SupportTool.Models
 
         public T Principal => _principal;
 
-        public PropertyValueCollection MemberOf => _directoryEntry.Properties["memberof"];
-
         public string CN => _directoryEntry.Properties.Get<string>("cn");
 
 		public DateTime? WhenCreated => _directoryEntry.Properties.Get<DateTime?>("whencreated");
