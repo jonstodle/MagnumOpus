@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
@@ -20,7 +21,7 @@ namespace SupportTool.Controls
 	/// <summary>
 	/// Interaction logic for DialogControl.xaml
 	/// </summary>
-	public partial class DialogControl : UserControl
+	public partial class DialogControl : UserControl, IEnableLogger
 	{
 		public IObservable<int> Result => _resultSubject;
 
@@ -47,6 +48,8 @@ namespace SupportTool.Controls
 				button.Click += HandleButtonClick;
 				ButtonStackPanel.Children.Add(button);
 			}
+
+			this.Log().Info($"Showing dialog with content: {message}");
 
 			_parent.Children.Add(this);
 		}
