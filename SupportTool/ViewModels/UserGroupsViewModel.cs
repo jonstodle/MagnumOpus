@@ -217,7 +217,10 @@ namespace SupportTool.ViewModels
             var groups = ActiveDirectoryService.Current.GetUser(samAccountName).Wait().MemberOf.ToEnumerable<string>()
             .ToObservable()
             .SelectMany(x => ActiveDirectoryService.Current.GetParents(x))
-            .Distinct(x => x.Path);
+            .Distinct(x => x.Path)
+			.Replay()
+			.Publish()
+			.RefCount();
 
             return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
         }

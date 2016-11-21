@@ -267,7 +267,10 @@ namespace SupportTool.ViewModels
 				x.Dispose();
 				return name;
 			})
-			.Distinct();
+			.Distinct()
+			.Replay()
+			.Publish()
+			.RefCount();
 
 			return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
 		}
