@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using ReactiveUI;
+using Splat;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.LogServices;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SupportTool.Services.SettingsServices
 {
-	public partial class SettingsService
+	public partial class SettingsService : IEnableLogger
 	{
 		public static SettingsService Current { get; private set; }
 
@@ -24,7 +25,7 @@ namespace SupportTool.Services.SettingsServices
 
 		private SettingsService()
 		{
-			LogService.Info("Loading settings");
+			this.Log().Info("Loading settings");
 
 			_settings = FileService.DeserializeFromDisk<Dictionary<string, object>>(SettingsIdentifier)
 				.Catch(Observable.Return(new Dictionary<string, object>()))
@@ -34,7 +35,7 @@ namespace SupportTool.Services.SettingsServices
 			_saveSettings
 				.Throttle(TimeSpan.FromSeconds(2))
 				.Switch()
-				.Subscribe(_ => LogService.Info("Saved settings"));
+				.Subscribe(_ => this.Log().Info("Saved settings"));
 		}
 
 		public static void Init() => Current = new SettingsService();

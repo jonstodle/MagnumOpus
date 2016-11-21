@@ -1,4 +1,5 @@
-﻿using SupportTool.Services.LogServices;
+﻿using Splat;
+using SupportTool.Services.LogServices;
 using SupportTool.Services.SettingsServices;
 using System.Windows;
 
@@ -7,11 +8,12 @@ namespace SupportTool
 	/// <summary>
 	/// Interaction logic for App.xaml
 	/// </summary>
-	public partial class App : Application
+	public partial class App : Application, IEnableLogger
     {
 		public App()
 		{
-			LogService.Info("Application start");
+			Locator.CurrentMutable.RegisterConstant(new FileLoggerService(), typeof(ILogger));
+			this.Log().Info("Application start");
 			SettingsService.Init();
 		}
     }

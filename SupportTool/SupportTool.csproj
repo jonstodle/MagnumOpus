@@ -222,6 +222,7 @@
     <Compile Include="Services\ExportServices\ExcelService.cs" />
     <Compile Include="Services\FileServices\ExecutionService.cs" />
     <Compile Include="Services\FileServices\FileService.cs" />
+    <Compile Include="Services\LogServices\FileLoggerService.cs" />
     <Compile Include="Services\LogServices\LogService.cs" />
     <Compile Include="Services\LogServices\LogType.cs" />
     <Compile Include="Services\NavigationServices\IDialog.cs" />
