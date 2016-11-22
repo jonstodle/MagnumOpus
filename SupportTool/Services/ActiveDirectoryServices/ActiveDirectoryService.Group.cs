@@ -63,11 +63,4 @@ namespace SupportTool.Services.ActiveDirectoryServices
             .Replace(@"NUL", @"\00")
             .Replace(@"/", @"\2f");
     }
-
-    class DirectoryEntryComparer : IEqualityComparer<DirectoryEntry>
-    {
-        public bool Equals(DirectoryEntry x, DirectoryEntry y) => x.Path == y.Path;
-
-        public int GetHashCode(DirectoryEntry obj) => obj.Path.Select(x => (int)x).Aggregate((prev, curr) => prev + curr);
-    }
 }
