@@ -7,6 +7,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Linq;
 
@@ -43,7 +44,7 @@ namespace SupportTool.ViewModels
 				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user");
 			});
 
-			_startRemoteControl = ReactiveCommand.Create(() => StartRemoteControlImpl(_computer));
+			_startRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
 			_startRemoteControlClassic = ReactiveCommand.Create(() => StartRemoteControlClassicImpl(_computer));
 
@@ -92,15 +93,18 @@ namespace SupportTool.ViewModels
 
 
 
-		private void StartRemoteControlImpl(ComputerObject computer)
+		private IObservable<Unit> StartRemoteControlImpl(ComputerObject computer) => Observable.Start(() =>
 		{
+			var pingResult = new Ping().Send(computer.CN, 1000).Status;
+			if (pingResult != IPStatus.Success) throw new Exception("Could not reach computer");
+
 			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computer.CN}", RegistryView.Registry64);
 			var regKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\SMS\Mobile Client", false);
 			var sccmMajorVersion = int.Parse(regKey.GetValue("ProductVersion").ToString().Substring(0, 1));
 
 			if (sccmMajorVersion == 4) StartRemoteControlClassicImpl(computer);
 			else StartRemoteControl2012Impl(computer);
-		}
+		});
 
 		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {computer.CN}");
 
