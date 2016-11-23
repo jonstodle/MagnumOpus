@@ -17,7 +17,7 @@ namespace SupportTool.Views
 
 		public DetailsWindow()
 		{
-			Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), Scheduler.TaskPool)
+			Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default)
 				.ObserveOnDispatcher()
 				.Subscribe(x => this.Close())
 				.AddTo(_subscriptions);
