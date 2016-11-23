@@ -48,7 +48,7 @@ namespace SupportTool.ViewModels
 				.ThrownExceptions
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
-			_findDirectGroup = ReactiveCommand.Create(() => MessageBus.Current.SendMessage(_selectedDirectGroup as string, "search"));
+			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.Computer).WhereNotNull(),
