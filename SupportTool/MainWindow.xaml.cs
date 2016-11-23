@@ -59,11 +59,7 @@ namespace SupportTool
 						.Select(_ => ViewModel.SearchQuery),
 					ViewModel
 						.WhenAnyValue(x => x.SearchQuery)
-						.Where(x =>
-						{
-							int i;
-							return x.Length > 0 && !int.TryParse(x.First().ToString(), out i);
-						})
+						.Where(x => x.Length > 0 && !int.TryParse(x.First().ToString(), out int i))
 						.Throttle(TimeSpan.FromSeconds(1)))
 					.DistinctUntilChanged()
 					.Where(x => x.HasValue(3))
