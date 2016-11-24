@@ -69,7 +69,7 @@ namespace Updater.ViewModels
 
 		private string BrowseForSourceFileImpl()
 		{
-			var dialog = new Microsoft.Win32.OpenFileDialog();
+			var dialog = new Microsoft.Win32.OpenFileDialog() { Filter = "Executables (*.exe)|*.exe" };
 			if (dialog.ShowDialog() == true)
 			{
 				return dialog.FileName;
