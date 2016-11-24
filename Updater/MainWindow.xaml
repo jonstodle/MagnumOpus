@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Updater"
         mc:Ignorable="d"
+		Icon="/Assets/Icon.ico"
         Title="Magnum Opus Updater" Height="350" Width="525">
 	
     <Grid>
