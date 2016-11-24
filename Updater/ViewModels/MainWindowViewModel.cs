@@ -9,6 +9,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Updater.Services;
 
 namespace Updater.ViewModels
 {
@@ -44,6 +45,18 @@ namespace Updater.ViewModels
 					(sourceFilePath, destinationFolders) => sourceFilePath && destinationFolders));
 
 			_destinationFoldersSortedView = _destinationFolders.CreateDerivedCollection(x => x, orderer: (x, y) => x.CompareTo(y));
+
+
+			// State
+			SourceFilePath = StateService.Current.SourceFilePath;
+			_destinationFolders.AddRange(StateService.Current.DestinationFolders);
+
+			this.WhenAnyValue(x => x.SourceFilePath)
+				.Subscribe(x => StateService.Current.SourceFilePath = x);
+
+			_destinationFolders.CountChanged
+				.Select(_ => _destinationFolders)
+				.Subscribe(x => StateService.Current.DestinationFolders = x);
 		}
 
 
