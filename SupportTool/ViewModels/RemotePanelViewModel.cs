@@ -23,7 +23,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
-		private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
+		private readonly ReactiveCommand<Unit, Unit> _killRemoteTools;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
 		private ComputerObject _computer;
@@ -50,7 +50,7 @@ namespace SupportTool.ViewModels
 
 			_startRemoteControl2012 = ReactiveCommand.Create(() => StartRemoteControl2012Impl(_computer));
 
-			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im rcagent.exe /f"));
+			_killRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer));
 
 			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\msra.exe", $"/offerra {_computer.CN}"));
 
@@ -61,7 +61,7 @@ namespace SupportTool.ViewModels
 				_startRemoteControl.ThrownExceptions,
 				_startRemoteControlClassic.ThrownExceptions,
 				_startRemoteControl2012.ThrownExceptions,
-				_killRemoteControl.ThrownExceptions,
+				_killRemoteTools.ThrownExceptions,
 				_startRemoteAssistance.ThrownExceptions,
 				_startRdp.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
@@ -79,7 +79,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand StartRemoteControl2012 => _startRemoteControl2012;
 
-		public ReactiveCommand KillRemoteControl => _killRemoteControl;
+		public ReactiveCommand KillRemoteTools => _killRemoteTools;
 
 		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
 
@@ -109,5 +109,12 @@ namespace SupportTool.ViewModels
 		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {computer.CN}");
 
 		private void StartRemoteControl2012Impl(ComputerObject computer) => ExecuteFile(@"C:\RemoteControl2012\CmRcViewer.exe", computer.CN);
+
+		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
+		{
+			ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im rcagent.exe /f");
+			ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im CmRcService.exe /f");
+			ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im msra.exe /f");
+		});
 	}
 }

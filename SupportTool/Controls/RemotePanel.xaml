@@ -25,9 +25,9 @@
 				</ext:SplitButton.DropDownContent>
 			</ext:SplitButton>
 
-			<Button x:Name="KillRemoteControlButton" Content="Kill RC" Margin="2"/>
-
 			<Button x:Name="RemoteAssistanceButton" Content="Remote assistance" Margin="2"/>
+
+			<Button x:Name="KillRemoteToolsButton" Content="Kill remote tools" Margin="2"/>
 
 			<Button x:Name="RdpButton" Content="RDP" Margin="2"/>
 		</WrapPanel>

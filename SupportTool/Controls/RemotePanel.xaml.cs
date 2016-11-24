@@ -25,7 +25,7 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button));
-				d(this.BindCommand(ViewModel, vm => vm.KillRemoteControl, v => v.KillRemoteControlButton));
+				d(this.BindCommand(ViewModel, vm => vm.KillRemoteTools, v => v.KillRemoteToolsButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
 			});
