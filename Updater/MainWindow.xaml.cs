@@ -25,6 +25,20 @@ namespace Updater
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			ViewModel = new MainWindowViewModel();
+
+			this.Bind(ViewModel, vm => vm.SourceFilePath, v => v.SourceFileTextBox.Text);
+			this.Bind(ViewModel, vm => vm.DestinationFolderPath, v => v.DestinationFolderTextBox.Text);
+			this.OneWayBind(ViewModel, vm => vm.DestinationFoldersSortedView, v => v.DestinationFoldersListView.ItemsSource);
+
+			this.WhenActivated(d =>
+			{
+				d(this.BindCommand(ViewModel, vm => vm.BrowseForSourceFile, v => v.SourceFileBrowseButton));
+				d(this.BindCommand(ViewModel, vm => vm.BrowseForDestinationFolder, v => v.DestinationFolderBrowseButton));
+				d(this.BindCommand(ViewModel, vm => vm.AddDestinationFolder, v => v.AddDestinationFolderButton));
+				d(this.BindCommand(ViewModel, vm => vm.Confirm, v => v.ConfirmButton));
+			});
 		}
 
 		public MainWindowViewModel ViewModel
