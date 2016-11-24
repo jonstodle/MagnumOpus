@@ -206,7 +206,6 @@
     <Compile Include="Extensions\SystemExtensions.cs" />
     <Compile Include="Extensions\SystemReactiveDisposablesExtensions.cs" />
     <Compile Include="Extensions\SystemReactiveLinqExtensions.cs" />
-    <Compile Include="Launch.cs" />
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
     <Compile Include="Models\DialogInfo.cs" />
