@@ -36,7 +36,12 @@ namespace Updater.ViewModels
 				() => { _destinationFolders.Remove(_selectedDestinationFolder as string); },
 				this.WhenAnyValue(x => x.SelectedDestinationFolder).Select(x => x != null));
 
-			_confirm = ReactiveCommand.CreateFromObservable(() => ConfirmImpl(_sourceFilePath, _destinationFolders));
+			_confirm = ReactiveCommand.CreateFromObservable(
+				() => ConfirmImpl(_sourceFilePath, _destinationFolders),
+				Observable.CombineLatest(
+					this.WhenAnyValue(x => x.SourceFilePath, x => x.HasValue(1)),
+					_destinationFolders.CountChanged.Select(x => x > 0),
+					(sourceFilePath, destinationFolders) => sourceFilePath && destinationFolders));
 
 			_destinationFoldersSortedView = _destinationFolders.CreateDerivedCollection(x => x, orderer: (x, y) => x.CompareTo(y));
 		}
