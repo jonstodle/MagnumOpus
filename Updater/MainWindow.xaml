@@ -41,11 +41,11 @@
 
 					<Button x:Name="DestinationFolderBrowseButton" Content="Browse..." Grid.Column="1" Margin="2"/>
 
-					<Button x:Name="AddDestinationButton" Content="Add" Grid.Column="2" Margin="2"/>
+					<Button x:Name="AddDestinationFolderButton" Content="Add" Grid.Column="2" Margin="2"/>
 				</Grid>
 			</StackPanel>
 
-			<ListView x:Name="DestinationsListView" Grid.Row="1" Margin="2">
+			<ListView x:Name="DestinationFoldersListView" Grid.Row="1" Margin="2">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<TextBlock Text="{Binding}"/>
