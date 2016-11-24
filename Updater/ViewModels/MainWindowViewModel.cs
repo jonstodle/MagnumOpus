@@ -97,7 +97,7 @@ namespace Updater.ViewModels
 			foreach (var directoryPath in destinationFolders)
 			{
 				var directory = new DirectoryInfo(directoryPath);
-				if (!directory.Exists) continue;
+				if (!directory.Exists) directory.Create();
 
 				file.CopyTo(Path.Combine(directory.FullName, file.Name), true);
 			}
