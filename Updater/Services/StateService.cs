@@ -21,14 +21,20 @@ namespace Updater.Services
 
 		public string SourceFilePath
 		{
-			get => BlobCache.LocalMachine.GetObject<string>(nameof(SourceFilePath)).Wait();
-			set => BlobCache.LocalMachine.InsertObject(nameof(SourceFilePath), value).Wait();
+			get => Get<string>(nameof(SourceFilePath));
+			set => Set(nameof(SourceFilePath), value);
 		}
 
 		public IEnumerable<string> DestinationFolders
 		{
-			get => BlobCache.LocalMachine.GetObject<IEnumerable<string>>(nameof(DestinationFolders)).Wait();
-			set => BlobCache.LocalMachine.InsertObject(nameof(DestinationFolders), value).Wait();
+			get => Get<IEnumerable<string>>(nameof(DestinationFolders));
+			set => Set(nameof(DestinationFolders), value);
 		}
+
+
+
+		private T Get<T>(string key, T defaultValue = default(T)) => BlobCache.LocalMachine.GetObject<T>(key).Catch(Observable.Return(defaultValue)).Wait();
+
+		private void Set<T>(string key, T value) => BlobCache.LocalMachine.InsertObject(key, value).Wait();
 	}
 }
