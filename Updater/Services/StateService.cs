@@ -21,13 +21,13 @@ namespace Updater.Services
 
 		public string SourceFilePath
 		{
-			get => Get<string>(nameof(SourceFilePath));
+			get => Get<string>(nameof(SourceFilePath), "");
 			set => Set(nameof(SourceFilePath), value);
 		}
 
 		public IEnumerable<string> DestinationFolders
 		{
-			get => Get<IEnumerable<string>>(nameof(DestinationFolders));
+			get => Get<IEnumerable<string>>(nameof(DestinationFolders), Enumerable.Empty<string>());
 			set => Set(nameof(DestinationFolders), value);
 		}
 
