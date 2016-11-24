@@ -28,7 +28,9 @@ namespace Updater.ViewModels
 
 			_addDestinationFolder = ReactiveCommand.Create(
 				() => _destinationFolders.Add(_destinationFolderPath),
-				this.WhenAnyValue(x => x.SourceFilePath, x => x.HasValue()));
+				this.WhenAnyValue(x => x.DestinationFolderPath, x => x.HasValue()));
+			_addDestinationFolder
+				.Subscribe(_ => DestinationFolderPath = "");
 
 			_confirm = ReactiveCommand.CreateFromObservable(() => ConfirmImpl(_sourceFilePath, _destinationFolders));
 
