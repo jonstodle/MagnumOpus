@@ -17,6 +17,8 @@ namespace Updater.Services
 			BlobCache.ApplicationName = "Magnum Opus Updater";
 		}
 
+		public Task Shutdown() => BlobCache.Shutdown();
+
 
 
 		public string SourceFilePath
