@@ -60,7 +60,7 @@
 					<ColumnDefinition/>
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
-				<Button x:Name="ConfirmButton" Grid.Column="2" Margin="2"/>
+				<Button x:Name="ConfirmButton" Content="Confirm" Grid.Column="2" Margin="2"/>
 			</Grid>
 		</Grid>
 	</Grid>
