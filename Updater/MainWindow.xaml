@@ -8,6 +8,50 @@
         Title="Magnum Opus Updater" Height="350" Width="525">
 	
     <Grid>
-        
-    </Grid>
+		<Grid Margin="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			
+			<StackPanel>
+				<TextBlock Text="Update Magnum Opus" FontSize="20" Margin="2"/>
+
+				<TextBlock Text="Source file" FontWeight="SemiBold" Margin="2"/>
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<TextBox x:Name="SourceFileTextBox" Margin="2"/>
+
+					<Button x:Name="SourceFileBrowseButton" Content="Browse..." Grid.Column="1" Margin="2"/>
+				</Grid>
+
+				<TextBlock Text="Destinations" FontWeight="SemiBold" Margin="2"/>
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					<TextBox x:Name="DestinationFileTextBox" Margin="2"/>
+
+					<Button x:Name="DestinationFileBrowseButton" Content="Browse..." Grid.Column="1" Margin="2"/>
+
+					<Button x:Name="AddDestinationButton" Content="Add" Grid.Column="2" Margin="2"/>
+				</Grid>
+			</StackPanel>
+
+			<ListView x:Name="DestinationsListView" Grid.Row="1" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding}"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+	</Grid>
 </Window>

@@ -4,6 +4,8 @@
              xmlns:local="clr-namespace:Updater"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
-    </Application.Resources>
+		<Style TargetType="Button">
+			<Setter Property="Padding" Value="10,1"/>
+		</Style>
+	</Application.Resources>
 </Application>
