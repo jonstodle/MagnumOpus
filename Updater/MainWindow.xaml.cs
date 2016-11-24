@@ -31,12 +31,14 @@ namespace Updater
 			this.Bind(ViewModel, vm => vm.SourceFilePath, v => v.SourceFileTextBox.Text);
 			this.Bind(ViewModel, vm => vm.DestinationFolderPath, v => v.DestinationFolderTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.DestinationFoldersSortedView, v => v.DestinationFoldersListView.ItemsSource);
+			this.Bind(ViewModel, vm => vm.SelectedDestinationFolder, v => v.DestinationFoldersListView.SelectedItem);
 
 			this.WhenActivated(d =>
 			{
 				d(this.BindCommand(ViewModel, vm => vm.BrowseForSourceFile, v => v.SourceFileBrowseButton));
 				d(this.BindCommand(ViewModel, vm => vm.BrowseForDestinationFolder, v => v.DestinationFolderBrowseButton));
 				d(this.BindCommand(ViewModel, vm => vm.AddDestinationFolder, v => v.AddDestinationFolderButton));
+				d(this.BindCommand(ViewModel, vm => vm.RemoveDestinationFolder, v => v.DestinationFoldersListView, nameof(ListView.MouseDoubleClick)));
 				d(this.BindCommand(ViewModel, vm => vm.Confirm, v => v.ConfirmButton));
 			});
 		}

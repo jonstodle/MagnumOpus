@@ -32,6 +32,10 @@ namespace Updater.ViewModels
 			_addDestinationFolder
 				.Subscribe(_ => DestinationFolderPath = "");
 
+			_removeDestinationFolder = ReactiveCommand.Create(
+				() => { _destinationFolders.Remove(_selectedDestinationFolder as string); },
+				this.WhenAnyValue(x => x.SelectedDestinationFolder).Select(x => x != null));
+
 			_confirm = ReactiveCommand.CreateFromObservable(() => ConfirmImpl(_sourceFilePath, _destinationFolders));
 
 			_destinationFoldersSortedView = _destinationFolders.CreateDerivedCollection(x => x, orderer: (x, y) => x.CompareTo(y));
@@ -63,6 +67,12 @@ namespace Updater.ViewModels
 		{
 			get { return _destinationFolderPath; }
 			set { this.RaiseAndSetIfChanged(ref _destinationFolderPath, value); }
+		}
+
+		public object SelectedDestinationFolder
+		{
+			get { return _selectedDestinationFolder; }
+			set { this.RaiseAndSetIfChanged(ref _selectedDestinationFolder, value); }
 		}
 
 
@@ -116,5 +126,6 @@ namespace Updater.ViewModels
 		private readonly IReactiveDerivedList<string> _destinationFoldersSortedView;
 		private string _sourceFilePath;
 		private string _destinationFolderPath;
+		private object _selectedDestinationFolder;
 	}
 }
