@@ -4,6 +4,7 @@ using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.FileServices;
 using SupportTool.Services.NavigationServices;
 using SupportTool.Services.SettingsServices;
+using SupportTool.Services.StateServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +12,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Windows;
@@ -105,14 +107,14 @@ namespace SupportTool.ViewModels
 				_openSettings.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
-			FileService.DeserializeFromDisk<IEnumerable<string>>(nameof(_history))
-				.Catch(Observable.Return(Enumerable.Empty<string>()))
-				.SelectMany(x => x.ToObservable())
+			StateService.Get(nameof(_history), Enumerable.Empty<string>())
+				.SubscribeOn(TaskPoolScheduler.Default)
 				.ObserveOnDispatcher()
-				.Subscribe(x => _history.Add(x));
+				.Subscribe(x => _history.AddRange(x));
 
 			_history.CountChanged
-				.SelectMany(_ => Observable.Start(() => FileService.SerializeToDisk(nameof(_history), _history.Take(SettingsService.Current.HistoryCountLimit))))
+				.Throttle(TimeSpan.FromSeconds(1))
+				.SelectMany(_ => Observable.Start(() => StateService.Set(nameof(_history), _history.Take(SettingsService.Current.HistoryCountLimit))))
 				.Subscribe();
 		}
 
