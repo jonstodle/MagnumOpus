@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
+using SupportTool.Services.FileServices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -57,7 +58,7 @@ namespace SupportTool.ViewModels
 			{
 				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_ipAddress}?", "", "Yes", "No")) == 0)
 				{
-					ExecuteFile(@"C:\Windows\System32\shutdown.exe", $@"-r -f -m \\{_ipAddress} -t 0");
+					ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0");
 				}
 			});
 
@@ -65,11 +66,11 @@ namespace SupportTool.ViewModels
 
 			_startRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(@"C:\RemoteControl2012\CmRcViewer.exe", _ipAddress));
 
-			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_ipAddress} /im rcagent.exe /f"));
+			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
 
-			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\msra.exe", $"/offerra {_ipAddress}"));
+			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "msra.exe"), $"/offerra {_ipAddress}"));
 
-			_startRdp = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\mstsc.exe", $"/v {_ipAddress}"));
+			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "mstsc.exe"), $"/v {_ipAddress}"));
 
 			_hostName = this.WhenAnyValue(x => x.IPAddress)
 				.Where(x => x.HasValue())
@@ -117,7 +118,7 @@ namespace SupportTool.ViewModels
 
 
 
-		private void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(@"C:\Windows\System32\cmd.exe", $@"/K {fileName} {arguments}");
+		private void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(Path.Combine(ExecutionService.System32Path, "cmd.exe"), $@"/K {fileName} {arguments}");
 
 		private void ExecuteFile(string fileName, string arguments = "")
 		{

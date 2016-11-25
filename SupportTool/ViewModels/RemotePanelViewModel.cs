@@ -52,9 +52,9 @@ namespace SupportTool.ViewModels
 
 			_killRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer));
 
-			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\msra.exe", $"/offerra {_computer.CN}"));
+			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"));
 
-			_startRdp = ReactiveCommand.Create(() => ExecuteFile(@"C:\Windows\System32\mstsc.exe", $"/v {_computer.CN}"));
+			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
@@ -112,9 +112,9 @@ namespace SupportTool.ViewModels
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{
-			ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im rcagent.exe /f");
-			ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im CmRcService.exe /f");
-			ExecuteFile(@"C:\Windows\System32\taskkill.exe", $"/s {_computer.CN} /im msra.exe /f");
+			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f");
+			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f");
+			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f");
 		});
 	}
 }

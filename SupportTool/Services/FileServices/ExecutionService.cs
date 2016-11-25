@@ -10,7 +10,9 @@ namespace SupportTool.Services.FileServices
 {
 	public static class ExecutionService
 	{
-		public static void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(@"C:\Windows\System32\cmd.exe", $@"/K {fileName} {arguments}");
+		public static string System32Path => Environment.GetFolderPath(Environment.SpecialFolder.System);
+
+		public static void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(Path.Combine(System32Path, "cmd.exe"), $@"/K {fileName} {arguments}");
 
 		public static void ExecuteFile(string fileName, string arguments = "")
 		{
