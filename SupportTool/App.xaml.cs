@@ -15,6 +15,7 @@ namespace SupportTool
 		{
 			Locator.CurrentMutable.RegisterConstant(new FileLoggerService(), typeof(ILogger));
 			this.Log().Info("Application start");
+			SettingsService.Init();
 
 			this.Events()
 				.Exit

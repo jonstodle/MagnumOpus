@@ -25,9 +25,9 @@ namespace SupportTool.Services.SettingsServices
 		private SettingsService()
 		{
 			this.Log().Info("Loading settings");
-
-			BlobCache.ApplicationName = "Magnum Opus";
 		}
+
+		public static void Init() => BlobCache.ApplicationName = "Magnum Opus";
 
 		public static void Shutdown() => BlobCache.Shutdown().Wait();
 
