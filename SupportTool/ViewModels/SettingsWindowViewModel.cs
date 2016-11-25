@@ -15,10 +15,6 @@ namespace SupportTool.ViewModels
 {
 	public class SettingsWindowViewModel : ViewModelBase, IDialog
 	{
-		private string _historyCountLimit = SettingsService.Current.HistoryCountLimit.ToString();
-		private string _detailWindowTimeoutLength = SettingsService.Current.DetailsWindowTimeoutLength.ToString();
-		private string _hfName;
-		private object _selectedRemoteControl2012HF;
 		private Action _close;
 
 
@@ -42,26 +38,26 @@ namespace SupportTool.ViewModels
 
 		public string HistoryCountLimit
 		{
-			get { return _historyCountLimit; }
-			set { this.RaiseAndSetIfChanged(ref _historyCountLimit, value); }
+			get => SettingsService.Current.HistoryCountLimit.ToString();
+			set { if(int.TryParse(value, out int i)) SettingsService.Current.HistoryCountLimit = i; }
 		}
 
 		public string DetailWindowTimeoutLength
 		{
-			get { return _detailWindowTimeoutLength; }
-			set { this.RaiseAndSetIfChanged(ref _detailWindowTimeoutLength, value); }
+			get => SettingsService.Current.DetailsWindowTimeoutLength.ToString();
+			set { if (int.TryParse(value, out int i)) SettingsService.Current.DetailsWindowTimeoutLength = i; }
 		}
 
-		public string HFName
+		public string RemoteControlClassicPath
 		{
-			get { return _hfName; }
-			set { this.RaiseAndSetIfChanged(ref _hfName, value); }
+			get => SettingsService.Current.RemoteControlClassicPath;
+			set => SettingsService.Current.RemoteControlClassicPath = value;
 		}
 
-		public object SelectedRemoteControl2012HF
+		public string RemoteControl2012Path
 		{
-			get { return _selectedRemoteControl2012HF; }
-			set { this.RaiseAndSetIfChanged(ref _selectedRemoteControl2012HF, value); }
+			get => SettingsService.Current.RemoteControl2012Path;
+			set => SettingsService.Current.RemoteControl2012Path = value;
 		}
 
 

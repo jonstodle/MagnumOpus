@@ -25,6 +25,12 @@
 
 				<TextBlock Text="Close detail windows after (hours)" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBox x:Name="DetailWindowTimeoutLengthTextBox" Margin="2"/>
+
+				<TextBlock Text="Remote Control Classic path" Style="{StaticResource SettingsHeaderStyle}"/>
+				<TextBox x:Name="RemoteControlClassicPathTextBox" Margin="2"/>
+
+				<TextBlock Text="Remote Control 2012 path" Style="{StaticResource SettingsHeaderStyle}"/>
+				<TextBox x:Name="RemoteControl2012PathTextBox" Margin="2"/>
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>
