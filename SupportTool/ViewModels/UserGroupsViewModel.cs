@@ -200,9 +200,7 @@ namespace SupportTool.ViewModels
 
         private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName)
         {
-            var groups = ActiveDirectoryService.Current.GetUser(samAccountName).Wait().Principal.GetGroups()
-            .ToObservable()
-            .SelectMany(x => ActiveDirectoryService.Current.GetParents(x.Name))
+            var groups = ActiveDirectoryService.Current.GetParents(ActiveDirectoryService.Current.GetUser(samAccountName).Wait().Principal.GetGroups().Select(x => x.Name))
             .Distinct(x => x.Path)
 			.Publish()
 			.RefCount();

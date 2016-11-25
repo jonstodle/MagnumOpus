@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace SupportTool.Services.ActiveDirectoryServices
 {
@@ -39,19 +41,9 @@ namespace SupportTool.Services.ActiveDirectoryServices
             }
         });
 
-        public IObservable<DirectoryEntry> GetParents(string name)
-        {
-            var group = GetGroups("distinguishedname", EscapeString(name)).Take(1).Wait();
-            var memberof = group.Properties["memberof"];
+		public IObservable<DirectoryEntry> GetParents(IEnumerable<string> initialElements) => new ParentGroupsState(initialElements).Results;
 
-            if (memberof.Count > 0)
-                return Observable.Return(group)
-                     .Concat(group.Properties["memberof"].ToEnumerable<string>()
-                     .ToObservable()
-                     .SelectMany(x => GetParents(x))).Distinct(x => x.Path);
-
-            return Observable.Return(group);
-        }
+		public IObservable<DirectoryEntry> GetParents(params string[] initialElements) => GetParents(initialElements);
 
         public string GetNameFromPath(string path) => path.Split(',')[0].Split('=')[1];
 
@@ -63,4 +55,53 @@ namespace SupportTool.Services.ActiveDirectoryServices
             .Replace(@"NUL", @"\00")
             .Replace(@"/", @"\2f");
     }
+
+	public class ParentGroupsState
+	{
+		public ParentGroupsState(IEnumerable<string> initialElements)
+		{
+			Observable.Start(() =>
+			{
+				foreach (var element in initialElements) GetAllGroups(element);
+			})
+			.Subscribe()
+			.AddTo(_disposables);
+
+			_resultsSubject
+				.Subscribe(_ => { },
+				() => _disposables.Dispose());
+		}
+
+
+
+		public IObservable<DirectoryEntry> Results => _resultsSubject;
+
+
+
+		private void GetAllGroups(string name)
+		{
+			var group = ActiveDirectoryService.Current.GetGroup(name).Wait().Principal;
+			if (group == null) return;
+
+			var groupName = group.Name;
+			var groups = group.GetGroups();
+
+			if (!_history.Contains(groupName))
+			{
+				_history.Add(groupName);
+				_resultsSubject.OnNext(group.GetUnderlyingObject() as DirectoryEntry);
+
+				try { foreach (var memberGroup in groups) GetAllGroups(memberGroup.Name); }
+				catch { }
+			}
+
+
+		}
+
+
+
+		private CompositeDisposable _disposables = new CompositeDisposable();
+		private List<string> _history = new List<string>();
+		private ReplaySubject<DirectoryEntry> _resultsSubject = new ReplaySubject<DirectoryEntry>();
+	}
 }

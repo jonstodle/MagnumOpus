@@ -244,9 +244,7 @@ namespace SupportTool.ViewModels
 
 		private IObservable<string> GetAllGroupsImpl(string identity)
 		{
-			var groups = ActiveDirectoryService.Current.GetGroup(identity).Wait().Principal.GetGroups()
-			.ToObservable()
-			.SelectMany(x => ActiveDirectoryService.Current.GetParents(x.Name))
+			var groups = ActiveDirectoryService.Current.GetParents(ActiveDirectoryService.Current.GetGroup(identity).Wait().Principal.GetGroups().Select(x => x.Name))
 			.Select(x =>
 			{
 				var name = x.Properties.Get<string>("name");
