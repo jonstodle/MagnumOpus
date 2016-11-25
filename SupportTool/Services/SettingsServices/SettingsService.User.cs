@@ -11,26 +11,26 @@ namespace SupportTool.Services.SettingsServices
 	{
 		public int HistoryCountLimit
 		{
-			get { return Get(nameof(HistoryCountLimit), 50); }
-			set { Set(nameof(HistoryCountLimit), value); }
+			get => Get(50);
+			set => Set(value);
 		}
 
 		public int DetailsWindowTimeoutLength
 		{
-			get { return Get(nameof(DetailsWindowTimeoutLength), 2); }
-			set { Set(nameof(DetailsWindowTimeoutLength), value); }
+			get => Get(2);
+			set => Set(value); 
 		}
 
 		public string RemoteControlClassicPath
 		{
-			get { return Get(nameof(RemoteControlClassicPath), @"C:\SCCM Remote Control\rc.exe"); }
-			set { Set(nameof(RemoteControlClassicPath), value); }
+			get => Get(@"C:\SCCM Remote Control\rc.exe");
+			set => Set(value);
 		}
 
 		public string RemoteControl2012Path
 		{
-			get { return Get(nameof(RemoteControl2012Path), @"C:\RemoteControl2012\CmRcViewer.exe"); }
-			set { Set(nameof(RemoteControl2012Path), value); }
+			get => Get(@"C:\RemoteControl2012\CmRcViewer.exe");
+			set => Set(value); 
 		}
 	}
 }

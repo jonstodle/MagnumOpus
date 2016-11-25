@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,8 +33,8 @@ namespace SupportTool.Services.SettingsServices
 
 
 
-		private T Get<T>(string key, T defaultValue = default(T)) => BlobCache.LocalMachine.GetObject<T>(key).Catch(Observable.Return(defaultValue)).Wait();
+		private T Get<T>(T defaultValue = default(T), [CallerMemberName]string key = null) => BlobCache.LocalMachine.GetObject<T>(key).Catch(Observable.Return(defaultValue)).Wait();
 
-		private async void Set<T>(string key, T value) => await BlobCache.LocalMachine.InsertObject(key, value);
+		private async void Set<T>(T value, [CallerMemberName]string key = null) => await BlobCache.LocalMachine.InsertObject(key, value);
 	}
 }
