@@ -2,6 +2,7 @@
 using SupportTool.Services.LogServices;
 using SupportTool.Services.SettingsServices;
 using System.Windows;
+using System;
 
 namespace SupportTool
 {
@@ -14,7 +15,10 @@ namespace SupportTool
 		{
 			Locator.CurrentMutable.RegisterConstant(new FileLoggerService(), typeof(ILogger));
 			this.Log().Info("Application start");
-			SettingsService.Init();
+
+			this.Events()
+				.Exit
+				.Subscribe(_ => SettingsService.Shutdown());
 		}
     }
 }
