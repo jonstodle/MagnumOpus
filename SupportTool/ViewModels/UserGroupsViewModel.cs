@@ -7,6 +7,7 @@ using SupportTool.Services.NavigationServices;
 using System;
 using System.ComponentModel;
 using System.DirectoryServices;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -76,7 +77,7 @@ namespace SupportTool.ViewModels
                 () =>
                 {
                     AllGroups.Clear();
-                    return GetAllGroupsImpl(User.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler)
+                    return User.Principal.GetAllGroups().SubscribeOn(RxApp.TaskpoolScheduler)
                             .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x));
                 },
                 this.WhenAnyValue(x => x.IsShowingAllGroups));
@@ -197,16 +198,6 @@ namespace SupportTool.ViewModels
 		private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Return(ActiveDirectoryService.Current.GetUser(identity).Wait())
 			.SelectMany(x => x.Principal.GetGroups().ToObservable())
 			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
-
-        private IObservable<DirectoryEntry> GetAllGroupsImpl(string samAccountName)
-        {
-            var groups = ActiveDirectoryService.Current.GetParents(ActiveDirectoryService.Current.GetUser(samAccountName).Wait().Principal.GetGroups().Select(x => x.Name))
-            .Distinct(x => x.Path)
-			.Publish()
-			.RefCount();
-
-            return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
-        }
 
         bool TextFilter(object item)
         {

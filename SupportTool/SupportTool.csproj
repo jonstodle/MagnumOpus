@@ -201,6 +201,7 @@
       <DependentUpon>UserGroups.xaml</DependentUpon>
     </Compile>
     <Compile Include="Executables\Helpers.cs" />
+    <Compile Include="Extensions\SystemDirectoryServicesAccountManagement.cs" />
     <Compile Include="Extensions\SystemReflectionExtensions.cs" />
     <Compile Include="Extensions\SystemDirectoryServicesExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />

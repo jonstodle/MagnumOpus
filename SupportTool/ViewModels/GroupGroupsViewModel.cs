@@ -83,7 +83,8 @@ namespace SupportTool.ViewModels
 				() =>
 				{
 					_allMemberOfGroups.Clear();
-					return GetAllGroupsImpl(_group.CN).SubscribeOn(RxApp.TaskpoolScheduler)
+					return _group.Principal.GetAllGroups().SubscribeOn(RxApp.TaskpoolScheduler)
+								.Select(x => x.Properties.Get<string>("name"))
 								.TakeUntil(this.WhenAnyValue(x => x.IsShowingMemberOf).Where(x => !x));
 				},
 				this.WhenAnyValue(x => x.IsShowingMemberOf));
@@ -241,22 +242,6 @@ namespace SupportTool.ViewModels
 		private IObservable<string> GetDirectGroups(string identity) => Observable.Return(ActiveDirectoryService.Current.GetGroup(identity).Wait())
 			.SelectMany(x => x.Principal.GetGroups().ToObservable())
 			.Select(x => x.Name);
-
-		private IObservable<string> GetAllGroupsImpl(string identity)
-		{
-			var groups = ActiveDirectoryService.Current.GetParents(ActiveDirectoryService.Current.GetGroup(identity).Wait().Principal.GetGroups().Select(x => x.Name))
-			.Select(x =>
-			{
-				var name = x.Properties.Get<string>("name");
-				x.Dispose();
-				return name;
-			})
-			.Distinct()
-			.Publish()
-			.RefCount();
-
-			return groups.TakeUntil(groups.Select(_ => Observable.Timer(TimeSpan.FromSeconds(10))).Switch());
-		}
 
 		private IObservable<string> GetMemberUsers(string identity) => Observable.Create<string>(observer =>
 		{
