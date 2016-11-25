@@ -20,5 +20,17 @@ namespace SupportTool.Services.SettingsServices
 			get { return Get(nameof(DetailsWindowTimeoutLength), 2); }
 			set { Set(nameof(DetailsWindowTimeoutLength), value); }
 		}
+
+		public string RemoteControlClassicPath
+		{
+			get { return Get(nameof(RemoteControlClassicPath), @"C:\SCCM Remote Control\rc.exe"); }
+			set { Set(nameof(RemoteControlClassicPath), value); }
+		}
+
+		public string RemoteControl2012Path
+		{
+			get { return Get(nameof(RemoteControl2012Path), @"C:\RemoteControl2012\CmRcViewer.exe"); }
+			set { Set(nameof(RemoteControl2012Path), value); }
+		}
 	}
 }

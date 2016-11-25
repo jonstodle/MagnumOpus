@@ -106,9 +106,9 @@ namespace SupportTool.ViewModels
 			else StartRemoteControl2012Impl(computer);
 		});
 
-		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {computer.CN}");
+		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {computer.CN}");
 
-		private void StartRemoteControl2012Impl(ComputerObject computer) => ExecuteFile(@"C:\RemoteControl2012\CmRcViewer.exe", computer.CN);
+		private void StartRemoteControl2012Impl(ComputerObject computer) => ExecuteFile(SettingsService.Current.RemoteControl2012Path, computer.CN);
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{

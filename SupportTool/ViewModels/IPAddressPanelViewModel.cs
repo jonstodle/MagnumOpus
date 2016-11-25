@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.Services.FileServices;
+using SupportTool.Services.SettingsServices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -62,9 +63,9 @@ namespace SupportTool.ViewModels
 				}
 			});
 
-			_startRemoteControl = ReactiveCommand.Create(() => ExecuteFile(@"C:\SCCM Remote Control\rc.exe", $"1 {_ipAddress}"));
+			_startRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
 
-			_startRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(@"C:\RemoteControl2012\CmRcViewer.exe", _ipAddress));
+			_startRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
 
 			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
 
