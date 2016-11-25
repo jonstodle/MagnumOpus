@@ -2,6 +2,7 @@
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -38,7 +39,7 @@ namespace Updater.ViewModels
 				this.WhenAnyValue(x => x.SelectedDestinationFolder).Select(x => x != null));
 
 			_confirm = ReactiveCommand.CreateFromObservable(
-				() => ConfirmImpl(_sourceFilePath, _destinationFolders),
+				() => ConfirmImpl(_sourceFilePath, _destinationFolders, _killProcesses),
 				Observable.CombineLatest(
 					this.WhenAnyValue(x => x.SourceFilePath, x => x.HasValue(1)),
 					_destinationFolders.CountChanged.Select(x => x > 0),
@@ -53,6 +54,7 @@ namespace Updater.ViewModels
 			// State
 			SourceFilePath = StateService.Current.SourceFilePath;
 			_destinationFolders.AddRange(StateService.Current.DestinationFolders);
+			KillProcesses = StateService.Current.KillProcesses;
 
 			this.WhenAnyValue(x => x.SourceFilePath)
 				.Subscribe(x => StateService.Current.SourceFilePath = x);
@@ -60,6 +62,9 @@ namespace Updater.ViewModels
 			_destinationFolders.CountChanged
 				.Select(_ => _destinationFolders)
 				.Subscribe(x => StateService.Current.DestinationFolders = x);
+
+			this.WhenAnyValue(x => x.KillProcesses)
+				.Subscribe(x => StateService.Current.KillProcesses = x);
 		}
 
 
@@ -96,6 +101,12 @@ namespace Updater.ViewModels
 			set { this.RaiseAndSetIfChanged(ref _selectedDestinationFolder, value); }
 		}
 
+		public bool KillProcesses
+		{
+			get { return _killProcesses; }
+			set { this.RaiseAndSetIfChanged(ref _killProcesses, value); }
+		}
+
 
 
 		private string BrowseForSourceFileImpl()
@@ -120,13 +131,21 @@ namespace Updater.ViewModels
 			return "";
 		}
 
-		private IObservable<bool> ConfirmImpl(string sourceFilePath, IEnumerable<string> destinationFolders) => Observable.Start(() =>
+		private IObservable<bool> ConfirmImpl(string sourceFilePath, IEnumerable<string> destinationFolders, bool killProcesses) => Observable.Start(() =>
 		{
 			var file = new FileInfo(sourceFilePath);
 			if (!file.Exists) throw new ArgumentException($"File \"{sourceFilePath}\" not found");
 
 			foreach (var directoryPath in destinationFolders)
 			{
+				var taskkillPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "taskkill.exe");
+				var arguments = "/im \"Magnum Opus.exe\" /f";
+
+				if (directoryPath.StartsWith(@"\\")) arguments = $"/s {directoryPath.Split(new string[] { @"\" },StringSplitOptions.RemoveEmptyEntries).First()} " + arguments;
+
+				Process.Start(taskkillPath, arguments);
+
+
 				var directory = new DirectoryInfo(directoryPath);
 				if (!directory.Exists) directory.Create();
 
@@ -148,5 +167,6 @@ namespace Updater.ViewModels
 		private string _sourceFilePath;
 		private string _destinationFolderPath;
 		private object _selectedDestinationFolder;
+		private bool _killProcesses;
 	}
 }

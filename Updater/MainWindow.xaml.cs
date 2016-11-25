@@ -32,6 +32,7 @@ namespace Updater
 			this.Bind(ViewModel, vm => vm.DestinationFolderPath, v => v.DestinationFolderTextBox.Text);
 			this.OneWayBind(ViewModel, vm => vm.DestinationFoldersSortedView, v => v.DestinationFoldersListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedDestinationFolder, v => v.DestinationFoldersListView.SelectedItem);
+			this.Bind(ViewModel, vm => vm.KillProcesses, v => v.KillProcessesCheckBox.IsChecked);
 
 			this.WhenActivated(d =>
 			{
