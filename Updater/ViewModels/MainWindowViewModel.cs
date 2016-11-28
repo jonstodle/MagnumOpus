@@ -135,12 +135,15 @@ namespace Updater.ViewModels
 
 			foreach (var directoryPath in destinationFolders)
 			{
-				var taskkillPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "taskkill.exe");
-				var arguments = "/im \"Magnum Opus.exe\" /f";
+				if (killProcesses)
+				{
+					var taskkillPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "taskkill.exe");
+					var arguments = "/im \"Magnum Opus.exe\" /f";
 
-				if (directoryPath.StartsWith(@"\\")) arguments = $"/s {directoryPath.Split(new string[] { @"\" },StringSplitOptions.RemoveEmptyEntries).First()} " + arguments;
+					if (directoryPath.StartsWith(@"\\")) arguments = $"/s {directoryPath.Split(new string[] { @"\" }, StringSplitOptions.RemoveEmptyEntries).First()} " + arguments;
 
-				Process.Start(taskkillPath, arguments);
+					Process.Start(taskkillPath, arguments);
+				}
 
 
 				var directory = new DirectoryInfo(directoryPath);
