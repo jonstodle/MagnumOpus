@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace System.Reactive.Disposables
+﻿namespace System.Reactive.Disposables
 {
 	public static class SystemReactiveDisposablesExtensions
 	{

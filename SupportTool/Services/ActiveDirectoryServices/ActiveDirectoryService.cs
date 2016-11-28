@@ -2,7 +2,6 @@
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
-using System.Net.NetworkInformation;
 using System.Reactive.Linq;
 
 namespace SupportTool.Services.ActiveDirectoryServices

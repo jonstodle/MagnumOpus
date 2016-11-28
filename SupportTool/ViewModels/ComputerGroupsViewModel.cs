@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;

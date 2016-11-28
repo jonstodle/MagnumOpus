@@ -2,14 +2,10 @@
 using SupportTool.Models;
 using SupportTool.Services.FileServices;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using static SupportTool.Executables.Helpers;
 using static SupportTool.Services.FileServices.ExecutionService;

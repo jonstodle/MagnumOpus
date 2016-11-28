@@ -1,15 +1,7 @@
-﻿using ReactiveUI;
-using SupportTool.Services.NavigationServices;
+﻿using SupportTool.Services.NavigationServices;
 using SupportTool.Services.SettingsServices;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reactive;
-using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {

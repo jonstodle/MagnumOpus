@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,8 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Updater.Services;
 

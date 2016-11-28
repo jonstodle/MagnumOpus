@@ -1,11 +1,4 @@
-﻿using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SupportTool.Services.SettingsServices
+﻿namespace SupportTool.Services.SettingsServices
 {
 	public partial class SettingsService
 	{

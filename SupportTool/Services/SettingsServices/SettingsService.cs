@@ -1,17 +1,8 @@
 ﻿using Akavache;
-using Newtonsoft.Json;
 using ReactiveUI;
 using Splat;
-using SupportTool.Services.FileServices;
-using SupportTool.Services.LogServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupportTool.Services.SettingsServices
 {

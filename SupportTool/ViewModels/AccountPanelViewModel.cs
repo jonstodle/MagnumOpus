@@ -2,15 +2,11 @@
 using SupportTool.Executables;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
-using SupportTool.Services.NavigationServices;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Windows;
-using System.Windows.Resources;
 
 namespace SupportTool.ViewModels
 {

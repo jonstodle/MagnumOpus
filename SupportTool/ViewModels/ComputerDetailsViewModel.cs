@@ -3,8 +3,6 @@ using SupportTool.Models;
 using System;
 using System.Linq;
 using System.Management;
-using System.Net;
-using System.Net.Sockets;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
