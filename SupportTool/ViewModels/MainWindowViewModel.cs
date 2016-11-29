@@ -46,7 +46,7 @@ namespace SupportTool.ViewModels
 
 			var version = Assembly.GetExecutingAssembly().GetName().Version;
 			var assemblyTime = Assembly.GetExecutingAssembly().GetLinkerTime();
-			_version = $"{version.Major}.{version.Minor}.{assemblyTime.Day.ToString("00")}{assemblyTime.Month.ToString("00")}{assemblyTime.Year.ToString("00")}.{assemblyTime.Hour.ToString("00")}{assemblyTime.Minute.ToString("00")}{assemblyTime.Second.ToString("00")}";
+			_version = $"{version.Major}.{version.Minor}.{assemblyTime.Day.ToString("00")}{assemblyTime.Month.ToString("00")}{assemblyTime.Year.ToString().Substring(2,2)}.{assemblyTime.Hour.ToString("00")}{assemblyTime.Minute.ToString("00")}{assemblyTime.Second.ToString("00")}";
 
 			_search = ReactiveCommand.CreateFromTask(async () =>
 			{
