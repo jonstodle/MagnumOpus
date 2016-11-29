@@ -19,6 +19,9 @@ namespace SupportTool.ViewModels
 			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
 			_setUser
 				.ToProperty(this, x => x.User, out _user);
+			_setUser
+				.ThrownExceptions
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

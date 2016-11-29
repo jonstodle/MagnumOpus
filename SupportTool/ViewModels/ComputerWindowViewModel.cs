@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
+using System;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +20,9 @@ namespace SupportTool.ViewModels
 			_setComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
 			_setComputer
 				.ToProperty(this, x => x.Computer, out _computer);
+			_setComputer
+				.ThrownExceptions
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

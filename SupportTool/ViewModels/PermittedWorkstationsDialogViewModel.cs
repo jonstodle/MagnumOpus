@@ -42,30 +42,18 @@ namespace SupportTool.ViewModels
             _addComputer
                 .Do(_ => ComputerName = "")
                 .Subscribe(x => _computers.Add(x));
-            _addComputer
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not add computer")));
 
             _removeComputer = ReactiveCommand.Create(
             () => _computers.Remove(SelectedComputer as string),
             this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
-            _removeComputer
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not remove computer")));
 
             _removeAllComputers = ReactiveCommand.Create(
                 () => _computers.Clear(),
             this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
-            _removeAllComputers
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not remove computers")));
 
             _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
             _save
                 .Subscribe(_ => _close());
-            _save
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not save")));
 
 			_cancel = ReactiveCommand.Create(() => _close());
 
@@ -77,11 +65,19 @@ namespace SupportTool.ViewModels
                 {
                     using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
                 });
-        }
+
+			Observable.Merge(
+				_addComputer.ThrownExceptions,
+				_removeComputer.ThrownExceptions,
+				_removeAllComputers.ThrownExceptions,
+				_save.ThrownExceptions,
+				_cancel.ThrownExceptions)
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+		}
 
 
 
-        public ReactiveCommand AddComputer => _addComputer;
+		public ReactiveCommand AddComputer => _addComputer;
 
         public ReactiveCommand RemoveComputer => _removeComputer;
 

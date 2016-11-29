@@ -149,6 +149,17 @@ namespace SupportTool.ViewModels
 				.SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
 				.ObserveOnDispatcher()
 				.Subscribe(x => _memberUsers.Add(x));
+
+			Observable.Merge(
+				_openEditMemberOf.ThrownExceptions,
+				_saveDirectGroups.ThrownExceptions,
+				_findDirectMemberOfGroup.ThrownExceptions,
+				_findAllMemberOfGroup.ThrownExceptions,
+				_saveAllGroups.ThrownExceptions,
+				_openEditMembers.ThrownExceptions,
+				_saveMembers.ThrownExceptions,
+				_findMemberUser.ThrownExceptions)
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

@@ -112,8 +112,11 @@ namespace SupportTool.ViewModels
                 .Subscribe(x => DirectGroups.Add(x));
 
 			Observable.Merge(
+				_openEditMemberOf.ThrownExceptions,
 				_saveAllGroups.ThrownExceptions,
-				_saveDirectGroups.ThrownExceptions)
+				_saveDirectGroups.ThrownExceptions,
+				_findDirectGroup.ThrownExceptions,
+				_findAllGroup.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             this

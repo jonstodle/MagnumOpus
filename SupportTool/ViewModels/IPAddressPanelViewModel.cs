@@ -81,8 +81,13 @@ namespace SupportTool.ViewModels
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
+				_openLoggedOnPlus.ThrownExceptions,
 				_openRemoteExecution.ThrownExceptions,
+				_rebootComputer.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
+				_startRemoteControl2012.ThrownExceptions,
+				_killRemoteControl.ThrownExceptions,
+				_startRemoteAssistance.ThrownExceptions,
 				_startRdp.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
 		}

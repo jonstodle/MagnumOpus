@@ -46,9 +46,6 @@ namespace SupportTool.ViewModels
             _expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
             _expirePassword
                 .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("User must change password at next login", "Password expired")));
-			_expirePassword
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             _unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
             _unlockAccount
@@ -57,9 +54,6 @@ namespace SupportTool.ViewModels
                     MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
 					await _infoMessages.Handle(new MessageInfo("Account unlocked"));
                 });
-            _unlockAccount
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             _runLockoutStatus = ReactiveCommand.Create(() => ExecutionService.ExecuteInternalFile("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}"));
 
@@ -79,7 +73,10 @@ namespace SupportTool.ViewModels
 				.Subscribe(async ex => await _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)));
 
 			Observable.Merge(
+				_expirePassword.ThrownExceptions,
+				_unlockAccount.ThrownExceptions,
 				_runLockoutStatus.ThrownExceptions,
+				_openPermittedWorkstations.ThrownExceptions,
 				_openFindUser.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}

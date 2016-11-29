@@ -43,9 +43,6 @@ namespace SupportTool.ViewModels
 					await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
 				}
 			});
-			_saveDirectGroups
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
@@ -57,7 +54,13 @@ namespace SupportTool.ViewModels
 				.Select(x => x.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
                 .Subscribe(x => DirectGroups.Add(x));
-        }
+
+			Observable.Merge(
+				_openEditMemberOf.ThrownExceptions,
+				_saveDirectGroups.ThrownExceptions,
+				_findDirectGroup.ThrownExceptions)
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+		}
 
 
 

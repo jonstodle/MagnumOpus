@@ -101,7 +101,8 @@ namespace SupportTool.ViewModels
 				_search.ThrownExceptions,
 				_paste.ThrownExceptions,
 				_open.ThrownExceptions,
-				_openSettings.ThrownExceptions)
+				_openSettings.ThrownExceptions,
+				_toggleShowVersion.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			StateService.Get(nameof(_history), Enumerable.Empty<string>())

@@ -47,6 +47,11 @@ namespace SupportTool.ViewModels
 				.WhenAnyValue(x => x.IsPinging)
 				.Where(x => !x)
 				.Subscribe(_ => IsShowingPingResultDetails = false);
+
+			Observable.Merge(
+				_startPing.ThrownExceptions,
+				_stopPing.ThrownExceptions)
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 

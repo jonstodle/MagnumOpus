@@ -48,6 +48,7 @@ namespace SupportTool.ViewModels
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
+				_openLoggedOnPlus.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
 				_startRemoteControlClassic.ThrownExceptions,
 				_startRemoteControl2012.ThrownExceptions,

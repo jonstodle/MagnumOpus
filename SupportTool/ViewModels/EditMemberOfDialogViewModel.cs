@@ -104,10 +104,13 @@ namespace SupportTool.ViewModels
 			_cancel = ReactiveCommand.Create(() => _close());
 
 			Observable.Merge(
+					_setPrincipal.ThrownExceptions,
+					_getPrincipalMembers.ThrownExceptions,
 					_search.ThrownExceptions,
 					_addToPrincipal.ThrownExceptions,
 					_removeFromPrincipal.ThrownExceptions,
-					_save.ThrownExceptions)
+					_save.ThrownExceptions,
+					_cancel.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
