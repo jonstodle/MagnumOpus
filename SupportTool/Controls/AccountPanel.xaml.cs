@@ -40,10 +40,11 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.ExpirePassword, v => v.ExpirePasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.UnlockAccount, v => v.UnlockAccountButton));
                 d(this.BindCommand(ViewModel, vm => vm.RunLockoutStatus, v => v.LockOutStatusButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenPermittedWorkstations, v => v.PermittedWorkstationsButton));
-                d(NewPasswordTextBox.Events()
-                    .KeyDown
+                d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
+				d(this.BindCommand(ViewModel, vm => vm.OpenFindUser, v => v.FindUserButton));
+				d(NewPasswordTextBox.Events()
+					.KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
                     .InvokeCommand(ViewModel, x => x.SetNewPassword));
