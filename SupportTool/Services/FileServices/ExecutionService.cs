@@ -18,6 +18,8 @@ namespace SupportTool.Services.FileServices
 			else throw new ArgumentException($"Could not find {fileName}");
 		}
 
+		public static void ExecuteInternalCmd(string fileName, string arguments = "") => ExecuteFile(Path.Combine(System32Path, "cmd.exe"), $"/K \"{Path.Combine(FileService.LocalAppData, fileName)}\" {arguments}");
+
 		public static void ExecuteInternalFile(string fileName, string arguments = "")
 		{
 			var filePath = Path.Combine(FileService.LocalAppData, fileName);
