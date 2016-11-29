@@ -107,7 +107,7 @@ namespace SupportTool.ViewModels
 			StateService.Get(nameof(_history), Enumerable.Empty<string>())
 				.SubscribeOn(TaskPoolScheduler.Default)
 				.ObserveOnDispatcher()
-				.Subscribe(x => _history.AddRange(x));
+				.Subscribe(x => { using (_history.SuppressChangeNotifications()) _history.AddRange(x); });
 
 			_history.CountChanged
 				.Throttle(TimeSpan.FromSeconds(1))
