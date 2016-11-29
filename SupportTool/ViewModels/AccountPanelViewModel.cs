@@ -77,6 +77,11 @@ namespace SupportTool.ViewModels
 				_setNewSimplePassword.ThrownExceptions,
 				_setNewComplexPassword.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)));
+
+			Observable.Merge(
+				_runLockoutStatus.ThrownExceptions,
+				_openFindUser.ThrownExceptions)
+				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
 
 
