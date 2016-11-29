@@ -60,11 +60,7 @@ namespace SupportTool.ViewModels
                 .ThrownExceptions
                 .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
-            _runLockoutStatus = ReactiveCommand.Create(() =>
-            {
-				Helpers.EnsureExecutableIsAvailable("LockoutStatus.exe");
-                Process.Start("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}");
-            });
+            _runLockoutStatus = ReactiveCommand.Create(() => ExecutionService.ExecuteInternalFile("LockoutStatus.exe", $"-u:sikt\\{User.Principal.SamAccountName}"));
 
 			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
