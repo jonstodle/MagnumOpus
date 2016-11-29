@@ -32,11 +32,7 @@ namespace SupportTool.ViewModels
 				}
 			});
 
-			_runPSExec = ReactiveCommand.Create(() =>
-			{
-				EnsureExecutableIsAvailable("PsExec.exe");
-				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe");
-			});
+			_runPSExec = ReactiveCommand.Create(() => ExecuteInternalCmd("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
 

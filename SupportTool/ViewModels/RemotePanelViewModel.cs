@@ -30,17 +30,9 @@ namespace SupportTool.ViewModels
 
 		public RemotePanelViewModel()
 		{
-			_openLoggedOn = ReactiveCommand.Create(() =>
-			{
-				EnsureExecutableIsAvailable("PsLoggedon.exe");
-				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsLoggedon.exe")}\"", $@"\\{_computer.CN}");
-			});
+			_openLoggedOn = ReactiveCommand.Create(() => ExecuteInternalCmd("PsLoggedon.exe", $@"\\{_computer.CN}"));
 
-			_openLoggedOnPlus = ReactiveCommand.Create(() =>
-			{
-				EnsureExecutableIsAvailable("PsExec.exe");
-				ExecuteCmd($"\"{Path.Combine(FileService.LocalAppData, "PsExec.exe")}\"", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user");
-			});
+			_openLoggedOnPlus = ReactiveCommand.Create(() => ExecuteInternalCmd("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user"));
 
 			_startRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
