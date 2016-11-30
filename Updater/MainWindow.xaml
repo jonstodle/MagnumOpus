@@ -74,7 +74,7 @@
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
-				<CheckBox x:Name="KillProcessesCheckBox" Content="Kill process" Grid.Column="2" Margin="2"/>
+				<CheckBox x:Name="KillProcessesCheckBox" Content="Kill process" VerticalAlignment="Center" Grid.Column="2" Margin="2"/>
 
 				<Button x:Name="ConfirmButton" Content="Confirm" Grid.Column="3" Margin="2"/>
 			</Grid>
