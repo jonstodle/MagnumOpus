@@ -24,6 +24,8 @@ namespace Updater
 
 			this.WhenActivated(d =>
 			{
+				d(this.BindCommand(ViewModel, vm => vm.LoadConfiguration, v => v.LoadConfigurationButton));
+				d(this.BindCommand(ViewModel, vm => vm.SaveConfiguration, v => v.SaveConfigurationButton));
 				d(this.BindCommand(ViewModel, vm => vm.BrowseForSourceFile, v => v.SourceFileBrowseButton));
 				d(this.BindCommand(ViewModel, vm => vm.BrowseForDestinationFolder, v => v.DestinationFolderBrowseButton));
 				d(this.BindCommand(ViewModel, vm => vm.AddDestinationFolder, v => v.AddDestinationFolderButton));

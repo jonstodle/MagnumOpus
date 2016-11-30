@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Newtonsoft.Json;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,12 +16,32 @@ namespace Updater.ViewModels
 	{
 		public MainWindowViewModel()
 		{
-			_browseForSourceFile = ReactiveCommand.Create(BrowseForSourceFileImpl);
+			_loadConfiguration = ReactiveCommand.CreateFromObservable(() =>
+			{
+				var filePath = BrowseForFile("Magnum Opus Updater file (*.mou)|*.mou");
+				if (!filePath.HasValue()) return Observable.Return(Tuple.Create("", Enumerable.Empty<string>()));
+				return LoadConfigurationImpl(filePath);
+			});
+			_loadConfiguration
+				.Subscribe(x =>
+				{
+					SourceFilePath = x.Item1;
+					using (_destinationFolders.SuppressChangeNotifications()) _destinationFolders.AddRange(x.Item2);
+				});
+
+			_saveConfiguration = ReactiveCommand.CreateFromObservable(() =>
+			{
+				var filePath = BrowseForSavePath("Magnum Opus Updater file (*.mou)|*.mou");
+				if (!filePath.HasValue()) return Observable.Return(Unit.Default);
+				return SaveConfigurationImpl(filePath, _sourceFilePath, _destinationFolders);
+			});
+
+			_browseForSourceFile = ReactiveCommand.Create(() => BrowseForFile("Executables (*.exe)|*.exe"));
 			_browseForSourceFile
 				.Where(x => x.HasValue())
 				.Subscribe(x => SourceFilePath = x);
 
-			_browseForDestinationFolder = ReactiveCommand.Create(BrowseForDestinationFolderImpl);
+			_browseForDestinationFolder = ReactiveCommand.Create(BrowseForFolder);
 			_browseForDestinationFolder
 				.Where(x => x.HasValue())
 				.Subscribe(x => DestinationFolderPath = x);
@@ -43,6 +64,8 @@ namespace Updater.ViewModels
 					(sourceFilePath, destinationFolders) => sourceFilePath && destinationFolders));
 
 			Observable.Merge(
+				_loadConfiguration.ThrownExceptions,
+				_saveConfiguration.ThrownExceptions,
 				_browseForSourceFile.ThrownExceptions,
 				_browseForDestinationFolder.ThrownExceptions,
 				_addDestinationFolder.ThrownExceptions,
@@ -70,6 +93,10 @@ namespace Updater.ViewModels
 		}
 
 
+
+		public ReactiveCommand LoadConfiguration => _loadConfiguration;
+
+		public ReactiveCommand SaveConfiguration => _saveConfiguration;
 
 		public ReactiveCommand BrowseForSourceFile => _browseForSourceFile;
 
@@ -111,9 +138,20 @@ namespace Updater.ViewModels
 
 
 
-		private string BrowseForSourceFileImpl()
+		private string BrowseForSavePath(string filter)
 		{
-			var dialog = new Microsoft.Win32.OpenFileDialog() { Filter = "Executables (*.exe)|*.exe" };
+			var dialog = new Microsoft.Win32.SaveFileDialog { Filter = filter };
+			if(dialog.ShowDialog() == true)
+			{
+				return dialog.FileName;
+			}
+
+			return "";
+		}
+
+		private string BrowseForFile(string filter)
+		{
+			var dialog = new Microsoft.Win32.OpenFileDialog() { Filter = filter };
 			if (dialog.ShowDialog() == true)
 			{
 				return dialog.FileName;
@@ -122,7 +160,7 @@ namespace Updater.ViewModels
 			return "";
 		}
 
-		private string BrowseForDestinationFolderImpl()
+		private string BrowseForFolder()
 		{
 			var dialog = new FolderBrowserDialog();
 			if (dialog.ShowDialog() == DialogResult.OK)
@@ -132,6 +170,20 @@ namespace Updater.ViewModels
 
 			return "";
 		}
+
+		private IObservable<Tuple<string, IEnumerable<string>>> LoadConfigurationImpl(string filePath) => Observable.Start(() =>
+		{
+			if (!filePath.HasValue()) throw new ArgumentException("No path provided", nameof(filePath));
+			var json = File.ReadAllText(filePath);
+			return JsonConvert.DeserializeObject<Tuple<string, IEnumerable<string>>>(json);
+		});
+
+		private IObservable<Unit> SaveConfigurationImpl(string savePath, string sourcePath, IEnumerable<string> destinationPaths) => Observable.Start(() =>
+		{
+			if (!savePath.HasValue()) throw new ArgumentException("No path provided", nameof(savePath));
+			var json = JsonConvert.SerializeObject(Tuple.Create(sourcePath, destinationPaths));
+			File.WriteAllText(savePath, json);
+		});
 
 		private IObservable<bool> ConfirmImpl(string sourceFilePath, IEnumerable<string> destinationFolders, bool killProcesses) => Observable.Start(() =>
 		{
@@ -162,6 +214,8 @@ namespace Updater.ViewModels
 
 
 
+		private readonly ReactiveCommand<Unit, Tuple<string, IEnumerable<string>>> _loadConfiguration;
+		private readonly ReactiveCommand<Unit, Unit> _saveConfiguration;
 		private readonly ReactiveCommand<Unit, string> _browseForSourceFile;
 		private readonly ReactiveCommand<Unit, string> _browseForDestinationFolder;
 		private readonly ReactiveCommand<Unit, Unit> _addDestinationFolder;

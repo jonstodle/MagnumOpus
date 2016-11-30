@@ -17,7 +17,19 @@
 			</Grid.RowDefinitions>
 			
 			<StackPanel>
-				<TextBlock Text="Update Magnum Opus" FontSize="20" Margin="2"/>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+					
+					<TextBlock Text="Update Magnum Opus" FontSize="33" FontWeight="Thin" Margin="2"/>
+
+					<StackPanel Grid.Column="1">
+						<Button x:Name="LoadConfigurationButton" Content="Load" Margin="2"/>
+						<Button x:Name="SaveConfigurationButton" Content="Save" Margin="2"/>
+					</StackPanel>
+				</Grid>
 
 				<TextBlock Text="Source file" FontWeight="SemiBold" Margin="2"/>
 
