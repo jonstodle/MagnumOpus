@@ -41,8 +41,13 @@ namespace Updater.ViewModels
 					this.WhenAnyValue(x => x.SourceFilePath, x => x.HasValue(1)),
 					_destinationFolders.CountChanged.Select(x => x > 0),
 					(sourceFilePath, destinationFolders) => sourceFilePath && destinationFolders));
-			_confirm
-				.ThrownExceptions
+
+			Observable.Merge(
+				_browseForSourceFile.ThrownExceptions,
+				_browseForDestinationFolder.ThrownExceptions,
+				_addDestinationFolder.ThrownExceptions,
+				_removeDestinationFolder.ThrownExceptions,
+				_confirm.ThrownExceptions)
 				.Subscribe(ex => MessageBox.Show(ex.Message, "An error occured", MessageBoxButtons.OK, MessageBoxIcon.Error));
 
 			_destinationFoldersSortedView = _destinationFolders.CreateDerivedCollection(x => x, orderer: (x, y) => x.CompareTo(y));
