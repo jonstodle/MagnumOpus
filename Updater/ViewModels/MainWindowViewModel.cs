@@ -62,6 +62,8 @@ namespace Updater.ViewModels
 					this.WhenAnyValue(x => x.SourceFilePath, x => x.HasValue(1)),
 					_destinationFolders.CountChanged.Select(x => x > 0),
 					(sourceFilePath, destinationFolders) => sourceFilePath && destinationFolders));
+			_confirm
+				.Subscribe(_ => MessageBox.Show("Files copied", "", MessageBoxButtons.OK, MessageBoxIcon.Information));
 
 			Observable.Merge(
 				_loadConfiguration.ThrownExceptions,
