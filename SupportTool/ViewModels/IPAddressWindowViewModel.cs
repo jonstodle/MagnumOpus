@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using SupportTool.Models;
 using SupportTool.Services.NavigationServices;
 using System;
 using System.Reactive.Linq;
