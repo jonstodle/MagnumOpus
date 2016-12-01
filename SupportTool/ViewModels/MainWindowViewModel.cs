@@ -114,6 +114,8 @@ namespace SupportTool.ViewModels
 				.Throttle(TimeSpan.FromSeconds(1))
 				.SelectMany(_ => Observable.Start(() => StateService.Set(nameof(_history), _history.Take(SettingsService.Current.HistoryCountLimit))))
 				.Subscribe();
+
+			SearchQuery = Environment.GetCommandLineArgs().Skip(1).FirstOrDefault();
 		}
 
 
