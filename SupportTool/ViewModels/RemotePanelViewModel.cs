@@ -86,8 +86,7 @@ namespace SupportTool.ViewModels
 
 		private IObservable<Unit> StartRemoteControlImpl(ComputerObject computer) => Observable.Start(() =>
 		{
-			var pingResult = new Ping().Send(computer.CN, 1000).Status;
-			if (pingResult != IPStatus.Success) throw new Exception("Could not reach computer");
+			EnsureComputerIsReachable(computer.CN);
 
 			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computer.CN}", RegistryView.Registry64);
 			var regKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\SMS\Mobile Client", false);
@@ -107,5 +106,10 @@ namespace SupportTool.ViewModels
 			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f");
 			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f");
 		});
+
+
+
+
+		private void EnsureComputerIsReachable(string hostName) {if(new Ping().Send(hostName, 1000).Status != IPStatus.Success) throw new Exception($"Could not reach {hostName}"); }
 	}
 }
