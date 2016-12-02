@@ -18,7 +18,10 @@ namespace SupportTool.Controls
 
 			ViewModel = new RemotePanelViewModel();
 
-            this.WhenActivated(d =>
+			this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null);
+			this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, x => x == null ? "Not available" : (bool)x ? "Disable UAC" : "Enable UAC");
+
+			this.WhenActivated(d =>
             {
                 d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton));
@@ -26,6 +29,7 @@ namespace SupportTool.Controls
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button));
 				d(this.BindCommand(ViewModel, vm => vm.KillRemoteTools, v => v.KillRemoteToolsButton));
+				d(this.BindCommand(ViewModel, vm => vm.ToggleUac, v => v.ToggleUACButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
 			});

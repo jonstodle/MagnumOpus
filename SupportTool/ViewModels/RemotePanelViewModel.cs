@@ -22,8 +22,10 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
 		private readonly ReactiveCommand<Unit, Unit> _killRemoteTools;
+		private readonly ReactiveCommand<Unit, bool> _toggleUac;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
+		private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
 		private ComputerObject _computer;
 
 
@@ -42,9 +44,17 @@ namespace SupportTool.ViewModels
 
 			_killRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer));
 
+			_toggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer));
+
 			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"));
 
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
+
+			_isUacOn = Observable.Merge(
+				this.WhenAnyValue(x => x.Computer).WhereNotNull().SelectMany(x => GetIsUacOn(x.CN).Select(y => (bool?)y).Catch(Observable.Return<bool?>(null))),
+				_toggleUac.Select(x => (bool?)x))
+				.ObserveOnDispatcher()
+				.ToProperty(this, x => x.IsUacOn);
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
@@ -53,8 +63,10 @@ namespace SupportTool.ViewModels
 				_startRemoteControlClassic.ThrownExceptions,
 				_startRemoteControl2012.ThrownExceptions,
 				_killRemoteTools.ThrownExceptions,
+				_toggleUac.ThrownExceptions,
 				_startRemoteAssistance.ThrownExceptions,
-				_startRdp.ThrownExceptions)
+				_startRdp.ThrownExceptions,
+				_isUacOn.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
 		}
 
@@ -72,9 +84,13 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand KillRemoteTools => _killRemoteTools;
 
+		public ReactiveCommand ToggleUac => _toggleUac;
+
 		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
 
 		public ReactiveCommand StartRdp => _startRdp;
+
+		public bool? IsUacOn => _isUacOn.Value;
 
 		public ComputerObject Computer
 		{
@@ -107,9 +123,43 @@ namespace SupportTool.ViewModels
 			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f");
 		});
 
+		private IObservable<bool> ToggleUacImpl(ComputerObject computer) => Observable.Start(() =>
+		{
+			var regValueName = "EnableLUA";
+			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, computer.CN, RegistryView.Registry64);
+			var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
+
+			if (GetIsUacOn(computer.CN).Wait())
+			{
+				key.SetValue(regValueName, 0);
+				return false;
+			}
+			else
+			{
+				key.SetValue(regValueName, 1);
+				return true;
+			}
+		}).Concat(GetIsUacOn(computer.CN));
 
 
 
 		private void EnsureComputerIsReachable(string hostName) {if(new Ping().Send(hostName, 1000).Status != IPStatus.Success) throw new Exception($"Could not reach {hostName}"); }
+
+		private IObservable<bool> GetIsUacOn(string hostName) => Observable.Start(() =>
+		{
+			EnsureComputerIsReachable(hostName);
+
+			var regValueName = "EnableLUA";
+			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, hostName, RegistryView.Registry64);
+			var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
+			if (int.TryParse(key?.GetValue(regValueName).ToString(), out int i))
+			{
+				return i == 1;
+			}
+			else
+			{
+				throw new Exception("Could not read registry value");
+			}
+		});
 	}
 }

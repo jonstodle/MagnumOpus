@@ -29,6 +29,8 @@
 
 			<Button x:Name="KillRemoteToolsButton" Content="Kill remote tools" Margin="2"/>
 
+			<Button x:Name="ToggleUACButton" Content="Disable UAC" Margin="2"/>
+
 			<Button x:Name="RdpButton" Content="RDP" Margin="2"/>
 		</WrapPanel>
     </StackPanel>
