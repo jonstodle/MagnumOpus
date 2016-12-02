@@ -20,6 +20,14 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
 
 
+		public PrincipalType DeterminePrincipalType(Principal principal)
+		{
+			if (principal is UserPrincipal) return PrincipalType.User;
+			else if (principal is ComputerPrincipal) return PrincipalType.Computer;
+			else if (principal is GroupPrincipal) return PrincipalType.Group;
+			else return PrincipalType.Generic;
+		}
+
         public IObservable<Principal> GetPrincipal(string identity) => Observable.Start(() => Principal.FindByIdentity(_principalContext, identity));
 
 		public IObservable<DirectoryEntry> SearchDirectory(string searchTerm) => Observable.Create<DirectoryEntry>(observer =>
@@ -42,5 +50,10 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
 		private DirectoryEntry GetDomainDirectoryEntry() => new DirectoryEntry($"LDAP://{CurrentDomain}");
 
+	}
+
+	public enum PrincipalType
+	{
+		Generic, User, Computer, Group
 	}
 }
