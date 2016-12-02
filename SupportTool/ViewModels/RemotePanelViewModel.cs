@@ -118,9 +118,9 @@ namespace SupportTool.ViewModels
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{
-			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f");
-			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f");
-			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f");
+			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f", false);
+			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f", false);
+			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f", false);
 		});
 
 		private IObservable<bool> ToggleUacImpl(ComputerObject computer) => Observable.Start(() =>

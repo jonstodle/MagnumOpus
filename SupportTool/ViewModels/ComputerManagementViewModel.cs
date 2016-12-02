@@ -28,7 +28,7 @@ namespace SupportTool.ViewModels
 			{
 				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No")) == 0)
 				{
-					ExecuteFile(Path.Combine(System32Path, "shutdown.exe"), $@"-r -f -m \\{_computer.CN} -t 0");
+					ExecuteFile(Path.Combine(System32Path, "shutdown.exe"), $@"-r -f -m \\{_computer.CN} -t 0", false);
 				}
 			});
 
