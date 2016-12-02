@@ -21,6 +21,7 @@ namespace SupportTool.Controls
 
             this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text);
 			this.OneWayBind(ViewModel, vm => vm.Group.Principal.Description, v => v.DescriptionTextBlock.Text, x => x.HasValue() ? x : "No description");
+			this.OneWayBind(ViewModel, vm => vm.Group.Notes, v => v.NotesTextBlock.Text, x => x.HasValue() ? x : "No notes");
 		}
 
 		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;

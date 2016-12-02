@@ -12,7 +12,9 @@
         <WrapPanel Opacity=".5" Margin="2">
             <TextBlock Text="Group"/>
             <TextBlock Text=" | "/>
-            <TextBlock x:Name="DescriptionTextBlock"/>
-        </WrapPanel>
+			<TextBlock x:Name="DescriptionTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="NotesTextBlock"/>
+		</WrapPanel>
     </StackPanel>
 </UserControl>
