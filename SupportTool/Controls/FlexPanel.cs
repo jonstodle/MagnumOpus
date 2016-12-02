@@ -16,7 +16,7 @@ namespace SupportTool.Controls
 
 		public static int GetFlexWeight(DependencyObject obj) => (int)obj.GetValue(FlexWeightProperty);
 		public static void SetFlexWeight(DependencyObject obj, int value) => obj.SetValue(FlexWeightProperty, value);
-		public static readonly DependencyProperty FlexWeightProperty = DependencyProperty.RegisterAttached("FlexWeight", typeof(int), typeof(FlexPanel), new PropertyMetadata(0));
+		public static readonly DependencyProperty FlexWeightProperty = DependencyProperty.RegisterAttached("FlexWeight", typeof(int), typeof(FlexPanel), new PropertyMetadata(1));
 
 		public Orientation Orientation
 		{
@@ -24,5 +24,65 @@ namespace SupportTool.Controls
 			set => SetValue(OrientationProperty, value);
 		}
 		public static readonly DependencyProperty OrientationProperty = DependencyProperty.Register(nameof(Orientation), typeof(Orientation), typeof(FlexPanel), new PropertyMetadata(Orientation.Vertical));
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			foreach (UIElement child in Children)
+			{
+				child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			}
+
+			return availableSize;
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var currentLength = 0d;
+			var totalLength = 0d;
+			var flexChildrenWeightParts = 0;
+
+			if (Orientation == Orientation.Vertical)
+			{
+				foreach (UIElement child in Children)
+				{
+					if (GetFlex(child)) flexChildrenWeightParts += GetFlexWeight(child);
+					else totalLength += child.DesiredSize.Height;
+				}
+
+				var flexSize = Math.Max(0, (finalSize.Height - totalLength) / flexChildrenWeightParts);
+
+				foreach (UIElement child in Children)
+				{
+					var arrangeRect = new Rect();
+					if (GetFlex(child)) arrangeRect = new Rect(0, currentLength, finalSize.Width, flexSize * GetFlexWeight(child));
+					else arrangeRect = new Rect(0, currentLength, finalSize.Width, child.DesiredSize.Height);
+
+					child.Arrange(arrangeRect);
+					currentLength += arrangeRect.Height;
+				}
+			}
+			else
+			{
+				foreach (UIElement child in Children)
+				{
+					if (GetFlex(child)) flexChildrenWeightParts += GetFlexWeight(child);
+					else totalLength += child.DesiredSize.Width;
+				}
+
+				var flexSize = Math.Max(0, (finalSize.Width - totalLength) / flexChildrenWeightParts);
+
+				foreach (UIElement child in Children)
+				{
+					var arrangeRect = new Rect();
+					if (GetFlex(child)) arrangeRect = new Rect(currentLength, 0, flexSize * GetFlexWeight(child), finalSize.Height);
+					else arrangeRect = new Rect(currentLength, 0, child.DesiredSize.Width, finalSize.Height);
+
+					child.Arrange(arrangeRect);
+					currentLength += arrangeRect.Width;
+				}
+			}
+
+			return finalSize;
+		}
 	}
 }
