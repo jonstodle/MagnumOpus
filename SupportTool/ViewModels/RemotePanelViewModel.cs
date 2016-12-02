@@ -151,7 +151,7 @@ namespace SupportTool.ViewModels
 
 			var regValueName = "EnableLUA";
 			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, hostName, RegistryView.Registry64);
-			var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
+			var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
 			if (int.TryParse(key?.GetValue(regValueName).ToString(), out int i))
 			{
 				return i == 1;
