@@ -27,12 +27,25 @@ namespace SupportTool.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			var desiredSize = new Size();
 			foreach (UIElement child in Children)
 			{
 				child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+				if (Orientation == Orientation.Vertical)
+				{
+					desiredSize.Height += child.DesiredSize.Height;
+					desiredSize.Width = Math.Max(desiredSize.Width, child.DesiredSize.Width);
+				}
+				else
+				{
+					desiredSize.Width += child.DesiredSize.Width;
+					desiredSize.Height = Math.Max(desiredSize.Height, child.DesiredSize.Height);
+				}
 			}
 
-			return availableSize;
+			if (double.IsPositiveInfinity(availableSize.Height) || double.IsPositiveInfinity(availableSize.Width)) return desiredSize;
+			else return availableSize;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
