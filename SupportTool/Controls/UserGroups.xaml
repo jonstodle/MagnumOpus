@@ -16,25 +16,15 @@
             <ToggleButton x:Name="AllGroupsToggleButton" Content="All groups" Margin="2"/>
         </WrapPanel>
 
-        <Grid x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
+        <StackPanel x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
 			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
 
-			<Grid Grid.Row="1">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-				
-				<Button x:Name="EditGroupsButton" Content="Edit" Margin="2"/>
+			<local:FlexPanel Orientation="Horizontal">
+				<Button x:Name="EditGroupsButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>
 
-				<Button x:Name="SaveGroupsButton" Content="Save" Grid.Column="1" Margin="2"/>
-			</Grid>
-		</Grid>
+				<Button x:Name="SaveGroupsButton" Content="Save" Margin="2"/>
+			</local:FlexPanel>
+		</StackPanel>
 
         <Grid x:Name="AllGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
             <Grid.ColumnDefinitions>

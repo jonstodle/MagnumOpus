@@ -10,19 +10,13 @@
     <StackPanel>
         <TextBlock Text="Ping" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
+        <local:FlexPanel Orientation="Horizontal">
 			<ToggleButton x:Name="PingToggleButton" Margin="2"/>
 
-			<TextBlock x:Name="PingResultTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="2"/>
+			<TextBlock x:Name="PingResultTextBlock" VerticalAlignment="Center" local:FlexPanel.Flex="True" Margin="2"/>
 
-            <ToggleButton x:Name="PingResultDetailsToggleButton" Content="Details" Grid.Column="2" Margin="2"/>
-        </Grid>
+            <ToggleButton x:Name="PingResultDetailsToggleButton" Content="Details" Margin="2"/>
+        </local:FlexPanel>
 
         <StackPanel x:Name="PingResultDetailsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
             <ListView x:Name="PingResultDetailsListView" Height="100" Margin="2">

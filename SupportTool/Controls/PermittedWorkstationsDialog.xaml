@@ -8,50 +8,30 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 	<Grid x:Name="ContainerGrid">
-		<Grid Margin="2">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
-
+		<local:FlexPanel Margin="2">
 			<TextBlock x:Name="TitleTextBlock" FontSize="20" Margin="2"/>
 
-			<Grid Grid.Row="1">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition/>
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-
+			<local:FlexPanel Orientation="Horizontal">
 				<TextBlock Text="Add computer: " Margin="2"/>
 
-				<TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
+				<TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" local:FlexPanel.Flex="True" Margin="2"/>
 
-				<Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Grid.Column="2" Margin="2"/>
-			</Grid>
+				<Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Margin="2"/>
+			</local:FlexPanel>
 
-			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" Grid.Row="2" Margin="2"/>
+			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" local:FlexPanel.Flex="True" Margin="2"/>
 
-			<Grid Grid.Row="3">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
+			<local:FlexPanel Orientation="Horizontal">
+				<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
 
-				<StackPanel Orientation="Horizontal">
-					<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
+				<Button x:Name="RemoveComputerButton" Content="Remove" Margin="2"/>
 
-					<Button x:Name="RemoveComputerButton" Content="Remove" Margin="2"/>
-				</StackPanel>
+				<Rectangle local:FlexPanel.Flex="True"/>
 
-				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-					<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
-					
-					<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
-				</StackPanel>
-			</Grid>
-		</Grid>
+				<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
+
+				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+			</local:FlexPanel>
+		</local:FlexPanel>
 	</Grid>
 </UserControl>
