@@ -3,6 +3,7 @@ using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -88,5 +89,9 @@ namespace SupportTool.Controls
 			get { return ViewModel; }
 			set { ViewModel = value as EditMemberOfDialogViewModel; }
 		}
+
+		private void SearchResultsOpen_Click(object sender, RoutedEventArgs e) => Observable.Return(Unit.Default).InvokeCommand(ViewModel.OpenSearchResultPrincipal);
+
+		private void PrincipalMemberOpen_Click(object sender, RoutedEventArgs e) => Observable.Return(Unit.Default).InvokeCommand(ViewModel.OpenMembersPrincipal);
 	}
 }

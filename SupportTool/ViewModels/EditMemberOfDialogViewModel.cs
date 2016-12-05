@@ -21,6 +21,8 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<string, Principal> _setPrincipal;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+		private readonly ReactiveCommand<Unit, Unit> _openSearchResultPrincipal;
+		private readonly ReactiveCommand<Unit, Unit> _openMembersPrincipal;
 		private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
 		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
@@ -63,6 +65,10 @@ namespace SupportTool.ViewModels
 				.Switch()
 				.ObserveOnDispatcher()
 				.Subscribe(x => _searchResults.Add(x));
+
+			_openSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
+
+			_openMembersPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedPrincipalMember as DirectoryEntry).Properties.Get<string>("name")));
 
 			_addToPrincipal = ReactiveCommand.Create(
 				() =>
@@ -107,6 +113,8 @@ namespace SupportTool.ViewModels
 					_setPrincipal.ThrownExceptions,
 					_getPrincipalMembers.ThrownExceptions,
 					_search.ThrownExceptions,
+					_openSearchResultPrincipal.ThrownExceptions,
+					_openMembersPrincipal.ThrownExceptions,
 					_addToPrincipal.ThrownExceptions,
 					_removeFromPrincipal.ThrownExceptions,
 					_save.ThrownExceptions,
@@ -121,6 +129,10 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand GetPrincipalMembers => _getPrincipalMembers;
 
 		public ReactiveCommand Search => _search;
+
+		public ReactiveCommand OpenSearchResultPrincipal => _openSearchResultPrincipal;
+
+		public ReactiveCommand OpenMembersPrincipal => _openMembersPrincipal;
 
 		public ReactiveCommand AddToPrincipal => _addToPrincipal;
 
@@ -199,6 +211,22 @@ namespace SupportTool.ViewModels
 
 			return result;
 		});
+
+
+
+		private async Task NavigateToPrincipal(string identity)
+		{
+			var principal = await ActiveDirectoryService.Current.GetPrincipal(identity);
+			switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
+			{
+				case PrincipalType.User: await NavigationService.ShowWindow<Views.UserWindow>(principal.Name); break;
+				case PrincipalType.Computer: await NavigationService.ShowWindow<Views.ComputerWindow>(principal.Name); break;
+				case PrincipalType.Group: await NavigationService.ShowWindow<Views.GroupWindow>(principal.Name); break;
+				case PrincipalType.Generic:
+				default:
+					break;
+			}
+		}
 
 
 

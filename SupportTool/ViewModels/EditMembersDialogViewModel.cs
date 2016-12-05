@@ -21,6 +21,8 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<string, GroupObject> _setGroup;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
 		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+		private readonly ReactiveCommand<Unit, Unit> _openSearchResult;
+		private readonly ReactiveCommand<Unit, Unit> _openGroupMember;
 		private readonly ReactiveCommand<Unit, Unit> _addToGroup;
 		private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
 		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
@@ -63,6 +65,10 @@ namespace SupportTool.ViewModels
 				.Switch()
 				.ObserveOnDispatcher()
 				.Subscribe(x => _searchResults.Add(x));
+
+			_openSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
+
+			_openGroupMember = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedGroupMember as DirectoryEntry).Properties.Get<string>("name")));
 
 			_addToGroup = ReactiveCommand.Create(
 				() =>
@@ -107,6 +113,8 @@ namespace SupportTool.ViewModels
 					_setGroup.ThrownExceptions,
 					_getGroupMembers.ThrownExceptions,
 					_search.ThrownExceptions,
+					_openSearchResult.ThrownExceptions,
+					_openGroupMember.ThrownExceptions,
 					_addToGroup.ThrownExceptions,
 					_removeFromGroup.ThrownExceptions,
 					_save.ThrownExceptions,
@@ -121,6 +129,10 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand GetGroupMembers => _getGroupMembers;
 
 		public ReactiveCommand Search => _search;
+
+		public ReactiveCommand OpenSearchResult => _openSearchResult;
+
+		public ReactiveCommand OpenGroupMember => _openGroupMember;
 
 		public ReactiveCommand AddToGroup => _addToGroup;
 
@@ -202,6 +214,22 @@ namespace SupportTool.ViewModels
 
 			return result;
 		});
+
+
+
+		private async Task NavigateToPrincipal(string identity)
+		{
+			var principal = await ActiveDirectoryService.Current.GetPrincipal(identity);
+			switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
+			{
+				case PrincipalType.User: await NavigationService.ShowWindow<Views.UserWindow>(principal.Name); break;
+				case PrincipalType.Computer: await NavigationService.ShowWindow<Views.ComputerWindow>(principal.Name); break;
+				case PrincipalType.Group: await NavigationService.ShowWindow<Views.GroupWindow>(principal.Name); break;
+				case PrincipalType.Generic:
+				default:
+					break;
+			}
+		}
 
 
 

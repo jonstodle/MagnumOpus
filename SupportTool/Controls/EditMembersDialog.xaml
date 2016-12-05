@@ -38,6 +38,11 @@
 							</GridView.Columns>
 						</GridView>
 					</ListView.View>
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Open" Click="SearchResultsOpen_Click"/>
+						</ContextMenu>
+					</ListView.ContextMenu>
 				</ListView>
 			</Grid>
 
@@ -56,6 +61,11 @@
 							</GridView.Columns>
 						</GridView>
 					</ListView.View>
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Open" Click="GroupMembersOpen_Click"/>
+						</ContextMenu>
+					</ListView.ContextMenu>
 				</ListView>
 
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2">

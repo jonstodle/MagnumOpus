@@ -29,7 +29,13 @@
 
 				<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
 
-				<ListView x:Name="SearchResultsListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Margin="2"/>
+				<ListView x:Name="SearchResultsListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Margin="2">
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Open" Click="SearchResultsOpen_Click"/>
+						</ContextMenu>
+					</ListView.ContextMenu>
+				</ListView>
 			</Grid>
 
 			<Grid Grid.Row="1" Grid.Column="1">
@@ -38,11 +44,17 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 
-				<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2"/>
+				<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2">
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Open" Click="PrincipalMemberOpen_Click"/>
+						</ContextMenu>
+					</ListView.ContextMenu>
+				</ListView>
 
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2">
 					<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
-					
+
 					<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
 				</StackPanel>
 			</Grid>
