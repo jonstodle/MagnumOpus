@@ -1,5 +1,8 @@
 ﻿using ReactiveUI;
 using SupportTool.Services.NavigationServices;
+using System;
+using System.Reactive;
+using System.Reactive.Subjects;
 using System.Windows.Controls;
 
 namespace SupportTool.Controls
@@ -27,13 +30,22 @@ namespace SupportTool.Controls
 			_parent.Children.Add(this);
 		}
 
+
+
+		public IObservable<Unit> Closed => _closeSubject;
+
+
+
 		private void Close()
 		{
+			_closeSubject.OnNext(Unit.Default);
+			_closeSubject.OnCompleted();
 			_parent.Children.Remove(this);
 		}
 
 
 
 		private Grid _parent;
+		private Subject<Unit> _closeSubject = new Subject<Unit>();
 	}
 }
