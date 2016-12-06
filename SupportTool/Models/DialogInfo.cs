@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Windows.Controls;
 
 namespace SupportTool.Models
@@ -25,9 +26,9 @@ namespace SupportTool.Models
 
 	public static class DialogInfoHelpers
 	{
-		public static IDisposable RegisterDialogHandler(this Interaction<DialogInfo, Unit> source, Grid parent) => source.RegisterHandler(interaction => 
+		public static IDisposable RegisterDialogHandler(this Interaction<DialogInfo, Unit> source, Grid parent) => source.RegisterHandler(async interaction => 
 		{
-			new ModalControl(parent, interaction.Input.Control, interaction.Input.Parameter);
+			await new ModalControl(parent, interaction.Input.Control, interaction.Input.Parameter).Closed;
 			interaction.SetOutput(Unit.Default);
 		});
 
