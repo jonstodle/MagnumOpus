@@ -55,15 +55,15 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
-				<TextBlock x:Name="DomainTextBlock" TextAlignment="Center" Opacity=".5" Grid.ColumnSpan="3" Margin="2"/>
+				<TextBlock x:Name="DomainTextBlock" TextAlignment="Center" Opacity=".5" VerticalAlignment="Center" Grid.ColumnSpan="3" Margin="2"/>
 
-				<StackPanel x:Name="SearchResultsStackPanel" Orientation="Horizontal">
+				<StackPanel x:Name="SearchResultsStackPanel" Orientation="Horizontal" VerticalAlignment="Center">
 					<TextBlock x:Name="SearchResultsCountTextBox" Margin="2"/>
 
 					<TextBlock Text=" (maximum 1000)" Opacity=".5" Margin="2"/>
 				</StackPanel>
 
-				<TextBlock x:Name="VersionTextBlock" Opacity="0" IsHitTestVisible="False" Margin="2"/>
+				<TextBlock x:Name="VersionTextBlock" Opacity="0" IsHitTestVisible="False" VerticalAlignment="Center" Margin="2"/>
 
 				<Button x:Name="SettingsButton" Content="Settings" Grid.Column="2" Margin="2"/>
 			</Grid>
