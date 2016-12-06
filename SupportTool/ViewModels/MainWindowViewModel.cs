@@ -55,7 +55,7 @@ namespace SupportTool.ViewModels
 					await NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery);
 					return Observable.Empty<DirectoryEntryInfo>();
 				}
-				else return ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)).SubscribeOn(RxApp.TaskpoolScheduler);
+				else return ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim()).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)).SubscribeOn(RxApp.TaskpoolScheduler);
 			});
 			_search
 				.Do(_ => _searchResults.Clear())
