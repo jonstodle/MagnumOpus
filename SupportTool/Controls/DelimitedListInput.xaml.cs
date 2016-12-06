@@ -41,7 +41,7 @@ namespace SupportTool.Controls
 				.Subscribe(ev =>
 				{
 					var items = ItemsTextBox.Text.Split(new char[] { ';', '\n', '\t', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-					foreach (var item in items) _resultSubject.OnNext(item);
+					_resultSubject.OnNext(items);
 					_resultSubject.OnCompleted();
 					_resultSubject = null;
 					Close();
@@ -52,6 +52,10 @@ namespace SupportTool.Controls
 				.Subscribe(ev => Close())
 				.AddTo(_subscribtions);
 		}
+
+
+
+		public IObservable<IEnumerable<string>> Results => _resultSubject;
 
 
 
@@ -70,7 +74,7 @@ namespace SupportTool.Controls
 
 
 		private Grid _parent;
-		private Subject<string> _resultSubject = new Subject<string>();
+		private Subject<IEnumerable<string>> _resultSubject = new Subject<IEnumerable<string>>();
 		private CompositeDisposable _subscribtions = new CompositeDisposable();
 	}
 }
