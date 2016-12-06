@@ -7,6 +7,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace SupportTool.Services.ActiveDirectoryServices
 {
@@ -89,13 +90,11 @@ namespace SupportTool.Services.ActiveDirectoryServices
             var dcs = new List<DomainController>();
             foreach (DomainController dc in Domain.GetCurrentDomain().DomainControllers) dcs.Add(dc);
 
-            dcs.Select((x, i) =>
-            {
+			Task.WhenAll(dcs.Select(x => Task.Run(() =>
+			{
 				try { if (!disposed) observer.OnNext(action(x)); }
 				catch { observer.OnNext(default(TResult)); }
-
-                return i;
-            }).AsParallel().Sum();
+			}))).Wait();
 
             observer.OnCompleted();
             return () => disposed = true;
