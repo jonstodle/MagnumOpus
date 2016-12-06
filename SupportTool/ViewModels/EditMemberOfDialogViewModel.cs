@@ -191,6 +191,7 @@ namespace SupportTool.ViewModels
 
 				try
 				{
+					if (group == null) throw new NullReferenceException("Not a group");
 					group.Principal.Members.Add(principal);
 					group.Principal.Save();
 				}
@@ -203,6 +204,7 @@ namespace SupportTool.ViewModels
 
 				try
 				{
+					if (group == null) throw new NullReferenceException("Not a group");
 					group.Principal.Members.Remove(principal);
 					group.Principal.Save();
 				}
