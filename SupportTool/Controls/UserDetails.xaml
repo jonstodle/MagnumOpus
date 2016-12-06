@@ -20,7 +20,9 @@
             <TextBlock Text=" | "/>
             <TextBlock x:Name="AccountLockedTextBlock"/>
             <TextBlock Text=" | "/>
-            <TextBlock x:Name="PasswordAgeTextBlock"/>
-        </WrapPanel>
+			<TextBlock x:Name="PasswordAgeTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBox x:Name="EmailAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
+		</WrapPanel>
     </StackPanel>
 </UserControl>
