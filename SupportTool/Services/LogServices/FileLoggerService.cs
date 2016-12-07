@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Reactive.Subjects;
 using System.IO;
 using System.Security.Principal;
+using System.Reactive.Linq;
 
 namespace SupportTool.Services.LogServices
 {
@@ -28,7 +29,8 @@ namespace SupportTool.Services.LogServices
 
 			_logWriter = new Subject<string>();
 			_logWriter
-				.Subscribe(message => File.AppendAllText(GetLogFilePath(), message));
+				.Buffer(TimeSpan.FromSeconds(2), 20)
+				.Subscribe(message => File.AppendAllLines(GetLogFilePath(), message));
 		}
 
 
