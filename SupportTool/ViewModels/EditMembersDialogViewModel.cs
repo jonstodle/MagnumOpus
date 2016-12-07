@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
@@ -16,7 +17,7 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMembersDialogViewModel : ViewModelBase, IDialog
+	public class EditMembersDialogViewModel : ViewModelBase, IDialog, IEnableLogger
 	{
 		private readonly ReactiveCommand<string, GroupObject> _setGroup;
 		private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
@@ -198,16 +199,32 @@ namespace SupportTool.ViewModels
 			{
 				var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
 
-				try { group.Principal.Members.Add(member); }
-				catch (Exception ex) { result.Add($"{member.SamAccountName} - {ex.Message}"); }
+				try
+				{
+					group.Principal.Members.Add(member);
+					this.Log().Info($"Added \"{ member.Name}\" to \"{group.CN}\"");
+				}
+				catch (Exception ex)
+				{
+					result.Add($"{member.SamAccountName} - {ex.Message}");
+					this.Log().Info($"Could not add \"{ member.Name}\" to \"{group.CN}\"");
+				}
 			}
 
 			foreach (var memberDe in membersToRemove)
 			{
 				var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
 
-				try { group.Principal.Members.Remove(member); }
-				catch (Exception ex) { result.Add($"{member.SamAccountName} - {ex.Message}"); }
+				try
+				{
+					group.Principal.Members.Remove(member);
+					this.Log().Info($"Removed \"{ member.Name}\" from \"{group.CN}\"");
+				}
+				catch (Exception ex)
+				{
+					result.Add($"{member.SamAccountName} - {ex.Message}");
+					this.Log().Info($"Could not remove \"{ member.Name}\" from \"{group.CN}\"");
+				}
 			}
 
 			group.Principal.Save();
