@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using static SupportTool.Services.FileServices.ExecutionService;
 
@@ -22,8 +23,10 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, bool> _toggleUac;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
+		private readonly ReactiveList<string> _loggedOnUsers;
 		private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
 		private ComputerObject _computer;
+		private bool _isShowingLoggedOnUsers;
 
 
 
@@ -47,11 +50,21 @@ namespace SupportTool.ViewModels
 
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
 
+			_loggedOnUsers = new ReactiveList<string>();
+
 			_isUacOn = Observable.Merge(
 				this.WhenAnyValue(x => x.Computer).WhereNotNull().SelectMany(x => GetIsUacOn(x.CN).Select(y => (bool?)y).Catch(Observable.Return<bool?>(null))),
 				_toggleUac.Select(x => (bool?)x))
 				.ObserveOnDispatcher()
 				.ToProperty(this, x => x.IsUacOn);
+
+			this.WhenAnyValue(x => x.Computer)
+				.WhereNotNull()
+				.Select(x => x.GetLoggedInUsers().Catch(Observable.Return("")))
+				.Switch()
+				.SubscribeOn(TaskPoolScheduler.Default)
+				.ObserveOnDispatcher()
+				.Subscribe(x => _loggedOnUsers.Add(x));
 
 			Observable.Merge(
 				_openLoggedOn.ThrownExceptions,
@@ -87,12 +100,20 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand StartRdp => _startRdp;
 
+		public ReactiveList<string> LoggedOnUsers => _loggedOnUsers;
+
 		public bool? IsUacOn => _isUacOn.Value;
 
 		public ComputerObject Computer
 		{
 			get { return _computer; }
 			set { this.RaiseAndSetIfChanged(ref _computer, value); }
+		}
+
+		public bool IsShowingLoggedOnUsers
+		{
+			get { return _isShowingLoggedOnUsers; }
+			set { this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
 		}
 
 
