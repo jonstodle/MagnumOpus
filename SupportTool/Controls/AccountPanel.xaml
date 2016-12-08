@@ -22,7 +22,7 @@
 
 			<Button x:Name="SplunkButton" Content="Splunk" Margin="2"/>
 
-			<Button x:Name="FindUserButton" Content="Find user" Margin="2"/>
+			<!--<Button x:Name="FindUserButton" Content="Find user" Margin="2"/>-->
 		</WrapPanel>
 
 		<local:FlexPanel x:Name="NewPasswordGrid" Orientation="Horizontal" Background="{StaticResource SubSectionBackgroundBrush}">

@@ -42,7 +42,7 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.RunLockoutStatus, v => v.LockOutStatusButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenPermittedWorkstations, v => v.PermittedWorkstationsButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
-				d(this.BindCommand(ViewModel, vm => vm.OpenFindUser, v => v.FindUserButton));
+				//d(this.BindCommand(ViewModel, vm => vm.OpenFindUser, v => v.FindUserButton));
 				d(NewPasswordTextBox.Events()
 					.KeyDown
                     .Where(x => x.Key == Key.Enter)
