@@ -200,7 +200,7 @@ namespace SupportTool.ViewModels
 				catch (Exception ex)
 				{
 					result.Add($"{group.CN} - {ex.Message}");
-					this.Log().Info($"Could not add \"{ group.CN}\" to \"{principal.Name}\"");
+					this.Log().Error($"Could not add \"{ group.CN}\" to \"{principal.Name}\"");
 				}
 			}
 
@@ -218,7 +218,7 @@ namespace SupportTool.ViewModels
 				catch (Exception ex)
 				{
 					result.Add($"{group.CN} - {ex.Message}");
-					this.Log().Info($"Could not remove \"{ group.CN}\" from \"{principal.Name}\"");
+					this.Log().Error($"Could not remove \"{ group.CN}\" from \"{principal.Name}\"");
 				}
 			}
 

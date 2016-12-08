@@ -207,7 +207,7 @@ namespace SupportTool.ViewModels
 				catch (Exception ex)
 				{
 					result.Add($"{member.SamAccountName} - {ex.Message}");
-					this.Log().Info($"Could not add \"{ member.Name}\" to \"{group.CN}\"");
+					this.Log().Error($"Could not add \"{ member.Name}\" to \"{group.CN}\"");
 				}
 			}
 
@@ -223,7 +223,7 @@ namespace SupportTool.ViewModels
 				catch (Exception ex)
 				{
 					result.Add($"{member.SamAccountName} - {ex.Message}");
-					this.Log().Info($"Could not remove \"{ member.Name}\" from \"{group.CN}\"");
+					this.Log().Error($"Could not remove \"{ member.Name}\" from \"{group.CN}\"");
 				}
 			}
 
