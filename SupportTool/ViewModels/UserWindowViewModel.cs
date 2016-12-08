@@ -35,10 +35,17 @@ namespace SupportTool.ViewModels
 
 		public Task OnNavigatedTo(object parameter)
 		{
-			if (parameter is string)
+			if (parameter is string s)
 			{
-				Observable.Return(parameter as string)
+				Observable.Return(s)
 					.InvokeCommand(_setUser);
+			}
+			else if (parameter is Tuple<string,string> t)
+			{
+				Observable.Return(t.Item1)
+					.InvokeCommand(_setUser);
+
+				MessageBus.Current.SendMessage(t.Item2, ApplicationActionRequest.SetLocalProfileComputerName.ToString());
 			}
 
 			return Task.FromResult<object>(null);

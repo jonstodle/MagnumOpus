@@ -3,6 +3,7 @@
 	public enum ApplicationActionRequest
     {
         Refresh,
-        LoadDirectGroupsForUser
+        LoadDirectGroupsForUser,
+		SetLocalProfileComputerName
     }
 }

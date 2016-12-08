@@ -129,6 +129,10 @@ namespace SupportTool.ViewModels
 
 			_openHomeFolder = ReactiveCommand.Create(() => { Process.Start(_user.HomeDirectory); });
 
+			MessageBus.Current
+				.Listen<string>(ApplicationActionRequest.SetLocalProfileComputerName.ToString())
+				.Subscribe(x => ComputerName = x);
+
 			Observable.Merge(
 				_openGlobalProfileDirectory.ThrownExceptions,
 				_openLocalProfileDirectory.ThrownExceptions,
