@@ -36,7 +36,7 @@ namespace SupportTool.ViewModels
 
 		public RemotePanelViewModel()
 		{
-			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(_selectedLoggedOnUser as string));
+			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create(_selectedLoggedOnUser as string, _computer.CN)));
 
 			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser as string));
 
