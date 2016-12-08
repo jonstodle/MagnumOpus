@@ -98,6 +98,23 @@ namespace SupportTool.Services.ActiveDirectoryServices
 			}).Wait();
 		});
 
+		public IObservable<LockoutInfo> GetLockoutInfo(string identity) => DoActionOnAllDCs(x =>
+		{
+			var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+
+			if (user == null) return new LockoutInfo { DomainControllerName = x.Name };
+
+			return new LockoutInfo
+			{
+				DomainControllerName = x.Name,
+				UserState = user.IsAccountLockedOut(),
+				BadPasswordCount = user.BadLogonCount,
+				LastBadPassword = user.LastBadPasswordAttempt,
+				PasswordLastSet = user.LastPasswordSet,
+				LockoutTime = user.AccountLockoutTime
+			};
+		});
+
         private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Create<TResult>(observer =>
         {
             var disposed = false;

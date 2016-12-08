@@ -229,6 +229,9 @@
     <Compile Include="Controls\UserGroups.xaml.cs">
       <DependentUpon>UserGroups.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\UserLockoutInfo.xaml.cs">
+      <DependentUpon>UserLockoutInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Executables\Helpers.cs" />
     <Compile Include="Extensions\ReactiveUIExtensions.cs" />
     <Compile Include="Extensions\SystemDirectoryServicesAccountManagement.cs" />
@@ -240,6 +243,7 @@
     <Compile Include="Models\ActiveDirectoryObject.cs" />
     <Compile Include="Models\ApplicationActionRequest.cs" />
     <Compile Include="Models\DialogInfo.cs" />
+    <Compile Include="Models\LockoutInfo.cs" />
     <Compile Include="Models\MessageInfo.cs" />
     <Compile Include="Models\OperatingSystemInfo.cs" />
     <Compile Include="Models\ComputerObject.cs" />
@@ -283,6 +287,7 @@
     <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
     <Compile Include="ViewModels\UserDetailsViewModel.cs" />
     <Compile Include="ViewModels\UserGroupsViewModel.cs" />
+    <Compile Include="ViewModels\UserLockoutInfoViewModel.cs" />
     <Compile Include="ViewModels\UserWindowViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\ComputerWindow.xaml.cs">
@@ -370,6 +375,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UserGroups.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UserLockoutInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
