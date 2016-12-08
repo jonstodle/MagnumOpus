@@ -18,8 +18,10 @@
             <TextBlock Text=" | "/>
             <TextBlock x:Name="ExpirationTextBlock"/>
             <TextBlock Text=" | "/>
-            <TextBlock x:Name="AccountLockedTextBlock"/>
-            <TextBlock Text=" | "/>
+			<TextBlock x:Name="AccountLockedTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="AccountEnabledTextBlock"/>
+			<TextBlock Text=" | "/>
 			<TextBlock x:Name="PasswordAgeTextBlock"/>
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="EmailAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
