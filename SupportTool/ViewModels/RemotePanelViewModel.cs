@@ -14,8 +14,7 @@ namespace SupportTool.ViewModels
 {
 	public class RemotePanelViewModel : ViewModelBase
 	{
-		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
-		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
+		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnUserDetails;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
@@ -32,9 +31,7 @@ namespace SupportTool.ViewModels
 
 		public RemotePanelViewModel()
 		{
-			_openLoggedOn = ReactiveCommand.Create(() => ExecuteInternalCmd("PsLoggedon.exe", $@"\\{_computer.CN}"));
-
-			_openLoggedOnPlus = ReactiveCommand.Create(() => ExecuteInternalCmd("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe /K query user"));
+			_openLoggedOnUserDetails = ReactiveCommand.Create(() => ExecuteCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
 
 			_startRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
@@ -67,8 +64,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _loggedOnUsers.Add(x));
 
 			Observable.Merge(
-				_openLoggedOn.ThrownExceptions,
-				_openLoggedOnPlus.ThrownExceptions,
+				_openLoggedOnUserDetails.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
 				_startRemoteControlClassic.ThrownExceptions,
 				_startRemoteControl2012.ThrownExceptions,
@@ -82,9 +78,7 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand OpenLoggedOn => _openLoggedOn;
-
-		public ReactiveCommand OpenLoggedOnPlus => _openLoggedOnPlus;
+		public ReactiveCommand OpenLoggedOnUserDetails => _openLoggedOnUserDetails;
 
 		public ReactiveCommand StartRemoteControl => _startRemoteControl;
 
