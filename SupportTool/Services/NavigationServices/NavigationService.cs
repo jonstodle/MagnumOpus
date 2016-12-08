@@ -42,7 +42,7 @@ namespace SupportTool.Services.NavigationServices
 			newWindow.Show();
 		}
 
-		public static Task ShowPrincipalWindow(Principal principal, object parameter = null)
+		public static Task ShowPrincipalWindow(Principal principal)
 		{
 			var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(principal);
 			if (principalType == PrincipalType.User) return ShowWindow<Views.UserWindow>(principal.Name);

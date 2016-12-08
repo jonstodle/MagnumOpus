@@ -234,19 +234,7 @@ namespace SupportTool.ViewModels
 
 
 
-		private async Task NavigateToPrincipal(string identity)
-		{
-			var principal = await ActiveDirectoryService.Current.GetPrincipal(identity);
-			switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
-			{
-				case PrincipalType.User: await NavigationService.ShowWindow<Views.UserWindow>(principal.Name); break;
-				case PrincipalType.Computer: await NavigationService.ShowWindow<Views.ComputerWindow>(principal.Name); break;
-				case PrincipalType.Group: await NavigationService.ShowWindow<Views.GroupWindow>(principal.Name); break;
-				case PrincipalType.Generic:
-				default:
-					break;
-			}
-		}
+		private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
 
 
 

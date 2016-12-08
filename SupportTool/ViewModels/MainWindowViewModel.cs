@@ -72,9 +72,7 @@ namespace SupportTool.ViewModels
 					var cn = de.CN;
 					var principal = await ActiveDirectoryService.Current.GetPrincipal(cn);
 
-					if (principal is UserPrincipal) await NavigationService.ShowWindow<Views.UserWindow>(principal.SamAccountName);
-					else if (principal is ComputerPrincipal) await NavigationService.ShowWindow<Views.ComputerWindow>(principal.SamAccountName);
-					else if (principal is GroupPrincipal) await NavigationService.ShowWindow<Views.GroupWindow>(principal.SamAccountName);
+					await NavigationService.ShowPrincipalWindow(principal);
 
 					if(!_history.Contains(cn)) _history.Insert(0, cn);
 				},
