@@ -84,6 +84,20 @@ namespace SupportTool.Services.ActiveDirectoryServices
             }).Wait();
         });
 
+		public IObservable<Unit> SetEnabled(string identity, bool enabled) => Observable.Start(() =>
+		{
+			DoActionOnAllDCs(x =>
+			{
+				var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+				if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
+
+				user.Enabled = enabled;
+				user.Save();
+
+				return Unit.Default;
+			}).Wait();
+		});
+
         private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Create<TResult>(observer =>
         {
             var disposed = false;
