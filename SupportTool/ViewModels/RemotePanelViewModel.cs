@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
 using SupportTool.Models;
+using SupportTool.Services.NavigationServices;
 using SupportTool.Services.SettingsServices;
 using System;
 using System.IO;
@@ -8,12 +9,15 @@ using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Windows;
 using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
 {
 	public class RemotePanelViewModel : ViewModelBase
 	{
+		private readonly ReactiveCommand<Unit, Unit> _openUser;
+		private readonly ReactiveCommand<Unit, Unit> _copyUserName;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnUserDetails;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
@@ -26,11 +30,16 @@ namespace SupportTool.ViewModels
 		private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
 		private ComputerObject _computer;
 		private bool _isShowingLoggedOnUsers;
+		private object _selectedLoggedOnUser;
 
 
 
 		public RemotePanelViewModel()
 		{
+			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(_selectedLoggedOnUser as string));
+
+			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser as string));
+
 			_openLoggedOnUserDetails = ReactiveCommand.Create(() => ExecuteCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
 
 			_startRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
@@ -63,6 +72,7 @@ namespace SupportTool.ViewModels
 				.Subscribe(x => _loggedOnUsers.Add(x));
 
 			Observable.Merge(
+				_openUser.ThrownExceptions,
 				_openLoggedOnUserDetails.ThrownExceptions,
 				_startRemoteControl.ThrownExceptions,
 				_startRemoteControlClassic.ThrownExceptions,
@@ -76,6 +86,10 @@ namespace SupportTool.ViewModels
 		}
 
 
+
+		public ReactiveCommand OpenUser => _openUser;
+
+		public ReactiveCommand CopyUserName => _copyUserName;
 
 		public ReactiveCommand OpenLoggedOnUserDetails => _openLoggedOnUserDetails;
 
@@ -107,6 +121,12 @@ namespace SupportTool.ViewModels
 		{
 			get { return _isShowingLoggedOnUsers; }
 			set { this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
+		}
+
+		public object SelectedLoggedOnUser
+		{
+			get { return _selectedLoggedOnUser; }
+			set { this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }
 		}
 
 
