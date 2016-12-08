@@ -2,6 +2,7 @@
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
+using System.Management;
 using System.Net;
 using System.Reactive.Linq;
 
@@ -61,5 +62,32 @@ namespace SupportTool.Models
 		public IObservable<string> GetIPAddress() => Observable.Start(() => 
 			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString())
 			.Catch(Observable.Return(""));
-    }
+
+		public IObservable<string> GetLoggedInUsers() => Observable.Create<string>(observer =>
+		{
+			var disposed = false;
+
+			var conOptions = new ConnectionOptions()
+			{
+				Impersonation = ImpersonationLevel.Impersonate,
+				EnablePrivileges = true
+			};
+			var scope = new ManagementScope($"\\\\{CN}\\ROOT\\CIMV2", conOptions);
+			scope.Connect();
+
+			var query = new ObjectQuery("SELECT * FROM Win32_Process where name='explorer.exe'");
+			var searcher = new ManagementObjectSearcher(scope, query);
+
+			foreach (ManagementObject item in searcher.Get())
+			{
+				var argsArray = new string[] { string.Empty };
+				item.InvokeMethod("GetOwner", argsArray);
+				if (disposed) break;
+				observer.OnNext(argsArray[0]);
+			}
+
+			observer.OnCompleted();
+			return () => disposed = true;
+		});
+	}
 }
