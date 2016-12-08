@@ -29,10 +29,12 @@ namespace SupportTool.Controls
             this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked);
             this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility);
             this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text);
+			this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, x => x != null ? (bool)x ? "Disable" : "Enable" : "Unavailable");
+			this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, x => x != null ? true : false);
 
 
 
-            this.WhenActivated(d =>
+			this.WhenActivated(d =>
             {
                 d(this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton));
@@ -41,7 +43,8 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.UnlockAccount, v => v.UnlockAccountButton));
                 d(this.BindCommand(ViewModel, vm => vm.RunLockoutStatus, v => v.LockOutStatusButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenPermittedWorkstations, v => v.PermittedWorkstationsButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
+				d(this.BindCommand(ViewModel, vm => vm.ToggleEnabled, v => v.ToggleEnabledButton));
+				d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
 				//d(this.BindCommand(ViewModel, vm => vm.OpenFindUser, v => v.FindUserButton));
 				d(NewPasswordTextBox.Events()
 					.KeyDown

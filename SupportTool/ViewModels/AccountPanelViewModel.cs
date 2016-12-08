@@ -19,6 +19,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _unlockAccount;
         private readonly ReactiveCommand<Unit, Unit> _runLockoutStatus;
         private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
+		private readonly ReactiveCommand<Unit, Unit> _toggleEnabled;
 		private readonly ReactiveCommand<Unit, Unit> _openSplunk;
 		private readonly ReactiveCommand<Unit, Unit> _openFindUser;
 		private UserObject _user;
@@ -59,6 +60,10 @@ namespace SupportTool.ViewModels
 
 			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
+			_toggleEnabled = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.SetEnabled(User.Principal.SamAccountName, !User.Principal.Enabled ?? true));
+			_toggleEnabled
+				.Subscribe(_ => MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString()));
+
 			_openSplunk = ReactiveCommand.Create(() =>
             {
                 Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
@@ -77,6 +82,7 @@ namespace SupportTool.ViewModels
 				_unlockAccount.ThrownExceptions,
 				_runLockoutStatus.ThrownExceptions,
 				_openPermittedWorkstations.ThrownExceptions,
+				_toggleEnabled.ThrownExceptions,
 				_openFindUser.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 		}
@@ -96,6 +102,8 @@ namespace SupportTool.ViewModels
         public ReactiveCommand RunLockoutStatus => _runLockoutStatus;
 
         public ReactiveCommand OpenPermittedWorkstations => _openPermittedWorkstations;
+
+		public ReactiveCommand ToggleEnabled => _toggleEnabled;
 
 		public ReactiveCommand OpenSplunk => _openSplunk;
 

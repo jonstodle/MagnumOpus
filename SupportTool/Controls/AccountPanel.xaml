@@ -20,6 +20,8 @@
 
 			<Button x:Name="PermittedWorkstationsButton" Content="Log on to" Margin="2"/>
 
+			<Button x:Name="ToggleEnabledButton" Content="Disable" Margin="2"/>
+
 			<Button x:Name="SplunkButton" Content="Splunk" Margin="2"/>
 
 			<!--<Button x:Name="FindUserButton" Content="Find user" Margin="2"/>-->
