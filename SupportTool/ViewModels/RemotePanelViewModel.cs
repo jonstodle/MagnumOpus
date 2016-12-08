@@ -57,9 +57,8 @@ namespace SupportTool.ViewModels
 
 			this.WhenAnyValue(x => x.Computer)
 				.WhereNotNull()
-				.Select(x => x.GetLoggedInUsers().Catch(Observable.Return("")))
+				.Select(x => x.GetLoggedInUsers().SubscribeOn(TaskPoolScheduler.Default).Catch(Observable.Return("")))
 				.Switch()
-				.SubscribeOn(TaskPoolScheduler.Default)
 				.ObserveOnDispatcher()
 				.Subscribe(x => _loggedOnUsers.Add(x));
 
