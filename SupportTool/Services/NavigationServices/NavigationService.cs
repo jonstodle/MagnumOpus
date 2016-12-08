@@ -1,5 +1,7 @@
 ﻿using ReactiveUI;
+using SupportTool.Services.ActiveDirectoryServices;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -38,6 +40,15 @@ namespace SupportTool.Services.NavigationServices
 			await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
 			newWindow.Show();
+		}
+
+		public static Task ShowPrincipalWindow(Principal principal, object parameter = null)
+		{
+			var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(principal);
+			if (principalType == PrincipalType.User) return ShowWindow<Views.UserWindow>(principal.Name);
+			if (principalType == PrincipalType.Computer) return ShowWindow<Views.ComputerWindow>(principal.Name);
+			if (principalType == PrincipalType.Group) return ShowWindow<Views.GroupWindow>(principal.Name);
+			else return Task.FromResult<object>(null);
 		}
 
 
