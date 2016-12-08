@@ -1,13 +1,10 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.FileServices;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
-
-using static SupportTool.Executables.Helpers;
 using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels

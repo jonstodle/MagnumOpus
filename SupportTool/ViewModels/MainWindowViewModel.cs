@@ -6,7 +6,6 @@ using SupportTool.Services.SettingsServices;
 using SupportTool.Services.StateServices;
 using System;
 using System.ComponentModel;
-using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;

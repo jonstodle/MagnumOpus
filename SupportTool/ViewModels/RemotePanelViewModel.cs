@@ -1,15 +1,12 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.FileServices;
 using SupportTool.Services.SettingsServices;
 using System;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Linq;
-
-using static SupportTool.Executables.Helpers;
 using static SupportTool.Services.FileServices.ExecutionService;
 
 namespace SupportTool.ViewModels
