@@ -61,10 +61,12 @@ namespace SupportTool.Controls
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.AddToPrincipal));
+				d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem, nameof(MenuItem.Click)));
 				d(PrincipalMembersListView.Events()
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromPrincipal));
+				d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem, nameof(MenuItem.Click)));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
 				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ViewModel
@@ -89,9 +91,5 @@ namespace SupportTool.Controls
 			get { return ViewModel; }
 			set { ViewModel = value as EditMemberOfDialogViewModel; }
 		}
-
-		private void SearchResultsOpen_Click(object sender, RoutedEventArgs e) => Observable.Return(Unit.Default).InvokeCommand(ViewModel.OpenSearchResultPrincipal);
-
-		private void PrincipalMemberOpen_Click(object sender, RoutedEventArgs e) => Observable.Return(Unit.Default).InvokeCommand(ViewModel.OpenMembersPrincipal);
 	}
 }

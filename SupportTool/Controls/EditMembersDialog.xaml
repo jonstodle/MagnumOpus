@@ -40,7 +40,7 @@
 					</ListView.View>
 					<ListView.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Open" Click="SearchResultsOpen_Click"/>
+							<MenuItem x:Name="OpenSearchResultMenuItem" Header="Open"/>
 						</ContextMenu>
 					</ListView.ContextMenu>
 				</ListView>
@@ -63,7 +63,7 @@
 					</ListView.View>
 					<ListView.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Open" Click="GroupMembersOpen_Click"/>
+							<MenuItem x:Name="OpenGroupMemberMenuItem" Header="Open"/>
 						</ContextMenu>
 					</ListView.ContextMenu>
 				</ListView>

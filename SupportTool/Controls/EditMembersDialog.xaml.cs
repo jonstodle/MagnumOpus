@@ -61,10 +61,12 @@ namespace SupportTool.Controls
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.AddToGroup));
+				d(this.BindCommand(ViewModel, vm => vm.OpenSearchResult, v => v.OpenSearchResultMenuItem, nameof(MenuItem.Click)));
 				d(GroupMembersListView.Events()
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromGroup));
+				d(this.BindCommand(ViewModel, vm => vm.OpenGroupMember, v => v.OpenGroupMemberMenuItem, nameof(MenuItem.Click)));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
 				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ViewModel
@@ -89,9 +91,5 @@ namespace SupportTool.Controls
 			get { return ViewModel; }
 			set { ViewModel = value as EditMembersDialogViewModel; }
 		}
-
-		private void SearchResultsOpen_Click(object sender, RoutedEventArgs e) => Observable.Return(Unit.Default).InvokeCommand(ViewModel.OpenSearchResult);
-
-		private void GroupMembersOpen_Click(object sender, RoutedEventArgs e) => Observable.Return(Unit.Default).InvokeCommand(ViewModel.OpenGroupMember);
 	}
 }

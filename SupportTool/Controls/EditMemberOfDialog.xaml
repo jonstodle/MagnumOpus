@@ -32,7 +32,7 @@
 				<ListView x:Name="SearchResultsListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Margin="2">
 					<ListView.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Open" Click="SearchResultsOpen_Click"/>
+							<MenuItem x:Name="OpenSearchResultMenuItem" Header="Open"/>
 						</ContextMenu>
 					</ListView.ContextMenu>
 				</ListView>
@@ -47,7 +47,7 @@
 				<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2">
 					<ListView.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Open" Click="PrincipalMemberOpen_Click"/>
+							<MenuItem x:Name="OpenMembersPrincipalMenuItem" Header="Open"/>
 						</ContextMenu>
 					</ListView.ContextMenu>
 				</ListView>
