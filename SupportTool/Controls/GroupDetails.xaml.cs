@@ -20,7 +20,6 @@ namespace SupportTool.Controls
 			ViewModel = new GroupDetailsViewModel();
 
             this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text);
-			this.OneWayBind(ViewModel, vm => vm.Group.Principal.Description, v => v.DescriptionTextBlock.Text, x => x.HasValue() ? x : "No description");
 		}
 
 		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;

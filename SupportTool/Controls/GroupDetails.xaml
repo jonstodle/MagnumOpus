@@ -10,9 +10,7 @@
         <TextBox x:Name="CNTextBlock" FontSize="20" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>
 
         <WrapPanel Opacity=".5" Margin="2">
-            <TextBlock Text="Group"/>
-            <TextBlock Text=" | "/>
-			<TextBlock x:Name="DescriptionTextBlock"/>
+			<TextBlock Text="Group"/>
 		</WrapPanel>
     </StackPanel>
 </UserControl>

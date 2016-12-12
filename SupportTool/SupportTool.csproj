@@ -199,6 +199,9 @@
       <DependentUpon>EditMembersDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FlexPanel.cs" />
+    <Compile Include="Controls\GroupDescriptionPanel.xaml.cs">
+      <DependentUpon>GroupDescriptionPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\GroupDetails.xaml.cs">
       <DependentUpon>GroupDetails.xaml</DependentUpon>
     </Compile>
@@ -276,6 +279,7 @@
     <Compile Include="ViewModels\ComputerWindowViewModel.cs" />
     <Compile Include="ViewModels\EditMemberOfDialogViewModel.cs" />
     <Compile Include="ViewModels\EditMembersDialogViewModel.cs" />
+    <Compile Include="ViewModels\GroupDescriptionPanelViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
     <Compile Include="ViewModels\GroupNotesPanelViewModel.cs" />
@@ -339,6 +343,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\EditMembersDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GroupDescriptionPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
