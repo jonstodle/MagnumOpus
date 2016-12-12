@@ -21,6 +21,7 @@ namespace SupportTool.Views
 			this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group);
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group);
+			this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupNotes.Group);
 
 			this.WhenActivated(d =>
 			{
@@ -28,12 +29,14 @@ namespace SupportTool.Views
 			d(new List<Interaction<MessageInfo, Unit>>
 				{
 					GroupDetails.InfoMessages,
-					GroupGroups.InfoMessages
+					GroupGroups.InfoMessages,
+					GroupNotes.InfoMessages
 				}.RegisterInfoHandler(ContainerGrid));
 				d(new List<Interaction<MessageInfo, Unit>>
 				{
 					GroupDetails.ErrorMessages,
-					GroupGroups.ErrorMessages
+					GroupGroups.ErrorMessages,
+					GroupNotes.ErrorMessages
 				}.RegisterErrorHandler(ContainerGrid));
 				d(GroupGroups
 					.DialogRequests

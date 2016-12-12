@@ -205,6 +205,9 @@
     <Compile Include="Controls\GroupGroups.xaml.cs">
       <DependentUpon>GroupGroups.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GroupNotesPanel.xaml.cs">
+      <DependentUpon>GroupNotesPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\IPAddressPanel.xaml.cs">
       <DependentUpon>IPAddressPanel.xaml</DependentUpon>
     </Compile>
@@ -275,6 +278,7 @@
     <Compile Include="ViewModels\EditMembersDialogViewModel.cs" />
     <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
     <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
+    <Compile Include="ViewModels\GroupNotesPanelViewModel.cs" />
     <Compile Include="ViewModels\GroupWindowViewModel.cs" />
     <Compile Include="ViewModels\IPAddressPanelViewModel.cs" />
     <Compile Include="ViewModels\IPAddressWindowViewModel.cs" />
@@ -343,6 +347,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GroupGroups.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GroupNotesPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
