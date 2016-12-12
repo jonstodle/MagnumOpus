@@ -30,7 +30,7 @@ namespace SupportTool.ViewModels
 
 			this.WhenAnyValue(x => x.Group)
 				.WhereNotNull()
-				.Select(x => x.Notes.Replace("\r", ""))
+				.Select(x => x.Notes?.Replace("\r", ""))
 				.Subscribe(x => Notes = x);
 
 			Observable.Merge(
