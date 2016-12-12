@@ -11,9 +11,9 @@
         <TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Direct groups" Margin="2"/>
+            <ToggleButton x:Name="DirectGroupsToggleButton" Content="Member of" Margin="2"/>
 
-            <ToggleButton x:Name="AllGroupsToggleButton" Content="All groups" Margin="2"/>
+            <ToggleButton x:Name="AllGroupsToggleButton" Content="Member of (all)" Margin="2"/>
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
