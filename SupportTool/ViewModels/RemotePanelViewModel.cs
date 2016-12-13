@@ -38,7 +38,7 @@ namespace SupportTool.ViewModels
 		{
 			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create(_selectedLoggedOnUser as string, _computer.CN)));
 
-			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser as string));
+			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText((_selectedLoggedOnUser as LoggedOnUserInfo).Username));
 
 			_openLoggedOnUserDetails = ReactiveCommand.Create(() => ExecuteCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
 
