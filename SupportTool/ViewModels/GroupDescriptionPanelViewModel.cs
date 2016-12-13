@@ -35,7 +35,7 @@ namespace SupportTool.ViewModels
 				.Select(x => x.Principal.Description)
 				.Subscribe(x =>
 				{
-					_descriptionBackup = x ?? "";
+					_descriptionBackup = x;
 					Description = _descriptionBackup;
 				});
 
