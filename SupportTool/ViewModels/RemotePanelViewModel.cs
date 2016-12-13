@@ -18,6 +18,7 @@ namespace SupportTool.ViewModels
 	{
 		private readonly ReactiveCommand<Unit, Unit> _openUser;
 		private readonly ReactiveCommand<Unit, Unit> _copyUserName;
+		private readonly ReactiveCommand<Unit, Unit> _logOffUser;
 		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnUserDetails;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
@@ -39,6 +40,8 @@ namespace SupportTool.ViewModels
 			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create(_selectedLoggedOnUser as string, _computer.CN)));
 
 			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText((_selectedLoggedOnUser as LoggedOnUserInfo).Username));
+
+			_logOffUser = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "logoff.exe"), $"{(_selectedLoggedOnUser as LoggedOnUserInfo).SessionID} /server:{_computer.CN}", false));
 
 			_openLoggedOnUserDetails = ReactiveCommand.Create(() => ExecuteCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
 
@@ -90,6 +93,8 @@ namespace SupportTool.ViewModels
 		public ReactiveCommand OpenUser => _openUser;
 
 		public ReactiveCommand CopyUserName => _copyUserName;
+
+        public ReactiveCommand LogOffUser => _logOffUser;
 
 		public ReactiveCommand OpenLoggedOnUserDetails => _openLoggedOnUserDetails;
 

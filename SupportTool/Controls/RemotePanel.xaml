@@ -44,6 +44,7 @@
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="CopyUsernameMenuItem" Header="Copy username"/>
+						<MenuItem x:Name="LogOffUserMenuItem" Header="Log off user"/>
 					</ContextMenu>
 				</ListView.ContextMenu>
 			</ListView>
