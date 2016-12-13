@@ -9,12 +9,14 @@
 	<local:FlexPanel>
 		<TextBlock Text="Description" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
-		<local:FlexPanel Orientation="Horizontal">
+		<StackPanel>
 			<TextBox x:Name="DescriptionTextBox" MaxLines="1" local:FlexPanel.Flex="True" Margin="2"/>
 
-			<Button x:Name="SaveButton" Content="Save" Margin="2"/>
+			<StackPanel x:Name="DescriptionButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button x:Name="SaveButton" Content="Save" Margin="2"/>
 
-			<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
-		</local:FlexPanel>
+				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+			</StackPanel>
+		</StackPanel>
 	</local:FlexPanel>
 </UserControl>

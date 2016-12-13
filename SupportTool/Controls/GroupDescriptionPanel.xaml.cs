@@ -31,8 +31,7 @@ namespace SupportTool.Controls
 			ViewModel = new GroupDescriptionPanelViewModel();
 
 			this.Bind(ViewModel, vm => vm.Description, v => v.DescriptionTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.IsDescriptionDirty, v => v.SaveButton.Visibility);
-			this.OneWayBind(ViewModel, vm => vm.IsDescriptionDirty, v => v.CancelButton.Visibility);
+			this.OneWayBind(ViewModel, vm => vm.IsDescriptionDirty, v => v.DescriptionButtonsStackPanel.Visibility);
 
 			this.WhenActivated(d =>
 			{
