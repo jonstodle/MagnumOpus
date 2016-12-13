@@ -35,7 +35,12 @@
 		</WrapPanel>
 
 		<StackPanel x:Name="LoggedOnUsersStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
-			<ListView x:Name="LoggedOnUsersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="100">
+			<ListView x:Name="LoggedOnUsersListView" Height="100">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Username}"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="CopyUsernameMenuItem" Header="Copy username"/>

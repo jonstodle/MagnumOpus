@@ -63,7 +63,7 @@ namespace SupportTool.Models
 			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString())
 			.Catch(Observable.Return(""));
 
-		public IObservable<string> GetLoggedInUsers() => Observable.Create<string>(observer =>
+		public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Create<LoggedOnUserInfo>(observer =>
 		{
 			var disposed = false;
 
@@ -82,8 +82,9 @@ namespace SupportTool.Models
 			{
 				var argsArray = new string[] { string.Empty };
 				item.InvokeMethod("GetOwner", argsArray);
+				var hasSessionID = int.TryParse(item["sessionID"].ToString(), out int sessionID);
 				if (disposed) break;
-				observer.OnNext(argsArray[0]);
+				observer.OnNext(new LoggedOnUserInfo { Username = argsArray[0], SessionID = hasSessionID ? sessionID : -1 });
 			}
 
 			observer.OnCompleted();

@@ -26,7 +26,7 @@ namespace SupportTool.ViewModels
 		private readonly ReactiveCommand<Unit, bool> _toggleUac;
 		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
 		private readonly ReactiveCommand<Unit, Unit> _startRdp;
-		private readonly ReactiveList<string> _loggedOnUsers;
+		private readonly ReactiveList<LoggedOnUserInfo> _loggedOnUsers;
 		private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
 		private ComputerObject _computer;
 		private bool _isShowingLoggedOnUsers;
@@ -56,7 +56,7 @@ namespace SupportTool.ViewModels
 
 			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
 
-			_loggedOnUsers = new ReactiveList<string>();
+			_loggedOnUsers = new ReactiveList<LoggedOnUserInfo>();
 
 			_isUacOn = Observable.Merge(
 				this.WhenAnyValue(x => x.Computer).WhereNotNull().SelectMany(x => GetIsUacOn(x.CN).Select(y => (bool?)y).Catch(Observable.Return<bool?>(null))),
@@ -66,7 +66,7 @@ namespace SupportTool.ViewModels
 
 			this.WhenAnyValue(x => x.Computer)
 				.WhereNotNull()
-				.Select(x => x.GetLoggedInUsers().SubscribeOn(TaskPoolScheduler.Default).Catch(Observable.Return("")))
+				.Select(x => x.GetLoggedInUsers().SubscribeOn(TaskPoolScheduler.Default).Catch(Observable.Return<LoggedOnUserInfo>(null)).WhereNotNull())
 				.Switch()
 				.ObserveOnDispatcher()
 				.Subscribe(x => _loggedOnUsers.Add(x));
@@ -107,7 +107,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand StartRdp => _startRdp;
 
-		public ReactiveList<string> LoggedOnUsers => _loggedOnUsers;
+		public ReactiveList<LoggedOnUserInfo> LoggedOnUsers => _loggedOnUsers;
 
 		public bool? IsUacOn => _isUacOn.Value;
 
