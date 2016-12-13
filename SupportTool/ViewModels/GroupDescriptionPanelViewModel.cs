@@ -16,28 +16,23 @@ namespace SupportTool.ViewModels
 		{
 			_save = ReactiveCommand.CreateFromObservable(() => SaveImpl(_group, _description));
 			_save
-				.Subscribe(_ =>
-				{
-					_descriptionBackup = _description;
-					this.RaisePropertyChanged(nameof(_descriptionBackup));
-				});
+				.Subscribe(_ => this.RaisePropertyChanged(nameof(Group)));
 
 			_cancel = ReactiveCommand.Create(() => { Description = _descriptionBackup; });
 
 			_isDescriptionDirty = this.WhenAnyValue(
 				x => x.Description,
-				y => y._descriptionBackup,
+				y => y.Group.Principal.Description,
 				(x, y) => (x ?? "") != (y ?? ""))
+				.Do(x => System.Diagnostics.Debug.WriteLine($"{Description}\n{_descriptionBackup}"))
 				.ToProperty(this, x => x.IsDescriptionDirty);
 
 			this.WhenAnyValue(x => x.Group)
 				.WhereNotNull()
 				.Select(x => x.Principal.Description)
-				.Subscribe(x =>
-				{
-					_descriptionBackup = x;
-					Description = _descriptionBackup;
-				});
+				.Do(x => _descriptionBackup = x)
+				.ToSignal()
+				.InvokeCommand(_cancel);
 
 			Observable.Merge(
 				_save.ThrownExceptions,
