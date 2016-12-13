@@ -27,7 +27,7 @@ namespace SupportTool.ViewModels
 			_isDescriptionDirty = this.WhenAnyValue(
 				x => x.Description,
 				y => y._descriptionBackup,
-				(x, y) => x != y)
+				(x, y) => (x ?? "") != (y ?? ""))
 				.ToProperty(this, x => x.IsDescriptionDirty);
 
 			this.WhenAnyValue(x => x.Group)
@@ -35,8 +35,8 @@ namespace SupportTool.ViewModels
 				.Select(x => x.Principal.Description)
 				.Subscribe(x =>
 				{
-					_descriptionBackup = x;
-					Description = x;
+					_descriptionBackup = x ?? "";
+					Description = _descriptionBackup;
 				});
 
 			Observable.Merge(
