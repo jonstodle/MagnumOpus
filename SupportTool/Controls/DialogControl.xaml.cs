@@ -36,6 +36,7 @@ namespace SupportTool.Controls
 			foreach (var buttonInfo in _buttons)
 			{
 				var button = new Button { Content = buttonInfo.Text, Tag = buttonInfo.Id };
+                button.IsDefault = buttonInfo.IsDefault;
 				button.Click += HandleButtonClick;
 				ButtonStackPanel.Children.Add(button);
 			}
@@ -64,9 +65,9 @@ namespace SupportTool.Controls
 
 
 
-		public static DialogControl InfoDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK"));
+		public static DialogControl InfoDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK", isDefault: true));
 
-		public static DialogControl ErrorDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK"));
+		public static DialogControl ErrorDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK", isDefault: true));
 
 
 
@@ -110,12 +111,14 @@ namespace SupportTool.Controls
 		public Guid Id { get; private set; }
 		public string Text { get; private set; }
 		public bool CloseDialog { get; private set; }
+        public bool IsDefault { get; private set; }
 
-		public DialogButtonInfo(string text, bool closeDialog = true)
+        public DialogButtonInfo(string text, bool closeDialog = true, bool isDefault = false)
 		{
 			Id = Guid.NewGuid();
 			Text = text;
 			CloseDialog = closeDialog;
+            IsDefault = isDefault;
 		}
 	}
 }
