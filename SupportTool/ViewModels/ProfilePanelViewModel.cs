@@ -406,15 +406,15 @@ namespace SupportTool.ViewModels
 
 		private IObservable<Unit> ResetCitrixProfileImpl(UserObject user) => Observable.Start(() =>
 		{
-			var  destination = Path.Combine(user.HomeDirectory, "windows");
-			if (!Directory.Exists(destination)) throw new Exception("Citrix profile directory not found");
+			var  destination = Path.Combine(user.HomeDirectory, "windows", "xa_profile");
+            if (!Directory.Exists(destination)) throw new Exception("Citrix profile directory not found");
 
 			while (Directory.Exists(destination))
 			{
-				destination = destination.Insert(destination.ToLowerInvariant().IndexOf("windows"), "!");
+				destination = destination.Insert(destination.ToLowerInvariant().IndexOf("xa_profile"), "!");
 			}
 
-			Directory.Move(Path.Combine(user.HomeDirectory, "windows"), destination);
+			Directory.Move(Path.Combine(user.HomeDirectory, "windows", "xa_profile"), destination);
 		});
 
 
