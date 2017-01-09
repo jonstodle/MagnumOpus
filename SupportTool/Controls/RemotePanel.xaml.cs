@@ -28,7 +28,8 @@ namespace SupportTool.Controls
 			this.WhenActivated(d =>
             {
 				d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.LoggedOnUsersListView, nameof(ListView.MouseDoubleClick)));
-				d(this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem));
+                d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem));
+                d(this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOnUserDetails, v => v.OpenLoggedOnUsersDetailsButton));
 				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
