@@ -1,5 +1,8 @@
-﻿using System.DirectoryServices;
+﻿using SupportTool.Services.ActiveDirectoryServices;
+using System;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Reactive.Linq;
 
 namespace SupportTool.Models
 {
@@ -14,5 +17,14 @@ namespace SupportTool.Models
         public string ProfilePath => _directoryEntry.Properties.Get<string>("profilepath");
 
 		public string HomeDirectory => _directoryEntry.Properties.Get<string>("homedirectory");
+
+        public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))
+            .SelectMany(x =>
+            {
+                if (x == null) return Observable.Return<UserObject>(null);
+                else return ActiveDirectoryService.Current.GetUser(x);
+            })
+            .Catch(Observable.Return<UserObject>(null))
+            .Take(1);
     }
 }

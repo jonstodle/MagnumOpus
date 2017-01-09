@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SupportTool.Services.ActiveDirectoryServices;
+using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
@@ -90,5 +91,14 @@ namespace SupportTool.Models
 			observer.OnCompleted();
 			return () => disposed = true;
 		});
+
+        public IObservable<UserObject> GetManagedBy() => Observable.Return(_directoryEntry.Properties.Get<string>("managedby"))
+            .SelectMany(x =>
+            {
+                if (x == null) return Observable.Return<UserObject>(null);
+                else return ActiveDirectoryService.Current.GetUser(x);
+            })
+            .Catch(Observable.Return<UserObject>(null))
+            .Take(1);
 	}
 }
