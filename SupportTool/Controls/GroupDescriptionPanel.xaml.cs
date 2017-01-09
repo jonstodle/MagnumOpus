@@ -31,11 +31,15 @@ namespace SupportTool.Controls
 			ViewModel = new GroupDescriptionPanelViewModel();
 
 			this.Bind(ViewModel, vm => vm.Description, v => v.DescriptionTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.IsDescriptionDirty, v => v.DescriptionButtonsStackPanel.Visibility);
+            this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.DescriptionTextBox.IsEnabled);
+            this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.EnableEditingButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible);
+            this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.SaveButton.Visibility);
+            this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.CancelButton.Visibility);
 
-			this.WhenActivated(d =>
+            this.WhenActivated(d =>
 			{
-				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+                d(this.BindCommand(ViewModel, vm => vm.EnabledEditing, v => v.EnableEditingButton));
+                d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
 				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 			});
 		}

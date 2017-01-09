@@ -14,27 +14,20 @@ namespace SupportTool.ViewModels
 	{
 		public GroupDescriptionPanelViewModel()
 		{
-			_save = ReactiveCommand.CreateFromObservable(() => SaveImpl(_group, _description));
-			_save
-				.Subscribe(_ => this.RaisePropertyChanged(nameof(Group)));
+            _enableEditing = ReactiveCommand.Create<Unit, bool>(_ => { _descriptionBackup = _description; return true; });
 
-			_cancel = ReactiveCommand.Create(() => { Description = _descriptionBackup; });
+            _save = ReactiveCommand.CreateFromObservable<Unit, bool>(_ => SaveImpl(_group, _description).Select(x => false));
 
-			_isDescriptionDirty = this.WhenAnyValue(
-				x => x.Description,
-				y => y.Group.Principal.Description,
-				(x, y) => (x ?? "") != (y ?? ""))
-				.Do(x => System.Diagnostics.Debug.WriteLine($"{Description}\n{_descriptionBackup}"))
-				.ToProperty(this, x => x.IsDescriptionDirty);
+			_cancel = ReactiveCommand.Create<Unit, bool>(_ => { Description = _descriptionBackup; return false; });
 
-			this.WhenAnyValue(x => x.Group)
-				.WhereNotNull()
-				.Select(x => x.Principal.Description)
-				.Do(x => _descriptionBackup = x)
-				.ToSignal()
-				.InvokeCommand(_cancel);
+			_isEditingEnabled = Observable.Merge(
+                _enableEditing,
+                _save,
+                _cancel)
+				.ToProperty(this, x => x.IsEditingEnabled);
 
 			Observable.Merge(
+                _enableEditing.ThrownExceptions,
 				_save.ThrownExceptions,
 				_cancel.ThrownExceptions)
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
@@ -42,11 +35,13 @@ namespace SupportTool.ViewModels
 
 
 
+        public ReactiveCommand EnabledEditing => _enableEditing;
+
 		public ReactiveCommand Save => _save;
 
 		public ReactiveCommand Cancel => _cancel;
 
-		public bool IsDescriptionDirty => _isDescriptionDirty.Value;
+		public bool IsEditingEnabled => _isEditingEnabled.Value;
 
 		public GroupObject Group
 		{
@@ -70,9 +65,10 @@ namespace SupportTool.ViewModels
 
 
 
-		private readonly ReactiveCommand<Unit, Unit> _save;
-		private readonly ReactiveCommand<Unit, Unit> _cancel;
-		private readonly ObservableAsPropertyHelper<bool> _isDescriptionDirty;
+        private readonly ReactiveCommand<Unit, bool> _enableEditing;
+		private readonly ReactiveCommand<Unit, bool> _save;
+		private readonly ReactiveCommand<Unit, bool> _cancel;
+		private readonly ObservableAsPropertyHelper<bool> _isEditingEnabled;
 		private GroupObject _group;
 		private string _description;
 		private string _descriptionBackup;

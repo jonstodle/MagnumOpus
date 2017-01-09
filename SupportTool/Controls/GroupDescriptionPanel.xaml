@@ -12,7 +12,9 @@
 		<StackPanel>
 			<TextBox x:Name="DescriptionTextBox" MaxLines="1" local:FlexPanel.Flex="True" Margin="2"/>
 
-			<StackPanel x:Name="DescriptionButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Right">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
+
 				<Button x:Name="SaveButton" Content="Save" Margin="2"/>
 
 				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
