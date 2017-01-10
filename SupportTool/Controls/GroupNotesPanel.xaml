@@ -6,19 +6,21 @@
              xmlns:local="clr-namespace:SupportTool.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <local:FlexPanel>
-		<TextBlock Text="Notes" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
-		
-		<TextBox x:Name="NotesTextBox" TextWrapping="Wrap" AcceptsReturn="True" Height="100" Margin="2"/>
+	<Grid>
+		<local:FlexPanel>
+			<TextBlock x:Name="HeaderTextBlock" Text="Notes" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
-		<local:FlexPanel Orientation="Horizontal">
-			<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
+			<TextBox x:Name="NotesTextBox" TextWrapping="Wrap" AcceptsReturn="True" Height="100" Width="{Binding ActualWidth, ElementName=HeaderTextBlock}" Margin="2"/>
 
-			<Rectangle local:FlexPanel.Flex="True"/>
+			<local:FlexPanel Orientation="Horizontal">
+				<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
 
-			<Button x:Name="SaveButton" Content="Save" Margin="2"/>
+				<Rectangle local:FlexPanel.Flex="True"/>
 
-			<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+				<Button x:Name="SaveButton" Content="Save" Margin="2"/>
+
+				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+			</local:FlexPanel>
 		</local:FlexPanel>
-	</local:FlexPanel>
+	</Grid>
 </UserControl>
