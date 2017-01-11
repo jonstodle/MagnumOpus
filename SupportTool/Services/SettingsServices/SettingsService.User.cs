@@ -14,6 +14,12 @@
 			set => Set(value); 
 		}
 
+        public bool UseEscapeToCloseDetailsWindows
+        {
+            get => Get(true);
+            set => Set(value);
+        }
+
 		public string RemoteControlClassicPath
 		{
 			get => Get(@"C:\SCCM Remote Control\rc.exe");

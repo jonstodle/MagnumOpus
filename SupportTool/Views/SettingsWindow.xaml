@@ -26,6 +26,9 @@
 				<TextBlock Text="Close detail windows after (hours)" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBox x:Name="DetailWindowTimeoutLengthTextBox" Margin="2"/>
 
+				<TextBlock Text="Use 'Esc' to close details windows" Style="{StaticResource SettingsHeaderStyle}"/>
+				<CheckBox x:Name="UseEscapeToCloseDetailsWindowsCheckBox" Content="Enabled" Margin="2"/>
+
 				<TextBlock Text="Remote Control Classic path" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBox x:Name="RemoteControlClassicPathTextBox" Margin="2"/>
 

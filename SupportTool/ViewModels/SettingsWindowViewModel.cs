@@ -27,6 +27,12 @@ namespace SupportTool.ViewModels
 			set { if (int.TryParse(value, out int i)) SettingsService.Current.DetailsWindowTimeoutLength = i; }
 		}
 
+        public bool UseEscapeToCloseDetailsWindows
+        {
+            get => SettingsService.Current.UseEscapeToCloseDetailsWindows;
+            set => SettingsService.Current.UseEscapeToCloseDetailsWindows = value;
+        }
+
 		public string RemoteControlClassicPath
 		{
 			get => SettingsService.Current.RemoteControlClassicPath;

@@ -18,6 +18,14 @@ namespace SupportTool.Views
 				.Subscribe(x => this.Close())
 				.AddTo(_subscriptions);
 
+            if (SettingsService.Current.UseEscapeToCloseDetailsWindows)
+            {
+                this.Events().KeyDown
+                    .Where(x => x.Key == System.Windows.Input.Key.Escape)
+                    .Subscribe(_ => this.Close())
+                    .AddTo(_subscriptions);
+            }
+
 			this.Events().Closed
 				.Subscribe(x => _subscriptions.Dispose())
 				.AddTo(_subscriptions);
