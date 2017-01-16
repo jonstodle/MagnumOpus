@@ -17,7 +17,13 @@
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">
-			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
+			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="OpenMemberOfMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
+			</ListView>
 
 			<local:FlexPanel Orientation="Horizontal">
 				<Button x:Name="EditGroupsButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>
@@ -44,7 +50,13 @@
 
             <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Margin="2"/>
 
-			<ListView x:Name="AllGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2"/>
+			<ListView x:Name="AllGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="OpenMemberOfAllMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
+			</ListView>
 
 			<TextBlock Grid.Row="3" Margin="2">
                         <Run Text="Showing "/>

@@ -61,12 +61,14 @@ namespace SupportTool.Controls
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.AddToPrincipal));
-				d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem, nameof(MenuItem.Click)));
+                d(this.BindCommand(ViewModel, vm => vm.AddToPrincipal, v => v.AddMenuItem));
+                d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem, nameof(MenuItem.Click)));
 				d(PrincipalMembersListView.Events()
 					.MouseDoubleClick
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.RemoveFromPrincipal));
-				d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem, nameof(MenuItem.Click)));
+                d(this.BindCommand(ViewModel, vm => vm.RemoveFromPrincipal, v => v.RemoveMenuItem));
+                d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem, nameof(MenuItem.Click)));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
 				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ViewModel

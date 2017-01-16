@@ -15,7 +15,13 @@
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
-			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2"/>
+			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="FindDirectGroupMenuItem" Header="Open group" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
+			</ListView>
 
 			<local:FlexPanel Orientation="Horizontal">
 				<Button x:Name="EditDirectGroupsButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>

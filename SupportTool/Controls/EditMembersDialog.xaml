@@ -40,6 +40,7 @@
 					</ListView.View>
 					<ListView.ContextMenu>
 						<ContextMenu>
+							<MenuItem x:Name="AddMenuItem" Header="Add" Style="{StaticResource PrimaryActionStyle}"/>
 							<MenuItem x:Name="OpenSearchResultMenuItem" Header="Open"/>
 						</ContextMenu>
 					</ListView.ContextMenu>
@@ -63,6 +64,7 @@
 					</ListView.View>
 					<ListView.ContextMenu>
 						<ContextMenu>
+							<MenuItem x:Name="RemoveMenuItem" Header="Remove" Style="{StaticResource PrimaryActionStyle}"/>
 							<MenuItem x:Name="OpenGroupMemberMenuItem" Header="Open"/>
 						</ContextMenu>
 					</ListView.ContextMenu>

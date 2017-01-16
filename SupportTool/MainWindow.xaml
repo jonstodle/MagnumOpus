@@ -47,6 +47,12 @@
 						</GridView.Columns>
 					</GridView>
 				</ListView.View>
+				
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="OpenSearchResultsMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
 			</ListView>
 
 			<Grid>

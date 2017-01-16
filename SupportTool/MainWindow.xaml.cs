@@ -70,7 +70,8 @@ namespace SupportTool
 					.MouseDoubleClick
 					.Select(_ => Unit.Default)
 					.InvokeCommand(ViewModel, x => x.Open));
-				d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
+                d(this.BindCommand(ViewModel, vm => vm.Open, v => v.OpenSearchResultsMenuItem));
+                d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
 					.Subscribe(e =>
 					{
 						HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;

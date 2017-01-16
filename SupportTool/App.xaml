@@ -25,6 +25,10 @@
 			<Setter Property="TextWrapping" Value="Wrap"/>
 		</Style>
 
+		<Style x:Key="PrimaryActionStyle" TargetType="MenuItem">
+			<Setter Property="FontWeight" Value="Bold"/>
+		</Style>
+
 		<DataTemplate x:Key="StringDataTemplate">
 			<TextBlock Text="{Binding}"/>
 		</DataTemplate>

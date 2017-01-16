@@ -19,7 +19,13 @@
 				<Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Margin="2"/>
 			</local:FlexPanel>
 
-			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" local:FlexPanel.Flex="True" Margin="2"/>
+			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" local:FlexPanel.Flex="True" Margin="2">
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="RemoveComputerMenuItem" Header="Remove" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
+			</ListView>
 
 			<local:FlexPanel Orientation="Horizontal">
 				<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
