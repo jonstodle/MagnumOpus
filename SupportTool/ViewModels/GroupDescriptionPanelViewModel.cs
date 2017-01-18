@@ -26,6 +26,10 @@ namespace SupportTool.ViewModels
                 _cancel)
 				.ToProperty(this, x => x.IsEditingEnabled);
 
+            this.WhenAnyValue(x => x.Group.Principal.Description)
+                .WhereNotNull()
+                .Subscribe(x => Description = x);
+
 			Observable.Merge(
                 _enableEditing.ThrownExceptions,
 				_save.ThrownExceptions,

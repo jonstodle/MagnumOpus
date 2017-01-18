@@ -6,11 +6,11 @@
              xmlns:local="clr-namespace:SupportTool.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="300">
-	<local:FlexPanel>
+	<StackPanel>
 		<TextBlock Text="Description" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
 		<StackPanel>
-			<TextBox x:Name="DescriptionTextBox" MaxLines="1" local:FlexPanel.Flex="True" Margin="2"/>
+			<TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" Margin="2"/>
 
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
@@ -20,5 +20,5 @@
 				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
 			</StackPanel>
 		</StackPanel>
-	</local:FlexPanel>
+	</StackPanel>
 </UserControl>
