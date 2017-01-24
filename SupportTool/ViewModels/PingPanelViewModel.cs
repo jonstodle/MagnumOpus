@@ -88,12 +88,13 @@ namespace SupportTool.ViewModels
                 .SelectMany(_ => Observable.Start(() =>
                     {
                         PingReply reply = null;
+                        reply = new Ping().Send(hostName, 1000);
 
-                        try { reply = new Ping().Send(hostName, 1000); }
-                        catch { /* Do nothing */ }
-
-                        return $"{DateTimeOffset.Now.ToString("T")} - {(reply?.Status == IPStatus.Success ? $"{hostName} responded after {reply.RoundtripTime}ms" : $"{hostName} did not respond")}";
-                    }))
+                        if (reply?.Status == IPStatus.Success) return $"{hostName} responded after {reply.RoundtripTime}ms";
+                        else throw new Exception("Ping reply status was not 'Success'");
+                    })
+                    .Catch(Observable.Return($"{hostName} did not respond"))
+                    .Select(x => $"{DateTimeOffset.Now.ToString("T")} - {x}"))
                 .StartWith($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
 	}
 }
