@@ -35,7 +35,7 @@ namespace SupportTool.ViewModels
 				.ThrownExceptions
 				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
-			_stopPing = ReactiveCommand.Create(() => { });
+			_stopPing = ReactiveCommand.Create(() => Unit.Default);
 
 			Observable.Merge(
 				_pingResults.ItemsAdded,
