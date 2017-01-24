@@ -198,7 +198,6 @@
     <Compile Include="Controls\EditMembersDialog.xaml.cs">
       <DependentUpon>EditMembersDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FlexPanel.cs" />
     <Compile Include="Controls\GroupDescriptionPanel.xaml.cs">
       <DependentUpon>GroupDescriptionPanel.xaml</DependentUpon>
     </Compile>

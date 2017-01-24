@@ -12,15 +12,19 @@
 
 			<TextBox x:Name="NotesTextBox" TextWrapping="Wrap" AcceptsReturn="True" Height="100" Margin="2"/>
 
-			<local:FlexPanel Orientation="Horizontal">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
 				<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
 
-				<Rectangle local:FlexPanel.Flex="True"/>
+				<Button x:Name="SaveButton" Content="Save" Grid.Column="2" Margin="2"/>
 
-				<Button x:Name="SaveButton" Content="Save" Margin="2"/>
-
-				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
-			</local:FlexPanel>
+				<Button x:Name="CancelButton" Content="Cancel" Grid.Column="3" Margin="2"/>
+			</Grid>
 		</StackPanel>
 	</Grid>
 </UserControl>

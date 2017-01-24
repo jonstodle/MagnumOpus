@@ -23,11 +23,15 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<local:FlexPanel Orientation="Horizontal">
-				<Button x:Name="EditDirectGroupsButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Button x:Name="EditDirectGroupsButton" Content="Edit" Margin="2"/>
 
-				<Button x:Name="SaveDirectGroupsButton" Content="Save" Margin="2"/>
-			</local:FlexPanel>
+				<Button x:Name="SaveDirectGroupsButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
 		</StackPanel>
     </StackPanel>
 </UserControl>

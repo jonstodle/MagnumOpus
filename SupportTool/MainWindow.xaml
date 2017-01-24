@@ -11,13 +11,25 @@
         Title="Magnum Opus by Jon Stødle" MinHeight="200" MinWidth="200" Height="400" Width="900">
 
     <Grid Margin="2">
-		<c:FlexPanel>
-			<c:FlexPanel Orientation="Horizontal">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
 				<Button x:Name="PasteButton" Content="Paste" Margin="2"/>
 
-				<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" c:FlexPanel.Flex="True" Margin="2"/>
+				<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
 
-				<Button x:Name="HistoryButton" Content="History" Margin="2">
+				<Button x:Name="HistoryButton" Content="History" Grid.Column="2" Margin="2">
 					<Button.ContextMenu>
 						<ContextMenu x:Name="HistoryButtonContextMenu">
 							<ContextMenu.ItemContainerStyle>
@@ -34,9 +46,9 @@
 						</ContextMenu>
 					</Button.ContextMenu>
 				</Button>
-			</c:FlexPanel>
+			</Grid>
 
-			<ListView x:Name="SearchResultsListView" Grid.Row="1" c:FlexPanel.Flex="True" Margin="2">
+			<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
 				<ListView.View>
 					<GridView>
 						<GridView.Columns>
@@ -55,7 +67,7 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<Grid>
+			<Grid Grid.Row="2">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition/>
@@ -74,6 +86,6 @@
 
 				<Button x:Name="SettingsButton" Content="Settings" Grid.Column="2" Margin="2"/>
 			</Grid>
-		</c:FlexPanel>
+		</Grid>
 	</Grid>
 </Window>

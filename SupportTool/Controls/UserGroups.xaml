@@ -25,11 +25,16 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<local:FlexPanel Orientation="Horizontal">
-				<Button x:Name="EditGroupsButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
+				<Button x:Name="EditGroupsButton" Content="Edit" Margin="2"/>
 
-				<Button x:Name="SaveGroupsButton" Content="Save" Margin="2"/>
-			</local:FlexPanel>
+				<Button x:Name="SaveGroupsButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
 		</StackPanel>
 
         <Grid x:Name="AllGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}">

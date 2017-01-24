@@ -50,21 +50,32 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <local:FlexPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="2">
-                <Button x:Name="OpenGlobalProfileDirectoryButton" Content="Open global profile folder" local:FlexPanel.Flex="True" Margin="2"/>
+            <Grid Grid.Row="4" Grid.ColumnSpan="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				
+                <Button x:Name="OpenGlobalProfileDirectoryButton" Content="Open global profile folder" Margin="2"/>
 
-                <Button x:Name="OpenLocalProfileDirectoryButton" Content="Open local profile folder" local:FlexPanel.Flex="True" Margin="2"/>
-            </local:FlexPanel>
+                <Button x:Name="OpenLocalProfileDirectoryButton" Content="Open local profile folder" Grid.Column="1" Margin="2"/>
+            </Grid>
         </Grid>
 
         <StackPanel x:Name="RestoreProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
-            <local:FlexPanel Orientation="Horizontal">
-                <TextBlock Text="Computer name:" Margin="2"/>
+            <Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
 
-                <TextBox x:Name="RestoreProfileComputerNameTextBox" CharacterCasing="Upper" local:FlexPanel.Flex="True" Margin="2"/>
+				<TextBlock Text="Computer name:" Margin="2"/>
 
-                <Button x:Name="SearchButton" Content="Search" Margin="2"/>
-            </local:FlexPanel>
+                <TextBox x:Name="RestoreProfileComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
+
+                <Button x:Name="SearchButton" Content="Search" Grid.Column="2" Margin="2"/>
+            </Grid>
 
             <ListView x:Name="RestoreProfileListView" Height="100" Margin="2">
                 <ListView.View>

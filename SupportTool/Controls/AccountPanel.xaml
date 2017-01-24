@@ -27,8 +27,12 @@
 			<!--<Button x:Name="FindUserButton" Content="Find user" Margin="2"/>-->
 		</WrapPanel>
 
-		<local:FlexPanel x:Name="NewPasswordGrid" Orientation="Horizontal" Background="{StaticResource SubSectionBackgroundBrush}">
-			<StackPanel local:FlexPanel.Flex="True">
+		<Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<StackPanel>
 				<StackPanel Margin="2">
 					<TextBlock Text="New password" FontSize="10"/>
 					<TextBox x:Name="NewPasswordTextBox" Grid.Row="1"/>
@@ -37,11 +41,11 @@
 				<Button x:Name="SetNewPasswordButton" Content="Set password" Margin="2"/>
 			</StackPanel>
 
-			<StackPanel local:FlexPanel.Flex="True" VerticalAlignment="Bottom">
+			<StackPanel Grid.Column="1" VerticalAlignment="Bottom">
 				<Button x:Name="SetNewSimplePasswordButton" Content="Set simple password" Margin="2"/>
 
 				<Button x:Name="SetNewComplexPasswordButton" Content="Set complex password" Margin="2"/>
 			</StackPanel>
-		</local:FlexPanel>
+		</Grid>
 	</StackPanel>
 </UserControl>

@@ -8,14 +8,25 @@
              d:DesignHeight="300" d:DesignWidth="500">
 	
     <Grid>
-		<local:FlexPanel>
-			<local:FlexPanel Orientation="Horizontal">
-				<TextBlock x:Name="TitleTextBlock" FontSize="20" local:FlexPanel.Flex="True" Margin="2"/>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
 
-				<Button x:Name="RefreshButton" Content="Refresh" Margin="2"/>
-			</local:FlexPanel>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
+				<TextBlock x:Name="TitleTextBlock" FontSize="20" Margin="2"/>
 
-			<ListView x:Name="LockoutInfosListView" local:FlexPanel.Flex="True" Margin="2">
+				<Button x:Name="RefreshButton" Content="Refresh" Grid.Column="1" Margin="2"/>
+			</Grid>
+
+			<ListView x:Name="LockoutInfosListView" Grid.Row="1" Margin="2">
 				<ListView.View>
 					<GridView>
 						<GridViewColumn Header="DC" DisplayMemberBinding="{Binding DomainControllerName}"/>
@@ -28,7 +39,7 @@
 				</ListView.View>
 			</ListView>
 
-			<Button x:Name="CloseButton" Content="Close" HorizontalAlignment="Right" Margin="2"/>
-		</local:FlexPanel>
+			<Button x:Name="CloseButton" Content="Close" HorizontalAlignment="Right" Grid.Row="2" Margin="2"/>
+		</Grid>
 	</Grid>
 </UserControl>

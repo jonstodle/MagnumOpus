@@ -8,18 +8,31 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
 	<Grid x:Name="ContainerGrid">
-		<local:FlexPanel Margin="2">
+		<Grid Margin="2">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
 			<TextBlock x:Name="TitleTextBlock" FontSize="20" Margin="2"/>
 
-			<local:FlexPanel Orientation="Horizontal">
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
 				<TextBlock Text="Add computer: " Margin="2"/>
 
-				<TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" local:FlexPanel.Flex="True" Margin="2"/>
+				<TextBox x:Name="ComputerNameTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
 
-				<Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Margin="2"/>
-			</local:FlexPanel>
+				<Button x:Name="AddComputerButton" Content="Add" IsDefault="True" Grid.Column="2" Margin="2"/>
+			</Grid>
 
-			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" local:FlexPanel.Flex="True" Margin="2">
+			<ListView x:Name="ComputersListView" ItemTemplate="{StaticResource StringDataTemplate}" Grid.Row="2" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="RemoveComputerMenuItem" Header="Remove" Style="{StaticResource PrimaryActionStyle}"/>
@@ -27,17 +40,23 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<local:FlexPanel Orientation="Horizontal">
+			<Grid Grid.Row="3">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
 				<Button x:Name="RemoveAllComputersButton" Content="Remove all" Margin="2"/>
 
-				<Button x:Name="RemoveComputerButton" Content="Remove" Margin="2"/>
+				<Button x:Name="RemoveComputerButton" Content="Remove" Grid.Column="1" Margin="2"/>
 
-				<Rectangle local:FlexPanel.Flex="True"/>
+				<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Grid.Column="3" Margin="2"/>
 
-				<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
-
-				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
-			</local:FlexPanel>
-		</local:FlexPanel>
+				<Button x:Name="CancelButton" Content="Cancel" Grid.Column="4" Margin="2"/>
+			</Grid>
+		</Grid>
 	</Grid>
 </UserControl>

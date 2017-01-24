@@ -7,13 +7,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 	
-    <local:FlexPanel VerticalAlignment="Center">
+    <StackPanel VerticalAlignment="Center">
 		<TextBox x:Name="ItemsTextBox" Height="300"/>
 
-		<local:FlexPanel Orientation="Horizontal" HorizontalAlignment="Right">
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 			<Button x:Name="OkButton" Content="OK" Margin="2"/>
 
 			<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
-		</local:FlexPanel>
-	</local:FlexPanel>
+		</StackPanel>
+	</StackPanel>
 </UserControl>

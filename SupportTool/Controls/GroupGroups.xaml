@@ -18,7 +18,7 @@
 			<ToggleButton x:Name="MembersToggleButton" Content="Members" Margin="2"/>
 		</WrapPanel>
 
-		<local:FlexPanel x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+		<StackPanel x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
 			<ListView x:Name="DirectMemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>
@@ -27,12 +27,16 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<local:FlexPanel Orientation="Horizontal">
-				<Button x:Name="EditDirectGroupsButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Button x:Name="EditDirectGroupsButton" Content="Edit" Margin="2"/>
 
-				<Button x:Name="SaveDirectGroupsButton" Content="Save" Margin="2"/>
-			</local:FlexPanel>
-		</local:FlexPanel>
+				<Button x:Name="SaveDirectGroupsButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
+		</StackPanel>
 
 		<Grid x:Name="MemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
 			<Grid.ColumnDefinitions>
@@ -67,7 +71,7 @@
 			<Button x:Name="SaveAllGroupsButton" Content="Save" Grid.Row="2" Grid.Column="1" Margin="2"/>
 		</Grid>
 
-		<local:FlexPanel x:Name="MembersGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+		<StackPanel x:Name="MembersGrid" Background="{StaticResource SubSectionBackgroundBrush}">
 			<ListView x:Name="MembersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>
@@ -76,11 +80,15 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<local:FlexPanel Orientation="Horizontal">
-				<Button x:Name="MembersButton" Content="Edit" local:FlexPanel.Flex="True" Margin="2"/>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				<Button x:Name="MembersButton" Content="Edit" Margin="2"/>
 
-				<Button x:Name="SaveMembersButton" Content="Save" Margin="2"/>
-			</local:FlexPanel>
-		</local:FlexPanel>
+				<Button x:Name="SaveMembersButton" Content="Save" Grid.Column="1" Margin="2"/>
+			</Grid>
+		</StackPanel>
 	</StackPanel>
 </UserControl>
