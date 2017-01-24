@@ -84,24 +84,16 @@ namespace SupportTool.ViewModels
 
 
 
-		private IObservable<string> PingHost(string hostName) => Observable.Create<string>(observer =>
-		{
-			var pinger = new Ping();
-			observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
+        private IObservable<string> PingHost(string hostName) => Observable.Interval(TimeSpan.FromSeconds(2d))
+                .SelectMany(_ => Observable.Start(() =>
+                    {
+                        PingReply reply = null;
 
-			var pings = Observable.Interval(TimeSpan.FromSeconds(2d))
-				.Subscribe(async _ =>
-				{
-					PingReply reply = null;
+                        try { reply = new Ping().Send(hostName, 1000); }
+                        catch { /* Do nothing */ }
 
-					try { reply = await pinger.SendPingAsync(hostName, 1000); }
-					catch { /* Do nothing */ }
-
-					observer.OnNext($"{DateTimeOffset.Now.ToString("T")} - {(reply?.Status == IPStatus.Success ? $"{hostName} responded after {reply.RoundtripTime}ms" : $"{hostName} did not respond")}");
-				},
-				() => observer.OnCompleted());
-
-			return () => pings.Dispose();
-		});
+                        return $"{DateTimeOffset.Now.ToString("T")} - {(reply?.Status == IPStatus.Success ? $"{hostName} responded after {reply.RoundtripTime}ms" : $"{hostName} did not respond")}";
+                    }))
+                .StartWith($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
 	}
 }
