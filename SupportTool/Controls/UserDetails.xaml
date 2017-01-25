@@ -33,6 +33,7 @@
 		<Grid x:Name="OrganizationGrid" Height="300" Visibility="Collapsed" Background="{StaticResource SubSectionBackgroundBrush}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="20"/>
 				<ColumnDefinition/>
 			</Grid.ColumnDefinitions>
 			<Grid.RowDefinitions>
@@ -45,20 +46,20 @@
 			</Grid.RowDefinitions>
 
 			<TextBlock Text="Job Title" Margin="2"/>
-			<TextBlock x:Name="JobTitleTextBlock" Grid.Column="1" Margin="2"/>
+			<TextBlock x:Name="JobTitleTextBlock" Grid.Column="2" Margin="2"/>
 
 			<TextBlock Text="Department" Grid.Row="1" Margin="2"/>
-			<TextBlock x:Name="DepartmentTextBlock" Grid.Row="1" Grid.Column="1" Margin="2"/>
+			<TextBlock x:Name="DepartmentTextBlock" Grid.Row="1" Grid.Column="2" Margin="2"/>
 
 			<TextBlock Text="Company" Grid.Row="2" Margin="2"/>
-			<TextBlock x:Name="CompanyNameTextBlock" Grid.Row="2" Grid.Column="1" Margin="2"/>
+			<TextBlock x:Name="CompanyNameTextBlock" Grid.Row="2" Grid.Column="2" Margin="2"/>
 
 			<TextBlock Text="Manager" Grid.Row="3" Margin="2"/>
-			<TextBlock Grid.Row="3" Grid.Column="1" Margin="2"><Hyperlink x:Name="ManagerHyperLink"><TextBlock x:Name="ManagerTextBlock"/></Hyperlink></TextBlock>
+			<TextBlock Grid.Row="3" Grid.Column="2" Margin="2"><Hyperlink x:Name="ManagerHyperLink"><TextBlock x:Name="ManagerTextBlock"/></Hyperlink></TextBlock>
 
 			<TextBlock Text="Direct Reports" Grid.Row="4" Margin="2"/>
 
-			<ListView x:Name="DirectReportsListView" Grid.Row="5" Grid.ColumnSpan="2" Margin="2">
+			<ListView x:Name="DirectReportsListView" Grid.Row="5" Grid.ColumnSpan="3" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenDirectReportMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
