@@ -21,7 +21,7 @@ namespace SupportTool.Views
 
 			ViewModel = new UserWindowViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.User.Principal.DisplayName, v => v.Title, x => x ?? "");
+			this.OneWayBind(ViewModel, vm => vm.User.Principal.Name, v => v.Title, x => x ?? "");
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User);
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User);
