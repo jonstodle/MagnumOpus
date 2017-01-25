@@ -29,7 +29,7 @@ namespace SupportTool.Controls
 			this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations");
 
 			this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.ComputersView, v => v.ComputersListView.ItemsSource);
+			this.OneWayBind(ViewModel, vm => vm.Computers, v => v.ComputersListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedComputer, v => v.ComputersListView.SelectedItem);
 
 			this.WhenActivated(d =>

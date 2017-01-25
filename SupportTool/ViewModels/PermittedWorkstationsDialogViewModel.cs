@@ -13,28 +13,24 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class PermittedWorkstationsDialogViewModel : ViewModelBase, IDialog
+    public class PermittedWorkstationsDialogViewModel : ViewModelBase, IDialog
     {
         private readonly ReactiveCommand<Unit, string> _addComputer;
         private readonly ReactiveCommand<Unit, bool> _removeComputer;
         private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
         private readonly ReactiveCommand<Unit, Unit> _save;
         private readonly ReactiveCommand<Unit, Unit> _cancel;
-		private readonly ReactiveList<string> _computers;
-        private readonly ListCollectionView _computersView;
+        private readonly ReactiveList<string> _computers;
         private UserObject _user;
         private string _computerName;
         private object _selectedComputer;
-		private Action _close;
+        private Action _close;
 
 
 
         public PermittedWorkstationsDialogViewModel()
         {
             _computers = new ReactiveList<string>();
-
-            _computersView = new ListCollectionView(_computers);
-            _computersView.SortDescriptions.Add(new SortDescription());
 
             _addComputer = ReactiveCommand.CreateFromObservable(
                 () => AddComputerImpl(ComputerName),
@@ -55,7 +51,7 @@ namespace SupportTool.ViewModels
             _save
                 .Subscribe(_ => _close());
 
-			_cancel = ReactiveCommand.Create(() => _close());
+            _cancel = ReactiveCommand.Create(() => _close());
 
             this
                 .WhenAnyValue(x => x.User)
@@ -66,18 +62,18 @@ namespace SupportTool.ViewModels
                     using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
                 });
 
-			Observable.Merge(
-				_addComputer.ThrownExceptions,
-				_removeComputer.ThrownExceptions,
-				_removeAllComputers.ThrownExceptions,
-				_save.ThrownExceptions,
-				_cancel.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
-		}
+            Observable.Merge(
+                _addComputer.ThrownExceptions,
+                _removeComputer.ThrownExceptions,
+                _removeAllComputers.ThrownExceptions,
+                _save.ThrownExceptions,
+                _cancel.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+        }
 
 
 
-		public ReactiveCommand AddComputer => _addComputer;
+        public ReactiveCommand AddComputer => _addComputer;
 
         public ReactiveCommand RemoveComputer => _removeComputer;
 
@@ -85,11 +81,9 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand Save => _save;
 
-		public ReactiveCommand Cancel => _cancel;
+        public ReactiveCommand Cancel => _cancel;
 
-		public ReactiveList<string> Computers => _computers;
-
-        public ListCollectionView ComputersView => _computersView;
+        public IReactiveDerivedList<string> Computers => _computers.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
         public UserObject User
         {
@@ -126,14 +120,14 @@ namespace SupportTool.ViewModels
 
 
 
-		public async Task Opening(Action close, object parameter)
-		{
-			_close = close;
+        public async Task Opening(Action close, object parameter)
+        {
+            _close = close;
 
-			if (parameter is string)
-			{
-				User = await ActiveDirectoryService.Current.GetUser(parameter as string);
-			}
-		}
-	}
+            if (parameter is string)
+            {
+                User = await ActiveDirectoryService.Current.GetUser(parameter as string);
+            }
+        }
+    }
 }

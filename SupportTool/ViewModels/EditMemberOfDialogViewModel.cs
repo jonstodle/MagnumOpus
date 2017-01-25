@@ -17,231 +17,223 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMemberOfDialogViewModel : ViewModelBase, IDialog, IEnableLogger
-	{
-		private readonly ReactiveCommand<string, Principal> _setPrincipal;
-		private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;
-		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
-		private readonly ReactiveCommand<Unit, Unit> _openSearchResultPrincipal;
-		private readonly ReactiveCommand<Unit, Unit> _openMembersPrincipal;
-		private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
-		private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
-		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
-		private readonly ReactiveCommand<Unit, Unit> _cancel;
-		private readonly ReactiveList<DirectoryEntry> _searchResults;
-		private readonly ReactiveList<DirectoryEntry> _principalMembers;
-		private readonly ReactiveList<DirectoryEntry> _membersToAdd;
-		private readonly ReactiveList<DirectoryEntry> _membersToRemove;
-		private readonly ListCollectionView _searchResultsView;
-		private readonly ListCollectionView _principalMembersView;
-		private readonly ObservableAsPropertyHelper<Principal> _principal;
-		private string _searchQuery;
-		private object _selectedSearchResult;
-		private object _selectedPrincipalMember;
-		private Action _close;
+    public class EditMemberOfDialogViewModel : ViewModelBase, IDialog, IEnableLogger
+    {
+        private readonly ReactiveCommand<string, Principal> _setPrincipal;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;
+        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+        private readonly ReactiveCommand<Unit, Unit> _openSearchResultPrincipal;
+        private readonly ReactiveCommand<Unit, Unit> _openMembersPrincipal;
+        private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
+        private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
+        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+        private readonly ReactiveList<DirectoryEntry> _searchResults;
+        private readonly ReactiveList<DirectoryEntry> _principalMembers;
+        private readonly ReactiveList<DirectoryEntry> _membersToAdd;
+        private readonly ReactiveList<DirectoryEntry> _membersToRemove;
+        private readonly ObservableAsPropertyHelper<Principal> _principal;
+        private string _searchQuery;
+        private object _selectedSearchResult;
+        private object _selectedPrincipalMember;
+        private Action _close;
 
 
 
-		public EditMemberOfDialogViewModel()
-		{
-			_searchResults = new ReactiveList<DirectoryEntry>();
-			_principalMembers = new ReactiveList<DirectoryEntry>();
-			_membersToAdd = new ReactiveList<DirectoryEntry>();
-			_membersToRemove = new ReactiveList<DirectoryEntry>();
-			_searchResultsView = new ListCollectionView(_searchResults) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
-			_principalMembersView = new ListCollectionView(_principalMembers) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
+        public EditMemberOfDialogViewModel()
+        {
+            _searchResults = new ReactiveList<DirectoryEntry>();
+            _principalMembers = new ReactiveList<DirectoryEntry>();
+            _membersToAdd = new ReactiveList<DirectoryEntry>();
+            _membersToRemove = new ReactiveList<DirectoryEntry>();
 
-			_setPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
-			_setPrincipal
-				.ToProperty(this, x => x.Principal, out _principal);
+            _setPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
+            _setPrincipal
+                .ToProperty(this, x => x.Principal, out _principal);
 
-			_getPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value).SubscribeOn(RxApp.TaskpoolScheduler));
-			_getPrincipalMembers
-				.ObserveOnDispatcher()
-				.Subscribe(x => _principalMembers.Add(x));
+            _getPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value).SubscribeOn(RxApp.TaskpoolScheduler));
+            _getPrincipalMembers
+                .ObserveOnDispatcher()
+                .Subscribe(x => _principalMembers.Add(x));
 
-			_search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
-			_search
-				.Do(_ => _searchResults.Clear())
-				.Switch()
-				.ObserveOnDispatcher()
-				.Subscribe(x => _searchResults.Add(x));
+            _search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
+            _search
+                .Do(_ => _searchResults.Clear())
+                .Switch()
+                .ObserveOnDispatcher()
+                .Subscribe(x => _searchResults.Add(x));
 
-			_openSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
+            _openSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
 
-			_openMembersPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedPrincipalMember as DirectoryEntry).Properties.Get<string>("name")));
+            _openMembersPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedPrincipalMember as DirectoryEntry).Properties.Get<string>("name")));
 
-			_addToPrincipal = ReactiveCommand.Create(
-				() =>
-				{
-					var de = _selectedSearchResult as DirectoryEntry;
-					if (_principalMembers.Contains(de) || _membersToAdd.Contains(de)) return;
-					_membersToRemove.Remove(de);
-					_principalMembers.Add(de);
-					_membersToAdd.Add(de);
-				},
-				this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
+            _addToPrincipal = ReactiveCommand.Create(
+                () =>
+                {
+                    var de = _selectedSearchResult as DirectoryEntry;
+                    if (_principalMembers.Contains(de) || _membersToAdd.Contains(de)) return;
+                    _membersToRemove.Remove(de);
+                    _principalMembers.Add(de);
+                    _membersToAdd.Add(de);
+                },
+                this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
 
-			_removeFromPrincipal = ReactiveCommand.Create(
-				() =>
-				{
-					var de = _selectedPrincipalMember as DirectoryEntry;
-					_principalMembers.Remove(de);
-					if (_membersToAdd.Contains(de)) _membersToAdd.Remove(de);
-					else _membersToRemove.Add(de);
-				},
-				this.WhenAnyValue(x => x.SelectedPrincipalMember).IsNotNull());
+            _removeFromPrincipal = ReactiveCommand.Create(
+                () =>
+                {
+                    var de = _selectedPrincipalMember as DirectoryEntry;
+                    _principalMembers.Remove(de);
+                    if (_membersToAdd.Contains(de)) _membersToAdd.Remove(de);
+                    else _membersToRemove.Add(de);
+                },
+                this.WhenAnyValue(x => x.SelectedPrincipalMember).IsNotNull());
 
-			_save = ReactiveCommand.CreateFromTask(
-				async () => await SaveImpl(_principal.Value, _membersToAdd, _membersToRemove),
-				Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
-			_save
-				.Subscribe(async x =>
-				{
-					if (x.Count() > 0)
-					{
-						var builder = new StringBuilder();
-						foreach (var message in x) builder.AppendLine(message);
-						await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
-					}
+            _save = ReactiveCommand.CreateFromTask(
+                async () => await SaveImpl(_principal.Value, _membersToAdd, _membersToRemove),
+                Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
+            _save
+                .Subscribe(async x =>
+                {
+                    if (x.Count() > 0)
+                    {
+                        var builder = new StringBuilder();
+                        foreach (var message in x) builder.AppendLine(message);
+                        await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
+                    }
 
-					_close();
-				});
+                    _close();
+                });
 
-			_cancel = ReactiveCommand.Create(() => _close());
+            _cancel = ReactiveCommand.Create(() => _close());
 
-			Observable.Merge(
-					_setPrincipal.ThrownExceptions,
-					_getPrincipalMembers.ThrownExceptions,
-					_search.ThrownExceptions,
-					_openSearchResultPrincipal.ThrownExceptions,
-					_openMembersPrincipal.ThrownExceptions,
-					_addToPrincipal.ThrownExceptions,
-					_removeFromPrincipal.ThrownExceptions,
-					_save.ThrownExceptions,
-					_cancel.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
-		}
+            Observable.Merge(
+                    _setPrincipal.ThrownExceptions,
+                    _getPrincipalMembers.ThrownExceptions,
+                    _search.ThrownExceptions,
+                    _openSearchResultPrincipal.ThrownExceptions,
+                    _openMembersPrincipal.ThrownExceptions,
+                    _addToPrincipal.ThrownExceptions,
+                    _removeFromPrincipal.ThrownExceptions,
+                    _save.ThrownExceptions,
+                    _cancel.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+        }
 
 
 
-		public ReactiveCommand SetPrincipal => _setPrincipal;
+        public ReactiveCommand SetPrincipal => _setPrincipal;
 
-		public ReactiveCommand GetPrincipalMembers => _getPrincipalMembers;
+        public ReactiveCommand GetPrincipalMembers => _getPrincipalMembers;
 
-		public ReactiveCommand Search => _search;
+        public ReactiveCommand Search => _search;
 
-		public ReactiveCommand OpenSearchResultPrincipal => _openSearchResultPrincipal;
+        public ReactiveCommand OpenSearchResultPrincipal => _openSearchResultPrincipal;
 
-		public ReactiveCommand OpenMembersPrincipal => _openMembersPrincipal;
+        public ReactiveCommand OpenMembersPrincipal => _openMembersPrincipal;
 
-		public ReactiveCommand AddToPrincipal => _addToPrincipal;
+        public ReactiveCommand AddToPrincipal => _addToPrincipal;
 
-		public ReactiveCommand RemoveFromPrincipal => _removeFromPrincipal;
+        public ReactiveCommand RemoveFromPrincipal => _removeFromPrincipal;
 
-		public ReactiveCommand Save => _save;
+        public ReactiveCommand Save => _save;
 
-		public ReactiveCommand Cancel => _cancel;
+        public ReactiveCommand Cancel => _cancel;
 
-		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
+        public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
 
-		public ReactiveList<DirectoryEntry> PrincipalMembers => _principalMembers;
+        public ReactiveList<DirectoryEntry> PrincipalMembers => _principalMembers;
 
-		public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;
+        public IReactiveDerivedList<DirectoryEntry> MembersToAdd => _membersToAdd.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
-		public ReactiveList<DirectoryEntry> MembersToRemove => _membersToRemove;
-
-		public ListCollectionView SearchResultsView => _searchResultsView;
-
-		public ListCollectionView PrincipalMembersView => _principalMembersView;
+        public IReactiveDerivedList<DirectoryEntry> MembersToRemove => _membersToRemove.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
 
-		public Principal Principal => _principal.Value;
+        public Principal Principal => _principal.Value;
 
-		public string SearchQuery
-		{
-			get { return _searchQuery; }
-			set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-		}
+        public string SearchQuery
+        {
+            get { return _searchQuery; }
+            set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
+        }
 
-		public object SelectedSearchResult
-		{
-			get { return _selectedSearchResult; }
-			set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
-		}
+        public object SelectedSearchResult
+        {
+            get { return _selectedSearchResult; }
+            set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
+        }
 
-		public object SelectedPrincipalMember
-		{
-			get { return _selectedPrincipalMember; }
-			set { this.RaiseAndSetIfChanged(ref _selectedPrincipalMember, value); }
-		}
+        public object SelectedPrincipalMember
+        {
+            get { return _selectedPrincipalMember; }
+            set { this.RaiseAndSetIfChanged(ref _selectedPrincipalMember, value); }
+        }
 
 
 
-		private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal) => principal.GetGroups()
-			.ToObservable()
-			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
+        private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal) => principal.GetGroups()
+            .ToObservable()
+            .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 
-		private IObservable<IEnumerable<string>> SaveImpl(Principal principal, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
-		{
-			var result = new List<string>();
+        private IObservable<IEnumerable<string>> SaveImpl(Principal principal, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
+        {
+            var result = new List<string>();
 
-			foreach (var groupDe in membersToAdd)
-			{
-				var group = ActiveDirectoryService.Current.GetGroup(groupDe.Properties.Get<string>("cn")).Wait();
+            foreach (var groupDe in membersToAdd)
+            {
+                var group = ActiveDirectoryService.Current.GetGroup(groupDe.Properties.Get<string>("cn")).Wait();
 
-				try
-				{
-					if (group == null) throw new NullReferenceException("Not a group");
-					group.Principal.Members.Add(principal);
-					group.Principal.Save();
-					this.Log().Info($"Added \"{ group.CN}\" to \"{principal.Name}\"");
-				}
-				catch (Exception ex)
-				{
-					result.Add($"{group.CN} - {ex.Message}");
-					this.Log().Error($"Could not add \"{ group.CN}\" to \"{principal.Name}\"");
-				}
-			}
+                try
+                {
+                    if (group == null) throw new NullReferenceException("Not a group");
+                    group.Principal.Members.Add(principal);
+                    group.Principal.Save();
+                    this.Log().Info($"Added \"{ group.CN}\" to \"{principal.Name}\"");
+                }
+                catch (Exception ex)
+                {
+                    result.Add($"{group.CN} - {ex.Message}");
+                    this.Log().Error($"Could not add \"{ group.CN}\" to \"{principal.Name}\"");
+                }
+            }
 
-			foreach (var groupDe in membersToRemove)
-			{
-				var group = ActiveDirectoryService.Current.GetGroup(groupDe.Properties.Get<string>("cn")).Wait();
+            foreach (var groupDe in membersToRemove)
+            {
+                var group = ActiveDirectoryService.Current.GetGroup(groupDe.Properties.Get<string>("cn")).Wait();
 
-				try
-				{
-					if (group == null) throw new NullReferenceException("Not a group");
-					group.Principal.Members.Remove(principal);
-					group.Principal.Save();
-					this.Log().Info($"Removed \"{ group.CN}\" from \"{principal.Name}\"");
-				}
-				catch (Exception ex)
-				{
-					result.Add($"{group.CN} - {ex.Message}");
-					this.Log().Error($"Could not remove \"{ group.CN}\" from \"{principal.Name}\"");
-				}
-			}
+                try
+                {
+                    if (group == null) throw new NullReferenceException("Not a group");
+                    group.Principal.Members.Remove(principal);
+                    group.Principal.Save();
+                    this.Log().Info($"Removed \"{ group.CN}\" from \"{principal.Name}\"");
+                }
+                catch (Exception ex)
+                {
+                    result.Add($"{group.CN} - {ex.Message}");
+                    this.Log().Error($"Could not remove \"{ group.CN}\" from \"{principal.Name}\"");
+                }
+            }
 
-			return result;
-		});
-
-
-
-		private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
+            return result;
+        });
 
 
 
-		public Task Opening(Action close, object parameter)
-		{
-			_close = close;
+        private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
 
-			if (parameter is string)
-			{
-				Observable.Return(parameter as string)
-					.InvokeCommand(_setPrincipal);
-			}
 
-			return Task.FromResult<object>(null);
-		}
-	}
+
+        public Task Opening(Action close, object parameter)
+        {
+            _close = close;
+
+            if (parameter is string)
+            {
+                Observable.Return(parameter as string)
+                    .InvokeCommand(_setPrincipal);
+            }
+
+            return Task.FromResult<object>(null);
+        }
+    }
 }

@@ -17,238 +17,230 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class EditMembersDialogViewModel : ViewModelBase, IDialog, IEnableLogger
-	{
-		private readonly ReactiveCommand<string, GroupObject> _setGroup;
-		private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
-		private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
-		private readonly ReactiveCommand<Unit, Unit> _openSearchResult;
-		private readonly ReactiveCommand<Unit, Unit> _openGroupMember;
-		private readonly ReactiveCommand<Unit, Unit> _addToGroup;
-		private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
-		private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
-		private readonly ReactiveCommand<Unit, Unit> _cancel;
-		private readonly ReactiveList<DirectoryEntry> _searchResults;
-		private readonly ReactiveList<DirectoryEntry> _groupMembers;
-		private readonly ReactiveList<DirectoryEntry> _membersToAdd;
-		private readonly ReactiveList<DirectoryEntry> _membersToRemove;
-		private readonly ListCollectionView _searchResultsView;
-		private readonly ListCollectionView _groupMembersView;
-		private readonly ObservableAsPropertyHelper<GroupObject> _group;
-		private string _searchQuery;
-		private object _selectedSearchResult;
-		private object _selectedGroupMember;
-		private Action _close;
+    public class EditMembersDialogViewModel : ViewModelBase, IDialog, IEnableLogger
+    {
+        private readonly ReactiveCommand<string, GroupObject> _setGroup;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
+        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+        private readonly ReactiveCommand<Unit, Unit> _openSearchResult;
+        private readonly ReactiveCommand<Unit, Unit> _openGroupMember;
+        private readonly ReactiveCommand<Unit, Unit> _addToGroup;
+        private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
+        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+        private readonly ReactiveList<DirectoryEntry> _searchResults;
+        private readonly ReactiveList<DirectoryEntry> _groupMembers;
+        private readonly ReactiveList<DirectoryEntry> _membersToAdd;
+        private readonly ReactiveList<DirectoryEntry> _membersToRemove;
+        private readonly ObservableAsPropertyHelper<GroupObject> _group;
+        private string _searchQuery;
+        private object _selectedSearchResult;
+        private object _selectedGroupMember;
+        private Action _close;
 
 
 
-		public EditMembersDialogViewModel()
-		{
-			_searchResults = new ReactiveList<DirectoryEntry>();
-			_groupMembers = new ReactiveList<DirectoryEntry>();
-			_membersToAdd = new ReactiveList<DirectoryEntry>();
-			_membersToRemove = new ReactiveList<DirectoryEntry>();
-			_searchResultsView = new ListCollectionView(_searchResults) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
-			_groupMembersView = new ListCollectionView(_groupMembers) { SortDescriptions = { new SortDescription("Path", ListSortDirection.Ascending) } };
+        public EditMembersDialogViewModel()
+        {
+            _searchResults = new ReactiveList<DirectoryEntry>();
+            _groupMembers = new ReactiveList<DirectoryEntry>();
+            _membersToAdd = new ReactiveList<DirectoryEntry>();
+            _membersToRemove = new ReactiveList<DirectoryEntry>();
 
-			_setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
-			_setGroup
-				.ToProperty(this, x => x.Group, out _group);
+            _setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
+            _setGroup
+                .ToProperty(this, x => x.Group, out _group);
 
-			_getGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value).SubscribeOn(RxApp.TaskpoolScheduler));
-			_getGroupMembers
-				.ObserveOnDispatcher()
-				.Subscribe(x => _groupMembers.Add(x));
+            _getGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value).SubscribeOn(RxApp.TaskpoolScheduler));
+            _getGroupMembers
+                .ObserveOnDispatcher()
+                .Subscribe(x => _groupMembers.Add(x));
 
-			_search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
-			_search
-				.Do(_ => _searchResults.Clear())
-				.Switch()
-				.ObserveOnDispatcher()
-				.Subscribe(x => _searchResults.Add(x));
+            _search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
+            _search
+                .Do(_ => _searchResults.Clear())
+                .Switch()
+                .ObserveOnDispatcher()
+                .Subscribe(x => _searchResults.Add(x));
 
-			_openSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
+            _openSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
 
-			_openGroupMember = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedGroupMember as DirectoryEntry).Properties.Get<string>("name")));
+            _openGroupMember = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedGroupMember as DirectoryEntry).Properties.Get<string>("name")));
 
-			_addToGroup = ReactiveCommand.Create(
-				() =>
-				{
-					var de = _selectedSearchResult as DirectoryEntry;
-					if (_groupMembers.Contains(de) || _membersToAdd.Contains(de)) return;
-					_membersToRemove.Remove(de);
-					_groupMembers.Add(de);
-					_membersToAdd.Add(de);
-				},
-				this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
+            _addToGroup = ReactiveCommand.Create(
+                () =>
+                {
+                    var de = _selectedSearchResult as DirectoryEntry;
+                    if (_groupMembers.Contains(de) || _membersToAdd.Contains(de)) return;
+                    _membersToRemove.Remove(de);
+                    _groupMembers.Add(de);
+                    _membersToAdd.Add(de);
+                },
+                this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
 
-			_removeFromGroup = ReactiveCommand.Create(
-				() =>
-				{
-					var de = _selectedGroupMember as DirectoryEntry;
-					_groupMembers.Remove(de);
-					if (_membersToAdd.Contains(de)) _membersToAdd.Remove(de);
-					else _membersToRemove.Add(de);
-				},
-				this.WhenAnyValue(x => x.SelectedGroupMember).IsNotNull());
+            _removeFromGroup = ReactiveCommand.Create(
+                () =>
+                {
+                    var de = _selectedGroupMember as DirectoryEntry;
+                    _groupMembers.Remove(de);
+                    if (_membersToAdd.Contains(de)) _membersToAdd.Remove(de);
+                    else _membersToRemove.Add(de);
+                },
+                this.WhenAnyValue(x => x.SelectedGroupMember).IsNotNull());
 
-			_save = ReactiveCommand.CreateFromTask(
-				async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
-				Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
-			_save
-				.Subscribe(async x =>
-				{
-					if (x.Count() > 0)
-					{
-						var builder = new StringBuilder();
-						foreach (var message in x) builder.AppendLine(message);
-						await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
-					}
+            _save = ReactiveCommand.CreateFromTask(
+                async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
+                Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
+            _save
+                .Subscribe(async x =>
+                {
+                    if (x.Count() > 0)
+                    {
+                        var builder = new StringBuilder();
+                        foreach (var message in x) builder.AppendLine(message);
+                        await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
+                    }
 
-					_close();
-				});
+                    _close();
+                });
 
-			_cancel = ReactiveCommand.Create(() => _close());
+            _cancel = ReactiveCommand.Create(() => _close());
 
-			Observable.Merge(
-					_setGroup.ThrownExceptions,
-					_getGroupMembers.ThrownExceptions,
-					_search.ThrownExceptions,
-					_openSearchResult.ThrownExceptions,
-					_openGroupMember.ThrownExceptions,
-					_addToGroup.ThrownExceptions,
-					_removeFromGroup.ThrownExceptions,
-					_save.ThrownExceptions,
-					_cancel.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
-		}
+            Observable.Merge(
+                    _setGroup.ThrownExceptions,
+                    _getGroupMembers.ThrownExceptions,
+                    _search.ThrownExceptions,
+                    _openSearchResult.ThrownExceptions,
+                    _openGroupMember.ThrownExceptions,
+                    _addToGroup.ThrownExceptions,
+                    _removeFromGroup.ThrownExceptions,
+                    _save.ThrownExceptions,
+                    _cancel.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+        }
 
 
 
-		public ReactiveCommand SetGroup => _setGroup;
+        public ReactiveCommand SetGroup => _setGroup;
 
-		public ReactiveCommand GetGroupMembers => _getGroupMembers;
+        public ReactiveCommand GetGroupMembers => _getGroupMembers;
 
-		public ReactiveCommand Search => _search;
+        public ReactiveCommand Search => _search;
 
-		public ReactiveCommand OpenSearchResult => _openSearchResult;
+        public ReactiveCommand OpenSearchResult => _openSearchResult;
 
-		public ReactiveCommand OpenGroupMember => _openGroupMember;
+        public ReactiveCommand OpenGroupMember => _openGroupMember;
 
-		public ReactiveCommand AddToGroup => _addToGroup;
+        public ReactiveCommand AddToGroup => _addToGroup;
 
-		public ReactiveCommand RemoveFromGroup => _removeFromGroup;
+        public ReactiveCommand RemoveFromGroup => _removeFromGroup;
 
-		public ReactiveCommand Save => _save;
+        public ReactiveCommand Save => _save;
 
-		public ReactiveCommand Cancel => _cancel;
+        public ReactiveCommand Cancel => _cancel;
 
-		public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
+        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
-		public ReactiveList<DirectoryEntry> GroupMembers => _groupMembers;
+        public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
-		public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;
+        public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;
 
-		public ReactiveList<DirectoryEntry> MembersToRemove => _membersToRemove;
+        public ReactiveList<DirectoryEntry> MembersToRemove => _membersToRemove;
 
-		public ListCollectionView SearchResultsView => _searchResultsView;
+        public GroupObject Group => _group.Value;
 
-		public ListCollectionView GroupMembersView => _groupMembersView;
+        public string SearchQuery
+        {
+            get { return _searchQuery; }
+            set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
+        }
 
-		public GroupObject Group => _group.Value;
+        public object SelectedSearchResult
+        {
+            get { return _selectedSearchResult; }
+            set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
+        }
 
-		public string SearchQuery
-		{
-			get { return _searchQuery; }
-			set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-		}
-
-		public object SelectedSearchResult
-		{
-			get { return _selectedSearchResult; }
-			set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
-		}
-
-		public object SelectedGroupMember
-		{
-			get { return _selectedGroupMember; }
-			set { this.RaiseAndSetIfChanged(ref _selectedGroupMember, value); }
-		}
+        public object SelectedGroupMember
+        {
+            get { return _selectedGroupMember; }
+            set { this.RaiseAndSetIfChanged(ref _selectedGroupMember, value); }
+        }
 
 
 
-		private IObservable<DirectoryEntry> GetGroupMembersImpl(GroupObject group) => Observable.Create<DirectoryEntry>(observer =>
-		{
-			var disposed = false;
+        private IObservable<DirectoryEntry> GetGroupMembersImpl(GroupObject group) => Observable.Create<DirectoryEntry>(observer =>
+        {
+            var disposed = false;
 
-			foreach (Principal item in group.Principal.Members)
-			{
-				if (disposed) break;
-				observer.OnNext(item.GetUnderlyingObject() as DirectoryEntry);
-			}
+            foreach (Principal item in group.Principal.Members)
+            {
+                if (disposed) break;
+                observer.OnNext(item.GetUnderlyingObject() as DirectoryEntry);
+            }
 
-			observer.OnCompleted();
-			return () => disposed = true;
-		});
+            observer.OnCompleted();
+            return () => disposed = true;
+        });
 
-		private IObservable<IEnumerable<string>> SaveImpl(GroupObject group, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
-		{
-			var result = new List<string>();
+        private IObservable<IEnumerable<string>> SaveImpl(GroupObject group, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
+        {
+            var result = new List<string>();
 
-			foreach (var memberDe in membersToAdd)
-			{
-				var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
+            foreach (var memberDe in membersToAdd)
+            {
+                var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
 
-				try
-				{
-					group.Principal.Members.Add(member);
-					this.Log().Info($"Added \"{ member.Name}\" to \"{group.CN}\"");
-				}
-				catch (Exception ex)
-				{
-					result.Add($"{member.SamAccountName} - {ex.Message}");
-					this.Log().Error($"Could not add \"{ member.Name}\" to \"{group.CN}\"");
-				}
-			}
+                try
+                {
+                    group.Principal.Members.Add(member);
+                    this.Log().Info($"Added \"{ member.Name}\" to \"{group.CN}\"");
+                }
+                catch (Exception ex)
+                {
+                    result.Add($"{member.SamAccountName} - {ex.Message}");
+                    this.Log().Error($"Could not add \"{ member.Name}\" to \"{group.CN}\"");
+                }
+            }
 
-			foreach (var memberDe in membersToRemove)
-			{
-				var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
+            foreach (var memberDe in membersToRemove)
+            {
+                var member = ActiveDirectoryService.Current.GetPrincipal(memberDe.Properties.Get<string>("samaccountname")).Wait();
 
-				try
-				{
-					group.Principal.Members.Remove(member);
-					this.Log().Info($"Removed \"{ member.Name}\" from \"{group.CN}\"");
-				}
-				catch (Exception ex)
-				{
-					result.Add($"{member.SamAccountName} - {ex.Message}");
-					this.Log().Error($"Could not remove \"{ member.Name}\" from \"{group.CN}\"");
-				}
-			}
+                try
+                {
+                    group.Principal.Members.Remove(member);
+                    this.Log().Info($"Removed \"{ member.Name}\" from \"{group.CN}\"");
+                }
+                catch (Exception ex)
+                {
+                    result.Add($"{member.SamAccountName} - {ex.Message}");
+                    this.Log().Error($"Could not remove \"{ member.Name}\" from \"{group.CN}\"");
+                }
+            }
 
-			group.Principal.Save();
+            group.Principal.Save();
 
-			return result;
-		});
-
-
-
-		private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
+            return result;
+        });
 
 
 
-		public Task Opening(Action close, object parameter)
-		{
-			_close = close;
+        private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
 
-			if (parameter is string)
-			{
-				Observable.Return(parameter as string)
-					.InvokeCommand(_setGroup);
-			}
 
-			return Task.FromResult<object>(null);
-		}
-	}
+
+        public Task Opening(Action close, object parameter)
+        {
+            _close = close;
+
+            if (parameter is string)
+            {
+                Observable.Return(parameter as string)
+                    .InvokeCommand(_setGroup);
+            }
+
+            return Task.FromResult<object>(null);
+        }
+    }
 }

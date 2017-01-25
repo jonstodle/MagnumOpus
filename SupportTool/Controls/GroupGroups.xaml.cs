@@ -22,7 +22,7 @@ namespace SupportTool.Controls
 
 			this.Bind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfToggleButton.IsChecked);
 			this.OneWayBind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfGrid.Visibility);
-			this.OneWayBind(ViewModel, vm => vm.DirectMemberOfGroupsView, v => v.DirectMemberOfListView.ItemsSource);
+			this.OneWayBind(ViewModel, vm => vm.DirectMemberOfGroups, v => v.DirectMemberOfListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedDirectMemberOfGroup, v => v.DirectMemberOfListView.SelectedItem);
 
 			this.Bind(ViewModel, vm => vm.IsShowingMemberOf, v => v.MemberOfToggleButton.IsChecked);
@@ -36,7 +36,7 @@ namespace SupportTool.Controls
 
 			this.Bind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersToggleButton.IsChecked);
 			this.OneWayBind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersGrid.Visibility);
-			this.OneWayBind(ViewModel, vm => vm.MemberUsersView, v => v.MembersListView.ItemsSource);
+			this.OneWayBind(ViewModel, vm => vm.MemberUsers, v => v.MembersListView.ItemsSource);
 			this.Bind(ViewModel, vm => vm.SelectedMemberUser, v => v.MembersListView.SelectedItem);
 
 			this.WhenActivated(d =>

@@ -13,16 +13,15 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class ComputerGroupsViewModel : ViewModelBase
+    public class ComputerGroupsViewModel : ViewModelBase
     {
-		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
-		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
+        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
+        private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
         private readonly ReactiveList<string> _directGroups;
-        private readonly ListCollectionView _directGroupsCollectionView;
         private ComputerObject _computer;
         private bool _isShowingDirectGroups;
-		private object _selectedDirectGroup;
+        private object _selectedDirectGroup;
 
 
 
@@ -30,49 +29,44 @@ namespace SupportTool.ViewModels
         {
             _directGroups = new ReactiveList<string>();
 
-            _directGroupsCollectionView = new ListCollectionView(_directGroups);
-            _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
+            _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
 
-			_openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
+            _saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
+                }
+            });
 
-			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
-			{
-				var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
-				if (saveFileDialog.ShowDialog()  == true)
-				{
-					await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
-				}
-			});
-
-			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
+            _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.Computer).WhereNotNull(),
                _openEditMemberOf.Select(_ => Computer))
-                .Do(_ => DirectGroups.Clear())
+                .Do(_ => _directGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
-				.Select(x => x.Properties.Get<string>("cn"))
+                .Select(x => x.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
-                .Subscribe(x => DirectGroups.Add(x));
+                .Subscribe(x => _directGroups.Add(x));
 
-			Observable.Merge(
-				_openEditMemberOf.ThrownExceptions,
-				_saveDirectGroups.ThrownExceptions,
-				_findDirectGroup.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
-		}
+            Observable.Merge(
+                _openEditMemberOf.ThrownExceptions,
+                _saveDirectGroups.ThrownExceptions,
+                _findDirectGroup.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+        }
 
 
 
-		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
+        public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
-		public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
+        public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
 
-		public ReactiveCommand FindDirectGroup => _findDirectGroup;
+        public ReactiveCommand FindDirectGroup => _findDirectGroup;
 
-        public ReactiveList<string> DirectGroups => _directGroups;
-
-        public ListCollectionView DirectGroupsCollectionView => _directGroupsCollectionView;
+        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
         public ComputerObject Computer
         {
@@ -86,16 +80,16 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
         }
 
-		public object SelectedDirectGroup
-		{
-			get { return _selectedDirectGroup; }
-			set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
-		}
+        public object SelectedDirectGroup
+        {
+            get { return _selectedDirectGroup; }
+            set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
+        }
 
 
 
         private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer) => computer.Principal.GetGroups()
-			.ToObservable()
-			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
+            .ToObservable()
+            .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
     }
 }

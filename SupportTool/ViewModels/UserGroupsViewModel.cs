@@ -15,32 +15,31 @@ using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {
-	public class UserGroupsViewModel : ViewModelBase
-	{
-		private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
-		private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-		private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
-		private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
-		private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
-		private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
-		private readonly ReactiveList<string> _allGroups;
+    public class UserGroupsViewModel : ViewModelBase
+    {
+        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
+        private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
+        private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
+        private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
+        private readonly ReactiveList<string> _allGroups;
         private readonly ReactiveList<string> _directGroups;
         private readonly ListCollectionView _allGroupsCollectionView;
-        private readonly ListCollectionView _directGroupsCollectionView;
         private readonly ObservableAsPropertyHelper<bool> _isLoadingGroups;
         private UserObject _user;
         private bool _isShowingDirectGroups;
         private bool _isShowingAllGroups;
         private object _selectedDirectGroup;
-		private object _selectedAllGroup;
+        private object _selectedAllGroup;
         private string _groupFilter;
         private bool _useFuzzy;
 
 
 
         public UserGroupsViewModel()
-		{
-			_allGroups = new ReactiveList<string>();
+        {
+            _allGroups = new ReactiveList<string>();
             _directGroups = new ReactiveList<string>();
 
             _allGroupsCollectionView = new ListCollectionView(_allGroups);
@@ -50,30 +49,27 @@ namespace SupportTool.ViewModels
                 .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
                 .Subscribe(_ => AllGroupsCollectionView?.Refresh());
 
-            _directGroupsCollectionView = new ListCollectionView(_directGroups);
-            _directGroupsCollectionView.SortDescriptions.Add(new SortDescription());
+            _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
 
-			_openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
+            _saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
+                }
+            });
 
-			_saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
-			{
-				var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
-				if (saveFileDialog.ShowDialog() == true)
-				{
-					await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
-				}
-			});
+            _saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
+            {
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    await ExcelService.SaveGroupsToExcelFile(_allGroups, saveFileDialog.FileName);
+                }
+            });
 
-			_saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
-			{
-				var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
-				if (saveFileDialog.ShowDialog() == true)
-				{
-					await ExcelService.SaveGroupsToExcelFile(_allGroups, saveFileDialog.FileName);
-				}
-			});
-
-			_getAllGroups = ReactiveCommand.CreateFromObservable(
+            _getAllGroups = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
                     AllGroups.Clear();
@@ -84,11 +80,11 @@ namespace SupportTool.ViewModels
             _getAllGroups
                 .ObserveOnDispatcher()
                 .Select(x =>
-				{
-					var cn = x.Properties.Get<string>("cn");
-					x.Dispose();
-					return cn;
-				})
+                {
+                    var cn = x.Properties.Get<string>("cn");
+                    x.Dispose();
+                    return cn;
+                })
                 .Subscribe(x => AllGroups.Add(x));
             _getAllGroups
                 .ThrownExceptions
@@ -97,27 +93,27 @@ namespace SupportTool.ViewModels
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups, out _isLoadingGroups);
 
-			_findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
+            _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
-			_findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
+            _findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
 
             Observable.Merge(
                 this.WhenAnyValue(x => x.User).WhereNotNull(),
                 _openEditMemberOf.Select(_ => User))
-				.Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
-				.Do(_ => DirectGroups.Clear())
+                .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
+                .Do(_ => _directGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
-				.Select(x => x.Properties.Get<string>("cn"))
+                .Select(x => x.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
-                .Subscribe(x => DirectGroups.Add(x));
+                .Subscribe(x => _directGroups.Add(x));
 
-			Observable.Merge(
-				_openEditMemberOf.ThrownExceptions,
-				_saveAllGroups.ThrownExceptions,
-				_saveDirectGroups.ThrownExceptions,
-				_findDirectGroup.ThrownExceptions,
-				_findAllGroup.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+            Observable.Merge(
+                _openEditMemberOf.ThrownExceptions,
+                _saveAllGroups.ThrownExceptions,
+                _saveDirectGroups.ThrownExceptions,
+                _findDirectGroup.ThrownExceptions,
+                _findAllGroup.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             this
                 .WhenAnyValue(x => x.IsShowingDirectGroups)
@@ -132,25 +128,23 @@ namespace SupportTool.ViewModels
 
 
 
-		public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
+        public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
 
-		public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
+        public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
 
-		public ReactiveCommand SaveAllGroups => _saveAllGroups;
+        public ReactiveCommand SaveAllGroups => _saveAllGroups;
 
-		public ReactiveCommand GetAllGroups => _getAllGroups;
+        public ReactiveCommand GetAllGroups => _getAllGroups;
 
-		public ReactiveCommand FindDirectGroup => _findDirectGroup;
+        public ReactiveCommand FindDirectGroup => _findDirectGroup;
 
-		public ReactiveCommand FindAllGroup => _findAllGroup;
+        public ReactiveCommand FindAllGroup => _findAllGroup;
 
-		public ReactiveList<string> AllGroups => _allGroups;
+        public ReactiveList<string> AllGroups => _allGroups;
 
-        public ReactiveList<string> DirectGroups => _directGroups;
+        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
         public ListCollectionView AllGroupsCollectionView => _allGroupsCollectionView;
-
-        public ListCollectionView DirectGroupsCollectionView => _directGroupsCollectionView;
 
         public bool IsLoadingGroups => _isLoadingGroups.Value;
 
@@ -178,13 +172,13 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
         }
 
-		public object SelectedAllGroup
-		{
-			get { return _selectedAllGroup; }
-			set { this.RaiseAndSetIfChanged(ref _selectedAllGroup, value); }
-		}
+        public object SelectedAllGroup
+        {
+            get { return _selectedAllGroup; }
+            set { this.RaiseAndSetIfChanged(ref _selectedAllGroup, value); }
+        }
 
-		public string GroupFilter
+        public string GroupFilter
         {
             get { return _groupFilter; }
             set { this.RaiseAndSetIfChanged(ref _groupFilter, value); }
@@ -198,9 +192,9 @@ namespace SupportTool.ViewModels
 
 
 
-		private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Return(ActiveDirectoryService.Current.GetUser(identity).Wait())
-			.SelectMany(x => x.Principal.GetGroups().ToObservable())
-			.Select(x => x.GetUnderlyingObject() as DirectoryEntry);
+        private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Return(ActiveDirectoryService.Current.GetUser(identity).Wait())
+            .SelectMany(x => x.Principal.GetGroups().ToObservable())
+            .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 
         bool TextFilter(object item)
         {
@@ -208,27 +202,27 @@ namespace SupportTool.ViewModels
 
             var itm = ((string)item).ToLowerInvariant().Replace(" ", string.Empty);
 
-			if (UseFuzzy)
-			{
-				var filterString = GroupFilter.Replace(" ", string.Empty).ToLowerInvariant();
+            if (UseFuzzy)
+            {
+                var filterString = GroupFilter.Replace(" ", string.Empty).ToLowerInvariant();
 
-				var idx = 0;
+                var idx = 0;
 
-				foreach (var letter in itm)
-				{
-					if (letter == filterString[idx])
-					{
-						idx += 1;
-						if (idx >= filterString.Length) { return true; }
-					}
-				}
+                foreach (var letter in itm)
+                {
+                    if (letter == filterString[idx])
+                    {
+                        idx += 1;
+                        if (idx >= filterString.Length) { return true; }
+                    }
+                }
 
-				return false;
-			}
-			else
-			{
-				return GroupFilter.Split(' ').All(x => itm.Contains(x.ToLowerInvariant()));
-			}
+                return false;
+            }
+            else
+            {
+                return GroupFilter.Split(' ').All(x => itm.Contains(x.ToLowerInvariant()));
+            }
         }
     }
 }
