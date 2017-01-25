@@ -28,6 +28,21 @@ namespace SupportTool.Controls
 			this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, x => x != null ? (bool)x ? "User enabled" : "User disabled" : "Status unavailable");
 			this.OneWayBind(ViewModel, vm => vm.PasswordAge, v => v.PasswordAgeTextBlock.Text, x => $"Password age: {x.Days}d {x.Hours}h {x.Minutes}m");
 			this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.IsShowingOrganizationDetails, v => v.OrganizationGrid.Visibility);
+            this.OneWayBind(ViewModel, vm => vm.User.JobTitle, v => v.JobTitleTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.User.Department, v => v.DepartmentTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyNameTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.Manager.Name, v => v.ManagerTextBlock.Text);
+            this.OneWayBind(ViewModel, vm => vm.DirectReports, v => v.DirectReportsListView.ItemsSource);
+            this.Bind(ViewModel, vm => vm.SelectedDirectReport, v => v.DirectReportsListView.SelectedItem);
+
+            this.WhenActivated(d =>
+            {
+                d(this.BindCommand(ViewModel, vm => vm.ToggleOrganizationDetails, v => v.CompanyHyperLink));
+                d(this.BindCommand(ViewModel, vm => vm.OpenManager, v => v.ManagerHyperLink));
+                d(this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.DirectReportsListView, nameof(ListView.MouseDoubleClick)));
+                d(this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.OpenDirectReportMenuItem));
+            });
 		}
 
 		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;

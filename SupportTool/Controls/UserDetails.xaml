@@ -17,7 +17,7 @@
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="SamTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 			<TextBlock Text=" | "/>
-			<TextBlock x:Name="CompanyTextBlock"/>
+			<TextBlock><Hyperlink x:Name="CompanyHyperLink"><TextBlock x:Name="CompanyTextBlock"/></Hyperlink></TextBlock>
             <TextBlock Text=" | "/>
             <TextBlock x:Name="ExpirationTextBlock"/>
             <TextBlock Text=" | "/>
@@ -29,5 +29,48 @@
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="EmailAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 		</WrapPanel>
+
+		<Grid x:Name="OrganizationGrid" Height="300" Visibility="Collapsed" Background="{StaticResource SubSectionBackgroundBrush}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Text="Job Title" Margin="2"/>
+			<TextBlock x:Name="JobTitleTextBlock" Grid.Column="1" Margin="2"/>
+
+			<TextBlock Text="Department" Grid.Row="1" Margin="2"/>
+			<TextBlock x:Name="DepartmentTextBlock" Grid.Row="1" Grid.Column="1" Margin="2"/>
+
+			<TextBlock Text="Company" Grid.Row="2" Margin="2"/>
+			<TextBlock x:Name="CompanyNameTextBlock" Grid.Row="2" Grid.Column="1" Margin="2"/>
+
+			<TextBlock Text="Manager" Grid.Row="3" Margin="2"/>
+			<TextBlock Grid.Row="3" Grid.Column="1" Margin="2"><Hyperlink x:Name="ManagerHyperLink"><TextBlock x:Name="ManagerTextBlock"/></Hyperlink></TextBlock>
+
+			<TextBlock Text="Direct Reports" Grid.Row="4" Margin="2"/>
+
+			<ListView x:Name="DirectReportsListView" Grid.Row="5" Grid.ColumnSpan="2" Margin="2">
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="OpenDirectReportMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
+
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Principal.Name}"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
     </StackPanel>
 </UserControl>
