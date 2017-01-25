@@ -17,7 +17,7 @@
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="SamTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 			<TextBlock Text=" | "/>
-			<TextBlock><Hyperlink x:Name="CompanyHyperLink"><TextBlock x:Name="CompanyTextBlock"/></Hyperlink></TextBlock>
+			<TextBlock><Hyperlink x:Name="CompanyHyperLink" Foreground="Black"><TextBlock x:Name="CompanyTextBlock"/></Hyperlink></TextBlock>
             <TextBlock Text=" | "/>
             <TextBlock x:Name="ExpirationTextBlock"/>
             <TextBlock Text=" | "/>
