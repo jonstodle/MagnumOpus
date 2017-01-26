@@ -26,16 +26,14 @@ namespace SupportTool.Controls
 
 			ViewModel = new AccountPanelViewModel();
 
-            this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked);
-            this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility);
-            this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, x => x != null ? (bool)x ? "Disable" : "Enable" : "Unavailable");
-			this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, x => x != null ? true : false);
-
-
-
 			this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked));
+                d(this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility));
+                d(this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, x => x != null ? (bool)x ? "Disable" : "Enable" : "Unavailable"));
+                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, x => x != null ? true : false));
+
                 d(this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton));
                 d(this.BindCommand(ViewModel, vm => vm.SetNewComplexPassword, v => v.SetNewComplexPasswordButton));

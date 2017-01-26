@@ -18,12 +18,12 @@ namespace SupportTool.Controls
 
 			ViewModel = new IPAddressPanelViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}");
-			this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})");
-
 			this.WhenActivated(d =>
 			{
-				d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton));
+                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}"));
+                d(this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})"));
+
+                d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenRemoteExecution, v => v.RemoteExecutionButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton));

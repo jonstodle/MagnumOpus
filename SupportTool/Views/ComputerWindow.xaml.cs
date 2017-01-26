@@ -18,16 +18,16 @@ namespace SupportTool.Views
 
 			ViewModel = new ComputerWindowViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? "");
-			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer);
-			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer);
-			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerManagement.Computer);
-			this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName);
-			this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer);
-
 			this.WhenActivated(d =>
 			{
-				d(this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)));
+                d(this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? ""));
+                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer));
+                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer));
+                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerManagement.Computer));
+                d(this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName));
+                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer));
+
+                d(this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)));
 				d(ComputerManagement
 					.PromptMessages
 					.RegisterPromptHandler(ContainerGrid));

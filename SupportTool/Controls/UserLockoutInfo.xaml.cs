@@ -26,12 +26,12 @@ namespace SupportTool.Controls
 		{
 			InitializeComponent();
 
-			this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}");
-			this.OneWayBind(ViewModel, vm => vm.LockoutInfos, v => v.LockoutInfosListView.ItemsSource);
-
 			this.WhenActivated(d =>
 			{
-				d(this.BindCommand(ViewModel, vm => vm.GetLockoutInfo, v => v.RefreshButton));
+                d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}"));
+                d(this.OneWayBind(ViewModel, vm => vm.LockoutInfos, v => v.LockoutInfosListView.ItemsSource));
+
+                d(this.BindCommand(ViewModel, vm => vm.GetLockoutInfo, v => v.RefreshButton));
 				d(this.BindCommand(ViewModel, vm => vm.Close, v => v.CloseButton));
 			});
 		}

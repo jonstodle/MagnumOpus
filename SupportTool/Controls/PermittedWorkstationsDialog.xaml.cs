@@ -26,17 +26,16 @@ namespace SupportTool.Controls
 
 			ViewModel = new PermittedWorkstationsDialogViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations");
-
-			this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.Computers, v => v.ComputersListView.ItemsSource);
-			this.Bind(ViewModel, vm => vm.SelectedComputer, v => v.ComputersListView.SelectedItem);
-
 			this.WhenActivated(d =>
 			{
 				ComputerNameTextBox.Focus();
 
-				d(this.BindCommand(ViewModel, vm => vm.AddComputer, v => v.AddComputerButton));
+                d(this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations"));
+                d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.Computers, v => v.ComputersListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedComputer, v => v.ComputersListView.SelectedItem));
+
+                d(this.BindCommand(ViewModel, vm => vm.AddComputer, v => v.AddComputerButton));
 				d(this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerButton));
 				d(this.BindCommand(ViewModel, vm => vm.RemoveAllComputers, v => v.RemoveAllComputersButton));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));

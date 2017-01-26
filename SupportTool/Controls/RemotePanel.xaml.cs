@@ -18,16 +18,16 @@ namespace SupportTool.Controls
 
 			ViewModel = new RemotePanelViewModel();
 
-			this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked);
-			this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility);
-			this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null);
-			this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, x => x == null ? "Not available" : (bool)x ? "Disable UAC" : "Enable UAC");
-			this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource);
-			this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem);
-
 			this.WhenActivated(d =>
             {
-				d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.LoggedOnUsersListView, nameof(ListView.MouseDoubleClick)));
+                d(this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked));
+                d(this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility));
+                d(this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null));
+                d(this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, x => x == null ? "Not available" : (bool)x ? "Disable UAC" : "Enable UAC"));
+                d(this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem));
+
+                d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.LoggedOnUsersListView, nameof(ListView.MouseDoubleClick)));
                 d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem));

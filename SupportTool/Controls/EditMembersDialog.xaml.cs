@@ -29,15 +29,15 @@ namespace SupportTool.Controls
 
 			this.OneWayBind(ViewModel, vm => vm.Group, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Principal.Name}'s Members" : "");
 
-			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource);
-			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
-			this.OneWayBind(ViewModel, vm => vm.GroupMembers, v => v.GroupMembersListView.ItemsSource);
-			this.Bind(ViewModel, vm => vm.SelectedGroupMember, v => v.GroupMembersListView.SelectedItem);
-
 			this.WhenActivated(d =>
 			{
-				SearchQueryTextBox.Focus();
+                d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem));
+                d(this.OneWayBind(ViewModel, vm => vm.GroupMembers, v => v.GroupMembersListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedGroupMember, v => v.GroupMembersListView.SelectedItem));
+
+                SearchQueryTextBox.Focus();
 				d(ViewModel
 					.WhenAnyValue(x => x.Group)
 					.WhereNotNull()

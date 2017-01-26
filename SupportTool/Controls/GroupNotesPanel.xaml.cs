@@ -30,15 +30,15 @@ namespace SupportTool.Controls
 
 			ViewModel = new GroupNotesPanelViewModel();
 
-			this.Bind(ViewModel, vm => vm.Notes, v => v.NotesTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.NotesTextBox.IsEnabled);
-			this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.EnableEditingButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible);
-			this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.SaveButton.Visibility);
-			this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.CancelButton.Visibility);
-
 			this.WhenActivated(d =>
 			{
-				d(this.BindCommand(ViewModel, vm => vm.EnableEditing, v => v.EnableEditingButton));
+                d(this.Bind(ViewModel, vm => vm.Notes, v => v.NotesTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.NotesTextBox.IsEnabled));
+                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.EnableEditingButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible));
+                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.SaveButton.Visibility));
+                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.CancelButton.Visibility));
+
+                d(this.BindCommand(ViewModel, vm => vm.EnableEditing, v => v.EnableEditingButton));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
 				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 			});

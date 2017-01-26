@@ -18,13 +18,13 @@ namespace SupportTool.Views
 
 			ViewModel = new IPAddressWindowViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "");
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress);
-			this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName);
-
 			this.WhenActivated(d =>
 			{
-				d(IPAddressPanel
+                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? ""));
+                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress));
+                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName));
+
+                d(IPAddressPanel
 					.PromptMessages
 					.RegisterPromptHandler(ContainerGrid));
 				d(new List<Interaction<MessageInfo, Unit>>

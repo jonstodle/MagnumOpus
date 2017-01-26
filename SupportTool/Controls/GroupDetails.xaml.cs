@@ -19,7 +19,10 @@ namespace SupportTool.Controls
 
 			ViewModel = new GroupDetailsViewModel();
 
-            this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text);
+            this.WhenActivated(d =>
+            {
+                d(this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text));
+            });
 		}
 
 		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;

@@ -27,17 +27,17 @@ namespace SupportTool.Controls
 
 			ViewModel = new EditMemberOfDialogViewModel();
 
-			this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : "");
-
-			this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text);
-			this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource);
-			this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem);
-			this.OneWayBind(ViewModel, vm => vm.PrincipalMembers, v => v.PrincipalMembersListView.ItemsSource);
-			this.Bind(ViewModel, vm => vm.SelectedPrincipalMember, v => v.PrincipalMembersListView.SelectedItem);
-
 			this.WhenActivated(d =>
 			{
-				SearchQueryTextBox.Focus();
+                d(this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : ""));
+
+                d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem));
+                d(this.OneWayBind(ViewModel, vm => vm.PrincipalMembers, v => v.PrincipalMembersListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedPrincipalMember, v => v.PrincipalMembersListView.SelectedItem));
+
+                SearchQueryTextBox.Focus();
 				d(ViewModel
 					.WhenAnyValue(x => x.Principal)
 					.WhereNotNull()
