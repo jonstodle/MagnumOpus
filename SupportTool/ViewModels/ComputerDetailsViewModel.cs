@@ -3,6 +3,7 @@ using SupportTool.Models;
 using System;
 using System.Linq;
 using System.Management;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
@@ -10,31 +11,45 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerDetailsViewModel : ViewModelBase
     {
+        private readonly ReactiveCommand<Unit, bool> _toggleIsShowingDetails;
 		private readonly ObservableAsPropertyHelper<OperatingSystemInfo> _operatingSystemInfo;
 		private readonly ObservableAsPropertyHelper<string> _ipAddress;
+        private readonly ObservableAsPropertyHelper<bool> _isShowingDetails;
 		private ComputerObject _computer;
 
 
 
         public ComputerDetailsViewModel()
         {
-			_operatingSystemInfo = this.WhenAnyValue(x => x.Computer)
-				.WhereNotNull()
+            _toggleIsShowingDetails = ReactiveCommand.Create(() => !_isShowingDetails.Value);
+
+            var newComputer = this.WhenAnyValue(x => x.Computer)
+                .WhereNotNull()
+                .Publish()
+                .RefCount();
+
+			_operatingSystemInfo = newComputer
 				.SelectMany(x => GetOSInfo(x).Catch(Observable.Return<OperatingSystemInfo>(null)))
 				.ToProperty(this, x => x.OperatingSystemInfo, null, scheduler: DispatcherScheduler.Current);
 
-			_ipAddress = this.WhenAnyValue(x => x.Computer)
-				.WhereNotNull()
+			_ipAddress = newComputer
 				.SelectMany(x => x.GetIPAddress())
 				.ObserveOnDispatcher()
 				.ToProperty(this, x => x.IPAddress, null);
+
+            _isShowingDetails = _toggleIsShowingDetails
+                .ToProperty(this, x => x.IsShowingDetails);
         }
 
 
 
+        public ReactiveCommand ToggleIsShowingDetails => _toggleIsShowingDetails;
+
 		public OperatingSystemInfo OperatingSystemInfo => _operatingSystemInfo.Value;
 
-		public string IPAddress => _ipAddress.Value; 
+		public string IPAddress => _ipAddress.Value;
+
+        public bool IsShowingDetails => _isShowingDetails.Value;
 
         public ComputerObject Computer
         {

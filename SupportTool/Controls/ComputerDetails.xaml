@@ -14,17 +14,43 @@
 			<TextBlock Text=" | "/>
 			<TextBlock x:Name="CompanyTextBlock"/>
 			<TextBlock Text=" | "/>
+			<TextBlock><Hyperlink x:Name="OperatingSystemHyperlink" Foreground="Black">
 			<TextBlock x:Name="OperatingSystemTextBlock"/>
 			<TextBlock x:Name="OperatingSystemCSDTextBlock"/>
 			<TextBlock x:Name="OperatingSystemArchitectureTextBlock"/>
+			</Hyperlink></TextBlock>
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="IPAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
-			<TextBlock Text=" | "/>
-			<TextBlock x:Name="LastBootTextBlock"/>
-			<TextBlock Text=" | "/>
-			<TextBlock x:Name="InstallDateTextBlock"/>
-			<TextBlock Text=" | "/>
-			<TextBlock x:Name="ADCreateDateTextBlock"/>
 		</WrapPanel>
+
+		<Grid x:Name="DetailsGrid" Visibility="Collapsed" Background="{StaticResource SubSectionBackgroundBrush}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="20"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Text="Operating System" Margin="2"/>
+			<StackPanel Orientation="Horizontal" Grid.Column="2" Margin="2">
+				<TextBlock x:Name="DetailsOperatingSystemTextBlock"/>
+				<TextBlock x:Name="DetailsOperatingSystemCSDTextBlock"/>
+				<TextBlock x:Name="DetailsOperatingSystemArchitectureTextBlock"/>
+			</StackPanel>
+
+			<TextBlock Text="Last Boot" Grid.Row="1" Margin="2"/>
+			<TextBlock x:Name="LastBootTextBlock" Grid.Row="1" Grid.Column="2" Margin="2"/>
+
+			<TextBlock Text="Install Date" Grid.Row="2" Margin="2"/>
+			<TextBlock x:Name="InstallDateTextBlock" Grid.Row="2" Grid.Column="2" Margin="2"/>
+
+			<TextBlock Text="Created In AD" Grid.Row="3" Margin="2"/>
+			<TextBlock x:Name="ADCreateDateTextBlock" Grid.Row="3" Grid.Column="2" Margin="2"/>
+		</Grid>
 	</StackPanel>
 </UserControl>
