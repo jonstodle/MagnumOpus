@@ -8,77 +8,80 @@ using System.Windows;
 
 namespace SupportTool.Services.NavigationServices
 {
-	public class NavigationService
-	{
-		public static NavigationService Current { get; private set; }
+    public class NavigationService
+    {
+        public static NavigationService Current { get; private set; }
 
 
 
-		private NavigationService() { }
-		public static void Init(Window mainWindow)
-		{
-			Current = new NavigationService();
-			Current._navigationStack.Add(mainWindow);
-		}
+        private NavigationService() { }
+        public static void Init(Window mainWindow)
+        {
+            Current = new NavigationService();
+            Current._navigationStack.Add(mainWindow);
+        }
 
 
 
-		public async static Task ShowDialog<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
-		{
-			var dialogWindow = new TWindow();
+        public async static Task ShowDialog<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
+        {
+            var dialogWindow = new TWindow();
 
-			await (dialogWindow.ViewModel as IDialog)?.Opening(() => dialogWindow.Close(), parameter);
+            await (dialogWindow.ViewModel as IDialog)?.Opening(() => dialogWindow.Close(), parameter);
 
-			dialogWindow.ShowDialog();
-		}
-
-
-		public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
-		{
-			var newWindow = new TWindow();
-
-			await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
-
-			newWindow.Show();
-		}
-
-		public static Task ShowPrincipalWindow(Principal principal)
-		{
-			var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(principal);
-			if (principalType == PrincipalType.User) return ShowWindow<Views.UserWindow>(principal.Name);
-			if (principalType == PrincipalType.Computer) return ShowWindow<Views.ComputerWindow>(principal.Name);
-			if (principalType == PrincipalType.Group) return ShowWindow<Views.GroupWindow>(principal.Name);
-			else return Task.FromResult<object>(null);
-		}
+            dialogWindow.ShowDialog();
+        }
 
 
+        public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
+        {
+            var newWindow = new TWindow();
 
-		private List<Window> _navigationStack = new List<Window>();
-		public IReadOnlyList<Window> NavigationStack => _navigationStack;
+            await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
-		private IViewFor _currentWindow => _navigationStack.LastOrDefault() as IViewFor;
-		private IViewFor _previousWindow => _navigationStack.Reverse<Window>().Skip(1).FirstOrDefault() as IViewFor;
+            newWindow.Show();
+        }
 
-		public async Task NavigateTo<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
-		{
-			await (_currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+        public static Task ShowPrincipalWindow(Principal principal)
+        {
+            switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
+            {
+                case PrincipalType.User: return ShowWindow<Views.UserWindow>(principal.Name);
+                case PrincipalType.Computer: return ShowWindow<Views.ComputerWindow>(principal.Name);
+                case PrincipalType.Group: return ShowWindow<Views.GroupWindow>(principal.Name);
+                case PrincipalType.Generic:
+                default: return Task.FromResult<object>(null);
+            }
+        }
 
-			var newWindow = new TWindow();
-			await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
 
-			_navigationStack.Add(newWindow as Window);
-			newWindow.ShowDialog();
-		}
 
-		public async Task GoBack(object parameter = null)
-		{
-			await (_currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+        private List<Window> _navigationStack = new List<Window>();
+        public IReadOnlyList<Window> NavigationStack => _navigationStack;
 
-			await (_previousWindow?.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+        private IViewFor _currentWindow => _navigationStack.LastOrDefault() as IViewFor;
+        private IViewFor _previousWindow => _navigationStack.Reverse<Window>().Skip(1).FirstOrDefault() as IViewFor;
 
-			(_currentWindow as Window).Close();
+        public async Task NavigateTo<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
+        {
+            await (_currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
 
-			_navigationStack.Remove(_navigationStack.Last());
-		}
-	}
+            var newWindow = new TWindow();
+            await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+
+            _navigationStack.Add(newWindow as Window);
+            newWindow.ShowDialog();
+        }
+
+        public async Task GoBack(object parameter = null)
+        {
+            await (_currentWindow.ViewModel as INavigable)?.OnNavigatingFrom();
+
+            await (_previousWindow?.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+
+            (_currentWindow as Window).Close();
+
+            _navigationStack.Remove(_navigationStack.Last());
+        }
+    }
 }
