@@ -21,9 +21,9 @@
 				</Grid.ColumnDefinitions>
 				<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
 
-				<Button x:Name="SaveButton" Content="Save" Grid.Column="2" Margin="2"/>
+				<Button x:Name="SaveButton" Content="Save" Grid.Column="2" Visibility="Collapsed" Margin="2"/>
 
-				<Button x:Name="CancelButton" Content="Cancel" Grid.Column="3" Margin="2"/>
+				<Button x:Name="CancelButton" Content="Cancel" Grid.Column="3" Visibility="Collapsed" Margin="2"/>
 			</Grid>
 		</StackPanel>
 	</Grid>

@@ -22,7 +22,7 @@
 			<Button x:Name="OpenHomeFolderButton" Content="Open home folder" Margin="2"/>
 		</WrapPanel>
 
-        <Grid x:Name="ResetProfileGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+        <Grid x:Name="ResetProfileGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -62,7 +62,7 @@
             </Grid>
         </Grid>
 
-        <StackPanel x:Name="RestoreProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+        <StackPanel x:Name="RestoreProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
             <Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>

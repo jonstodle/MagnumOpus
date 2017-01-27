@@ -23,7 +23,7 @@
 			<TextBox x:Name="IPAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 		</WrapPanel>
 
-		<Grid x:Name="DetailsGrid" Visibility="Collapsed" Background="{StaticResource SubSectionBackgroundBrush}">
+		<Grid x:Name="DetailsGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="20"/>

@@ -34,7 +34,7 @@
 			<Button x:Name="RdpButton" Content="RDP" Margin="2"/>
 		</WrapPanel>
 
-		<StackPanel x:Name="LoggedOnUsersStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+		<StackPanel x:Name="LoggedOnUsersStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<ListView x:Name="LoggedOnUsersListView" Height="100">
 				<ListView.ItemTemplate>
 					<DataTemplate>

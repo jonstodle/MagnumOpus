@@ -18,7 +18,7 @@
 			<ToggleButton x:Name="MembersToggleButton" Content="Members" Margin="2"/>
 		</WrapPanel>
 
-		<StackPanel x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+		<StackPanel x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<ListView x:Name="DirectMemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>
@@ -38,7 +38,7 @@
 			</Grid>
 		</StackPanel>
 
-		<Grid x:Name="MemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+		<Grid x:Name="MemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto"/>
@@ -71,7 +71,7 @@
 			<Button x:Name="SaveAllGroupsButton" Content="Save" Grid.Row="2" Grid.Column="1" Margin="2"/>
 		</Grid>
 
-		<StackPanel x:Name="MembersGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+		<StackPanel x:Name="MembersGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<ListView x:Name="MembersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>

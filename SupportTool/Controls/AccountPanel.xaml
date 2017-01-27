@@ -27,7 +27,7 @@
 			<!--<Button x:Name="FindUserButton" Content="Find user" Margin="2"/>-->
 		</WrapPanel>
 
-		<Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}">
+		<Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition/>

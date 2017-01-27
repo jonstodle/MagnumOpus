@@ -30,7 +30,7 @@
 			<TextBox x:Name="EmailAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 		</WrapPanel>
 
-		<Grid x:Name="OrganizationGrid" Height="300" Visibility="Collapsed" Background="{StaticResource SubSectionBackgroundBrush}">
+		<Grid x:Name="OrganizationGrid" Height="300" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="20"/>

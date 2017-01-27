@@ -14,7 +14,7 @@
             <ToggleButton x:Name="DirectGroupsToggleButton" Content="Member of" Margin="2"/>
         </WrapPanel>
 
-        <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+        <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
 				<ListView.ContextMenu>
 					<ContextMenu>
