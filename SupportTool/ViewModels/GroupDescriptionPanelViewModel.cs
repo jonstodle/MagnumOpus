@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,15 +27,20 @@ namespace SupportTool.ViewModels
                 _cancel)
 				.ToProperty(this, x => x.IsEditingEnabled);
 
-            this.WhenAnyValue(x => x.Group.Principal.Description)
+            this.WhenActivated(disposables =>
+            {
+                this.WhenAnyValue(x => x.Group.Principal.Description)
                 .WhereNotNull()
-                .Subscribe(x => Description = x);
+                .Subscribe(x => Description = x)
+                .DisposeWith(disposables);
 
-			Observable.Merge(
-                _enableEditing.ThrownExceptions,
-				_save.ThrownExceptions,
-				_cancel.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                Observable.Merge(
+                    _enableEditing.ThrownExceptions,
+                    _save.ThrownExceptions,
+                    _cancel.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
 		}
 
 

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,22 +21,28 @@ namespace SupportTool.ViewModels
 			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(x => ActiveDirectoryService.Current.GetUser(x).SubscribeOn(TaskPoolScheduler.Default));
 
 			_getLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN).SubscribeOn(TaskPoolScheduler.Default));
-			_getLockoutInfo
-				.Do(_ => _lockoutInfos.Clear())
-				.Switch()
-				.ObserveOnDispatcher()
-				.Subscribe(x => _lockoutInfos.Add(x));
 
 			_close = ReactiveCommand.Create(_closeAction);
 
 			_user = _setUser
 				.ToProperty(this, x => x.User);
 
-			Observable.Merge(
-				_setUser.ThrownExceptions,
-				_getLockoutInfo.ThrownExceptions,
-				_close.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+            this.WhenActivated(disposables =>
+            {
+                _getLockoutInfo
+                    .Do(_ => _lockoutInfos.Clear())
+                    .Switch()
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _lockoutInfos.Add(x))
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
+                _setUser.ThrownExceptions,
+                _getLockoutInfo.ThrownExceptions,
+                _close.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .DisposeWith(disposables);
+            });
 		}
 
 

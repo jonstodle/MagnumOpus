@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 
@@ -18,7 +19,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
         private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
         private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
-        private readonly ReactiveList<string> _directGroups;
+        private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
         private ComputerObject _computer;
         private bool _isShowingDirectGroups;
         private object _selectedDirectGroup;
@@ -27,8 +28,6 @@ namespace SupportTool.ViewModels
 
         public ComputerGroupsViewModel()
         {
-            _directGroups = new ReactiveList<string>();
-
             _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
 
             _saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
@@ -42,20 +41,25 @@ namespace SupportTool.ViewModels
 
             _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
-            Observable.Merge(
+            this.WhenActivated(disposables =>
+            {
+                Observable.Merge(
                 this.WhenAnyValue(x => x.Computer).WhereNotNull(),
                _openEditMemberOf.Select(_ => Computer))
                 .Do(_ => _directGroups.Clear())
                 .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
                 .Select(x => x.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
-                .Subscribe(x => _directGroups.Add(x));
+                .Subscribe(x => _directGroups.Add(x))
+                .DisposeWith(disposables);
 
-            Observable.Merge(
-                _openEditMemberOf.ThrownExceptions,
-                _saveDirectGroups.ThrownExceptions,
-                _findDirectGroup.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                Observable.Merge(
+                    _openEditMemberOf.ThrownExceptions,
+                    _saveDirectGroups.ThrownExceptions,
+                    _findDirectGroup.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
         }
 
 

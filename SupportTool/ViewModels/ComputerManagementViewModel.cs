@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using static SupportTool.Services.FileServices.ExecutionService;
 
@@ -35,12 +36,16 @@ namespace SupportTool.ViewModels
 
 			_openSccm = ReactiveCommand.Create(() => { ExecuteFile(@"C:\Program Files\SCCM Tools\SCCM Client Center\SMSCliCtrV2.exe", _computer.CN); });
 
-			Observable.Merge(
-				_rebootComputer.ThrownExceptions,
-				_runPSExec.ThrownExceptions,
-				_openCDrive.ThrownExceptions,
-				_openSccm.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+            this.WhenActivated(disposables =>
+            {
+                Observable.Merge(
+                _rebootComputer.ThrownExceptions,
+                _runPSExec.ThrownExceptions,
+                _openCDrive.ThrownExceptions,
+                _openSccm.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .DisposeWith(disposables);
+            });
 		}
 
 

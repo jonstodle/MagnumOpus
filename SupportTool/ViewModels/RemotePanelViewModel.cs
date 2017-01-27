@@ -8,6 +8,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using static SupportTool.Services.FileServices.ExecutionService;
@@ -67,26 +68,31 @@ namespace SupportTool.ViewModels
 				.ObserveOnDispatcher()
 				.ToProperty(this, x => x.IsUacOn);
 
-			this.WhenAnyValue(x => x.Computer)
-				.WhereNotNull()
-				.Select(x => x.GetLoggedInUsers().SubscribeOn(TaskPoolScheduler.Default).Catch(Observable.Return<LoggedOnUserInfo>(null)).WhereNotNull())
+            this.WhenActivated(disposables =>
+            {
+                this.WhenAnyValue(x => x.Computer)
+                .WhereNotNull()
+                .Select(x => x.GetLoggedInUsers().SubscribeOn(TaskPoolScheduler.Default).Catch(Observable.Return<LoggedOnUserInfo>(null)).WhereNotNull())
                 .Do(_ => _loggedOnUsers.Clear())
-				.Switch()
-				.ObserveOnDispatcher()
-				.Subscribe(x => _loggedOnUsers.Add(x));
+                .Switch()
+                .ObserveOnDispatcher()
+                .Subscribe(x => _loggedOnUsers.Add(x))
+                .DisposeWith(disposables);
 
-			Observable.Merge(
-				_openUser.ThrownExceptions,
-				_openLoggedOnUserDetails.ThrownExceptions,
-				_startRemoteControl.ThrownExceptions,
-				_startRemoteControlClassic.ThrownExceptions,
-				_startRemoteControl2012.ThrownExceptions,
-				_killRemoteTools.ThrownExceptions,
-				_toggleUac.ThrownExceptions,
-				_startRemoteAssistance.ThrownExceptions,
-				_startRdp.ThrownExceptions,
-				_isUacOn.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
+                Observable.Merge(
+                    _openUser.ThrownExceptions,
+                    _openLoggedOnUserDetails.ThrownExceptions,
+                    _startRemoteControl.ThrownExceptions,
+                    _startRemoteControlClassic.ThrownExceptions,
+                    _startRemoteControl2012.ThrownExceptions,
+                    _killRemoteTools.ThrownExceptions,
+                    _toggleUac.ThrownExceptions,
+                    _startRemoteAssistance.ThrownExceptions,
+                    _startRdp.ThrownExceptions,
+                    _isUacOn.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")))
+                    .DisposeWith(disposables);
+            });
 		}
 
 

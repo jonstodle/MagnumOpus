@@ -3,6 +3,7 @@ using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
 using System;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -18,11 +19,17 @@ namespace SupportTool.ViewModels
 		public ComputerWindowViewModel()
 		{
 			_setComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
-			_setComputer
-				.ToProperty(this, x => x.Computer, out _computer);
-			_setComputer
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+
+            _computer = _setComputer
+				.ToProperty(this, x => x.Computer);
+
+            this.WhenActivated(disposables =>
+            {
+                _setComputer
+                .ThrownExceptions
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .DisposeWith(disposables);
+            });
 		}
 
 

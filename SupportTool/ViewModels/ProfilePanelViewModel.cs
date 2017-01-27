@@ -9,6 +9,7 @@ using System.Linq;
 using System.Management;
 using System.Net.NetworkInformation;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
 
@@ -25,17 +26,17 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
         private readonly ReactiveCommand<Unit, Unit> _openGlobalProfile;
         private readonly ReactiveCommand<Unit, Unit> _openHomeFolder;
-        private readonly ReactiveList<string> _resetMessages;
-        private readonly ReactiveList<DirectoryInfo> _profiles;
+        private readonly ReactiveList<string> _resetMessages = new ReactiveList<string>();
+        private readonly ReactiveList<DirectoryInfo> _profiles = new ReactiveList<DirectoryInfo>();
         private UserObject _user;
         private bool _isShowingResetProfile;
         private bool _isShowingRestoreProfile;
         private string _computerName;
-        private bool _shouldRestoreDesktopItems;
-        private bool _shouldRestoreInternetExplorerFavorites;
-        private bool _shouldRestoreOutlookSignatures;
-        private bool _shouldRestoreWindowsExplorerFavorites;
-        private bool _shouldRestoreStickyNotes;
+        private bool _shouldRestoreDesktopItems = true;
+        private bool _shouldRestoreInternetExplorerFavorites = true;
+        private bool _shouldRestoreOutlookSignatures = true;
+        private bool _shouldRestoreWindowsExplorerFavorites = true;
+        private bool _shouldRestoreStickyNotes = true;
         private int _selectedProfileIndex;
         private DirectoryInfo _globalProfileDirectory;
         private DirectoryInfo _localProfileDirectory;
@@ -45,37 +46,11 @@ namespace SupportTool.ViewModels
 
         public ProfilePanelViewModel()
         {
-            _resetMessages = new ReactiveList<string>();
-            _profiles = new ReactiveList<DirectoryInfo>();
-            _shouldRestoreDesktopItems = true;
-            _shouldRestoreInternetExplorerFavorites = true;
-            _shouldRestoreOutlookSignatures = true;
-            _shouldRestoreWindowsExplorerFavorites = true;
-            _shouldRestoreStickyNotes = true;
-
             _resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(_user));
-            _resetGlobalProfile
-                .Subscribe(x => _resetMessages.Insert(0, x));
-            _resetGlobalProfile
-                .ThrownExceptions
-                .Subscribe(async ex =>
-                {
-                    _resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
-                    await _errorMessages.Handle(new MessageInfo(ex.Message));
-                });
 
             _resetLocalProfile = ReactiveCommand.CreateFromObservable(
                 () => ResetLocalProfileImpl(_user, _computerName),
                 this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
-            _resetLocalProfile
-                .Subscribe(x => _resetMessages.Insert(0, x));
-            _resetLocalProfile
-                .ThrownExceptions
-                .Subscribe(async ex =>
-                {
-                    _resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
-                    await _errorMessages.Handle(new MessageInfo(ex.Message));
-                });
 
             _openGlobalProfileDirectory = ReactiveCommand.Create(
                 () =>
@@ -94,62 +69,105 @@ namespace SupportTool.ViewModels
                 },
                 this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
 
-            _searchForProfiles = ReactiveCommand.CreateFromObservable(() =>
-            {
-                _profiles.Clear();
-                return SearchForProfilesImpl(_user, _computerName);
-            },
-            this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
-            _searchForProfiles
-                .Subscribe(x =>
+            _searchForProfiles = ReactiveCommand.CreateFromObservable(
+                () =>
                 {
-                    NewProfileDirectory = x.Item1;
-                    using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.Item2);
-                });
+                    _profiles.Clear();
+                    return SearchForProfilesImpl(_user, _computerName);
+                },
+                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
 
             _restoreProfile = ReactiveCommand.CreateFromObservable(
                 () => RestoreProfileImpl(NewProfileDirectory, _profiles[SelectedProfileIndex]),
                 this.WhenAnyValue(x => x.NewProfileDirectory, y => y.SelectedProfileIndex, (x, y) => x != null && y >= 0));
-            _restoreProfile
-                .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile restored", "Success")));
-            _restoreProfile
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not restore profile")));
 
             _resetCitrixProfile = ReactiveCommand.CreateFromObservable(() => ResetCitrixProfileImpl(_user));
-            _resetCitrixProfile
-                .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile reset", "Success")));
 
-            _openGlobalProfile = ReactiveCommand.Create(() =>
-            {
-                var profileDirectory = new DirectoryInfo(_user.ProfilePath);
-                Process.Start(profileDirectory.Parent.GetDirectories($"{profileDirectory.Name}*").LastOrDefault().FullName);
-            });
+            _openGlobalProfile = ReactiveCommand.Create(
+                () =>
+                {
+                    var profileDirectory = new DirectoryInfo(_user.ProfilePath);
+                    Process.Start(profileDirectory.Parent.GetDirectories($"{profileDirectory.Name}*").LastOrDefault().FullName);
+                });
 
             _openHomeFolder = ReactiveCommand.Create(() => { Process.Start(_user.HomeDirectory); });
 
-            MessageBus.Current
+            this.WhenActivated(disposables =>
+            {
+                _resetGlobalProfile
+                    .Subscribe(x => _resetMessages.Insert(0, x))
+                    .DisposeWith(disposables);
+
+                _resetGlobalProfile
+                    .ThrownExceptions
+                    .Subscribe(async ex =>
+                    {
+                        _resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
+                        await _errorMessages.Handle(new MessageInfo(ex.Message));
+                    })
+                    .DisposeWith(disposables);
+
+                _resetLocalProfile
+                    .Subscribe(x => _resetMessages.Insert(0, x))
+                    .DisposeWith(disposables);
+
+                _resetLocalProfile
+                    .ThrownExceptions
+                    .Subscribe(async ex =>
+                    {
+                        _resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
+                        await _errorMessages.Handle(new MessageInfo(ex.Message));
+                    })
+                    .DisposeWith(disposables);
+
+                _searchForProfiles
+                    .Subscribe(x =>
+                    {
+                        NewProfileDirectory = x.Item1;
+                        using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.Item2);
+                    })
+                    .DisposeWith(disposables);
+
+                _restoreProfile
+                    .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile restored", "Success")))
+                    .DisposeWith(disposables);
+
+                _restoreProfile
+                    .ThrownExceptions
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not restore profile")))
+                    .DisposeWith(disposables);
+
+                _resetCitrixProfile
+                    .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile reset", "Success")))
+                    .DisposeWith(disposables);
+
+                MessageBus.Current
                 .Listen<string>(ApplicationActionRequest.SetLocalProfileComputerName.ToString())
-                .Subscribe(x => ComputerName = x);
+                .Subscribe(x => ComputerName = x)
+                .DisposeWith(disposables);
 
-            Observable.Merge(
-                _openGlobalProfileDirectory.ThrownExceptions,
-                _openLocalProfileDirectory.ThrownExceptions,
-                _searchForProfiles.ThrownExceptions,
-                _resetCitrixProfile.ThrownExceptions,
-                _openGlobalProfile.ThrownExceptions,
-                _openHomeFolder.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                this
+                    .WhenAnyValue(x => x.IsShowingResetProfile)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingRestoreProfile = false)
+                    .DisposeWith(disposables);
 
-            this
-                .WhenAnyValue(x => x.IsShowingResetProfile)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingRestoreProfile = false);
+                this
+                    .WhenAnyValue(x => x.IsShowingRestoreProfile)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingResetProfile = false)
+                    .DisposeWith(disposables);
 
-            this
-                .WhenAnyValue(x => x.IsShowingRestoreProfile)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingResetProfile = false);
+                Observable.Merge(
+                    _openGlobalProfileDirectory.ThrownExceptions,
+                    _openLocalProfileDirectory.ThrownExceptions,
+                    _searchForProfiles.ThrownExceptions,
+                    _resetCitrixProfile.ThrownExceptions,
+                    _openGlobalProfile.ThrownExceptions,
+                    _openHomeFolder.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
         }
 
 

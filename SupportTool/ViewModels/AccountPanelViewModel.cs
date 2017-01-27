@@ -6,11 +6,12 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
 {
-	public class AccountPanelViewModel : ViewModelBase
+    public class AccountPanelViewModel : ViewModelBase, ISupportsActivation
     {
         private readonly ReactiveCommand<Unit, string> _setNewPassword;
         private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
@@ -19,10 +20,10 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _unlockAccount;
         private readonly ReactiveCommand<Unit, Unit> _runLockoutStatus;
         private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
-		private readonly ReactiveCommand<Unit, Unit> _toggleEnabled;
-		private readonly ReactiveCommand<Unit, Unit> _openSplunk;
-		private readonly ReactiveCommand<Unit, Unit> _openFindUser;
-		private UserObject _user;
+        private readonly ReactiveCommand<Unit, Unit> _toggleEnabled;
+        private readonly ReactiveCommand<Unit, Unit> _openSplunk;
+        private readonly ReactiveCommand<Unit, Unit> _openFindUser;
+        private UserObject _user;
         private bool _isShowingNewPasswordOptions;
         private string _newPassword;
 
@@ -30,66 +31,85 @@ namespace SupportTool.ViewModels
 
         public AccountPanelViewModel()
         {
-			_setNewPassword = ReactiveCommand.CreateFromObservable(
+            _setNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
-            _setNewPassword
-                .Subscribe(async newPass => await _infoMessages.Handle(new MessageInfo($"New password is: {newPass}", "Password set")));
 
             _setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
-            _setNewSimplePassword
-                .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)));
 
             _setNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
-            _setNewComplexPassword
-                .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)));
 
             _expirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
-            _expirePassword
-                .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("User must change password at next login", "Password expired")));
 
             _unlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
-            _unlockAccount
-                .Subscribe(async _ => 
-                {
-                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
-					await _infoMessages.Handle(new MessageInfo("Account unlocked"));
-                });
 
             _runLockoutStatus = ReactiveCommand.Create(() => ExecutionService.ExecuteInternalFile("LockoutStatus.exe", $"-u:{ActiveDirectoryService.Current.CurrentDomain}\\{User.Principal.SamAccountName}"));
 
-			_openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
+            _openPermittedWorkstations = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
-			_toggleEnabled = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.SetEnabled(User.Principal.SamAccountName, !User.Principal.Enabled ?? true));
-			_toggleEnabled
-				.Subscribe(_ => MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString()));
+            _toggleEnabled = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.SetEnabled(User.Principal.SamAccountName, !User.Principal.Enabled ?? true));
 
-			_openSplunk = ReactiveCommand.Create(() =>
+            _openSplunk = ReactiveCommand.Create(() =>
             {
                 Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
             });
 
-			_openFindUser = ReactiveCommand.Create(() => ExecutionService.ExecuteInternalFile("FindUserNet.exe"));
+            _openFindUser = ReactiveCommand.Create(() => ExecutionService.ExecuteInternalFile("FindUserNet.exe"));
 
-			Observable.Merge(
-				_setNewPassword.ThrownExceptions,
-				_setNewSimplePassword.ThrownExceptions,
-				_setNewComplexPassword.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)));
+            this.WhenActivated(disposables =>
+            {
+                _setNewPassword
+                    .Subscribe(async newPass => await _infoMessages.Handle(new MessageInfo($"New password is: {newPass}", "Password set")))
+                    .DisposeWith(disposables);
 
-			Observable.Merge(
-				_expirePassword.ThrownExceptions,
-				_unlockAccount.ThrownExceptions,
-				_runLockoutStatus.ThrownExceptions,
-				_openPermittedWorkstations.ThrownExceptions,
-				_toggleEnabled.ThrownExceptions,
-				_openFindUser.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
-		}
+                _setNewSimplePassword
+                    .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
+                    .DisposeWith(disposables);
+
+                _setNewComplexPassword
+                    .Subscribe(async newPass => await _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
+                    .DisposeWith(disposables);
+
+                _expirePassword
+                    .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("User must change password at next login", "Password expired")))
+                    .DisposeWith(disposables);
+
+                _unlockAccount
+                    .Subscribe(async _ =>
+                    {
+                        MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
+                        await _infoMessages.Handle(new MessageInfo("Account unlocked"));
+                    })
+                    .DisposeWith(disposables);
+
+                _toggleEnabled
+                    .Subscribe(_ => MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString()))
+                    .DisposeWith(disposables);
+
+
+                Observable.Merge(
+                    _setNewPassword.ThrownExceptions,
+                    _setNewSimplePassword.ThrownExceptions,
+                    _setNewComplexPassword.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+
+
+                Observable.Merge(
+                    _expirePassword.ThrownExceptions,
+                    _unlockAccount.ThrownExceptions,
+                    _runLockoutStatus.ThrownExceptions,
+                    _openPermittedWorkstations.ThrownExceptions,
+                    _toggleEnabled.ThrownExceptions,
+                    _openFindUser.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
+        }
 
 
 
-		public ReactiveCommand SetNewPassword => _setNewPassword;
+        public ReactiveCommand SetNewPassword => _setNewPassword;
 
         public ReactiveCommand SetNewSimplePassword => _setNewSimplePassword;
 
@@ -103,13 +123,13 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenPermittedWorkstations => _openPermittedWorkstations;
 
-		public ReactiveCommand ToggleEnabled => _toggleEnabled;
+        public ReactiveCommand ToggleEnabled => _toggleEnabled;
 
-		public ReactiveCommand OpenSplunk => _openSplunk;
+        public ReactiveCommand OpenSplunk => _openSplunk;
 
-		public ReactiveCommand OpenFindUser => _openFindUser;
+        public ReactiveCommand OpenFindUser => _openFindUser;
 
-		public UserObject User
+        public UserObject User
         {
             get { return _user; }
             set { this.RaiseAndSetIfChanged(ref _user, value); }
@@ -127,7 +147,7 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _newPassword, value); }
         }
 
-
+        public ViewModelActivator Activator;
 
         private IObservable<string> SetNewPasswordImpl() => Observable.StartAsync(async () =>
         {
@@ -161,5 +181,5 @@ namespace SupportTool.ViewModels
 
             return password;
         });
-	}
+    }
 }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -20,7 +21,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
         private readonly ReactiveCommand<Unit, Unit> _save;
         private readonly ReactiveCommand<Unit, Unit> _cancel;
-        private readonly ReactiveList<string> _computers;
+        private readonly ReactiveList<string> _computers = new ReactiveList<string>();
         private UserObject _user;
         private string _computerName;
         private object _selectedComputer;
@@ -30,45 +31,52 @@ namespace SupportTool.ViewModels
 
         public PermittedWorkstationsDialogViewModel()
         {
-            _computers = new ReactiveList<string>();
-
             _addComputer = ReactiveCommand.CreateFromObservable(
                 () => AddComputerImpl(ComputerName),
                 this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
-            _addComputer
-                .Do(_ => ComputerName = "")
-                .Subscribe(x => _computers.Add(x));
 
             _removeComputer = ReactiveCommand.Create(
-            () => _computers.Remove(SelectedComputer as string),
-            this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
+                () => _computers.Remove(SelectedComputer as string),
+                this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
 
             _removeAllComputers = ReactiveCommand.Create(
                 () => _computers.Clear(),
-            this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
+                this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
 
             _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
-            _save
-                .Subscribe(_ => _close());
 
             _cancel = ReactiveCommand.Create(() => _close());
 
-            this
-                .WhenAnyValue(x => x.User)
-                .WhereNotNull()
-                .Select(x => x.Principal.PermittedWorkstations)
-                .Subscribe(x =>
-                {
-                    using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
-                });
+            this.WhenActivated(disposables =>
+            {
+                _addComputer
+                    .Do(_ => ComputerName = "")
+                    .Subscribe(x => _computers.Add(x))
+                    .DisposeWith(disposables);
 
-            Observable.Merge(
+                _save
+                    .Subscribe(_ => _close())
+                    .DisposeWith(disposables);
+
+                this
+                    .WhenAnyValue(x => x.User)
+                    .WhereNotNull()
+                    .Select(x => x.Principal.PermittedWorkstations)
+                    .Subscribe(x =>
+                    {
+                        using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
+                    })
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
                 _addComputer.ThrownExceptions,
                 _removeComputer.ThrownExceptions,
                 _removeAllComputers.ThrownExceptions,
                 _save.ThrownExceptions,
                 _cancel.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .DisposeWith(disposables);
+            });
         }
 
 

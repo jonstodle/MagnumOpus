@@ -10,6 +10,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,10 +29,10 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
         private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
         private readonly ReactiveCommand<Unit, Unit> _cancel;
-        private readonly ReactiveList<DirectoryEntry> _searchResults;
-        private readonly ReactiveList<DirectoryEntry> _groupMembers;
-        private readonly ReactiveList<DirectoryEntry> _membersToAdd;
-        private readonly ReactiveList<DirectoryEntry> _membersToRemove;
+        private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _groupMembers = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
         private readonly ObservableAsPropertyHelper<GroupObject> _group;
         private string _searchQuery;
         private object _selectedSearchResult;
@@ -42,26 +43,11 @@ namespace SupportTool.ViewModels
 
         public EditMembersDialogViewModel()
         {
-            _searchResults = new ReactiveList<DirectoryEntry>();
-            _groupMembers = new ReactiveList<DirectoryEntry>();
-            _membersToAdd = new ReactiveList<DirectoryEntry>();
-            _membersToRemove = new ReactiveList<DirectoryEntry>();
-
             _setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
-            _setGroup
-                .ToProperty(this, x => x.Group, out _group);
 
             _getGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value).SubscribeOn(RxApp.TaskpoolScheduler));
-            _getGroupMembers
-                .ObserveOnDispatcher()
-                .Subscribe(x => _groupMembers.Add(x));
 
             _search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
-            _search
-                .Do(_ => _searchResults.Clear())
-                .Switch()
-                .ObserveOnDispatcher()
-                .Subscribe(x => _searchResults.Add(x));
 
             _openSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
 
@@ -91,32 +77,53 @@ namespace SupportTool.ViewModels
             _save = ReactiveCommand.CreateFromTask(
                 async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
                 Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
-            _save
-                .Subscribe(async x =>
-                {
-                    if (x.Count() > 0)
-                    {
-                        var builder = new StringBuilder();
-                        foreach (var message in x) builder.AppendLine(message);
-                        await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
-                    }
-
-                    _close();
-                });
 
             _cancel = ReactiveCommand.Create(() => _close());
 
-            Observable.Merge(
-                    _setGroup.ThrownExceptions,
-                    _getGroupMembers.ThrownExceptions,
-                    _search.ThrownExceptions,
-                    _openSearchResult.ThrownExceptions,
-                    _openGroupMember.ThrownExceptions,
-                    _addToGroup.ThrownExceptions,
-                    _removeFromGroup.ThrownExceptions,
-                    _save.ThrownExceptions,
-                    _cancel.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+            _group = _setGroup
+                .ToProperty(this, x => x.Group);
+
+            this.WhenActivated(disposables =>
+            {
+                _getGroupMembers
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _groupMembers.Add(x))
+                    .DisposeWith(disposables);
+
+                _search
+                    .Do(_ => _searchResults.Clear())
+                    .Switch()
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _searchResults.Add(x))
+                    .DisposeWith(disposables);
+
+                _save
+                    .Subscribe(async x =>
+                    {
+                        if (x.Count() > 0)
+                        {
+                            var builder = new StringBuilder();
+                            foreach (var message in x) builder.AppendLine(message);
+                            await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
+                        }
+
+                        _close();
+                    })
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
+                        _setGroup.ThrownExceptions,
+                        _getGroupMembers.ThrownExceptions,
+                        _search.ThrownExceptions,
+                        _openSearchResult.ThrownExceptions,
+                        _openGroupMember.ThrownExceptions,
+                        _addToGroup.ThrownExceptions,
+                        _removeFromGroup.ThrownExceptions,
+                        _save.ThrownExceptions,
+                        _cancel.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
         }
 
 

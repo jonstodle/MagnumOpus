@@ -3,6 +3,7 @@ using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.NavigationServices;
 using System;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -18,11 +19,17 @@ namespace SupportTool.ViewModels
 		public UserWindowViewModel()
 		{
 			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
-			_setUser
-				.ToProperty(this, x => x.User, out _user);
-			_setUser
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+
+            _user = _setUser
+                .ToProperty(this, x => x.User);
+
+            this.WhenActivated(disposables =>
+            {
+                _setUser
+                .ThrownExceptions
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .DisposeWith(disposables);
+            });
 		}
 
 

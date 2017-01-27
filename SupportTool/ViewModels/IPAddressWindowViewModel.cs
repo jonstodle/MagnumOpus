@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.Services.NavigationServices;
 using System;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -17,11 +18,17 @@ namespace SupportTool.ViewModels
 		public IPAddressWindowViewModel()
 		{
 			_setIPAddress = ReactiveCommand.Create<string, string>(ipAddress => ipAddress);
-			_setIPAddress
-				.ToProperty(this, x => x.IPAddress, out _ipAddress);
-			_setIPAddress
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+
+            _ipAddress = _setIPAddress
+				.ToProperty(this, x => x.IPAddress);
+
+            this.WhenActivated(disposables =>
+            {
+                _setIPAddress
+                .ThrownExceptions
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .DisposeWith(disposables);
+            });
 		}
 
 

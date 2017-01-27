@@ -10,6 +10,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,10 +29,10 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
         private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
         private readonly ReactiveCommand<Unit, Unit> _cancel;
-        private readonly ReactiveList<DirectoryEntry> _searchResults;
-        private readonly ReactiveList<DirectoryEntry> _principalMembers;
-        private readonly ReactiveList<DirectoryEntry> _membersToAdd;
-        private readonly ReactiveList<DirectoryEntry> _membersToRemove;
+        private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _principalMembers = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
         private readonly ObservableAsPropertyHelper<Principal> _principal;
         private string _searchQuery;
         private object _selectedSearchResult;
@@ -42,26 +43,11 @@ namespace SupportTool.ViewModels
 
         public EditMemberOfDialogViewModel()
         {
-            _searchResults = new ReactiveList<DirectoryEntry>();
-            _principalMembers = new ReactiveList<DirectoryEntry>();
-            _membersToAdd = new ReactiveList<DirectoryEntry>();
-            _membersToRemove = new ReactiveList<DirectoryEntry>();
-
             _setPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
-            _setPrincipal
-                .ToProperty(this, x => x.Principal, out _principal);
 
             _getPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value).SubscribeOn(RxApp.TaskpoolScheduler));
-            _getPrincipalMembers
-                .ObserveOnDispatcher()
-                .Subscribe(x => _principalMembers.Add(x));
 
             _search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
-            _search
-                .Do(_ => _searchResults.Clear())
-                .Switch()
-                .ObserveOnDispatcher()
-                .Subscribe(x => _searchResults.Add(x));
 
             _openSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
 
@@ -91,32 +77,53 @@ namespace SupportTool.ViewModels
             _save = ReactiveCommand.CreateFromTask(
                 async () => await SaveImpl(_principal.Value, _membersToAdd, _membersToRemove),
                 Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
-            _save
-                .Subscribe(async x =>
-                {
-                    if (x.Count() > 0)
-                    {
-                        var builder = new StringBuilder();
-                        foreach (var message in x) builder.AppendLine(message);
-                        await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
-                    }
-
-                    _close();
-                });
 
             _cancel = ReactiveCommand.Create(() => _close());
 
-            Observable.Merge(
-                    _setPrincipal.ThrownExceptions,
-                    _getPrincipalMembers.ThrownExceptions,
-                    _search.ThrownExceptions,
-                    _openSearchResultPrincipal.ThrownExceptions,
-                    _openMembersPrincipal.ThrownExceptions,
-                    _addToPrincipal.ThrownExceptions,
-                    _removeFromPrincipal.ThrownExceptions,
-                    _save.ThrownExceptions,
-                    _cancel.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+            _principal = _setPrincipal
+                .ToProperty(this, x => x.Principal);
+
+            this.WhenActivated(disposables =>
+            {
+                _getPrincipalMembers
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _principalMembers.Add(x))
+                    .DisposeWith(disposables);
+
+                _search
+                    .Do(_ => _searchResults.Clear())
+                    .Switch()
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _searchResults.Add(x))
+                    .DisposeWith(disposables);
+
+                _save
+                    .Subscribe(async x =>
+                    {
+                        if (x.Count() > 0)
+                        {
+                            var builder = new StringBuilder();
+                            foreach (var message in x) builder.AppendLine(message);
+                            await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
+                        }
+
+                        _close();
+                    })
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
+                   _setPrincipal.ThrownExceptions,
+                   _getPrincipalMembers.ThrownExceptions,
+                   _search.ThrownExceptions,
+                   _openSearchResultPrincipal.ThrownExceptions,
+                   _openMembersPrincipal.ThrownExceptions,
+                   _addToPrincipal.ThrownExceptions,
+                   _removeFromPrincipal.ThrownExceptions,
+                   _save.ThrownExceptions,
+                   _cancel.ThrownExceptions)
+               .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+               .DisposeWith(disposables);
+            });
         }
 
 
@@ -146,7 +153,6 @@ namespace SupportTool.ViewModels
         public IReactiveDerivedList<DirectoryEntry> MembersToAdd => _membersToAdd.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
         public IReactiveDerivedList<DirectoryEntry> MembersToRemove => _membersToRemove.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
-
 
         public Principal Principal => _principal.Value;
 

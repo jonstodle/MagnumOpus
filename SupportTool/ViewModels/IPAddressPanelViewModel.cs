@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 using static SupportTool.Executables.Helpers;
@@ -51,9 +52,6 @@ namespace SupportTool.ViewModels
 			});
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
-			_openCDrive
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")));
 
 			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
 			{
@@ -79,17 +77,26 @@ namespace SupportTool.ViewModels
 				.Catch(Observable.Return(""))
 				.ToProperty(this, x => x.HostName, null);
 
-			Observable.Merge(
-				_openLoggedOn.ThrownExceptions,
-				_openLoggedOnPlus.ThrownExceptions,
-				_openRemoteExecution.ThrownExceptions,
-				_rebootComputer.ThrownExceptions,
-				_startRemoteControl.ThrownExceptions,
-				_startRemoteControl2012.ThrownExceptions,
-				_killRemoteControl.ThrownExceptions,
-				_startRemoteAssistance.ThrownExceptions,
-				_startRdp.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")));
+            this.WhenActivated(disposables =>
+            {
+                _openCDrive
+                    .ThrownExceptions
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")))
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
+                _openLoggedOn.ThrownExceptions,
+                _openLoggedOnPlus.ThrownExceptions,
+                _openRemoteExecution.ThrownExceptions,
+                _rebootComputer.ThrownExceptions,
+                _startRemoteControl.ThrownExceptions,
+                _startRemoteControl2012.ThrownExceptions,
+                _killRemoteControl.ThrownExceptions,
+                _startRemoteAssistance.ThrownExceptions,
+                _startRdp.ThrownExceptions)
+                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")))
+                .DisposeWith(disposables);
+            });
 		}
 
 

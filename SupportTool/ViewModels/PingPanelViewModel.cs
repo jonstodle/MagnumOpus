@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
@@ -12,8 +13,8 @@ namespace SupportTool.ViewModels
 	{
 		private readonly ReactiveCommand<Unit, string> _startPing;
 		private readonly ReactiveCommand<Unit, Unit> _stopPing;
-		private readonly ReactiveList<string> _pingResults;
-		private readonly ObservableAsPropertyHelper<string> _mostRecentPingResult;
+		private readonly ReactiveList<string> _pingResults = new ReactiveList<string>();
+        private readonly ObservableAsPropertyHelper<string> _mostRecentPingResult;
 		private string _hostName;
 		private bool _isPinging;
 		private bool _isShowingPingResultDetails;
@@ -22,36 +23,43 @@ namespace SupportTool.ViewModels
 
 		public PingPanelViewModel()
 		{
-			_pingResults = new ReactiveList<string>();
-
 			_startPing = ReactiveCommand.CreateFromObservable(() =>
 				{
 					PingResults.Clear();
 					return PingHost(_hostName).TakeUntil(_stopPing);
 				});
-			_startPing
-				.Subscribe(x => PingResults.Insert(0, x));
-			_startPing
-				.ThrownExceptions
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
 			_stopPing = ReactiveCommand.Create(() => Unit.Default);
 
-			Observable.Merge(
+            _mostRecentPingResult = Observable.Merge(
 				_pingResults.ItemsAdded,
 				_stopPing.Select(_ => ""),
 				this.WhenAnyValue(x => x.HostName).WhereNotNull().Select(_ => ""))
-				.ToProperty(this, x => x.MostRecentPingResult, out _mostRecentPingResult);
+				.ToProperty(this, x => x.MostRecentPingResult);
 
-			this
-				.WhenAnyValue(x => x.IsPinging)
-				.Where(x => !x)
-				.Subscribe(_ => IsShowingPingResultDetails = false);
+            this.WhenActivated(disposables =>
+            {
+                _startPing
+                    .Subscribe(x => PingResults.Insert(0, x))
+                    .DisposeWith(disposables);
 
-			Observable.Merge(
-				_startPing.ThrownExceptions,
-				_stopPing.ThrownExceptions)
-				.Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                _startPing
+                    .ThrownExceptions
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+
+                this
+                .WhenAnyValue(x => x.IsPinging)
+                .Where(x => !x)
+                .Subscribe(_ => IsShowingPingResultDetails = false)
+                .DisposeWith(disposables);
+
+                Observable.Merge(
+                    _startPing.ThrownExceptions,
+                    _stopPing.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
 		}
 
 

@@ -10,6 +10,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 
@@ -23,8 +24,8 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
         private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
         private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
-        private readonly ReactiveList<string> _allGroups;
-        private readonly ReactiveList<string> _directGroups;
+        private readonly ReactiveList<string> _allGroups = new ReactiveList<string>();
+        private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
         private readonly ListCollectionView _allGroupsCollectionView;
         private readonly ObservableAsPropertyHelper<bool> _isLoadingGroups;
         private UserObject _user;
@@ -39,15 +40,9 @@ namespace SupportTool.ViewModels
 
         public UserGroupsViewModel()
         {
-            _allGroups = new ReactiveList<string>();
-            _directGroups = new ReactiveList<string>();
-
             _allGroupsCollectionView = new ListCollectionView(_allGroups);
             _allGroupsCollectionView.SortDescriptions.Add(new SortDescription());
             _allGroupsCollectionView.Filter = TextFilter;
-            this
-                .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
-                .Subscribe(_ => AllGroupsCollectionView?.Refresh());
 
             _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
 
@@ -86,18 +81,28 @@ namespace SupportTool.ViewModels
                     return cn;
                 })
                 .Subscribe(x => AllGroups.Add(x));
-            _getAllGroups
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")));
-            _getAllGroups
+
+            _isLoadingGroups = _getAllGroups
                 .IsExecuting
-                .ToProperty(this, x => x.IsLoadingGroups, out _isLoadingGroups);
+                .ToProperty(this, x => x.IsLoadingGroups);
 
             _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
 
             _findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
 
-            Observable.Merge(
+            this.WhenActivated(disposables =>
+            {
+                this
+                    .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
+                    .Subscribe(_ => AllGroupsCollectionView?.Refresh())
+                    .DisposeWith(disposables);
+
+                _getAllGroups
+                    .ThrownExceptions
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")))
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
                 this.WhenAnyValue(x => x.User).WhereNotNull(),
                 _openEditMemberOf.Select(_ => User))
                 .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
@@ -105,25 +110,30 @@ namespace SupportTool.ViewModels
                 .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
                 .Select(x => x.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
-                .Subscribe(x => _directGroups.Add(x));
+                .Subscribe(x => _directGroups.Add(x))
+                .DisposeWith(disposables);
 
-            Observable.Merge(
-                _openEditMemberOf.ThrownExceptions,
-                _saveAllGroups.ThrownExceptions,
-                _saveDirectGroups.ThrownExceptions,
-                _findDirectGroup.ThrownExceptions,
-                _findAllGroup.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                this
+                    .WhenAnyValue(x => x.IsShowingDirectGroups)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingAllGroups = false)
+                    .DisposeWith(disposables);
 
-            this
-                .WhenAnyValue(x => x.IsShowingDirectGroups)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingAllGroups = false);
+                this
+                    .WhenAnyValue(x => x.IsShowingAllGroups)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingDirectGroups = false)
+                    .DisposeWith(disposables);
 
-            this
-                .WhenAnyValue(x => x.IsShowingAllGroups)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingDirectGroups = false);
+                Observable.Merge(
+                    _openEditMemberOf.ThrownExceptions,
+                    _saveAllGroups.ThrownExceptions,
+                    _saveDirectGroups.ThrownExceptions,
+                    _findDirectGroup.ThrownExceptions,
+                    _findAllGroup.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
         }
 
 

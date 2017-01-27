@@ -10,6 +10,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 
@@ -26,9 +27,9 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
         private readonly ReactiveCommand<Unit, Unit> _saveMembers;
         private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
-        private readonly ReactiveList<string> _directMemberOfGroups;
-        private readonly ReactiveList<string> _allMemberOfGroups;
-        private readonly ReactiveList<string> _memberUsers;
+        private readonly ReactiveList<string> _directMemberOfGroups = new ReactiveList<string>();
+        private readonly ReactiveList<string> _allMemberOfGroups = new ReactiveList<string>();
+        private readonly ReactiveList<string> _memberUsers = new ReactiveList<string>();
         private readonly ListCollectionView _allMemberOfGroupsView;
         private GroupObject _group;
         private bool _isShowingDirectMemberOf;
@@ -44,17 +45,11 @@ namespace SupportTool.ViewModels
 
         public GroupGroupsViewModel()
         {
-            _directMemberOfGroups = new ReactiveList<string>();
-            _allMemberOfGroups = new ReactiveList<string>();
-            _memberUsers = new ReactiveList<string>();
             _allMemberOfGroupsView = new ListCollectionView(_allMemberOfGroups)
             {
                 Filter = TextFilter,
                 SortDescriptions = { new SortDescription() }
             };
-            this
-                .WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
-                .Subscribe(_ => _allMemberOfGroupsView?.Refresh());
 
             _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _group.CN)));
 
@@ -78,12 +73,6 @@ namespace SupportTool.ViewModels
                                 .TakeUntil(this.WhenAnyValue(x => x.IsShowingMemberOf).Where(x => !x));
                 },
                 this.WhenAnyValue(x => x.IsShowingMemberOf));
-            _getAllMemberOfGroups
-                .ObserveOnDispatcher()
-                .Subscribe(x => _allMemberOfGroups.Add(x));
-            _getAllMemberOfGroups
-                .ThrownExceptions
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")));
 
             _findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup as string));
 
@@ -109,47 +98,73 @@ namespace SupportTool.ViewModels
 
             _findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedMemberUser as string));
 
-            this
+            this.WhenActivated(disposables =>
+            {
+                this
+                    .WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
+                    .Subscribe(_ => _allMemberOfGroupsView?.Refresh())
+                    .DisposeWith(disposables);
+
+                _getAllMemberOfGroups
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _allMemberOfGroups.Add(x))
+                    .DisposeWith(disposables);
+
+                _getAllMemberOfGroups
+                    .ThrownExceptions
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")))
+                    .DisposeWith(disposables);
+
+                this
                 .WhenAnyValue(x => x.IsShowingMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
                 .Where(x => x)
-                .Subscribe(_ => IsShowingDirectMemberOf = false);
-            this
-                .WhenAnyValue(x => x.IsShowingDirectMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingMemberOf = false);
-            this
-                .WhenAnyValue(x => x.IsShowingDirectMemberOf, y => y.IsShowingMemberOf, (x, y) => x || y)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingMembers = false);
+                .Subscribe(_ => IsShowingDirectMemberOf = false)
+                .DisposeWith(disposables);
 
-            Observable.Merge(
-                this.WhenAnyValue(x => x.Group).WhereNotNull(),
-                _openEditMemberOf.Select(_ => _group))
-                .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
-                .Do(_ => _directMemberOfGroups.Clear())
-                .SelectMany(x => GetDirectGroups(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
-                .ObserveOnDispatcher()
-                .Subscribe(x => _directMemberOfGroups.Add(x));
+                this
+                    .WhenAnyValue(x => x.IsShowingDirectMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingMemberOf = false)
+                    .DisposeWith(disposables);
 
-            Observable.Merge(
-                this.WhenAnyValue(x => x.Group).WhereNotNull(),
-                _openEditMembers.Select(_ => _group))
-                .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
-                .Do(_ => _memberUsers.Clear())
-                .SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
-                .ObserveOnDispatcher()
-                .Subscribe(x => _memberUsers.Add(x));
+                this
+                    .WhenAnyValue(x => x.IsShowingDirectMemberOf, y => y.IsShowingMemberOf, (x, y) => x || y)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingMembers = false)
+                    .DisposeWith(disposables);
 
-            Observable.Merge(
-                _openEditMemberOf.ThrownExceptions,
-                _saveDirectGroups.ThrownExceptions,
-                _findDirectMemberOfGroup.ThrownExceptions,
-                _findAllMemberOfGroup.ThrownExceptions,
-                _saveAllGroups.ThrownExceptions,
-                _openEditMembers.ThrownExceptions,
-                _saveMembers.ThrownExceptions,
-                _findMemberUser.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                Observable.Merge(
+                    this.WhenAnyValue(x => x.Group).WhereNotNull(),
+                    _openEditMemberOf.Select(_ => _group))
+                    .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
+                    .Do(_ => _directMemberOfGroups.Clear())
+                    .SelectMany(x => GetDirectGroups(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _directMemberOfGroups.Add(x))
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
+                    this.WhenAnyValue(x => x.Group).WhereNotNull(),
+                    _openEditMembers.Select(_ => _group))
+                    .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
+                    .Do(_ => _memberUsers.Clear())
+                    .SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => _memberUsers.Add(x))
+                    .DisposeWith(disposables);
+
+                Observable.Merge(
+                    _openEditMemberOf.ThrownExceptions,
+                    _saveDirectGroups.ThrownExceptions,
+                    _findDirectMemberOfGroup.ThrownExceptions,
+                    _findAllMemberOfGroup.ThrownExceptions,
+                    _saveAllGroups.ThrownExceptions,
+                    _openEditMembers.ThrownExceptions,
+                    _saveMembers.ThrownExceptions,
+                    _findMemberUser.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
         }
 
 

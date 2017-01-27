@@ -4,6 +4,7 @@ using SupportTool.Services.NavigationServices;
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
@@ -55,19 +56,24 @@ namespace SupportTool.ViewModels
                 .ObserveOnDispatcher()
                 .ToProperty(this, x => x.Manager);
 
-            Observable.Zip(
+            this.WhenActivated(disposables =>
+            {
+                Observable.Zip(
                 newUser,
                 this.WhenAnyValue(x => x.IsShowingOrganizationDetails).Where(x => x),
                 (usr, _) => usr.GetDirectReports())
                 .Do(_ => _directReports.Clear())
                 .Switch()
                 .ObserveOnDispatcher()
-                .Subscribe(x => _directReports.Add(x));
+                .Subscribe(x => _directReports.Add(x))
+                .DisposeWith(disposables);
 
-            Observable.Merge(
-                _toggleOrganizationDetails.ThrownExceptions,
-                _openManager.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
+                Observable.Merge(
+                    _toggleOrganizationDetails.ThrownExceptions,
+                    _openManager.ThrownExceptions)
+                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .DisposeWith(disposables);
+            });
         }
 
 
