@@ -21,6 +21,8 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+
                 d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.DisplayNameTextBlock.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.User.Principal.EmployeeId, v => v.EmployeeIDTextBlock.Text, x => $"({x})"));
                 d(this.OneWayBind(ViewModel, vm => vm.User.Principal.SamAccountName, v => v.SamTextBlock.Text, x => x?.ToUpperInvariant()));
@@ -55,7 +57,7 @@ namespace SupportTool.Controls
             set { SetValue(UserProperty, value); }
         }
 
-        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(UserDetails), new PropertyMetadata(null, (d,e)=> (d as UserDetails).ViewModel.User = e.NewValue as UserObject));
+        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(UserDetails), new PropertyMetadata(null));
 
         public UserDetailsViewModel ViewModel
         {

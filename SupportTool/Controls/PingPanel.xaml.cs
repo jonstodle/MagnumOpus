@@ -22,6 +22,8 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.HostName, v => v.HostName));
+
                 d(this.Bind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, x => !x ? "Start" : "Stop"));
                 d(this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text));
@@ -61,7 +63,7 @@ namespace SupportTool.Controls
 			set { SetValue(HostNameProperty, value); }
 		}
 
-		public static readonly DependencyProperty HostNameProperty = DependencyProperty.Register(nameof(HostName), typeof(string), typeof(PingPanel), new PropertyMetadata(null, (d,e) => (d as PingPanel).ViewModel.HostName = e.NewValue as string));
+		public static readonly DependencyProperty HostNameProperty = DependencyProperty.Register(nameof(HostName), typeof(string), typeof(PingPanel), new PropertyMetadata(null));
 
 		public PingPanelViewModel ViewModel
         {

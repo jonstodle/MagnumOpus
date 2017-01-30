@@ -20,6 +20,8 @@ namespace SupportTool.Controls
 
 			this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+
                 d(this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility));
                 d(this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null));
@@ -52,7 +54,7 @@ namespace SupportTool.Controls
             set { SetValue(ComputerProperty, value); }
         }
 
-        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(RemotePanel), new PropertyMetadata(null, (d,e)=> (d as RemotePanel).ViewModel.Computer = e.NewValue as ComputerObject));
+        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(RemotePanel), new PropertyMetadata(null));
 
         public RemotePanelViewModel ViewModel
         {

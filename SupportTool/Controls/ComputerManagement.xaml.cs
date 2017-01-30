@@ -20,7 +20,9 @@ namespace SupportTool.Controls
 
 			this.WhenActivated(d =>
 			{
-				d(this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton));
+                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+
+                d(this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton));
 				d(this.BindCommand(ViewModel, vm => vm.RunPSExec, v => v.RunPSExecButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenSccm, v => v.OpenSccmButton));
@@ -39,7 +41,7 @@ namespace SupportTool.Controls
 			set { SetValue(ComputerProperty, value); }
 		}
 
-		public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerManagement), new PropertyMetadata(null, (d,e) => (d as ComputerManagement).ViewModel.Computer = e.NewValue as ComputerObject));
+		public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerManagement), new PropertyMetadata(null));
 
 		public ComputerManagementViewModel ViewModel
 		{

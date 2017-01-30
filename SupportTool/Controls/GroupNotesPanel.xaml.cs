@@ -32,6 +32,8 @@ namespace SupportTool.Controls
 
 			this.WhenActivated(d =>
 			{
+                d(this.Bind(ViewModel, vm => vm.Group, v => v.Group));
+
                 d(this.Bind(ViewModel, vm => vm.Notes, v => v.NotesTextBox.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.NotesTextBox.IsEnabled));
                 d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.EnableEditingButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible));
@@ -56,7 +58,7 @@ namespace SupportTool.Controls
 			set { SetValue(GroupProperty, value); }
 		}
 
-		public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupNotesPanel), new PropertyMetadata(null, (d,e) => (d as GroupNotesPanel).ViewModel.Group = e.NewValue as GroupObject));
+		public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupNotesPanel), new PropertyMetadata(null));
 
 		public GroupNotesPanelViewModel ViewModel
 		{

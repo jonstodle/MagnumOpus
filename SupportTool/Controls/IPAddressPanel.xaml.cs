@@ -20,6 +20,8 @@ namespace SupportTool.Controls
 
 			this.WhenActivated(d =>
 			{
+                d(this.Bind(ViewModel, vm => vm.IPAddress, v => v.IPAddress));
+
                 d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}"));
                 d(this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})"));
 
@@ -48,7 +50,7 @@ namespace SupportTool.Controls
 			set { SetValue(IPAddressProperty, value); }
 		}
 
-		public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register(nameof(IPAddress), typeof(string), typeof(IPAddressPanel), new PropertyMetadata(null, (d, e) => (d as IPAddressPanel).ViewModel.IPAddress = e.NewValue as string));
+		public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register(nameof(IPAddress), typeof(string), typeof(IPAddressPanel), new PropertyMetadata(null));
 
 		public IPAddressPanelViewModel ViewModel
 		{

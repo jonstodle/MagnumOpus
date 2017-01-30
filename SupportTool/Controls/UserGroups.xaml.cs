@@ -22,6 +22,8 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+
                 d(this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsGrid.Visibility));
                 d(this.Bind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsToggleButton.IsChecked));
@@ -66,7 +68,7 @@ namespace SupportTool.Controls
             set { SetValue(UserProperty, value); }
         }
 
-        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(UserGroups), new PropertyMetadata(null, (d,e)=> (d as UserGroups).ViewModel.User = e.NewValue as UserObject));
+        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(UserGroups), new PropertyMetadata(null));
 
         public UserGroupsViewModel ViewModel
         {

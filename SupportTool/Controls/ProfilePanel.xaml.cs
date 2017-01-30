@@ -28,6 +28,8 @@ namespace SupportTool.Controls
 
 			this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+
                 d(this.Bind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileGrid.Visibility));
                 d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.ResetProfileComputerNameTextBox.Text));
@@ -75,7 +77,7 @@ namespace SupportTool.Controls
             set { SetValue(UserProperty, value); }
         }
 
-        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(ProfilePanel), new PropertyMetadata(null, (d,e) => (d as ProfilePanel).ViewModel.User = e.NewValue as UserObject));
+        public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(ProfilePanel), new PropertyMetadata(null));
 
         public ProfilePanelViewModel ViewModel
         {

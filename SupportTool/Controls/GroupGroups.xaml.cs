@@ -23,6 +23,8 @@ namespace SupportTool.Controls
 			this.Bind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfToggleButton.IsChecked);
 			this.WhenActivated(d =>
 			{
+                d(this.Bind(ViewModel, vm => vm.Group, v => v.Group));
+
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfGrid.Visibility));
                 d(this.OneWayBind(ViewModel, vm => vm.DirectMemberOfGroups, v => v.DirectMemberOfListView.ItemsSource));
                 d(this.Bind(ViewModel, vm => vm.SelectedDirectMemberOfGroup, v => v.DirectMemberOfListView.SelectedItem));
@@ -74,7 +76,7 @@ namespace SupportTool.Controls
 			set { SetValue(GroupProperty, value); }
 		}
 
-		public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupGroups), new PropertyMetadata(null, (d,e)=> (d as GroupGroups).ViewModel.Group = e.NewValue as GroupObject));
+		public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupGroups), new PropertyMetadata(null));
 
 		public GroupGroupsViewModel ViewModel
 		{

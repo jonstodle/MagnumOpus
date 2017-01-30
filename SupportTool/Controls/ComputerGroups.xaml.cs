@@ -20,6 +20,8 @@ namespace SupportTool.Controls
 
 			this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+
                 d(this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsStackPanel.Visibility));
                 d(this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource));
@@ -44,7 +46,7 @@ namespace SupportTool.Controls
             set { SetValue(ComputerProperty, value); }
         }
 
-        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerGroups), new PropertyMetadata(null, (d, e) => (d as ComputerGroups).ViewModel.Computer = e.NewValue as ComputerObject));
+        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerGroups), new PropertyMetadata(null));
 
         public ComputerGroupsViewModel ViewModel
         {

@@ -21,6 +21,8 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.Group, v => v.Group));
+
                 d(this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text));
             });
 		}
@@ -35,7 +37,7 @@ namespace SupportTool.Controls
             set { SetValue(GroupProperty, value); }
         }
 
-        public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupDetails), new PropertyMetadata(null, (d, e) => (d as GroupDetails).ViewModel.Group = e.NewValue as GroupObject));
+        public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupDetails), new PropertyMetadata(null));
 
         public GroupDetailsViewModel ViewModel
         {

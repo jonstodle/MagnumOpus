@@ -21,6 +21,8 @@ namespace SupportTool.Controls
 
             this.WhenActivated(d =>
             {
+                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+
                 d(this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.CNTextBlock.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.Computer.Company, v => v.CompanyTextBlock.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.Computer.OperatingSystem, v => v.OperatingSystemTextBlock.Text));
@@ -49,7 +51,7 @@ namespace SupportTool.Controls
             set { SetValue(ComputerProperty, value); }
         }
 
-        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerDetails), new PropertyMetadata(null, (d,e)=> (d as ComputerDetails).ViewModel.Computer = e.NewValue as ComputerObject));
+        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerDetails), new PropertyMetadata(null));
 
         public ComputerDetailsViewModel ViewModel
         {
