@@ -52,7 +52,10 @@ namespace SupportTool.ViewModels
 				Observable.Return(t.Item1)
 					.InvokeCommand(_setUser);
 
-				MessageBus.Current.SendMessage(t.Item2, ApplicationActionRequest.SetLocalProfileComputerName.ToString());
+                Observable.Return(t.Item2)
+                    .Delay(TimeSpan.FromSeconds(1))
+                    .ObserveOnDispatcher()
+                    .Subscribe(x => MessageBus.Current.SendMessage(x, ApplicationActionRequest.SetLocalProfileComputerName.ToString()));
 			}
 
 			return Task.FromResult<object>(null);
