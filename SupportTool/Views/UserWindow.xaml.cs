@@ -24,7 +24,7 @@ namespace SupportTool.Views
 
 			this.WhenActivated(d =>
 			{
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Name, v => v.Title, x => x ?? ""));
+                d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.Title, x => x ?? ""));
                 d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User));
                 d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User));
                 d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User));
