@@ -5,6 +5,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Management;
 using System.Net;
+using System.Net.Sockets;
 using System.Reactive.Linq;
 
 namespace SupportTool.Models
@@ -61,7 +62,7 @@ namespace SupportTool.Models
 
 
 		public IObservable<string> GetIPAddress() => Observable.Start(() => 
-			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString())
+			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
 			.Catch(Observable.Return(""));
 
 		public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Create<LoggedOnUserInfo>(observer =>
