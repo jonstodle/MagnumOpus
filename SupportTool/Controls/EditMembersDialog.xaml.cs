@@ -3,7 +3,6 @@ using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,10 +15,10 @@ using System.Windows.Navigation;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for EditMembersDialog.xaml
-	/// </summary>
-	public partial class EditMembersDialog : UserControl, IViewFor<EditMembersDialogViewModel>
+    /// <summary>
+    /// Interaction logic for EditMembersDialog.xaml
+    /// </summary>
+    public partial class EditMembersDialog : UserControl, IViewFor<EditMembersDialogViewModel>
 	{
 		public EditMembersDialog()
 		{

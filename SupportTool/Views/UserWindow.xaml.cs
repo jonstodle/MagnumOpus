@@ -5,16 +5,15 @@ using SupportTool.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 
 namespace SupportTool.Views
 {
-	/// <summary>
-	/// Interaction logic for UserWindow.xaml
-	/// </summary>
-	public partial class UserWindow : DetailsWindow, IViewFor<UserWindowViewModel>
+    /// <summary>
+    /// Interaction logic for UserWindow.xaml
+    /// </summary>
+    public partial class UserWindow : DetailsWindow, IViewFor<UserWindowViewModel>
 	{
 		public UserWindow()
 		{

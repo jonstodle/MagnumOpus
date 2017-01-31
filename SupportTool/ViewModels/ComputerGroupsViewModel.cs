@@ -4,13 +4,11 @@ using SupportTool.Models;
 using SupportTool.Services.ExportServices;
 using SupportTool.Services.NavigationServices;
 using System;
-using System.ComponentModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Windows.Data;
 
 namespace SupportTool.ViewModels
 {

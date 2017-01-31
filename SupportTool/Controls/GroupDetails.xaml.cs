@@ -1,17 +1,16 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.ViewModels;
-using System;
 using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for GroupDetails.xaml
-	/// </summary>
-	public partial class GroupDetails : UserControl, IViewFor<GroupDetailsViewModel>
+    /// <summary>
+    /// Interaction logic for GroupDetails.xaml
+    /// </summary>
+    public partial class GroupDetails : UserControl, IViewFor<GroupDetailsViewModel>
     {
         public GroupDetails()
         {

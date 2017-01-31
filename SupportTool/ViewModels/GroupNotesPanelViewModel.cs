@@ -1,19 +1,15 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
-using SupportTool.Services.ActiveDirectoryServices;
 using System;
-using System.Collections.Generic;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupportTool.ViewModels
 {
-	public class GroupNotesPanelViewModel : ViewModelBase
+    public class GroupNotesPanelViewModel : ViewModelBase
 	{
 		public GroupNotesPanelViewModel()
 		{

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SupportTool.Models
 {
-	public class LockoutInfo
+    public class LockoutInfo
 	{
 		public string DomainControllerName { get; set; }
 		public bool UserState { get; set; }

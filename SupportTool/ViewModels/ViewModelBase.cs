@@ -1,11 +1,10 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using System.Reactive;
-using System;
 
 namespace SupportTool.ViewModels
 {
-	public class ViewModelBase : ReactiveObject, ISupportsActivation
+    public class ViewModelBase : ReactiveObject, ISupportsActivation
 	{
         protected readonly ViewModelActivator _activator = new ViewModelActivator();
 		protected readonly Interaction<MessageInfo, int> _promptMessages = new Interaction<MessageInfo, int>();
