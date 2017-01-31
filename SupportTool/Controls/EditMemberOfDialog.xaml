@@ -30,6 +30,12 @@
 				<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
 
 				<ListView x:Name="SearchResultsListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Margin="2">
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<EventSetter Event="MouseDoubleClick" Handler="SearchResultsListViewItem_DoubleClick"/>
+						</Style>
+					</ListView.ItemContainerStyle>
+					
 					<ListView.ContextMenu>
 						<ContextMenu>
 							<MenuItem x:Name="AddMenuItem" Header="Add" Style="{StaticResource PrimaryActionStyle}"/>
@@ -46,6 +52,12 @@
 				</Grid.RowDefinitions>
 
 				<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2">
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<EventSetter Event="MouseDoubleClick" Handler="PrincipalMembersListViewItem_DoubleClick"/>
+						</Style>
+					</ListView.ItemContainerStyle>
+					
 					<ListView.ContextMenu>
 						<ContextMenu>
 							<MenuItem x:Name="RemoveMenuItem" Header="Remove" Style="{StaticResource PrimaryActionStyle}"/>

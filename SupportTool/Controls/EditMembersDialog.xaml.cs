@@ -4,6 +4,7 @@ using SupportTool.ViewModels;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -56,20 +57,14 @@ namespace SupportTool.Controls
 					.SubscribeOnDispatcher()
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.Search));
-				d(SearchResultsListView.Events()
-					.MouseDoubleClick
-					.ToSignal()
-					.InvokeCommand(ViewModel, x => x.AddToGroup));
                 d(this.BindCommand(ViewModel, vm => vm.AddToGroup, v => v.AddMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSearchResult, v => v.OpenSearchResultMenuItem, nameof(MenuItem.Click)));
-				d(GroupMembersListView.Events()
-					.MouseDoubleClick
-					.ToSignal()
-					.InvokeCommand(ViewModel, x => x.RemoveFromGroup));
+                d(this.BindCommand(ViewModel, vm => vm.OpenSearchResult, v => v.OpenSearchResultMenuItem));
+                d(_searchResultsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.AddToGroup));
                 d(this.BindCommand(ViewModel, vm => vm.RemoveFromGroup, v => v.RemoveMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenGroupMember, v => v.OpenGroupMemberMenuItem, nameof(MenuItem.Click)));
+                d(this.BindCommand(ViewModel, vm => vm.OpenGroupMember, v => v.OpenGroupMemberMenuItem));
+                d(_groupMembersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.RemoveFromGroup));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
-				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
+                d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ViewModel
 					.InfoMessages
 					.RegisterInfoHandler(ContainerGrid));
@@ -92,5 +87,11 @@ namespace SupportTool.Controls
 			get { return ViewModel; }
 			set { ViewModel = value as EditMembersDialogViewModel; }
 		}
-	}
+
+        private Subject<MouseButtonEventArgs> _searchResultsListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void SearchResultsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _searchResultsListViewItemDoubleClick.OnNext(e);
+
+        private Subject<MouseButtonEventArgs> _groupMembersListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void GroupMembersListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _groupMembersListViewItemDoubleClick.OnNext(e);
+    }
 }

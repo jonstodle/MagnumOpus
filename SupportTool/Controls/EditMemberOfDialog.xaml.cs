@@ -4,6 +4,7 @@ using SupportTool.ViewModels;
 using System;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -56,20 +57,14 @@ namespace SupportTool.Controls
 					.SubscribeOnDispatcher()
 					.ToSignal()
 					.InvokeCommand(ViewModel, x => x.Search));
-				d(SearchResultsListView.Events()
-					.MouseDoubleClick
-					.ToSignal()
-					.InvokeCommand(ViewModel, x => x.AddToPrincipal));
                 d(this.BindCommand(ViewModel, vm => vm.AddToPrincipal, v => v.AddMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem, nameof(MenuItem.Click)));
-				d(PrincipalMembersListView.Events()
-					.MouseDoubleClick
-					.ToSignal()
-					.InvokeCommand(ViewModel, x => x.RemoveFromPrincipal));
+                d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem));
+                d(_searchResultsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.AddToPrincipal));
                 d(this.BindCommand(ViewModel, vm => vm.RemoveFromPrincipal, v => v.RemoveMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem, nameof(MenuItem.Click)));
+                d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem));
+                d(_principalMembersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.RemoveFromPrincipal));
 				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
-				d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
+                d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
 				d(ViewModel
 					.InfoMessages
 					.RegisterInfoHandler(ContainerGrid));
@@ -92,5 +87,11 @@ namespace SupportTool.Controls
 			get { return ViewModel; }
 			set { ViewModel = value as EditMemberOfDialogViewModel; }
 		}
-	}
+
+        private Subject<MouseButtonEventArgs> _searchResultsListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void SearchResultsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _searchResultsListViewItemDoubleClick.OnNext(e);
+
+        private Subject<MouseButtonEventArgs> _principalMembersListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void PrincipalMembersListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _principalMembersListViewItemDoubleClick.OnNext(e);
+    }
 }

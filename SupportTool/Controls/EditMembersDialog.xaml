@@ -38,6 +38,13 @@
 							</GridView.Columns>
 						</GridView>
 					</ListView.View>
+
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<EventSetter Event="MouseDoubleClick" Handler="SearchResultsListViewItem_DoubleClick"/>
+						</Style>
+					</ListView.ItemContainerStyle>
+					
 					<ListView.ContextMenu>
 						<ContextMenu>
 							<MenuItem x:Name="AddMenuItem" Header="Add" Style="{StaticResource PrimaryActionStyle}"/>
@@ -62,6 +69,13 @@
 							</GridView.Columns>
 						</GridView>
 					</ListView.View>
+
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<EventSetter Event="MouseDoubleClick" Handler="GroupMembersListViewItem_DoubleClick"/>
+						</Style>
+					</ListView.ItemContainerStyle>
+
 					<ListView.ContextMenu>
 						<ContextMenu>
 							<MenuItem x:Name="RemoveMenuItem" Header="Remove" Style="{StaticResource PrimaryActionStyle}"/>
