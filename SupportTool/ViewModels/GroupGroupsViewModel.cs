@@ -35,11 +35,11 @@ namespace SupportTool.ViewModels
         private bool _isShowingDirectMemberOf;
         private bool _isShowingMemberOf;
         private bool _isShowingMembers;
-        private object _selectedDirectMemberOfGroup;
+        private string _selectedDirectMemberOfGroup;
         private string _filterString;
         private bool _useFuzzy;
-        private object _selectedAllMemberOfGroup;
-        private object _selectedMemberUser;
+        private string _selectedAllMemberOfGroup;
+        private string _selectedMemberUser;
 
 
 
@@ -62,7 +62,7 @@ namespace SupportTool.ViewModels
                 }
             });
 
-            _findDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup as string));
+            _findDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup));
 
             _getAllMemberOfGroups = ReactiveCommand.CreateFromObservable(
                 () =>
@@ -74,7 +74,7 @@ namespace SupportTool.ViewModels
                 },
                 this.WhenAnyValue(x => x.IsShowingMemberOf));
 
-            _findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup as string));
+            _findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup));
 
             _saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -96,7 +96,7 @@ namespace SupportTool.ViewModels
                 }
             });
 
-            _findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.UserWindow>(_selectedMemberUser as string));
+            _findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.UserWindow>(_selectedMemberUser));
 
             this.WhenActivated(disposables =>
             {
@@ -219,7 +219,7 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _isShowingMembers, value); }
         }
 
-        public object SelectedDirectMemberOfGroup
+        public string SelectedDirectMemberOfGroup
         {
             get { return _selectedDirectMemberOfGroup; }
             set { this.RaiseAndSetIfChanged(ref _selectedDirectMemberOfGroup, value); }
@@ -237,13 +237,13 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
         }
 
-        public object SelectedAllMemberOfGroup
+        public string SelectedAllMemberOfGroup
         {
             get { return _selectedAllMemberOfGroup; }
             set { this.RaiseAndSetIfChanged(ref _selectedAllMemberOfGroup, value); }
         }
 
-        public object SelectedMemberUser
+        public string SelectedMemberUser
         {
             get { return _selectedMemberUser; }
             set { this.RaiseAndSetIfChanged(ref _selectedMemberUser, value); }

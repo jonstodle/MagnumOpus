@@ -32,17 +32,17 @@ namespace SupportTool.ViewModels
 		private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
 		private ComputerObject _computer;
 		private bool _isShowingLoggedOnUsers;
-		private object _selectedLoggedOnUser;
+		private LoggedOnUserInfo _selectedLoggedOnUser;
 
 
 
 		public RemotePanelViewModel()
 		{
-			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create((_selectedLoggedOnUser as LoggedOnUserInfo).Username, _computer.CN)));
+			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create(_selectedLoggedOnUser.Username, _computer.CN)));
 
-			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText((_selectedLoggedOnUser as LoggedOnUserInfo).Username));
+			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser.Username));
 
-			_logOffUser = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "logoff.exe"), $"{(_selectedLoggedOnUser as LoggedOnUserInfo).SessionID} /server:{_computer.CN}", false));
+			_logOffUser = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "logoff.exe"), $"{_selectedLoggedOnUser.SessionID} /server:{_computer.CN}", false));
 
 			_openLoggedOnUserDetails = ReactiveCommand.Create(() => ExecuteCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
 
@@ -135,7 +135,7 @@ namespace SupportTool.ViewModels
 			set { this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
 		}
 
-		public object SelectedLoggedOnUser
+		public LoggedOnUserInfo SelectedLoggedOnUser
 		{
 			get { return _selectedLoggedOnUser; }
 			set { this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }

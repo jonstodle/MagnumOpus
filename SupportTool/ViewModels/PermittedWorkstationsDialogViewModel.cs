@@ -22,7 +22,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveList<string> _computers = new ReactiveList<string>();
         private UserObject _user;
         private string _computerName;
-        private object _selectedComputer;
+        private string _selectedComputer;
         private Action _close;
 
 
@@ -103,7 +103,7 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _computerName, value); }
         }
 
-        public object SelectedComputer
+        public string SelectedComputer
         {
             get { return _selectedComputer; }
             set { this.RaiseAndSetIfChanged(ref _selectedComputer, value); }

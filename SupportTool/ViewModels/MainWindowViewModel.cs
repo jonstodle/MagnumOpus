@@ -27,7 +27,7 @@ namespace SupportTool.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _showVersion;
         private SortDescription _listSortDescription;
         private string _searchQuery;
-        private object _selectedSearchResult;
+        private DirectoryEntryInfo _selectedSearchResult;
         private string _version;
 
 
@@ -61,13 +61,11 @@ namespace SupportTool.ViewModels
             _open = ReactiveCommand.CreateFromTask(
                 async () =>
                 {
-                    var de = _selectedSearchResult as DirectoryEntryInfo;
-                    var cn = de.CN;
-                    var principal = await ActiveDirectoryService.Current.GetPrincipal(cn);
+                    var principal = await ActiveDirectoryService.Current.GetPrincipal(_selectedSearchResult.CN);
 
                     await NavigationService.ShowPrincipalWindow(principal);
 
-                    if (!_history.Contains(cn)) _history.Insert(0, cn);
+                    if (!_history.Contains(_selectedSearchResult.CN)) _history.Insert(0, _selectedSearchResult.CN);
                 },
                 this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
@@ -133,7 +131,7 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
         }
 
-        public object SelectedSearchResult
+        public DirectoryEntryInfo SelectedSearchResult
         {
             get { return _selectedSearchResult; }
             set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }

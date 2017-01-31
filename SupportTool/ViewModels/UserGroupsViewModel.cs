@@ -31,8 +31,8 @@ namespace SupportTool.ViewModels
         private UserObject _user;
         private bool _isShowingDirectGroups;
         private bool _isShowingAllGroups;
-        private object _selectedDirectGroup;
-        private object _selectedAllGroup;
+        private string _selectedDirectGroup;
+        private string _selectedAllGroup;
         private string _groupFilter;
         private bool _useFuzzy;
 
@@ -86,9 +86,9 @@ namespace SupportTool.ViewModels
                 .IsExecuting
                 .ToProperty(this, x => x.IsLoadingGroups);
 
-            _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
+            _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup));
 
-            _findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup as string));
+            _findAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup));
 
             this.WhenActivated(disposables =>
             {
@@ -176,13 +176,13 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _isShowingAllGroups, value); }
         }
 
-        public object SelectedDirectGroup
+        public string SelectedDirectGroup
         {
             get { return _selectedDirectGroup; }
             set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
         }
 
-        public object SelectedAllGroup
+        public string SelectedAllGroup
         {
             get { return _selectedAllGroup; }
             set { this.RaiseAndSetIfChanged(ref _selectedAllGroup, value); }

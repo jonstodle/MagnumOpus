@@ -20,7 +20,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
         private ComputerObject _computer;
         private bool _isShowingDirectGroups;
-        private object _selectedDirectGroup;
+        private string _selectedDirectGroup;
 
 
 
@@ -37,7 +37,7 @@ namespace SupportTool.ViewModels
                 }
             });
 
-            _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup as string));
+            _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup));
 
             this.WhenActivated(disposables =>
             {
@@ -82,7 +82,7 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
         }
 
-        public object SelectedDirectGroup
+        public string SelectedDirectGroup
         {
             get { return _selectedDirectGroup; }
             set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }

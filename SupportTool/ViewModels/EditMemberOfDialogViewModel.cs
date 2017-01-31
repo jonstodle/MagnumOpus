@@ -33,8 +33,8 @@ namespace SupportTool.ViewModels
         private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
         private readonly ObservableAsPropertyHelper<Principal> _principal;
         private string _searchQuery;
-        private object _selectedSearchResult;
-        private object _selectedPrincipalMember;
+        private DirectoryEntry _selectedSearchResult;
+        private DirectoryEntry _selectedPrincipalMember;
         private Action _close;
 
 
@@ -47,28 +47,26 @@ namespace SupportTool.ViewModels
 
             _search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
 
-            _openSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedSearchResult as DirectoryEntry).Properties.Get<string>("name")));
+            _openSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedSearchResult.Properties.Get<string>("name")));
 
-            _openMembersPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal((_selectedPrincipalMember as DirectoryEntry).Properties.Get<string>("name")));
+            _openMembersPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedPrincipalMember.Properties.Get<string>("name")));
 
             _addToPrincipal = ReactiveCommand.Create(
                 () =>
                 {
-                    var de = _selectedSearchResult as DirectoryEntry;
-                    if (_principalMembers.Contains(de) || _membersToAdd.Contains(de)) return;
-                    _membersToRemove.Remove(de);
-                    _principalMembers.Add(de);
-                    _membersToAdd.Add(de);
+                    if (_principalMembers.Contains(_selectedSearchResult) || _membersToAdd.Contains(_selectedSearchResult)) return;
+                    _membersToRemove.Remove(_selectedSearchResult);
+                    _principalMembers.Add(_selectedSearchResult);
+                    _membersToAdd.Add(_selectedSearchResult);
                 },
                 this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
 
             _removeFromPrincipal = ReactiveCommand.Create(
                 () =>
                 {
-                    var de = _selectedPrincipalMember as DirectoryEntry;
-                    _principalMembers.Remove(de);
-                    if (_membersToAdd.Contains(de)) _membersToAdd.Remove(de);
-                    else _membersToRemove.Add(de);
+                    _principalMembers.Remove(_selectedPrincipalMember);
+                    if (_membersToAdd.Contains(_selectedPrincipalMember)) _membersToAdd.Remove(_selectedPrincipalMember);
+                    else _membersToRemove.Add(_selectedPrincipalMember);
                 },
                 this.WhenAnyValue(x => x.SelectedPrincipalMember).IsNotNull());
 
@@ -160,13 +158,13 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
         }
 
-        public object SelectedSearchResult
+        public DirectoryEntry SelectedSearchResult
         {
             get { return _selectedSearchResult; }
             set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
         }
 
-        public object SelectedPrincipalMember
+        public DirectoryEntry SelectedPrincipalMember
         {
             get { return _selectedPrincipalMember; }
             set { this.RaiseAndSetIfChanged(ref _selectedPrincipalMember, value); }
