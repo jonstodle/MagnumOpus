@@ -3,8 +3,11 @@ using SupportTool.Models;
 using SupportTool.ViewModels;
 using System;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
@@ -42,7 +45,7 @@ namespace SupportTool.Controls
 
                 d(this.BindCommand(ViewModel, vm => vm.ToggleOrganizationDetails, v => v.CompanyHyperLink));
                 d(this.BindCommand(ViewModel, vm => vm.OpenManager, v => v.ManagerHyperLink));
-                d(this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.DirectReportsListView, nameof(ListView.MouseDoubleClick)));
+                d(_directReportsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenDirectReport));
                 d(this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.OpenDirectReportMenuItem));
             });
 		}
@@ -72,5 +75,8 @@ namespace SupportTool.Controls
             get { return ViewModel; }
             set { ViewModel = value as UserDetailsViewModel; }
         }
+
+        private Subject<MouseButtonEventArgs> _directReportsListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void DirectReportsListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _directReportsListViewItemDoubleClick.OnNext(e);
     }
 }

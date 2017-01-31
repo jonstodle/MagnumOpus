@@ -15,7 +15,15 @@
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
-			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+			<ListView x:Name="DirectGroupsListView" Height="200" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="DirectGroupsListViewItem_DoubleClick">
+							<TextBlock Text="{Binding}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="FindDirectGroupMenuItem" Header="Open group" Style="{StaticResource PrimaryActionStyle}"/>

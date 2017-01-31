@@ -38,9 +38,12 @@
 			<ListView x:Name="LoggedOnUsersListView" Height="100">
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding Username}"/>
+						<UserControl MouseDoubleClick="LoggedOnUsersListViewItem_DoubleClick">
+							<TextBlock Text="{Binding Username}"/>
+						</UserControl>
 					</DataTemplate>
 				</ListView.ItemTemplate>
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenUserMenuItem" Header="Open user" Style="{StaticResource PrimaryActionStyle}"/>

@@ -60,17 +60,19 @@
 			<TextBlock Text="Direct Reports" Grid.Row="4" Margin="2"/>
 
 			<ListView x:Name="DirectReportsListView" Grid.Row="5" Grid.ColumnSpan="3" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="DirectReportsListViewItem_DoubleClick">
+							<TextBlock Text="{Binding Principal.Name}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenDirectReportMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
 					</ContextMenu>
 				</ListView.ContextMenu>
-
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding Principal.Name}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
 			</ListView>
 		</Grid>
     </StackPanel>

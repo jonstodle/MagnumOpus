@@ -17,7 +17,15 @@
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
-			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+			<ListView x:Name="DirectGroupsListView" Height="200" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="DirectGroupsListViewItem_DoubleClick">
+							<TextBlock Text="{Binding}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+				
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenMemberOfMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
@@ -55,7 +63,15 @@
 
             <ProgressBar x:Name="IsLoadingGroupsProgressBar" Height="10" Grid.Row="1" Grid.ColumnSpan="2" Visibility="Collapsed" Margin="2"/>
 
-			<ListView x:Name="AllGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
+			<ListView x:Name="AllGroupsListView" Height="200" Grid.Row="2" Grid.ColumnSpan="2" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="AllGroupsListViewItem_DoubleClick">
+							<TextBlock Text="{Binding}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenMemberOfAllMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>

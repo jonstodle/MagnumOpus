@@ -19,7 +19,15 @@
 		</WrapPanel>
 
 		<StackPanel x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
-			<ListView x:Name="DirectMemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+			<ListView x:Name="DirectMemberOfListView" Height="200" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="DirectMemberOfListViewItem_DoubleClick">
+							<TextBlock Text="{Binding}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+				
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenMemberOfMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
@@ -53,7 +61,15 @@
 
 			<ToggleButton x:Name="UseFuzzyToggleButton" Content="Use fuzzy" Grid.Column="1" Margin="2"/>
 
-			<ListView x:Name="MemberOfListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Grid.Row="1" Grid.ColumnSpan="2" Margin="2">
+			<ListView x:Name="MemberOfListView" Height="200" Grid.Row="1" Grid.ColumnSpan="2" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="MemberOfListViewItem_DoubleClick">
+							<TextBlock Text="{Binding}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenMemberOfAllMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
@@ -72,7 +88,15 @@
 		</Grid>
 
 		<StackPanel x:Name="MembersGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
-			<ListView x:Name="MembersListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+			<ListView x:Name="MembersListView" Height="200" Margin="2">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<UserControl MouseDoubleClick="MembersListViewItem_DoubleClick">
+							<TextBlock Text="{Binding}"/>
+						</UserControl>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenMembersMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>

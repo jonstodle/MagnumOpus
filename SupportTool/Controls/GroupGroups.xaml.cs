@@ -4,8 +4,10 @@ using SupportTool.ViewModels;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
@@ -43,16 +45,16 @@ namespace SupportTool.Controls
                 d(this.OneWayBind(ViewModel, vm => vm.MemberUsers, v => v.MembersListView.ItemsSource));
                 d(this.Bind(ViewModel, vm => vm.SelectedMemberUser, v => v.MembersListView.SelectedItem));
 
-                d(this.BindCommand(ViewModel, vm => vm.FindDirectMemberOfGroup, v => v.DirectMemberOfListView, nameof(ListView.MouseDoubleClick)));
+                d(_directMemberOfListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectMemberOfGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindDirectMemberOfGroup, v => v.OpenMemberOfMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton));
 				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
-				d(this.BindCommand(ViewModel, vm => vm.FindAllMemberOfGroup, v => v.MemberOfListView, nameof(ListView.MouseDoubleClick)));
+                d(_memberOfListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindAllMemberOfGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindAllMemberOfGroup, v => v.OpenMemberOfAllMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenEditMembers, v => v.MembersButton));
 				d(this.BindCommand(ViewModel, vm => vm.SaveMembers, v => v.SaveMembersButton));
-				d(this.BindCommand(ViewModel, vm => vm.FindMemberUser, v => v.MembersListView, nameof(ListView.MouseDoubleClick)));
+                d(_membersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindMemberUser));
                 d(this.BindCommand(ViewModel, vm => vm.FindMemberUser, v => v.OpenMembersMenuItem));
 
                 d(ViewModel
@@ -91,5 +93,14 @@ namespace SupportTool.Controls
 			get { return ViewModel; }
 			set { ViewModel = value as GroupGroupsViewModel; }
 		}
-	}
+
+        private Subject<MouseButtonEventArgs> _directMemberOfListViewItemDoubleClicks = new Subject<MouseButtonEventArgs>();
+        private void DirectMemberOfListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _directMemberOfListViewItemDoubleClicks.OnNext(e);
+
+        private Subject<MouseButtonEventArgs> _memberOfListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void MemberOfListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _memberOfListViewItemDoubleClick.OnNext(e);
+
+        private Subject<MouseButtonEventArgs> _membersListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void MembersListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _membersListViewItemDoubleClick.OnNext(e);
+    }
 }

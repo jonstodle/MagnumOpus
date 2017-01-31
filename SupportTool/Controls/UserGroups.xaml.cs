@@ -1,11 +1,15 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
 using SupportTool.ViewModels;
+using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
@@ -39,9 +43,9 @@ namespace SupportTool.Controls
                 d(this.OneWayBind(ViewModel, vm => vm.AllGroupsCollectionView.Count, v => v.ShowingCountRun.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.AllGroups.Count, v => v.TotalCountRun.Text));
 
-                d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.DirectGroupsListView, nameof(ListView.MouseDoubleClick)));
+                d(_directGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.OpenMemberOfMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.FindAllGroup, v => v.AllGroupsListView, nameof(ListView.MouseDoubleClick)));
+                d(_allGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindAllGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindAllGroup, v => v.OpenMemberOfAllMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditGroupsButton));
 				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveGroupsButton));
@@ -83,5 +87,11 @@ namespace SupportTool.Controls
             get { return ViewModel; }
             set { ViewModel = value as UserGroupsViewModel; }
         }
+
+        private Subject<MouseButtonEventArgs> _directGroupsListViewItemDoubleClicks = new Subject<MouseButtonEventArgs>();
+        private void DirectGroupsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _directGroupsListViewItemDoubleClicks.OnNext(e);
+
+        private Subject<MouseButtonEventArgs> _allGroupsListViewItemDoubleClicks = new Subject<MouseButtonEventArgs>();
+        private void AllGroupsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _allGroupsListViewItemDoubleClicks.OnNext(e);
     }
 }

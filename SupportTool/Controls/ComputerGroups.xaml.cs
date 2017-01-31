@@ -2,23 +2,26 @@
 using SupportTool.Models;
 using SupportTool.ViewModels;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for ComputerGroups.xaml
-	/// </summary>
-	public partial class ComputerGroups : UserControl, IViewFor<ComputerGroupsViewModel>
+    /// <summary>
+    /// Interaction logic for ComputerGroups.xaml
+    /// </summary>
+    public partial class ComputerGroups : UserControl, IViewFor<ComputerGroupsViewModel>
     {
         public ComputerGroups()
         {
             InitializeComponent();
 
-			ViewModel = new ComputerGroupsViewModel();
+            ViewModel = new ComputerGroupsViewModel();
 
-			this.WhenActivated(d =>
+            this.WhenActivated(d =>
             {
                 d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
 
@@ -27,20 +30,20 @@ namespace SupportTool.Controls
                 d(this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource));
                 d(this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem));
 
-                d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.DirectGroupsListView, nameof(ListView.MouseDoubleClick)));
+                d(_directGroupsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.FindDirectGroupMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton));
-				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
-			});
-		}
+                d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
+            });
+        }
 
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
 
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
-		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+        public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
 
-		public ComputerObject Computer
+        public ComputerObject Computer
         {
             get { return (ComputerObject)GetValue(ComputerProperty); }
             set { SetValue(ComputerProperty, value); }
@@ -61,5 +64,8 @@ namespace SupportTool.Controls
             get { return ViewModel; }
             set { ViewModel = value as ComputerGroupsViewModel; }
         }
+
+        private Subject<MouseButtonEventArgs> _directGroupsListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void DirectGroupsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _directGroupsListViewItemDoubleClick.OnNext(e);
     }
 }

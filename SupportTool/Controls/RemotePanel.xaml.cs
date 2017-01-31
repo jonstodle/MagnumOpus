@@ -2,8 +2,11 @@
 using SupportTool.Models;
 using SupportTool.ViewModels;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
@@ -29,7 +32,7 @@ namespace SupportTool.Controls
                 d(this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource));
                 d(this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem));
 
-                d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.LoggedOnUsersListView, nameof(ListView.MouseDoubleClick)));
+                d(_loggedOnUsersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenUser));
                 d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem));
@@ -69,5 +72,8 @@ namespace SupportTool.Controls
             get { return ViewModel; }
             set { ViewModel = value as RemotePanelViewModel; }
         }
+
+        private Subject<MouseButtonEventArgs> _loggedOnUsersListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
+        private void LoggedOnUsersListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _loggedOnUsersListViewItemDoubleClick.OnNext(e);
     }
 }
