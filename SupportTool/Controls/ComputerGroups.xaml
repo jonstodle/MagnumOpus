@@ -15,14 +15,12 @@
         </WrapPanel>
 
         <StackPanel x:Name="DirectGroupsStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
-			<ListView x:Name="DirectGroupsListView" Height="200" Margin="2">
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<UserControl MouseDoubleClick="DirectGroupsListViewItem_DoubleClick">
-							<TextBlock Text="{Binding}"/>
-						</UserControl>
-					</DataTemplate>
-				</ListView.ItemTemplate>
+			<ListView x:Name="DirectGroupsListView" ItemTemplate="{StaticResource StringDataTemplate}" Height="200" Margin="2">
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem">
+						<EventSetter Event="MouseDoubleClick" Handler="DirectGroupsListViewItem_DoubleClick"/>
+					</Style>
+				</ListView.ItemContainerStyle>
 
 				<ListView.ContextMenu>
 					<ContextMenu>

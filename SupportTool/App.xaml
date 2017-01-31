@@ -38,6 +38,14 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		
+		<DataTemplate x:Key="StringDataTemplate">
+			<TextBlock Text="{Binding}"/>
+		</DataTemplate>
+
+		<DataTemplate x:Key="DirectoryEntryDataTemplate">
+			<TextBlock Text="{Binding Properties[name][0]}"/>
+		</DataTemplate>
 
 		<SolidColorBrush x:Key="SubSectionBackgroundBrush" Color="Black" Opacity=".05"/>
 

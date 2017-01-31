@@ -36,14 +36,18 @@
 
 		<StackPanel x:Name="LoggedOnUsersStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<ListView x:Name="LoggedOnUsersListView" Height="100">
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem">
+						<EventSetter Event="MouseDoubleClick" Handler="LoggedOnUsersListViewItem_DoubleClick"/>
+					</Style>
+				</ListView.ItemContainerStyle>
+
 				<ListView.ItemTemplate>
 					<DataTemplate>
-						<UserControl MouseDoubleClick="LoggedOnUsersListViewItem_DoubleClick">
-							<TextBlock Text="{Binding Username}"/>
-						</UserControl>
+						<TextBlock Text="{Binding Username}"/>
 					</DataTemplate>
 				</ListView.ItemTemplate>
-
+				
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenUserMenuItem" Header="Open user" Style="{StaticResource PrimaryActionStyle}"/>
