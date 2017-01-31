@@ -96,7 +96,7 @@ namespace SupportTool.ViewModels
                 }
             });
 
-            _findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedMemberUser as string));
+            _findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.UserWindow>(_selectedMemberUser as string));
 
             this.WhenActivated(disposables =>
             {
