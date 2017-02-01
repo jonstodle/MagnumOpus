@@ -17,25 +17,4 @@ namespace System.Reactive.Linq
 
         public static IObservable<Unit> ToEventCommandSignal<T>(this IObservable<T> source) where T : class => source.Select(_ => Unit.Default).Delay(TimeSpan.FromMilliseconds(10), DispatcherScheduler.Current);
 	}
-
-	public class MergeObject<T> : IDisposable
-	{
-		public MergeObject()
-		{
-			var signals = _signalSubject.SelectMany(x => x).Publish();
-			signals.Connect();
-			Signals = signals;
-		}
-
-		public IObservable<T> Signals { get; private set; }
-
-		public void Add(IObservable<T> observable) => _signalSubject.OnNext(observable);
-
-		public void Dispose() => _signalsSubscription?.Dispose();
-
-		private ReplaySubject<IObservable<T>> _signalSubject;
-		private IDisposable _signalsSubscription;
-
-		~MergeObject() => Dispose();
-	}
 }
