@@ -11,7 +11,7 @@ using System.Reactive.Linq;
 
 namespace SupportTool.ViewModels
 {
-    public class AccountPanelViewModel : ViewModelBase, ISupportsActivation
+    public class AccountPanelViewModel : ViewModelBase
     {
         private readonly ReactiveCommand<Unit, string> _setNewPassword;
         private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
@@ -146,8 +146,6 @@ namespace SupportTool.ViewModels
             get { return _newPassword; }
             set { this.RaiseAndSetIfChanged(ref _newPassword, value); }
         }
-
-        public ViewModelActivator Activator;
 
         private IObservable<string> SetNewPasswordImpl() => Observable.StartAsync(async () =>
         {
