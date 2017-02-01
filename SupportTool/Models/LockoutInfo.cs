@@ -11,5 +11,7 @@ namespace SupportTool.Models
 		public DateTime? PasswordLastSet { get; set; }
 		public DateTime? LockoutTime { get; set; }
 		public string OriginalLock { get; set; }
+
+        public string UserStateString => UserState ? "Locked" : "Not locked";
 	}
 }

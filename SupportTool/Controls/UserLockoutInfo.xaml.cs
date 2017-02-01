@@ -14,6 +14,8 @@ namespace SupportTool.Controls
 		{
 			InitializeComponent();
 
+            ViewModel = new UserLockoutInfoViewModel();
+
 			this.WhenActivated(d =>
 			{
                 d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}"));

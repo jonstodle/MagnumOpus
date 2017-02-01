@@ -30,7 +30,7 @@
 				<ListView.View>
 					<GridView>
 						<GridViewColumn Header="DC" DisplayMemberBinding="{Binding DomainControllerName}"/>
-						<GridViewColumn Header="User state" DisplayMemberBinding="{Binding UserState}"/>
+						<GridViewColumn Header="User state" DisplayMemberBinding="{Binding UserStateString}"/>
 						<GridViewColumn Header="Bad passwords" DisplayMemberBinding="{Binding BadPasswordCount}"/>
 						<GridViewColumn Header="Last bad passwords" DisplayMemberBinding="{Binding LastBadPassword}"/>
 						<GridViewColumn Header="Password last set" DisplayMemberBinding="{Binding PasswordLastSet}"/>

@@ -19,7 +19,7 @@ namespace SupportTool.ViewModels
 
 			_getLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN).SubscribeOn(TaskPoolScheduler.Default));
 
-			_close = ReactiveCommand.Create(_closeAction);
+			_close = ReactiveCommand.Create(() => _closeAction());
 
 			_user = _setUser
 				.ToProperty(this, x => x.User);
@@ -29,6 +29,7 @@ namespace SupportTool.ViewModels
                 _getLockoutInfo
                     .Do(_ => _lockoutInfos.Clear())
                     .Switch()
+                    .WhereNotNull()
                     .ObserveOnDispatcher()
                     .Subscribe(x => _lockoutInfos.Add(x))
                     .DisposeWith(disposables);
