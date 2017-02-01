@@ -106,7 +106,7 @@ namespace SupportTool.Services.ActiveDirectoryServices
 
 			return new LockoutInfo
 			{
-				DomainControllerName = x.Name,
+				DomainControllerName = x.Name.Split('.').FirstOrDefault(),
 				UserState = user.IsAccountLockedOut(),
 				BadPasswordCount = user.BadLogonCount,
 				LastBadPassword = user.LastBadPasswordAttempt,
