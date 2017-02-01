@@ -16,8 +16,6 @@ namespace System.Reactive.Linq
 		public static IObservable<Unit> ToSignal<T>(this IObservable<T> source) where T : class => source.Select(_ => Unit.Default);
 
         public static IObservable<Unit> ToEventCommandSignal<T>(this IObservable<T> source) where T : class => source.Select(_ => Unit.Default).Delay(TimeSpan.FromMilliseconds(10), DispatcherScheduler.Current);
-
-        public static void AddTo<T>(this IObservable<T> source, MergeObject<T> mergeObject) => mergeObject.Add(source);
 	}
 
 	public class MergeObject<T> : IDisposable

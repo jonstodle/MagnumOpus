@@ -16,19 +16,19 @@ namespace SupportTool.Views
 			Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default)
 				.ObserveOnDispatcher()
 				.Subscribe(x => this.Close())
-				.AddTo(_subscriptions);
+				.DisposeWith(_subscriptions);
 
             if (SettingsService.Current.UseEscapeToCloseDetailsWindows)
             {
                 this.Events().KeyDown
                     .Where(x => x.Key == System.Windows.Input.Key.Escape)
                     .Subscribe(_ => this.Close())
-                    .AddTo(_subscriptions);
+                    .DisposeWith(_subscriptions);
             }
 
 			this.Events().Closed
 				.Subscribe(x => _subscriptions.Dispose())
-				.AddTo(_subscriptions);
+				.DisposeWith(_subscriptions);
 		}
 	}
 }
