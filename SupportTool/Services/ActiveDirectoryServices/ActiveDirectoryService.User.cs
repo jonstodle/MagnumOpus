@@ -115,20 +115,13 @@ namespace SupportTool.Services.ActiveDirectoryServices
 			};
 		});
 
-        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Create<TResult>(observer =>
-        {
-            var disposed = false;
-            var dcs = new List<DomainController>();
-            foreach (DomainController dc in Domain.GetCurrentDomain().DomainControllers) dcs.Add(dc);
-
-			Task.WhenAll(dcs.Select(x => Task.Run(() =>
-			{
-				try { if (!disposed) observer.OnNext(action(x)); }
-				catch { observer.OnNext(default(TResult)); }
-			}))).Wait();
-
-            observer.OnCompleted();
-            return () => disposed = true;
-        });
+        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Return(Domain.GetCurrentDomain().DomainControllers)
+            .SelectMany(dcs =>
+            {
+                var dcList = new List<DomainController>();
+                foreach (DomainController dc in dcs) dcList.Add(dc);
+                return dcList.ToObservable();
+            })
+            .SelectMany(dc => Observable.Start(() => action(dc)).Catch(Observable.Return(default(TResult))));
     }
 }
