@@ -64,9 +64,9 @@ namespace SupportTool.ViewModels
             _removeFromPrincipal = ReactiveCommand.Create(
                 () =>
                 {
-                    _principalMembers.Remove(_selectedPrincipalMember);
                     if (_membersToAdd.Contains(_selectedPrincipalMember)) _membersToAdd.Remove(_selectedPrincipalMember);
                     else _membersToRemove.Add(_selectedPrincipalMember);
+                    _principalMembers.Remove(_selectedPrincipalMember);
                 },
                 this.WhenAnyValue(x => x.SelectedPrincipalMember).IsNotNull());
 

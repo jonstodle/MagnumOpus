@@ -64,9 +64,9 @@ namespace SupportTool.ViewModels
             _removeFromGroup = ReactiveCommand.Create(
                 () =>
                 {
-                    _groupMembers.Remove(_selectedGroupMember);
                     if (_membersToAdd.Contains(_selectedGroupMember)) _membersToAdd.Remove(_selectedGroupMember);
                     else _membersToRemove.Add(_selectedGroupMember);
+                    _groupMembers.Remove(_selectedGroupMember);
                 },
                 this.WhenAnyValue(x => x.SelectedGroupMember).IsNotNull());
 
