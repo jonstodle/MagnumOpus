@@ -1,5 +1,6 @@
 ﻿using SupportTool.Services.SettingsServices;
 using System;
+using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -13,14 +14,22 @@ namespace SupportTool.Views
 
 		public DetailsWindow()
 		{
-			Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default)
-				.ObserveOnDispatcher()
-				.Subscribe(x => this.Close())
-				.DisposeWith(_subscriptions);
+            var keyDowns = this.Events().KeyDown.Publish().RefCount();
+
+            Observable.Merge(
+                keyDowns.ToSignal(),
+                this.Events().PreviewMouseDown.ToSignal(),
+                Observable.Return(Unit.Default))
+                .Do(x => System.Diagnostics.Debug.WriteLine(x))
+                .Select(_ => Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
+                .Switch()
+                .ObserveOnDispatcher()
+                .Subscribe(x => this.Close())
+                .DisposeWith(_subscriptions);
 
             if (SettingsService.Current.UseEscapeToCloseDetailsWindows)
             {
-                this.Events().KeyDown
+                keyDowns
                     .Where(x => x.Key == System.Windows.Input.Key.Escape)
                     .Subscribe(_ => this.Close())
                     .DisposeWith(_subscriptions);
