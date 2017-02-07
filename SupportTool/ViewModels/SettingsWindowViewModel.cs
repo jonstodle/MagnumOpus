@@ -24,7 +24,7 @@ namespace SupportTool.ViewModels
 		public string DetailWindowTimeoutLength
 		{
 			get => SettingsService.Current.DetailsWindowTimeoutLength.ToString();
-			set { if (int.TryParse(value, out int i)) SettingsService.Current.DetailsWindowTimeoutLength = i > 0 ? i : 1; }
+			set { if (double.TryParse(value, out double i)) SettingsService.Current.DetailsWindowTimeoutLength = i > 0 ? i : 1; }
 		}
 
         public bool UseEscapeToCloseDetailsWindows

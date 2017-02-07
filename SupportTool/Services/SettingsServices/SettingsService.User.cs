@@ -8,9 +8,9 @@
 			set => Set(value);
 		}
 
-		public int DetailsWindowTimeoutLength
+		public double DetailsWindowTimeoutLength
 		{
-			get => Get(2);
+			get => Get(2d);
 			set => Set(value); 
 		}
 
