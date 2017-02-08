@@ -240,63 +240,35 @@ namespace SupportTool.ViewModels
             foreach (var dir in globalProfileDirecotry.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
         });
 
-        private IObservable<Unit> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Start(() =>
-        {
-            if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
-
-            if (GetLoggedInUsers(cpr).Select(x => x.ToLowerInvariant()).Contains(usr.Principal.SamAccountName)) throw new Exception("User is logged in");
-
-            var profileDir = GetProfileDirectory(cpr);
-            foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
-
-            var bracketedGuid = $"{{{usr.Principal.Guid.ToString()}}}";
-            var userSid = usr.Principal.Sid.Value;
-
-            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{cpr}", RegistryView.Registry64);
-
-            var profileListKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList", true);
-            var groupPolicyKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy", true);
-            var groupPolicyStateKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State", true);
-            var userDataKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData", true);
-            var profileGuidKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileGuid", true);
-            var policyGuidKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\PolicyGuid", true);
-
-            if (userSid != null && profileListKey?.OpenSubKey(userSid) != null)
+        private IObservable<Unit> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Concat(
+            Observable.Start(() =>
             {
-                try { profileListKey.DeleteSubKeyTree(userSid); }
-                catch { /* Do nothing */ }
-            }
+                if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
 
-            if (userSid != null && groupPolicyKey?.OpenSubKey(userSid) != null)
+                if (GetLoggedInUsers(cpr).Select(x => x.ToLowerInvariant()).Contains(usr.Principal.SamAccountName)) throw new Exception("User is logged in");
+            }),
+            Observable.Start(() =>
             {
-                try { groupPolicyKey.DeleteSubKeyTree(userSid); }
-                catch { /* Do nothing */ }
-            }
+                var profileDir = GetProfileDirectory(cpr);
+                foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
+            }),
+            Observable.Start(() =>
+            {
+                var bracketedGuid = $"{{{usr.Principal.Guid.ToString()}}}";
+                var userSid = usr.Principal.Sid.Value;
 
-            if (userSid != null && groupPolicyStateKey?.OpenSubKey(userSid) != null)
-            {
-                try { groupPolicyStateKey.DeleteSubKeyTree(userSid); }
-                catch { /* Do nothing */ }
-            }
-
-            if (userSid != null && userDataKey?.OpenSubKey(userSid) != null)
-            {
-                try { userDataKey.DeleteSubKeyTree(userSid); }
-                catch { /* Do nothing */ }
-            }
-
-            if (bracketedGuid != null && profileGuidKey?.OpenSubKey(bracketedGuid) != null)
-            {
-                try { profileGuidKey.DeleteSubKeyTree(bracketedGuid); }
-                catch { /* Do nothing */ }
-            }
-
-            if (bracketedGuid != null && policyGuidKey?.OpenSubKey(bracketedGuid) != null)
-            {
-                try { policyGuidKey.DeleteSubKeyTree(bracketedGuid); }
-                catch { /* Do nothing */ }
-            }
-        });
+                var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{cpr}", RegistryView.Registry64);
+                return new List<Tuple<RegistryKey, string>> {
+                Tuple.Create(keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList", true), userSid),
+                Tuple.Create(keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy", true), userSid),
+                Tuple.Create(keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy\State", true), userSid),
+                Tuple.Create(keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData", true), userSid),
+                Tuple.Create(keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileGuid", true), bracketedGuid),
+                Tuple.Create(keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\PolicyGuid", true), bracketedGuid)
+                };
+            })
+            .SelectMany(regKeys => regKeys.ToObservable())
+            .SelectMany(regkey => Observable.Start(() => regkey.Item1?.DeleteSubKey(regkey.Item2)).Catch(Observable.Return(Unit.Default))));
 
         private IObservable<Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
