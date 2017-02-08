@@ -389,7 +389,8 @@ namespace SupportTool.ViewModels
             var pinger = new Ping();
             PingReply reply = null;
 
-            reply = pinger.Send(nameOrAddress, 1000);
+            try { reply = pinger.Send(nameOrAddress, 1000); }
+            catch { /* Do nothing */ }
 
             if (reply.Status == IPStatus.Success) return reply.RoundtripTime;
             else return -1L;
