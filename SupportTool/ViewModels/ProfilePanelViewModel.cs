@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
 using SupportTool.Models;
+using SupportTool.Services.ActiveDirectoryServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -244,7 +245,7 @@ namespace SupportTool.ViewModels
         {
             if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
 
-            if (GetLoggedInUsers(cpr).Select(x => x.ToLowerInvariant()).Contains(usr.Principal.SamAccountName)) throw new Exception("User is logged in");
+            if (ActiveDirectoryService.Current.GetComputer(cpr).SelectMany(x => x.GetLoggedInUsers()).ToEnumerable().Select(x => x.Username.ToLowerInvariant()).Contains(usr.Principal.SamAccountName.ToLowerInvariant())) throw new Exception("User is logged in");
 
             var profileDir = GetProfileDirectory(cpr);
             foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
@@ -357,31 +358,6 @@ namespace SupportTool.ViewModels
             }
 
             Directory.Move(directory.FullName, destination);
-        }
-
-        private IEnumerable<string> GetLoggedInUsers(string hostName)
-        {
-            var returnCollection = new List<string>();
-
-            var conOptions = new ConnectionOptions()
-            {
-                Impersonation = ImpersonationLevel.Impersonate,
-                EnablePrivileges = true
-            };
-            var scope = new ManagementScope($"\\\\{hostName}\\ROOT\\CIMV2", conOptions);
-            scope.Connect();
-
-            var query = new ObjectQuery("SELECT * FROM Win32_Process where name='explorer.exe'");
-            var searcher = new ManagementObjectSearcher(scope, query);
-
-            foreach (ManagementObject item in searcher.Get())
-            {
-                var argsArray = new string[] { string.Empty };
-                item.InvokeMethod("GetOwner", argsArray);
-                returnCollection.Add(argsArray[0]);
-            }
-
-            return returnCollection;
         }
 
         private long PingNameOrAddressAsync(string nameOrAddress)
