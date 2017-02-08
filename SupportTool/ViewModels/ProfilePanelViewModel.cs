@@ -420,7 +420,5 @@ namespace SupportTool.ViewModels
                 CopyFilesAndDirectories(directory.FullName, Path.Combine(destination, directory.Name));
             }
         }
-
-        private string CreateLogString(string logMessage) => $"{DateTimeOffset.Now.ToString("T")} - {logMessage}";
     }
 }
