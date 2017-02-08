@@ -20,7 +20,6 @@ namespace SupportTool.Views
                 keyDowns.ToSignal(),
                 this.Events().PreviewMouseDown.ToSignal(),
                 Observable.Return(Unit.Default))
-                .Do(x => System.Diagnostics.Debug.WriteLine(x))
                 .Select(_ => Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
                 .Switch()
                 .ObserveOnDispatcher()
