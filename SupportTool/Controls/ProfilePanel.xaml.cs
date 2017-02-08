@@ -33,7 +33,8 @@ namespace SupportTool.Controls
                 d(this.Bind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileGrid.Visibility));
                 d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.ResetProfileComputerNameTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.ResetMessages, v => v.ResetProfileListView.ItemsSource));
+                d(this.OneWayBind(ViewModel, vm => vm.IsExecutingResetGlobalProfile, v => v.ResetGlobalProfileButton.Content, x => x ? "Resetting global profile..." : "Reset global profile"));
+                d(this.OneWayBind(ViewModel, vm => vm.IsExecutingResetLocalProfile, v => v.ResetLocalProfileButton.Content, x => x ? "Resetting local profile..." : "Reset local profile"));
                 d(this.Bind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileStackPanel.Visibility));
                 d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.RestoreProfileComputerNameTextBox.Text));
@@ -47,8 +48,6 @@ namespace SupportTool.Controls
 
                 d(this.BindCommand(ViewModel, vm => vm.ResetGlobalProfile, v => v.ResetGlobalProfileButton));
                 d(this.BindCommand(ViewModel, vm => vm.ResetLocalProfile, v => v.ResetLocalProfileButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenGlobalProfileDirectory, v => v.OpenGlobalProfileDirectoryButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenLocalProfileDirectory, v => v.OpenLocalProfileDirectoryButton));
                 d(this.BindCommand(ViewModel, vm => vm.SearchForProfiles, v => v.SearchButton));
                 d(this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton));
 				d(this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton));

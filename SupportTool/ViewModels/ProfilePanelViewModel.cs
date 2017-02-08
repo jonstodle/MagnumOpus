@@ -17,17 +17,16 @@ namespace SupportTool.ViewModels
 {
     public class ProfilePanelViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, string> _resetGlobalProfile;
-        private readonly ReactiveCommand<Unit, string> _resetLocalProfile;
-        private readonly ReactiveCommand<Unit, Unit> _openGlobalProfileDirectory;
-        private readonly ReactiveCommand<Unit, Unit> _openLocalProfileDirectory;
+        private readonly ReactiveCommand<Unit, Unit> _resetGlobalProfile;
+        private readonly ReactiveCommand<Unit, Unit> _resetLocalProfile;
         private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> _searchForProfiles;
         private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
         private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
         private readonly ReactiveCommand<Unit, Unit> _openGlobalProfile;
         private readonly ReactiveCommand<Unit, Unit> _openHomeFolder;
-        private readonly ReactiveList<string> _resetMessages = new ReactiveList<string>();
         private readonly ReactiveList<DirectoryInfo> _profiles = new ReactiveList<DirectoryInfo>();
+        private readonly ObservableAsPropertyHelper<bool> _isExecutingResetGlobalProfile;
+        private readonly ObservableAsPropertyHelper<bool> _isExecutingResetLocalProfile;
         private UserObject _user;
         private bool _isShowingResetProfile;
         private bool _isShowingRestoreProfile;
@@ -52,23 +51,6 @@ namespace SupportTool.ViewModels
                 () => ResetLocalProfileImpl(_user, _computerName),
                 this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
 
-            _openGlobalProfileDirectory = ReactiveCommand.Create(
-                () =>
-                {
-                    var gpdPath = GetParentDirectory(_user.ProfilePath);
-                    if (gpdPath == null || !gpdPath.Exists) throw new Exception($"Could not find global profile folder");
-                    Process.Start(gpdPath.FullName);
-                });
-
-            _openLocalProfileDirectory = ReactiveCommand.Create(
-                () =>
-                {
-                    var lpd = GetProfileDirectory(ComputerName);
-                    if (lpd == null || !lpd.Exists) throw new Exception($"Could not find local profile folder");
-                    Process.Start(lpd.FullName);
-                },
-                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
-
             _searchForProfiles = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
@@ -91,6 +73,12 @@ namespace SupportTool.ViewModels
                 });
 
             _openHomeFolder = ReactiveCommand.Create(() => { Process.Start(_user.HomeDirectory); });
+
+            _isExecutingResetGlobalProfile = _resetGlobalProfile.IsExecuting
+                .ToProperty(this, x => x.IsExecutingResetGlobalProfile);
+
+            _isExecutingResetLocalProfile = _resetLocalProfile.IsExecuting
+                .ToProperty(this, x => x.IsExecutingResetLocalProfile);
 
             this.WhenActivated(disposables =>
             {
@@ -159,8 +147,6 @@ namespace SupportTool.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _openGlobalProfileDirectory.ThrownExceptions,
-                    _openLocalProfileDirectory.ThrownExceptions,
                     _searchForProfiles.ThrownExceptions,
                     _resetCitrixProfile.ThrownExceptions,
                     _openGlobalProfile.ThrownExceptions,
@@ -176,10 +162,6 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand ResetLocalProfile => _resetLocalProfile;
 
-        public ReactiveCommand OpenGlobalProfileDirectory => _openGlobalProfileDirectory;
-
-        public ReactiveCommand OpenLocalProfileDirectory => _openLocalProfileDirectory;
-
         public ReactiveCommand SearchForProfiles => _searchForProfiles;
 
         public ReactiveCommand RestoreProfile => _restoreProfile;
@@ -190,9 +172,11 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenHomeFolder => _openHomeFolder;
 
-        public ReactiveList<string> ResetMessages => _resetMessages;
-
         public ReactiveList<DirectoryInfo> Profiles => _profiles;
+
+        public bool IsExecutingResetGlobalProfile => _isExecutingResetGlobalProfile.Value;
+
+        public bool IsExecutingResetLocalProfile => _isExecutingResetLocalProfile.Value;
 
         public UserObject User
         {
@@ -274,47 +258,27 @@ namespace SupportTool.ViewModels
 
 
 
-        private IObservable<string> ResetGlobalProfileImpl(UserObject usr) => Observable.Create<string>(observer =>
+        private IObservable<Unit> ResetGlobalProfileImpl(UserObject usr) => Observable.Start(() =>
         {
-            observer.OnNext(CreateLogString("Resetting global profile"));
-
-            Thread.Sleep(3000);
-
             var globalProfileDirecotry = GetParentDirectory(usr.ProfilePath);
             if (globalProfileDirecotry == null) throw new Exception("Could not get profile path");
 
-            foreach (var dir in globalProfileDirecotry.GetDirectories($"{usr.Principal.SamAccountName}*"))
-            {
-                BangRenameDirectory(dir, usr.Principal.SamAccountName);
-                observer.OnNext(CreateLogString($"Renamed folder {dir.FullName}"));
-            }
+            foreach (var dir in globalProfileDirecotry.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
+        });
 
-            observer.OnNext(CreateLogString("Successfully reset global profile"));
-            observer.OnCompleted();
-            return () => { };
-        }).SubscribeOn(RxApp.TaskpoolScheduler);
-
-        private IObservable<string> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Create<string>(observer =>
+        private IObservable<Unit> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
             if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
-            observer.OnNext(CreateLogString("Computer found"));
 
             if (GetLoggedInUsers(cpr).Select(x => x.ToLowerInvariant()).Contains(usr.Principal.SamAccountName)) throw new Exception("User is logged in");
-            observer.OnNext(CreateLogString("Confirmed user is not logged in"));
-
-            observer.OnNext(CreateLogString("Resetting local profile"));
 
             var profileDir = GetProfileDirectory(cpr);
-            foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*"))
-            {
-                BangRenameDirectory(dir, usr.Principal.SamAccountName);
-                observer.OnNext(CreateLogString($"Renamed folder {dir.FullName}"));
-            }
+            foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
 
             var bracketedGuid = $"{{{usr.Principal.Guid.ToString()}}}";
             var userSid = usr.Principal.Sid.Value;
 
-            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{cpr}");
+            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{cpr}", RegistryView.Registry64);
 
             var profileListKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList", true);
             var groupPolicyKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Group Policy", true);
@@ -325,74 +289,40 @@ namespace SupportTool.ViewModels
 
             if (userSid != null && profileListKey?.OpenSubKey(userSid) != null)
             {
-                try
-                {
-                    profileListKey.DeleteSubKeyTree(userSid);
-                    observer.OnNext(CreateLogString($"Deleted key in {profileListKey.Name}"));
-                }
-                catch { observer.OnNext(CreateLogString($"Couldn't delete key in {profileListKey.Name}")); }
+                try { profileListKey.DeleteSubKeyTree(userSid); }
+                catch { /* Do nothing */ }
             }
-            else { observer.OnNext(CreateLogString($"Didn't find key in {profileListKey.Name}")); }
 
             if (userSid != null && groupPolicyKey?.OpenSubKey(userSid) != null)
             {
-                try
-                {
-                    groupPolicyKey.DeleteSubKeyTree(userSid);
-                    observer.OnNext(CreateLogString($"Deleted key in {groupPolicyKey.Name}"));
-                }
-                catch { observer.OnNext(CreateLogString($"Couldn't delete key in {groupPolicyKey.Name}")); }
+                try { groupPolicyKey.DeleteSubKeyTree(userSid); }
+                catch { /* Do nothing */ }
             }
-            else { observer.OnNext(CreateLogString($"Didn't find key in {groupPolicyKey.Name}")); }
 
             if (userSid != null && groupPolicyStateKey?.OpenSubKey(userSid) != null)
             {
-                try
-                {
-                    groupPolicyStateKey.DeleteSubKeyTree(userSid);
-                    observer.OnNext(CreateLogString($"Deleted key in {groupPolicyStateKey.Name}"));
-                }
-                catch { observer.OnNext(CreateLogString($"Couldn't delete key in {groupPolicyStateKey.Name}")); }
+                try { groupPolicyStateKey.DeleteSubKeyTree(userSid); }
+                catch { /* Do nothing */ }
             }
-            else { observer.OnNext(CreateLogString($"Didn't find key in {groupPolicyStateKey.Name}")); }
 
             if (userSid != null && userDataKey?.OpenSubKey(userSid) != null)
             {
-                try
-                {
-                    userDataKey.DeleteSubKeyTree(userSid);
-                    observer.OnNext(CreateLogString($"Deleted key in {userDataKey.Name}"));
-                }
-                catch { observer.OnNext(CreateLogString($"Couldn't delete key in {userDataKey.Name}")); }
+                try { userDataKey.DeleteSubKeyTree(userSid); }
+                catch { /* Do nothing */ }
             }
-            else { observer.OnNext(CreateLogString($"Didn't find key in {userDataKey.Name}")); }
 
             if (bracketedGuid != null && profileGuidKey?.OpenSubKey(bracketedGuid) != null)
             {
-                try
-                {
-                    profileGuidKey.DeleteSubKeyTree(bracketedGuid);
-                    observer.OnNext(CreateLogString($"Deleted key in {profileGuidKey.Name}"));
-                }
-                catch { observer.OnNext(CreateLogString($"Couldn't delete key in {profileGuidKey.Name}")); }
+                try { profileGuidKey.DeleteSubKeyTree(bracketedGuid); }
+                catch { /* Do nothing */ }
             }
-            else { observer.OnNext(CreateLogString($"Didn't find key in {profileGuidKey.Name}")); }
 
             if (bracketedGuid != null && policyGuidKey?.OpenSubKey(bracketedGuid) != null)
             {
-                try
-                {
-                    policyGuidKey.DeleteSubKeyTree(bracketedGuid);
-                    observer.OnNext(CreateLogString($"Deleted key in {policyGuidKey.Name}"));
-                }
-                catch { observer.OnNext(CreateLogString($"Couldn't delete key in {policyGuidKey.Name}")); }
+                try { policyGuidKey.DeleteSubKeyTree(bracketedGuid); }
+                catch { /* Do nothing */ }
             }
-            else { observer.OnNext(CreateLogString($"Didn't find key in {policyGuidKey.Name}")); }
-
-            observer.OnNext(CreateLogString("Successfully reset local profile"));
-            observer.OnCompleted();
-            return () => { };
-        }).SubscribeOn(RxApp.TaskpoolScheduler);
+        });
 
         private IObservable<Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
@@ -433,7 +363,7 @@ namespace SupportTool.ViewModels
                     destination = destination.Insert(destination.ToLowerInvariant().IndexOf(folderName), "!");
                 }
 
-                Directory.Move(Path.Combine(user.HomeDirectory, "windows", folderName), destination); 
+                Directory.Move(Path.Combine(user.HomeDirectory, "windows", folderName), destination);
             }
         });
 
