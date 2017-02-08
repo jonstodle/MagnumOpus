@@ -82,30 +82,13 @@ namespace SupportTool.ViewModels
 
             this.WhenActivated(disposables =>
             {
-                _resetGlobalProfile
-                    .Subscribe(x => _resetMessages.Insert(0, x))
-                    .DisposeWith(disposables);
-
-                _resetGlobalProfile
-                    .ThrownExceptions
-                    .Subscribe(async ex =>
-                    {
-                        _resetMessages.Insert(0, CreateLogString("Could not reset global profile"));
-                        await _errorMessages.Handle(new MessageInfo(ex.Message));
-                    })
-                    .DisposeWith(disposables);
-
-                _resetLocalProfile
-                    .Subscribe(x => _resetMessages.Insert(0, x))
-                    .DisposeWith(disposables);
-
-                _resetLocalProfile
-                    .ThrownExceptions
-                    .Subscribe(async ex =>
-                    {
-                        _resetMessages.Insert(0, CreateLogString("Could not reset local profile"));
-                        await _errorMessages.Handle(new MessageInfo(ex.Message));
-                    })
+                Observable.Merge(
+                    _resetGlobalProfile.Select(_ => "Global profile reset"),
+                    _resetLocalProfile.Select(_ => "Local profile reset"),
+                    _restoreProfile.Select(_ => "Profile restored"),
+                    _resetCitrixProfile.Select(_ => "Citrix profile reset"))
+                    .SelectMany(x => _infoMessages.Handle(new MessageInfo(x, "Success")))
+                    .Subscribe()
                     .DisposeWith(disposables);
 
                 _searchForProfiles
@@ -114,19 +97,6 @@ namespace SupportTool.ViewModels
                         NewProfileDirectory = x.Item1;
                         using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.Item2);
                     })
-                    .DisposeWith(disposables);
-
-                _restoreProfile
-                    .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile restored", "Success")))
-                    .DisposeWith(disposables);
-
-                _restoreProfile
-                    .ThrownExceptions
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not restore profile")))
-                    .DisposeWith(disposables);
-
-                _resetCitrixProfile
-                    .Subscribe(async _ => await _infoMessages.Handle(new MessageInfo("Profile reset", "Success")))
                     .DisposeWith(disposables);
 
                 MessageBus.Current
@@ -147,11 +117,15 @@ namespace SupportTool.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
+                    _resetGlobalProfile.ThrownExceptions,
+                    _resetLocalProfile.ThrownExceptions,
                     _searchForProfiles.ThrownExceptions,
+                    _restoreProfile.ThrownExceptions,
                     _resetCitrixProfile.ThrownExceptions,
                     _openGlobalProfile.ThrownExceptions,
                     _openHomeFolder.ThrownExceptions)
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .Subscribe()
                     .DisposeWith(disposables);
             });
         }
