@@ -17,9 +17,9 @@
 
 			<Button x:Name="ResetCitrixProfileButton" Content="Reset citrix profile" Margin="2"/>
 
-			<Button x:Name="OpenGlobalProfileButton" Content="Open global profile" Margin="2"/>
+			<ToggleButton x:Name="GlobalProfileToggleButton" Content="Global profile" Margin="2"/>
 
-			<Button x:Name="OpenHomeFolderButton" Content="Open home folder" Margin="2"/>
+			<ToggleButton x:Name="HomeFolderToggleButton" Content="Home folder" Margin="2"/>
 		</WrapPanel>
 
         <Grid x:Name="ResetProfileGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
@@ -85,5 +85,45 @@
 
             <Button x:Name="RestoreProfileButton" Content="Restore profile" Margin="2"/>
         </StackPanel>
-    </StackPanel>
+
+		<StackPanel x:Name="GlobalProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button x:Name="OpenGlobalProfileButton" Content="Open" Margin="2"/>
+
+				<TextBox x:Name="GlobalProfilePathTextBox" Grid.Column="1" Margin="2"/>
+
+				<StackPanel x:Name="GlobalProfilePathButtonsStackPanel" Orientation="Horizontal" Grid.Column="2">
+					<Button x:Name="GlobalProfilePathSaveButton" Content="Save" Margin="2"/>
+					
+					<Button x:Name="GlobalProfilePathCancelButton" Content="Cancel" Margin="2"/>
+				</StackPanel>
+			</Grid>
+		</StackPanel>
+
+		<StackPanel x:Name="HomeFolderStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button x:Name="OpenHomeFolderButton" Content="Open" Margin="2"/>
+
+				<TextBox x:Name="HomeFolderPathTextBox" Grid.Column="1" Margin="2"/>
+
+				<StackPanel x:Name="HomeFolderPathButtonsStackPanel" Orientation="Horizontal" Grid.Column="2">
+					<Button x:Name="HomeFolderPathSaveButton" Content="Save" Margin="2"/>
+
+					<Button x:Name="HomeFolderPathCancelButton" Content="Cancel" Margin="2"/>
+				</StackPanel>
+			</Grid>
+		</StackPanel>
+	</StackPanel>
 </UserControl>

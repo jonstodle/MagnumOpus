@@ -30,6 +30,7 @@ namespace SupportTool.Views
                 d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User));
 
                 d(MessageBus.Current.Listen<string>(ApplicationActionRequest.Refresh.ToString())
+                    .ObserveOnDispatcher()
 					.Where(x => x == ViewModel.User?.CN)
 					.InvokeCommand(ViewModel, x => x.SetUser));
 				d(this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)));

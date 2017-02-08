@@ -5,6 +5,7 @@ using SupportTool.Services.ActiveDirectoryServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -24,13 +25,21 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
         private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
         private readonly ReactiveCommand<Unit, Unit> _openGlobalProfile;
+        private readonly ReactiveCommand<Unit, Unit> _saveGlobalProfilePath;
+        private readonly ReactiveCommand<Unit, Unit> _cancelGlobalProfilePath;
         private readonly ReactiveCommand<Unit, Unit> _openHomeFolder;
+        private readonly ReactiveCommand<Unit, Unit> _saveHomeFolderPath;
+        private readonly ReactiveCommand<Unit, Unit> _cancelHomeFolderPath;
         private readonly ReactiveList<DirectoryInfo> _profiles = new ReactiveList<DirectoryInfo>();
         private readonly ObservableAsPropertyHelper<bool> _isExecutingResetGlobalProfile;
         private readonly ObservableAsPropertyHelper<bool> _isExecutingResetLocalProfile;
+        private readonly ObservableAsPropertyHelper<bool> _hasGlobalProfilePathChanged;
+        private readonly ObservableAsPropertyHelper<bool> _hasHomeFolderPathChanged;
         private UserObject _user;
         private bool _isShowingResetProfile;
         private bool _isShowingRestoreProfile;
+        private bool _isShowingGlobalProfile;
+        private bool _isShowingHomeFolder;
         private string _computerName;
         private bool _shouldRestoreDesktopItems = true;
         private bool _shouldRestoreInternetExplorerFavorites = true;
@@ -38,6 +47,8 @@ namespace SupportTool.ViewModels
         private bool _shouldRestoreWindowsExplorerFavorites = true;
         private bool _shouldRestoreStickyNotes = true;
         private int _selectedProfileIndex;
+        private string _globalProfilePath;
+        private string _homeFolderPath;
         private DirectoryInfo _globalProfileDirectory;
         private DirectoryInfo _localProfileDirectory;
         private DirectoryInfo _newProfileDirectory;
@@ -71,9 +82,34 @@ namespace SupportTool.ViewModels
                 {
                     var profileDirectory = new DirectoryInfo(_user.ProfilePath);
                     Process.Start(profileDirectory.Parent.GetDirectories($"{profileDirectory.Name}*").LastOrDefault().FullName);
-                });
+                },
+                this.WhenAnyValue(x => x.GlobalProfilePath, x => x.HasValue()));
 
-            _openHomeFolder = ReactiveCommand.Create(() => { Process.Start(_user.HomeDirectory); });
+            _saveGlobalProfilePath = ReactiveCommand.CreateFromObservable(
+                () => Observable.Start(() =>
+                {
+                    var de = _user.Principal.GetUnderlyingObject() as DirectoryEntry;
+                    de.Properties["profilepath"].Value = _globalProfilePath.HasValue() ? _globalProfilePath : null;
+                    de.CommitChanges();
+                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
+                }));
+
+            _cancelGlobalProfilePath = ReactiveCommand.Create(() => { GlobalProfilePath = _user.ProfilePath; });
+
+            _openHomeFolder = ReactiveCommand.Create(
+                () => { Process.Start(_user.HomeDirectory); },
+                this.WhenAnyValue(x => x.HomeFolderPath, x => x.HasValue()));
+
+            _saveHomeFolderPath = ReactiveCommand.CreateFromObservable(
+                () => Observable.Start(() =>
+                {
+                    var p = _user.Principal;
+                    p.HomeDirectory = _homeFolderPath.HasValue() ? _homeFolderPath : null;
+                    p.Save();
+                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
+                }));
+
+            _cancelHomeFolderPath = ReactiveCommand.Create(() => { HomeFolderPath = _user.HomeDirectory; });
 
             _isExecutingResetGlobalProfile = _resetGlobalProfile.IsExecuting
                 .ToProperty(this, x => x.IsExecutingResetGlobalProfile);
@@ -81,8 +117,29 @@ namespace SupportTool.ViewModels
             _isExecutingResetLocalProfile = _resetLocalProfile.IsExecuting
                 .ToProperty(this, x => x.IsExecutingResetLocalProfile);
 
+            _hasGlobalProfilePathChanged = Observable.CombineLatest(
+                this.WhenAnyValue(x => x.GlobalProfilePath),
+                this.WhenAnyValue(y => y.User).WhereNotNull(),
+                (x, y) => x != y.ProfilePath)
+                .ToProperty(this, x => x.HasGlobalProfilePathChanged);
+
+            _hasHomeFolderPathChanged = Observable.CombineLatest(
+                this.WhenAnyValue(x => x.HomeFolderPath),
+                this.WhenAnyValue(y => y.User).WhereNotNull(),
+                (x, y) => x != y.HomeDirectory)
+                .ToProperty(this, x => x.HasHomeFolderPathChanged);
+
             this.WhenActivated(disposables =>
             {
+                var userChanged = this.WhenAnyValue(x => x.User)
+                    .WhereNotNull()
+                    .Subscribe(x =>
+                    {
+                        GlobalProfilePath = x.ProfilePath;
+                        HomeFolderPath = x.HomeDirectory;
+                    })
+                    .DisposeWith(disposables);
+
                 Observable.Merge(
                     _resetGlobalProfile.Select(_ => "Global profile reset"),
                     _resetLocalProfile.Select(_ => "Local profile reset"),
@@ -105,16 +162,18 @@ namespace SupportTool.ViewModels
                 .Subscribe(x => ComputerName = x)
                 .DisposeWith(disposables);
 
-                this
-                    .WhenAnyValue(x => x.IsShowingResetProfile)
-                    .Where(x => x)
-                    .Subscribe(_ => IsShowingRestoreProfile = false)
-                    .DisposeWith(disposables);
-
-                this
-                    .WhenAnyValue(x => x.IsShowingRestoreProfile)
-                    .Where(x => x)
-                    .Subscribe(_ => IsShowingResetProfile = false)
+                Observable.Merge(
+                    this.WhenAnyValue(x => x.IsShowingResetProfile).Where(x => x).Select(_ => Tuple.Create(true, false, false, false)),
+                    this.WhenAnyValue(x => x.IsShowingRestoreProfile).Where(x => x).Select(_ => Tuple.Create(false, true, false, false)),
+                    this.WhenAnyValue(x => x.IsShowingGlobalProfile).Where(x => x).Select(_ => Tuple.Create(false, false, true, false)),
+                    this.WhenAnyValue(x => x.IsShowingHomeFolder).Where(x => x).Select(_ => Tuple.Create(false, false, false, true)))
+                    .Subscribe(x =>
+                    {
+                        IsShowingResetProfile = x.Item1;
+                        IsShowingRestoreProfile = x.Item2;
+                        IsShowingGlobalProfile = x.Item3;
+                        IsShowingHomeFolder = x.Item4;
+                    })
                     .DisposeWith(disposables);
 
                 Observable.Merge(
@@ -124,7 +183,11 @@ namespace SupportTool.ViewModels
                     _restoreProfile.ThrownExceptions,
                     _resetCitrixProfile.ThrownExceptions,
                     _openGlobalProfile.ThrownExceptions,
-                    _openHomeFolder.ThrownExceptions)
+                    _saveGlobalProfilePath.ThrownExceptions,
+                    _cancelGlobalProfilePath.ThrownExceptions,
+                    _openHomeFolder.ThrownExceptions,
+                    _saveHomeFolderPath.ThrownExceptions,
+                    _cancelHomeFolderPath.ThrownExceptions)
                     .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
@@ -145,7 +208,15 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenGlobalProfile => _openGlobalProfile;
 
+        public ReactiveCommand SaveGlobalProfilePath => _saveGlobalProfilePath;
+
+        public ReactiveCommand CancelGlobalProfilePath => _cancelGlobalProfilePath;
+
         public ReactiveCommand OpenHomeFolder => _openHomeFolder;
+
+        public ReactiveCommand SaveHomeFolderPath => _saveHomeFolderPath;
+
+        public ReactiveCommand CancelHomeFolderPath => _cancelHomeFolderPath;
 
         public ReactiveList<DirectoryInfo> Profiles => _profiles;
 
@@ -153,83 +224,43 @@ namespace SupportTool.ViewModels
 
         public bool IsExecutingResetLocalProfile => _isExecutingResetLocalProfile.Value;
 
-        public UserObject User
-        {
-            get { return _user; }
-            set { this.RaiseAndSetIfChanged(ref _user, value); }
-        }
+        public bool HasGlobalProfilePathChanged => _hasGlobalProfilePathChanged.Value;
 
-        public bool IsShowingResetProfile
-        {
-            get { return _isShowingResetProfile; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingResetProfile, value); }
-        }
+        public bool HasHomeFolderPathChanged => _hasHomeFolderPathChanged.Value;
 
-        public bool IsShowingRestoreProfile
-        {
-            get { return _isShowingRestoreProfile; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingRestoreProfile, value); }
-        }
+        public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
 
-        public string ComputerName
-        {
-            get { return _computerName; }
-            set { this.RaiseAndSetIfChanged(ref _computerName, value); }
-        }
+        public bool IsShowingResetProfile { get => _isShowingResetProfile; set => this.RaiseAndSetIfChanged(ref _isShowingResetProfile, value); }
 
-        public bool ShouldRestoreDesktopItems
-        {
-            get { return _shouldRestoreDesktopItems; }
-            set { this.RaiseAndSetIfChanged(ref _shouldRestoreDesktopItems, value); }
-        }
+        public bool IsShowingRestoreProfile { get => _isShowingRestoreProfile; set => this.RaiseAndSetIfChanged(ref _isShowingRestoreProfile, value); }
 
-        public bool ShouldRestoreInternetExplorerFavorites
-        {
-            get { return _shouldRestoreInternetExplorerFavorites; }
-            set { this.RaiseAndSetIfChanged(ref _shouldRestoreInternetExplorerFavorites, value); }
-        }
+        public bool IsShowingGlobalProfile { get => _isShowingGlobalProfile; set => this.RaiseAndSetIfChanged(ref _isShowingGlobalProfile, value); }
 
-        public bool ShouldRestoreOutlookSignatures
-        {
-            get { return _shouldRestoreOutlookSignatures; }
-            set { this.RaiseAndSetIfChanged(ref _shouldRestoreOutlookSignatures, value); }
-        }
+        public bool IsShowingHomeFolder { get => _isShowingHomeFolder; set => this.RaiseAndSetIfChanged(ref _isShowingHomeFolder, value); }
 
-        public bool ShouldRestoreWindowsExplorerFavorites
-        {
-            get { return _shouldRestoreWindowsExplorerFavorites; }
-            set { this.RaiseAndSetIfChanged(ref _shouldRestoreWindowsExplorerFavorites, value); }
-        }
+        public string ComputerName { get => _computerName; set => this.RaiseAndSetIfChanged(ref _computerName, value); }
 
-        public bool ShouldRestoreStickyNotes
-        {
-            get { return _shouldRestoreStickyNotes; }
-            set { this.RaiseAndSetIfChanged(ref _shouldRestoreStickyNotes, value); }
-        }
+        public bool ShouldRestoreDesktopItems { get => _shouldRestoreDesktopItems; set => this.RaiseAndSetIfChanged(ref _shouldRestoreDesktopItems, value); }
 
-        public int SelectedProfileIndex
-        {
-            get { return _selectedProfileIndex; }
-            set { this.RaiseAndSetIfChanged(ref _selectedProfileIndex, value); }
-        }
+        public bool ShouldRestoreInternetExplorerFavorites { get => _shouldRestoreInternetExplorerFavorites; set => this.RaiseAndSetIfChanged(ref _shouldRestoreInternetExplorerFavorites, value); }
 
-        public DirectoryInfo GlobalProfileDirectory
-        {
-            get { return _globalProfileDirectory; }
-            set { this.RaiseAndSetIfChanged(ref _globalProfileDirectory, value); }
-        }
+        public bool ShouldRestoreOutlookSignatures { get => _shouldRestoreOutlookSignatures; set => this.RaiseAndSetIfChanged(ref _shouldRestoreOutlookSignatures, value); }
 
-        public DirectoryInfo LocalProfileDirectory
-        {
-            get { return _localProfileDirectory; }
-            set { this.RaiseAndSetIfChanged(ref _localProfileDirectory, value); }
-        }
+        public bool ShouldRestoreWindowsExplorerFavorites { get => _shouldRestoreWindowsExplorerFavorites; set => this.RaiseAndSetIfChanged(ref _shouldRestoreWindowsExplorerFavorites, value); }
 
-        public DirectoryInfo NewProfileDirectory
-        {
-            get { return _newProfileDirectory; }
-            set { this.RaiseAndSetIfChanged(ref _newProfileDirectory, value); }
-        }
+        public bool ShouldRestoreStickyNotes { get => _shouldRestoreStickyNotes; set => this.RaiseAndSetIfChanged(ref _shouldRestoreStickyNotes, value); }
+
+        public int SelectedProfileIndex { get => _selectedProfileIndex; set => this.RaiseAndSetIfChanged(ref _selectedProfileIndex, value); }
+
+        public string GlobalProfilePath { get => _globalProfilePath; set => this.RaiseAndSetIfChanged(ref _globalProfilePath, value); }
+
+        public string HomeFolderPath { get => _homeFolderPath; set => this.RaiseAndSetIfChanged(ref _homeFolderPath, value); }
+
+        public DirectoryInfo GlobalProfileDirectory { get => _globalProfileDirectory; set => this.RaiseAndSetIfChanged(ref _globalProfileDirectory, value); }
+
+        public DirectoryInfo LocalProfileDirectory { get => _localProfileDirectory; set => this.RaiseAndSetIfChanged(ref _localProfileDirectory, value); }
+
+        public DirectoryInfo NewProfileDirectory { get => _newProfileDirectory; set => this.RaiseAndSetIfChanged(ref _newProfileDirectory, value); }
 
 
 

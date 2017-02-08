@@ -45,6 +45,14 @@ namespace SupportTool.Controls
                 d(this.Bind(ViewModel, vm => vm.ShouldRestoreOutlookSignatures, v => v.OutlookSignaturesCheckBox.IsChecked));
                 d(this.Bind(ViewModel, vm => vm.ShouldRestoreWindowsExplorerFavorites, v => v.WindowsExplorerFavoritesCheckBox.IsChecked));
                 d(this.Bind(ViewModel, vm => vm.ShouldRestoreStickyNotes, v => v.StickyNotesCheckBox.IsChecked));
+                d(this.Bind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileToggleButton.IsChecked));
+                d(this.OneWayBind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileStackPanel.Visibility));
+                d(this.Bind(ViewModel, vm => vm.GlobalProfilePath, v => v.GlobalProfilePathTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.HasGlobalProfilePathChanged, v => v.GlobalProfilePathButtonsStackPanel.Visibility));
+                d(this.Bind(ViewModel, vm => vm.IsShowingHomeFolder, v => v.HomeFolderToggleButton.IsChecked));
+                d(this.OneWayBind(ViewModel, vm => vm.IsShowingHomeFolder, v => v.HomeFolderStackPanel.Visibility));
+                d(this.Bind(ViewModel, vm => vm.HomeFolderPath, v => v.HomeFolderPathTextBox.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.HasHomeFolderPathChanged, v => v.HomeFolderPathButtonsStackPanel.Visibility));
 
                 d(this.BindCommand(ViewModel, vm => vm.ResetGlobalProfile, v => v.ResetGlobalProfileButton));
                 d(this.BindCommand(ViewModel, vm => vm.ResetLocalProfile, v => v.ResetLocalProfileButton));
@@ -52,8 +60,12 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton));
 				d(this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton));
 				d(this.BindCommand(ViewModel, vm => vm.OpenGlobalProfile, v => v.OpenGlobalProfileButton));
-				d(this.BindCommand(ViewModel, vm => vm.OpenHomeFolder, v => v.OpenHomeFolderButton));
-				d(ResetProfileComputerNameTextBox.Events()
+                d(this.BindCommand(ViewModel, vm => vm.SaveGlobalProfilePath, v => v.GlobalProfilePathSaveButton));
+                d(this.BindCommand(ViewModel, vm => vm.CancelGlobalProfilePath, v => v.GlobalProfilePathCancelButton));
+                d(this.BindCommand(ViewModel, vm => vm.OpenHomeFolder, v => v.OpenHomeFolderButton));
+                d(this.BindCommand(ViewModel, vm => vm.SaveHomeFolderPath, v => v.HomeFolderPathSaveButton));
+                d(this.BindCommand(ViewModel, vm => vm.CancelHomeFolderPath, v => v.HomeFolderPathCancelButton));
+                d(ResetProfileComputerNameTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
