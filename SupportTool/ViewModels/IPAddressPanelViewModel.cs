@@ -16,21 +16,6 @@ namespace SupportTool.ViewModels
 {
 	public class IPAddressPanelViewModel : ViewModelBase
 	{
-		private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
-		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
-		private readonly ReactiveCommand<Unit, Unit> _openRemoteExecution;
-		private readonly ReactiveCommand<Unit, Unit> _openCDrive;
-		private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
-		private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
-		private readonly ReactiveCommand<Unit, Unit> _startRdp;
-		private readonly ObservableAsPropertyHelper<string> _hostName;
-		private string _ipAddress;
-
-
-
 		public IPAddressPanelViewModel()
 		{
 			_openLoggedOn = ReactiveCommand.Create(() =>
@@ -138,5 +123,20 @@ namespace SupportTool.ViewModels
 			if (File.Exists(fileName)) Process.Start(fileName, arguments);
 			else throw new ArgumentException($"Could not find {fileName}");
 		}
-	}
+
+
+
+        private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
+        private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
+        private readonly ReactiveCommand<Unit, Unit> _openRemoteExecution;
+        private readonly ReactiveCommand<Unit, Unit> _openCDrive;
+        private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
+        private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
+        private readonly ReactiveCommand<Unit, Unit> _startRdp;
+        private readonly ObservableAsPropertyHelper<string> _hostName;
+        private string _ipAddress;
+    }
 }

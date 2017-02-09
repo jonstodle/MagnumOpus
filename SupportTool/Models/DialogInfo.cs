@@ -12,15 +12,17 @@ namespace SupportTool.Models
 {
 	public struct DialogInfo
 	{
-		public Control Control { get; private set; }
-		public object Parameter { get; private set; }
-
 		public DialogInfo(Control control, object parameter)
 		{
 			Control = control;
 			Parameter = parameter;
 		}
-	}
+
+
+
+        public Control Control { get; private set; }
+        public object Parameter { get; private set; }
+    }
 
 
 

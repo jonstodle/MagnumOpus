@@ -12,14 +12,6 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerManagementViewModel : ViewModelBase
 	{
-		private ReactiveCommand<Unit, Unit> _rebootComputer;
-		private ReactiveCommand<Unit, Unit> _runPSExec;
-		private ReactiveCommand<Unit, Unit> _openCDrive;
-		private ReactiveCommand<Unit, Unit> _openSccm;
-		private ComputerObject _computer;
-
-
-
 		public ComputerManagementViewModel()
 		{
 			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
@@ -63,5 +55,13 @@ namespace SupportTool.ViewModels
 			get { return _computer; }
 			set { this.RaiseAndSetIfChanged(ref _computer, value); }
 		}
-	}
+
+
+
+        private ReactiveCommand<Unit, Unit> _rebootComputer;
+        private ReactiveCommand<Unit, Unit> _runPSExec;
+        private ReactiveCommand<Unit, Unit> _openCDrive;
+        private ReactiveCommand<Unit, Unit> _openSccm;
+        private ComputerObject _computer;
+    }
 }

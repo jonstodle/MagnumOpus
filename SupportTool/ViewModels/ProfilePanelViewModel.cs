@@ -19,42 +19,6 @@ namespace SupportTool.ViewModels
 {
     public class ProfilePanelViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, Unit> _resetGlobalProfile;
-        private readonly ReactiveCommand<Unit, Unit> _resetLocalProfile;
-        private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> _searchForProfiles;
-        private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
-        private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
-        private readonly ReactiveCommand<Unit, Unit> _openGlobalProfile;
-        private readonly ReactiveCommand<Unit, Unit> _saveGlobalProfilePath;
-        private readonly ReactiveCommand<Unit, Unit> _cancelGlobalProfilePath;
-        private readonly ReactiveCommand<Unit, Unit> _openHomeFolder;
-        private readonly ReactiveCommand<Unit, Unit> _saveHomeFolderPath;
-        private readonly ReactiveCommand<Unit, Unit> _cancelHomeFolderPath;
-        private readonly ReactiveList<DirectoryInfo> _profiles = new ReactiveList<DirectoryInfo>();
-        private readonly ObservableAsPropertyHelper<bool> _isExecutingResetGlobalProfile;
-        private readonly ObservableAsPropertyHelper<bool> _isExecutingResetLocalProfile;
-        private readonly ObservableAsPropertyHelper<bool> _hasGlobalProfilePathChanged;
-        private readonly ObservableAsPropertyHelper<bool> _hasHomeFolderPathChanged;
-        private UserObject _user;
-        private bool _isShowingResetProfile;
-        private bool _isShowingRestoreProfile;
-        private bool _isShowingGlobalProfile;
-        private bool _isShowingHomeFolder;
-        private string _computerName;
-        private bool _shouldRestoreDesktopItems = true;
-        private bool _shouldRestoreInternetExplorerFavorites = true;
-        private bool _shouldRestoreOutlookSignatures = true;
-        private bool _shouldRestoreWindowsExplorerFavorites = true;
-        private bool _shouldRestoreStickyNotes = true;
-        private int _selectedProfileIndex;
-        private string _globalProfilePath;
-        private string _homeFolderPath;
-        private DirectoryInfo _globalProfileDirectory;
-        private DirectoryInfo _localProfileDirectory;
-        private DirectoryInfo _newProfileDirectory;
-
-
-
         public ProfilePanelViewModel()
         {
             _resetGlobalProfile = ReactiveCommand.CreateFromObservable(() => ResetGlobalProfileImpl(_user));
@@ -427,5 +391,41 @@ namespace SupportTool.ViewModels
                 CopyFilesAndDirectories(directory.FullName, Path.Combine(destination, directory.Name));
             }
         }
+
+
+
+        private readonly ReactiveCommand<Unit, Unit> _resetGlobalProfile;
+        private readonly ReactiveCommand<Unit, Unit> _resetLocalProfile;
+        private readonly ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> _searchForProfiles;
+        private readonly ReactiveCommand<Unit, Unit> _restoreProfile;
+        private readonly ReactiveCommand<Unit, Unit> _resetCitrixProfile;
+        private readonly ReactiveCommand<Unit, Unit> _openGlobalProfile;
+        private readonly ReactiveCommand<Unit, Unit> _saveGlobalProfilePath;
+        private readonly ReactiveCommand<Unit, Unit> _cancelGlobalProfilePath;
+        private readonly ReactiveCommand<Unit, Unit> _openHomeFolder;
+        private readonly ReactiveCommand<Unit, Unit> _saveHomeFolderPath;
+        private readonly ReactiveCommand<Unit, Unit> _cancelHomeFolderPath;
+        private readonly ReactiveList<DirectoryInfo> _profiles = new ReactiveList<DirectoryInfo>();
+        private readonly ObservableAsPropertyHelper<bool> _isExecutingResetGlobalProfile;
+        private readonly ObservableAsPropertyHelper<bool> _isExecutingResetLocalProfile;
+        private readonly ObservableAsPropertyHelper<bool> _hasGlobalProfilePathChanged;
+        private readonly ObservableAsPropertyHelper<bool> _hasHomeFolderPathChanged;
+        private UserObject _user;
+        private bool _isShowingResetProfile;
+        private bool _isShowingRestoreProfile;
+        private bool _isShowingGlobalProfile;
+        private bool _isShowingHomeFolder;
+        private string _computerName;
+        private bool _shouldRestoreDesktopItems = true;
+        private bool _shouldRestoreInternetExplorerFavorites = true;
+        private bool _shouldRestoreOutlookSignatures = true;
+        private bool _shouldRestoreWindowsExplorerFavorites = true;
+        private bool _shouldRestoreStickyNotes = true;
+        private int _selectedProfileIndex;
+        private string _globalProfilePath;
+        private string _homeFolderPath;
+        private DirectoryInfo _globalProfileDirectory;
+        private DirectoryInfo _localProfileDirectory;
+        private DirectoryInfo _newProfileDirectory;
     }
 }

@@ -6,11 +6,6 @@ namespace SupportTool.Models
 {
 	public class ActiveDirectoryObject<T> where T : Principal
     {
-        protected T _principal;
-        protected DirectoryEntry _directoryEntry;
-
-
-
         public ActiveDirectoryObject(T principal)
         {
 			_principal = principal;
@@ -24,5 +19,10 @@ namespace SupportTool.Models
         public string CN => _directoryEntry.Properties.Get<string>("cn");
 
 		public DateTime? WhenCreated => _directoryEntry.Properties.Get<DateTime?>("whencreated");
+
+
+
+        protected T _principal;
+        protected DirectoryEntry _directoryEntry;
     }
 }

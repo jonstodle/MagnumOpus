@@ -18,26 +18,6 @@ namespace SupportTool.ViewModels
 {
     public class UserGroupsViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
-        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-        private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
-        private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
-        private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
-        private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
-        private readonly ReactiveList<string> _allGroups = new ReactiveList<string>();
-        private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
-        private readonly ListCollectionView _allGroupsCollectionView;
-        private readonly ObservableAsPropertyHelper<bool> _isLoadingGroups;
-        private UserObject _user;
-        private bool _isShowingDirectGroups;
-        private bool _isShowingAllGroups;
-        private string _selectedDirectGroup;
-        private string _selectedAllGroup;
-        private string _groupFilter;
-        private bool _useFuzzy;
-
-
-
         public UserGroupsViewModel()
         {
             _allGroupsCollectionView = new ListCollectionView(_allGroups);
@@ -234,5 +214,25 @@ namespace SupportTool.ViewModels
                 return GroupFilter.Split(' ').All(x => itm.Contains(x.ToLowerInvariant()));
             }
         }
+
+
+
+        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
+        private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getAllGroups;
+        private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
+        private readonly ReactiveCommand<Unit, Unit> _findAllGroup;
+        private readonly ReactiveList<string> _allGroups = new ReactiveList<string>();
+        private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
+        private readonly ListCollectionView _allGroupsCollectionView;
+        private readonly ObservableAsPropertyHelper<bool> _isLoadingGroups;
+        private UserObject _user;
+        private bool _isShowingDirectGroups;
+        private bool _isShowingAllGroups;
+        private string _selectedDirectGroup;
+        private string _selectedAllGroup;
+        private string _groupFilter;
+        private bool _useFuzzy;
     }
 }

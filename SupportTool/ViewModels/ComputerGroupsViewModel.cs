@@ -14,16 +14,6 @@ namespace SupportTool.ViewModels
 {
     public class ComputerGroupsViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
-        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-        private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
-        private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
-        private ComputerObject _computer;
-        private bool _isShowingDirectGroups;
-        private string _selectedDirectGroup;
-
-
-
         public ComputerGroupsViewModel()
         {
             _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
@@ -93,5 +83,15 @@ namespace SupportTool.ViewModels
         private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer) => computer.Principal.GetGroups()
             .ToObservable()
             .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
+
+
+
+        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
+        private readonly ReactiveCommand<Unit, Unit> _findDirectGroup;
+        private readonly ReactiveList<string> _directGroups = new ReactiveList<string>();
+        private ComputerObject _computer;
+        private bool _isShowingDirectGroups;
+        private string _selectedDirectGroup;
     }
 }

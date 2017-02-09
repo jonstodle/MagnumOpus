@@ -18,31 +18,6 @@ namespace SupportTool.ViewModels
 {
     public class GroupGroupsViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
-        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-        private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
-        private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
-        private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
-        private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
-        private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
-        private readonly ReactiveCommand<Unit, Unit> _saveMembers;
-        private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
-        private readonly ReactiveList<string> _directMemberOfGroups = new ReactiveList<string>();
-        private readonly ReactiveList<string> _allMemberOfGroups = new ReactiveList<string>();
-        private readonly ReactiveList<string> _memberUsers = new ReactiveList<string>();
-        private readonly ListCollectionView _allMemberOfGroupsView;
-        private GroupObject _group;
-        private bool _isShowingDirectMemberOf;
-        private bool _isShowingMemberOf;
-        private bool _isShowingMembers;
-        private string _selectedDirectMemberOfGroup;
-        private string _filterString;
-        private bool _useFuzzy;
-        private string _selectedAllMemberOfGroup;
-        private string _selectedMemberUser;
-
-
-
         public GroupGroupsViewModel()
         {
             _allMemberOfGroupsView = new ListCollectionView(_allMemberOfGroups)
@@ -302,5 +277,30 @@ namespace SupportTool.ViewModels
 
             return false;
         }
+
+
+
+        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
+        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
+        private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
+        private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
+        private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
+        private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
+        private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
+        private readonly ReactiveCommand<Unit, Unit> _saveMembers;
+        private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
+        private readonly ReactiveList<string> _directMemberOfGroups = new ReactiveList<string>();
+        private readonly ReactiveList<string> _allMemberOfGroups = new ReactiveList<string>();
+        private readonly ReactiveList<string> _memberUsers = new ReactiveList<string>();
+        private readonly ListCollectionView _allMemberOfGroupsView;
+        private GroupObject _group;
+        private bool _isShowingDirectMemberOf;
+        private bool _isShowingMemberOf;
+        private bool _isShowingMembers;
+        private string _selectedDirectMemberOfGroup;
+        private string _filterString;
+        private bool _useFuzzy;
+        private string _selectedAllMemberOfGroup;
+        private string _selectedMemberUser;
     }
 }

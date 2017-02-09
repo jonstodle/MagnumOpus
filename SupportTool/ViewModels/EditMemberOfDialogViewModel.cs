@@ -18,27 +18,6 @@ namespace SupportTool.ViewModels
 {
     public class EditMemberOfDialogViewModel : ViewModelBase, IDialog, IEnableLogger
     {
-        private readonly ReactiveCommand<string, Principal> _setPrincipal;
-        private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;
-        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
-        private readonly ReactiveCommand<Unit, Unit> _openSearchResultPrincipal;
-        private readonly ReactiveCommand<Unit, Unit> _openMembersPrincipal;
-        private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
-        private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
-        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
-        private readonly ReactiveCommand<Unit, Unit> _cancel;
-        private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
-        private readonly ReactiveList<DirectoryEntry> _principalMembers = new ReactiveList<DirectoryEntry>();
-        private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();
-        private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
-        private readonly ObservableAsPropertyHelper<Principal> _principal;
-        private string _searchQuery;
-        private DirectoryEntry _selectedSearchResult;
-        private DirectoryEntry _selectedPrincipalMember;
-        private Action _close;
-
-
-
         public EditMemberOfDialogViewModel()
         {
             _setPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
@@ -219,8 +198,6 @@ namespace SupportTool.ViewModels
             return result;
         });
 
-
-
         private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
 
 
@@ -237,5 +214,26 @@ namespace SupportTool.ViewModels
 
             return Task.FromResult<object>(null);
         }
+
+
+
+        private readonly ReactiveCommand<string, Principal> _setPrincipal;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getPrincipalMembers;
+        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+        private readonly ReactiveCommand<Unit, Unit> _openSearchResultPrincipal;
+        private readonly ReactiveCommand<Unit, Unit> _openMembersPrincipal;
+        private readonly ReactiveCommand<Unit, Unit> _addToPrincipal;
+        private readonly ReactiveCommand<Unit, Unit> _removeFromPrincipal;
+        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+        private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _principalMembers = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
+        private readonly ObservableAsPropertyHelper<Principal> _principal;
+        private string _searchQuery;
+        private DirectoryEntry _selectedSearchResult;
+        private DirectoryEntry _selectedPrincipalMember;
+        private Action _close;
     }
 }

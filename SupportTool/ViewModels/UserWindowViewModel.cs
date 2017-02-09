@@ -11,11 +11,6 @@ namespace SupportTool.ViewModels
 {
 	public class UserWindowViewModel : ViewModelBase, INavigable
 	{
-		private readonly ReactiveCommand<string, UserObject> _setUser;
-		private readonly ObservableAsPropertyHelper<UserObject> _user;
-
-
-
 		public UserWindowViewModel()
 		{
 			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
@@ -62,5 +57,10 @@ namespace SupportTool.ViewModels
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-	}
+
+
+
+        private readonly ReactiveCommand<string, UserObject> _setUser;
+        private readonly ObservableAsPropertyHelper<UserObject> _user;
+    }
 }

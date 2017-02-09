@@ -7,10 +7,6 @@ namespace SupportTool.ViewModels
 {
 	public class SettingsWindowViewModel : ViewModelBase, IDialog
 	{
-		private Action _close;
-
-
-
 		public SettingsWindowViewModel() { }
 
 
@@ -52,5 +48,9 @@ namespace SupportTool.ViewModels
 			_close = close;
 			return Task.FromResult<object>(null);
 		}
-	}
+
+
+
+        private Action _close;
+    }
 }

@@ -12,10 +12,6 @@ namespace SupportTool.Models
 {
 	public struct MessageInfo
 	{
-		public string Caption { get; private set; }
-		public string Message { get; private set; }
-		public DialogButtonInfo[] Buttons { get; private set; }
-
 		public MessageInfo(string message, string caption = "")
 		{
 			Message = message;
@@ -33,7 +29,13 @@ namespace SupportTool.Models
 			Buttons = buttons.Select(x => new DialogButtonInfo(x)).ToArray();
 		}
 
-		public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
+
+
+        public string Caption { get; private set; }
+        public string Message { get; private set; }
+        public DialogButtonInfo[] Buttons { get; private set; }
+
+        public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
 
 		public static MessageInfo PasswordSetErrorMessageInfo(string message = null) => new MessageInfo(message ?? $"Could not set password", "Password not set");
 	}

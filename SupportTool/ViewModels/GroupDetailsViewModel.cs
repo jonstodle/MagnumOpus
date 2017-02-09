@@ -5,10 +5,6 @@ namespace SupportTool.ViewModels
 {
 	public class GroupDetailsViewModel : ViewModelBase
 	{
-        private GroupObject _group;
-
-
-
         public GroupDetailsViewModel()
         {
 
@@ -21,5 +17,9 @@ namespace SupportTool.ViewModels
             get { return _group; }
             set { this.RaiseAndSetIfChanged(ref _group, value); }
         }
+
+
+
+        private GroupObject _group;
     }
 }

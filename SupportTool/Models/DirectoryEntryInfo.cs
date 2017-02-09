@@ -6,15 +6,6 @@ namespace SupportTool.Models
 {
 	public class DirectoryEntryInfo : IComparable, IComparable<DirectoryEntryInfo>
 	{
-		public string Path { get; set; }
-		public string CN { get; set; }
-		public string DistinguishedName { get; set; }
-		public string SamAccountName { get; set; }
-		public string Name { get; set; }
-		public string ObjectType { get; set; }
-
-
-
 		public DirectoryEntryInfo(DirectoryEntry directoryEntry)
 		{
 			Path = directoryEntry.Path;
@@ -27,7 +18,18 @@ namespace SupportTool.Models
 			directoryEntry.Dispose();
 		}
 
-		public int CompareTo(DirectoryEntryInfo other) => CN.CompareTo(other.CN);
+
+
+        public string Path { get; set; }
+        public string CN { get; set; }
+        public string DistinguishedName { get; set; }
+        public string SamAccountName { get; set; }
+        public string Name { get; set; }
+        public string ObjectType { get; set; }
+
+
+
+        public int CompareTo(DirectoryEntryInfo other) => CN.CompareTo(other.CN);
 
 		public int CompareTo(object obj)
 		{

@@ -11,19 +11,6 @@ namespace SupportTool.ViewModels
 {
 	public class UserDetailsViewModel : ViewModelBase
 	{
-        private readonly ReactiveCommand<Unit, bool> _toggleOrganizationDetails;
-        private readonly ReactiveCommand<Unit, Unit> _openManager;
-        private readonly ReactiveCommand<Unit, Unit> _openDirectReport;
-        private readonly ReactiveList<UserObject> _directReports = new ReactiveList<UserObject>();
-        private readonly ObservableAsPropertyHelper<bool> _isAccountLocked;
-        private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;
-        private readonly ObservableAsPropertyHelper<bool> _isShowingOrganizationDetails;
-        private readonly ObservableAsPropertyHelper<UserObject> _manager;
-        private UserObject user;
-        private UserObject _selectedDirectReport;
-
-
-
         public UserDetailsViewModel()
         {
             _toggleOrganizationDetails = ReactiveCommand.Create<Unit, bool>(_ => !_isShowingOrganizationDetails.Value);
@@ -105,5 +92,18 @@ namespace SupportTool.ViewModels
             get { return _selectedDirectReport; }
             set { this.RaiseAndSetIfChanged(ref _selectedDirectReport, value); }
         }
+
+
+
+        private readonly ReactiveCommand<Unit, bool> _toggleOrganizationDetails;
+        private readonly ReactiveCommand<Unit, Unit> _openManager;
+        private readonly ReactiveCommand<Unit, Unit> _openDirectReport;
+        private readonly ReactiveList<UserObject> _directReports = new ReactiveList<UserObject>();
+        private readonly ObservableAsPropertyHelper<bool> _isAccountLocked;
+        private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;
+        private readonly ObservableAsPropertyHelper<bool> _isShowingOrganizationDetails;
+        private readonly ObservableAsPropertyHelper<UserObject> _manager;
+        private UserObject user;
+        private UserObject _selectedDirectReport;
     }
 }

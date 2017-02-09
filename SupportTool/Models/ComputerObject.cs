@@ -12,10 +12,7 @@ namespace SupportTool.Models
 {
 	public class ComputerObject : ActiveDirectoryObject<ComputerPrincipal>
     {
-        public ComputerObject(ComputerPrincipal principal) : base(principal)
-        {
-
-        }
+        public ComputerObject(ComputerPrincipal principal) : base(principal) { }
 
 
 

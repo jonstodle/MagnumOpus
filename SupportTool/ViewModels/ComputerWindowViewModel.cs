@@ -11,11 +11,6 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerWindowViewModel : ViewModelBase, INavigable
 	{
-		private readonly ReactiveCommand<string, ComputerObject> _setComputer;
-		private readonly ObservableAsPropertyHelper<ComputerObject> _computer;
-
-
-
 		public ComputerWindowViewModel()
 		{
 			_setComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
@@ -52,5 +47,10 @@ namespace SupportTool.ViewModels
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-	}
+
+
+
+        private readonly ReactiveCommand<string, ComputerObject> _setComputer;
+        private readonly ObservableAsPropertyHelper<ComputerObject> _computer;
+    }
 }

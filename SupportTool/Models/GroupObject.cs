@@ -10,6 +10,8 @@ namespace SupportTool.Models
     {
         public GroupObject(GroupPrincipal principal) : base(principal) { }
 
+
+
 		public string Notes => _directoryEntry.Properties.Get<string>("info");
 
         public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))

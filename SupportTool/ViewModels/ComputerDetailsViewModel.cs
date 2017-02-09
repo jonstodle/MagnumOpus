@@ -11,14 +11,6 @@ namespace SupportTool.ViewModels
 {
 	public class ComputerDetailsViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, bool> _toggleIsShowingDetails;
-		private readonly ObservableAsPropertyHelper<OperatingSystemInfo> _operatingSystemInfo;
-		private readonly ObservableAsPropertyHelper<string> _ipAddress;
-        private readonly ObservableAsPropertyHelper<bool> _isShowingDetails;
-		private ComputerObject _computer;
-
-
-
         public ComputerDetailsViewModel()
         {
             _toggleIsShowingDetails = ReactiveCommand.Create(() => !_isShowingDetails.Value);
@@ -70,5 +62,13 @@ namespace SupportTool.ViewModels
 				return new OperatingSystemInfo((ManagementObject)enumerator.Current);
 			}
 		});
+
+
+
+        private readonly ReactiveCommand<Unit, bool> _toggleIsShowingDetails;
+        private readonly ObservableAsPropertyHelper<OperatingSystemInfo> _operatingSystemInfo;
+        private readonly ObservableAsPropertyHelper<string> _ipAddress;
+        private readonly ObservableAsPropertyHelper<bool> _isShowingDetails;
+        private ComputerObject _computer;
     }
 }

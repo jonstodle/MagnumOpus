@@ -18,27 +18,6 @@ namespace SupportTool.ViewModels
 {
     public class EditMembersDialogViewModel : ViewModelBase, IDialog, IEnableLogger
     {
-        private readonly ReactiveCommand<string, GroupObject> _setGroup;
-        private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
-        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
-        private readonly ReactiveCommand<Unit, Unit> _openSearchResult;
-        private readonly ReactiveCommand<Unit, Unit> _openGroupMember;
-        private readonly ReactiveCommand<Unit, Unit> _addToGroup;
-        private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
-        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
-        private readonly ReactiveCommand<Unit, Unit> _cancel;
-        private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
-        private readonly ReactiveList<DirectoryEntry> _groupMembers = new ReactiveList<DirectoryEntry>();
-        private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();
-        private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
-        private readonly ObservableAsPropertyHelper<GroupObject> _group;
-        private string _searchQuery;
-        private DirectoryEntry _selectedSearchResult;
-        private DirectoryEntry _selectedGroupMember;
-        private Action _close;
-
-
-
         public EditMembersDialogViewModel()
         {
             _setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
@@ -227,8 +206,6 @@ namespace SupportTool.ViewModels
             return result;
         });
 
-
-
         private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
 
 
@@ -245,5 +222,26 @@ namespace SupportTool.ViewModels
 
             return Task.FromResult<object>(null);
         }
+
+
+
+        private readonly ReactiveCommand<string, GroupObject> _setGroup;
+        private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
+        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
+        private readonly ReactiveCommand<Unit, Unit> _openSearchResult;
+        private readonly ReactiveCommand<Unit, Unit> _openGroupMember;
+        private readonly ReactiveCommand<Unit, Unit> _addToGroup;
+        private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
+        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+        private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _groupMembers = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();
+        private readonly ReactiveList<DirectoryEntry> _membersToRemove = new ReactiveList<DirectoryEntry>();
+        private readonly ObservableAsPropertyHelper<GroupObject> _group;
+        private string _searchQuery;
+        private DirectoryEntry _selectedSearchResult;
+        private DirectoryEntry _selectedGroupMember;
+        private Action _close;
     }
 }

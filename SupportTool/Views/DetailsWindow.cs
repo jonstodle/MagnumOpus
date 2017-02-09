@@ -10,8 +10,6 @@ namespace SupportTool.Views
 {
 	public class DetailsWindow : Window
 	{
-		private CompositeDisposable _subscriptions = new CompositeDisposable();
-
 		public DetailsWindow()
 		{
             var keyDowns = this.Events().KeyDown.Publish().RefCount();
@@ -38,5 +36,9 @@ namespace SupportTool.Views
 				.Subscribe(x => _subscriptions.Dispose())
 				.DisposeWith(_subscriptions);
 		}
-	}
+
+
+
+        private CompositeDisposable _subscriptions = new CompositeDisposable();
+    }
 }

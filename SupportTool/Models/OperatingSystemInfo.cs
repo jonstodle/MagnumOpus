@@ -5,16 +5,6 @@ namespace SupportTool.Models
 {
 	public class OperatingSystemInfo
 	{
-		public string Caption { get; set; }
-		public string Version { get; set; }
-		public string BuildNumber { get; set; }
-		public string Architecture { get; set; }
-		public string CSDVersion { get; set; }
-		public DateTime? InstallDate { get; set; }
-		public DateTime? LastBootTime { get; set; }
-
-
-
 		public OperatingSystemInfo() { }
 
 		public OperatingSystemInfo(ManagementObject managementObject)
@@ -31,5 +21,15 @@ namespace SupportTool.Models
 
 			managementObject.Dispose();
 		}
-	}
+
+
+
+        public string Caption { get; set; }
+        public string Version { get; set; }
+        public string BuildNumber { get; set; }
+        public string Architecture { get; set; }
+        public string CSDVersion { get; set; }
+        public DateTime? InstallDate { get; set; }
+        public DateTime? LastBootTime { get; set; }
+    }
 }

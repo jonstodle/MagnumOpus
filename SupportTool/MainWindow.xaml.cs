@@ -88,12 +88,7 @@ namespace SupportTool
 			});
 		}
 
-		private void MenuItemClick(object sender, RoutedEventArgs args)
-		{
-			var menuItem = sender as MenuItem;
-			var header = menuItem.Header as string;
-			ViewModel.SearchQuery = header;
-		}
+		
 
 		public MainWindowViewModel ViewModel
 		{
@@ -108,5 +103,14 @@ namespace SupportTool
 			get { return ViewModel; }
 			set { ViewModel = value as MainWindowViewModel; }
 		}
-	}
+
+
+
+        private void MenuItemClick(object sender, RoutedEventArgs args)
+        {
+            var menuItem = sender as MenuItem;
+            var header = menuItem.Header as string;
+            ViewModel.SearchQuery = header;
+        }
+    }
 }

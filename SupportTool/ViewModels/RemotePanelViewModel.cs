@@ -17,25 +17,6 @@ namespace SupportTool.ViewModels
 {
 	public class RemotePanelViewModel : ViewModelBase
 	{
-		private readonly ReactiveCommand<Unit, Unit> _openUser;
-		private readonly ReactiveCommand<Unit, Unit> _copyUserName;
-		private readonly ReactiveCommand<Unit, Unit> _logOffUser;
-		private readonly ReactiveCommand<Unit, Unit> _openLoggedOnUserDetails;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
-		private readonly ReactiveCommand<Unit, Unit> _killRemoteTools;
-		private readonly ReactiveCommand<Unit, bool> _toggleUac;
-		private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
-		private readonly ReactiveCommand<Unit, Unit> _startRdp;
-		private readonly ReactiveList<LoggedOnUserInfo> _loggedOnUsers;
-		private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
-		private ComputerObject _computer;
-		private bool _isShowingLoggedOnUsers;
-		private LoggedOnUserInfo _selectedLoggedOnUser;
-
-
-
 		public RemotePanelViewModel()
 		{
 			_openUser = ReactiveCommand.CreateFromTask(async () => await NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create(_selectedLoggedOnUser.Username, _computer.CN)));
@@ -204,5 +185,24 @@ namespace SupportTool.ViewModels
 				throw new Exception("Could not read registry value");
 			}
 		});
-	}
+
+
+
+        private readonly ReactiveCommand<Unit, Unit> _openUser;
+        private readonly ReactiveCommand<Unit, Unit> _copyUserName;
+        private readonly ReactiveCommand<Unit, Unit> _logOffUser;
+        private readonly ReactiveCommand<Unit, Unit> _openLoggedOnUserDetails;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
+        private readonly ReactiveCommand<Unit, Unit> _killRemoteTools;
+        private readonly ReactiveCommand<Unit, bool> _toggleUac;
+        private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
+        private readonly ReactiveCommand<Unit, Unit> _startRdp;
+        private readonly ReactiveList<LoggedOnUserInfo> _loggedOnUsers;
+        private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
+        private ComputerObject _computer;
+        private bool _isShowingLoggedOnUsers;
+        private LoggedOnUserInfo _selectedLoggedOnUser;
+    }
 }

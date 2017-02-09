@@ -17,21 +17,6 @@ namespace SupportTool.ViewModels
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> _search;
-        private readonly ReactiveCommand<Unit, Unit> _paste;
-        private readonly ReactiveCommand<Unit, Unit> _open;
-        private readonly ReactiveCommand<Unit, Unit> _openSettings;
-        private readonly ReactiveCommand<Unit, bool> _toggleShowVersion;
-        private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
-        private readonly ReactiveList<string> _history;
-        private readonly ObservableAsPropertyHelper<bool> _showVersion;
-        private SortDescription _listSortDescription;
-        private string _searchQuery;
-        private DirectoryEntryInfo _selectedSearchResult;
-        private string _version;
-
-
-
         public MainWindowViewModel()
         {
             _searchResults = new ReactiveList<DirectoryEntryInfo>();
@@ -136,5 +121,20 @@ namespace SupportTool.ViewModels
             get { return _selectedSearchResult; }
             set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
         }
+
+
+
+        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> _search;
+        private readonly ReactiveCommand<Unit, Unit> _paste;
+        private readonly ReactiveCommand<Unit, Unit> _open;
+        private readonly ReactiveCommand<Unit, Unit> _openSettings;
+        private readonly ReactiveCommand<Unit, bool> _toggleShowVersion;
+        private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
+        private readonly ReactiveList<string> _history;
+        private readonly ObservableAsPropertyHelper<bool> _showVersion;
+        private SortDescription _listSortDescription;
+        private string _searchQuery;
+        private DirectoryEntryInfo _selectedSearchResult;
+        private string _version;
     }
 }

@@ -10,11 +10,6 @@ namespace SupportTool.ViewModels
 {
 	public class IPAddressWindowViewModel : ViewModelBase, INavigable
 	{
-		private readonly ReactiveCommand<string, string> _setIPAddress;
-		private readonly ObservableAsPropertyHelper<string> _ipAddress;
-
-
-
 		public IPAddressWindowViewModel()
 		{
 			_setIPAddress = ReactiveCommand.Create<string, string>(ipAddress => ipAddress);
@@ -51,5 +46,10 @@ namespace SupportTool.ViewModels
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-	}
+
+
+
+        private readonly ReactiveCommand<string, string> _setIPAddress;
+        private readonly ObservableAsPropertyHelper<string> _ipAddress;
+    }
 }

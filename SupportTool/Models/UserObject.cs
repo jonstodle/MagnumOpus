@@ -10,6 +10,8 @@ namespace SupportTool.Models
     {
         public UserObject(UserPrincipal principal) : base(principal) { }
 
+
+
         public string Name => _principal.DisplayName ?? _principal.Name;
 
         public string JobTitle => _directoryEntry.Properties.Get<string>("title");

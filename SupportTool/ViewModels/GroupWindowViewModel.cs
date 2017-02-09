@@ -11,11 +11,6 @@ namespace SupportTool.ViewModels
 {
 	public class GroupWindowViewModel : ViewModelBase, INavigable
 	{
-		private readonly ReactiveCommand<string, GroupObject> _setGroup;
-		private readonly ObservableAsPropertyHelper<GroupObject> _group;
-
-
-
 		public GroupWindowViewModel()
 		{
 			_setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
@@ -52,5 +47,10 @@ namespace SupportTool.ViewModels
 		}
 
 		public Task OnNavigatingFrom() => Task.FromResult<object>(null);
-	}
+
+
+
+        private readonly ReactiveCommand<string, GroupObject> _setGroup;
+        private readonly ObservableAsPropertyHelper<GroupObject> _group;
+    }
 }

@@ -11,16 +11,6 @@ namespace SupportTool.ViewModels
 {
 	public class PingPanelViewModel : ViewModelBase
 	{
-		private readonly ReactiveCommand<Unit, string> _startPing;
-		private readonly ReactiveCommand<Unit, Unit> _stopPing;
-		private readonly ReactiveList<string> _pingResults = new ReactiveList<string>();
-        private readonly ObservableAsPropertyHelper<string> _mostRecentPingResult;
-		private string _hostName;
-		private bool _isPinging;
-		private bool _isShowingPingResultDetails;
-
-
-
 		public PingPanelViewModel()
 		{
 			_startPing = ReactiveCommand.CreateFromObservable(() =>
@@ -104,5 +94,15 @@ namespace SupportTool.ViewModels
                     .Catch(Observable.Return($"{hostName} did not respond"))
                     .Select(x => $"{DateTimeOffset.Now.ToString("T")} - {x}"))
                 .StartWith($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
-	}
+
+
+
+        private readonly ReactiveCommand<Unit, string> _startPing;
+        private readonly ReactiveCommand<Unit, Unit> _stopPing;
+        private readonly ReactiveList<string> _pingResults = new ReactiveList<string>();
+        private readonly ObservableAsPropertyHelper<string> _mostRecentPingResult;
+        private string _hostName;
+        private bool _isPinging;
+        private bool _isShowingPingResultDetails;
+    }
 }

@@ -14,19 +14,6 @@ namespace SupportTool.ViewModels
 {
     public class PermittedWorkstationsDialogViewModel : ViewModelBase, IDialog
     {
-        private readonly ReactiveCommand<Unit, string> _addComputer;
-        private readonly ReactiveCommand<Unit, bool> _removeComputer;
-        private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
-        private readonly ReactiveCommand<Unit, Unit> _save;
-        private readonly ReactiveCommand<Unit, Unit> _cancel;
-        private readonly ReactiveList<string> _computers = new ReactiveList<string>();
-        private UserObject _user;
-        private string _computerName;
-        private string _selectedComputer;
-        private Action _close;
-
-
-
         public PermittedWorkstationsDialogViewModel()
         {
             _addComputer = ReactiveCommand.CreateFromObservable(
@@ -135,5 +122,18 @@ namespace SupportTool.ViewModels
                 User = await ActiveDirectoryService.Current.GetUser(parameter as string);
             }
         }
+
+
+
+        private readonly ReactiveCommand<Unit, string> _addComputer;
+        private readonly ReactiveCommand<Unit, bool> _removeComputer;
+        private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
+        private readonly ReactiveCommand<Unit, Unit> _save;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+        private readonly ReactiveList<string> _computers = new ReactiveList<string>();
+        private UserObject _user;
+        private string _computerName;
+        private string _selectedComputer;
+        private Action _close;
     }
 }

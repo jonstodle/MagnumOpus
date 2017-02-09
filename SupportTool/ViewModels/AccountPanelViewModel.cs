@@ -13,22 +13,6 @@ namespace SupportTool.ViewModels
 {
     public class AccountPanelViewModel : ViewModelBase
     {
-        private readonly ReactiveCommand<Unit, string> _setNewPassword;
-        private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
-        private readonly ReactiveCommand<Unit, string> _setNewComplexPassword;
-        private readonly ReactiveCommand<Unit, Unit> _expirePassword;
-        private readonly ReactiveCommand<Unit, Unit> _unlockAccount;
-        private readonly ReactiveCommand<Unit, Unit> _runLockoutStatus;
-        private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
-        private readonly ReactiveCommand<Unit, Unit> _toggleEnabled;
-        private readonly ReactiveCommand<Unit, Unit> _openSplunk;
-        private readonly ReactiveCommand<Unit, Unit> _openFindUser;
-        private UserObject _user;
-        private bool _isShowingNewPasswordOptions;
-        private string _newPassword;
-
-
-
         public AccountPanelViewModel()
         {
             _setNewPassword = ReactiveCommand.CreateFromObservable(
@@ -147,6 +131,8 @@ namespace SupportTool.ViewModels
             set { this.RaiseAndSetIfChanged(ref _newPassword, value); }
         }
 
+
+
         private IObservable<string> SetNewPasswordImpl() => Observable.StartAsync(async () =>
         {
             var password = new string(NewPassword.ToArray());
@@ -179,5 +165,21 @@ namespace SupportTool.ViewModels
 
             return password;
         });
+
+
+
+        private readonly ReactiveCommand<Unit, string> _setNewPassword;
+        private readonly ReactiveCommand<Unit, string> _setNewSimplePassword;
+        private readonly ReactiveCommand<Unit, string> _setNewComplexPassword;
+        private readonly ReactiveCommand<Unit, Unit> _expirePassword;
+        private readonly ReactiveCommand<Unit, Unit> _unlockAccount;
+        private readonly ReactiveCommand<Unit, Unit> _runLockoutStatus;
+        private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
+        private readonly ReactiveCommand<Unit, Unit> _toggleEnabled;
+        private readonly ReactiveCommand<Unit, Unit> _openSplunk;
+        private readonly ReactiveCommand<Unit, Unit> _openFindUser;
+        private UserObject _user;
+        private bool _isShowingNewPasswordOptions;
+        private string _newPassword;
     }
 }
