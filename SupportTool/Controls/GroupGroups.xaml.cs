@@ -11,26 +11,26 @@ using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for GroupGroups.xaml
-	/// </summary>
-	public partial class GroupGroups : UserControl, IViewFor<GroupGroupsViewModel>
-	{
-		public GroupGroups()
-		{
-			InitializeComponent();
+    /// <summary>
+    /// Interaction logic for GroupGroups.xaml
+    /// </summary>
+    public partial class GroupGroups : UserControl, IViewFor<GroupGroupsViewModel>
+    {
+        public GroupGroups()
+        {
+            InitializeComponent();
 
-			ViewModel = new GroupGroupsViewModel();
+            ViewModel = new GroupGroupsViewModel();
 
-			this.Bind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfToggleButton.IsChecked);
-			this.WhenActivated(d =>
-			{
+            this.Bind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfToggleButton.IsChecked);
+            this.WhenActivated(d =>
+            {
                 d(this.Bind(ViewModel, vm => vm.Group, v => v.Group));
 
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingDirectMemberOf, v => v.DirectMemberOfGrid.Visibility));
                 d(this.OneWayBind(ViewModel, vm => vm.DirectMemberOfGroups, v => v.DirectMemberOfListView.ItemsSource));
                 d(this.Bind(ViewModel, vm => vm.SelectedDirectMemberOfGroup, v => v.DirectMemberOfListView.SelectedItem));
-                
+
                 d(this.Bind(ViewModel, vm => vm.IsShowingMemberOf, v => v.MemberOfToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingMemberOf, v => v.MemberOfGrid.Visibility));
                 d(this.Bind(ViewModel, vm => vm.FilterString, v => v.MemberOfFilterTextBox.Text));
@@ -39,7 +39,7 @@ namespace SupportTool.Controls
                 d(this.Bind(ViewModel, vm => vm.SelectedAllMemberOfGroup, v => v.MemberOfListView.SelectedItem));
                 d(this.OneWayBind(ViewModel, vm => vm.AllMemberOfGroupsView.Count, v => v.ShowingCountRun.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.AllMemberOfGroups.Count, v => v.TotalCountRun.Text));
-                
+
                 d(this.Bind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersGrid.Visibility));
                 d(this.OneWayBind(ViewModel, vm => vm.MemberUsers, v => v.MembersListView.ItemsSource));
@@ -48,51 +48,37 @@ namespace SupportTool.Controls
                 d(_directMemberOfListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectMemberOfGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindDirectMemberOfGroup, v => v.OpenMemberOfMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton));
-				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
+                d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
                 d(_memberOfListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindAllMemberOfGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindAllMemberOfGroup, v => v.OpenMemberOfAllMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton));
-				d(this.BindCommand(ViewModel, vm => vm.OpenEditMembers, v => v.MembersButton));
-				d(this.BindCommand(ViewModel, vm => vm.SaveMembers, v => v.SaveMembersButton));
+                d(this.BindCommand(ViewModel, vm => vm.OpenEditMembers, v => v.MembersButton));
+                d(this.BindCommand(ViewModel, vm => vm.SaveMembers, v => v.SaveMembersButton));
                 d(_membersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindMemberUser));
                 d(this.BindCommand(ViewModel, vm => vm.FindMemberUser, v => v.OpenMembersMenuItem));
 
                 d(ViewModel
-				.WhenAnyValue(x => x.IsShowingMemberOf)
-				.Where(x => x)
-				.Select(_ => Unit.Default)
-				.ObserveOnDispatcher()
-				.InvokeCommand(ViewModel, x => x.GetAllGroups));
-			});
-		}
+                .WhenAnyValue(x => x.IsShowingMemberOf)
+                .Where(x => x)
+                .Select(_ => Unit.Default)
+                .ObserveOnDispatcher()
+                .InvokeCommand(ViewModel, x => x.GetAllGroups));
+            });
+        }
 
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
 
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
 
-		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+        public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
 
-		public GroupObject Group
-		{
-			get { return (GroupObject)GetValue(GroupProperty); }
-			set { SetValue(GroupProperty, value); }
-		}
+        public GroupObject Group { get => (GroupObject)GetValue(GroupProperty); set => SetValue(GroupProperty, value); }
+        public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupGroups), new PropertyMetadata(null));
 
-		public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupGroups), new PropertyMetadata(null));
+        public GroupGroupsViewModel ViewModel { get => (GroupGroupsViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupGroupsViewModel), typeof(GroupGroups), new PropertyMetadata(null));
 
-		public GroupGroupsViewModel ViewModel
-		{
-			get { return (GroupGroupsViewModel)GetValue(ViewModelProperty); }
-			set { SetValue(ViewModelProperty, value); }
-		}
-
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupGroupsViewModel), typeof(GroupGroups), new PropertyMetadata(null));
-
-		object IViewFor.ViewModel
-		{
-			get { return ViewModel; }
-			set { ViewModel = value as GroupGroupsViewModel; }
-		}
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as GroupGroupsViewModel; }
 
         private Subject<MouseButtonEventArgs> _directMemberOfListViewItemDoubleClicks = new Subject<MouseButtonEventArgs>();
         private void DirectMemberOfListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _directMemberOfListViewItemDoubleClicks.OnNext(e);

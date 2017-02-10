@@ -15,18 +15,18 @@ using System.Windows.Navigation;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for ProfilePanel.xaml
-	/// </summary>
-	public partial class ProfilePanel : UserControl, IViewFor<ProfilePanelViewModel>
+    /// <summary>
+    /// Interaction logic for ProfilePanel.xaml
+    /// </summary>
+    public partial class ProfilePanel : UserControl, IViewFor<ProfilePanelViewModel>
     {
         public ProfilePanel()
         {
             InitializeComponent();
 
-			ViewModel = new ProfilePanelViewModel();
+            ViewModel = new ProfilePanelViewModel();
 
-			this.WhenActivated(d =>
+            this.WhenActivated(d =>
             {
                 d(this.Bind(ViewModel, vm => vm.User, v => v.User));
 
@@ -58,8 +58,8 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.ResetLocalProfile, v => v.ResetLocalProfileButton));
                 d(this.BindCommand(ViewModel, vm => vm.SearchForProfiles, v => v.SearchButton));
                 d(this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton));
-				d(this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton));
-				d(this.BindCommand(ViewModel, vm => vm.OpenGlobalProfile, v => v.OpenGlobalProfileButton));
+                d(this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton));
+                d(this.BindCommand(ViewModel, vm => vm.OpenGlobalProfile, v => v.OpenGlobalProfileButton));
                 d(this.BindCommand(ViewModel, vm => vm.SaveGlobalProfilePath, v => v.GlobalProfilePathSaveButton));
                 d(this.BindCommand(ViewModel, vm => vm.CancelGlobalProfilePath, v => v.GlobalProfilePathCancelButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenHomeFolder, v => v.OpenHomeFolderButton));
@@ -76,32 +76,18 @@ namespace SupportTool.Controls
                     .Select(_ => Unit.Default)
                     .InvokeCommand(ViewModel, x => x.SearchForProfiles));
             });
-		}
-
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
-
-		public UserObject User
-        {
-            get { return (UserObject)GetValue(UserProperty); }
-            set { SetValue(UserProperty, value); }
         }
 
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+        public UserObject User { get => (UserObject)GetValue(UserProperty); set => SetValue(UserProperty, value); }
         public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(ProfilePanel), new PropertyMetadata(null));
 
-        public ProfilePanelViewModel ViewModel
-        {
-            get { return (ProfilePanelViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
-
+        public ProfilePanelViewModel ViewModel { get => (ProfilePanelViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ProfilePanelViewModel), typeof(ProfilePanel), new PropertyMetadata(null));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as ProfilePanelViewModel; }
-        }
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as ProfilePanelViewModel; }
     }
 }

@@ -108,15 +108,11 @@ namespace SupportTool.ViewModels
 
 		public string HostName => _hostName.Value;
 
-		public string IPAddress
-		{
-			get { return _ipAddress; }
-			set { this.RaiseAndSetIfChanged(ref _ipAddress, value); }
-		}
+        public string IPAddress { get => _ipAddress; set => this.RaiseAndSetIfChanged(ref _ipAddress, value); }
 
 
 
-		private void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(Path.Combine(ExecutionService.System32Path, "cmd.exe"), $@"/K {fileName} {arguments}");
+        private void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(Path.Combine(ExecutionService.System32Path, "cmd.exe"), $@"/K {fileName} {arguments}");
 
 		private void ExecuteFile(string fileName, string arguments = "")
 		{

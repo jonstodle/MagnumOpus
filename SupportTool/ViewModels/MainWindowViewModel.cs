@@ -104,23 +104,11 @@ namespace SupportTool.ViewModels
 
         public string Domain => ActiveDirectoryService.Current.CurrentDomain;
 
-        public SortDescription ListSortDescription
-        {
-            get { return _listSortDescription; }
-            set { this.RaiseAndSetIfChanged(ref _listSortDescription, value); }
-        }
+        public SortDescription ListSortDescription { get => _listSortDescription; set => this.RaiseAndSetIfChanged(ref _listSortDescription, value); }
 
-        public string SearchQuery
-        {
-            get { return _searchQuery; }
-            set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-        }
+        public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
 
-        public DirectoryEntryInfo SelectedSearchResult
-        {
-            get { return _selectedSearchResult; }
-            set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
-        }
+        public DirectoryEntryInfo SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
 
 
 

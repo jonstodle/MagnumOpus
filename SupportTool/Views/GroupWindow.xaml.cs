@@ -47,18 +47,9 @@ namespace SupportTool.Views
             });
         }
 
-        public GroupWindowViewModel ViewModel
-        {
-            get { return (GroupWindowViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
-
+        public GroupWindowViewModel ViewModel { get => (GroupWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupWindowViewModel), typeof(GroupWindow), new PropertyMetadata(null));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as GroupWindowViewModel; }
-        }
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as GroupWindowViewModel; }
     }
 }

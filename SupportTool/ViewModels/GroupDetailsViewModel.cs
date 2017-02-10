@@ -12,11 +12,7 @@ namespace SupportTool.ViewModels
 
 
 
-        public GroupObject Group
-        {
-            get { return _group; }
-            set { this.RaiseAndSetIfChanged(ref _group, value); }
-        }
+        public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
 
 
 

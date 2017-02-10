@@ -5,19 +5,19 @@ using System.Windows;
 
 namespace SupportTool.Views
 {
-	/// <summary>
-	/// Interaction logic for SettingsWindow.xaml
-	/// </summary>
-	public partial class SettingsWindow : Window, IViewFor<SettingsWindowViewModel>
-	{
-		public SettingsWindow()
-		{
-			InitializeComponent();
+    /// <summary>
+    /// Interaction logic for SettingsWindow.xaml
+    /// </summary>
+    public partial class SettingsWindow : Window, IViewFor<SettingsWindowViewModel>
+    {
+        public SettingsWindow()
+        {
+            InitializeComponent();
 
-			ViewModel = new SettingsWindowViewModel();
+            ViewModel = new SettingsWindowViewModel();
 
-			this.WhenActivated(d =>
-			{
+            this.WhenActivated(d =>
+            {
                 d(this.Bind(ViewModel, vm => vm.HistoryCountLimit, v => v.HistoryCountLimitTextBox.Text));
                 d(this.Bind(ViewModel, vm => vm.DetailWindowTimeoutLength, v => v.DetailWindowTimeoutLengthTextBox.Text));
                 d(this.Bind(ViewModel, vm => vm.UseEscapeToCloseDetailsWindows, v => v.UseEscapeToCloseDetailsWindowsCheckBox.IsChecked));
@@ -25,26 +25,17 @@ namespace SupportTool.Views
                 d(this.Bind(ViewModel, vm => vm.RemoteControl2012Path, v => v.RemoteControl2012PathTextBox.Text));
 
                 d(ViewModel
-					.InfoMessages
-					.RegisterInfoHandler(ContainerGrid));
-				d(ViewModel
-					.ErrorMessages
-					.RegisterErrorHandler(ContainerGrid));
-			});
-		}
+                    .InfoMessages
+                    .RegisterInfoHandler(ContainerGrid));
+                d(ViewModel
+                    .ErrorMessages
+                    .RegisterErrorHandler(ContainerGrid));
+            });
+        }
 
-		public SettingsWindowViewModel ViewModel
-		{
-			get { return (SettingsWindowViewModel)GetValue(ViewModelProperty); }
-			set { SetValue(ViewModelProperty, value); }
-		}
+        public SettingsWindowViewModel ViewModel { get => (SettingsWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(SettingsWindowViewModel), typeof(SettingsWindow), new PropertyMetadata(null));
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(SettingsWindowViewModel), typeof(SettingsWindow), new PropertyMetadata(null));
-
-		object IViewFor.ViewModel
-		{
-			get { return ViewModel; }
-			set { ViewModel = value as SettingsWindowViewModel; }
-		}
-	}
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as SettingsWindowViewModel; }
+    }
 }

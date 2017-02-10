@@ -9,33 +9,24 @@ namespace SupportTool.Controls
     /// Interaction logic for UserLockoutInfo.xaml
     /// </summary>
     public partial class UserLockoutInfo : UserControl, IViewFor<UserLockoutInfoViewModel>
-	{
-		public UserLockoutInfo()
-		{
-			InitializeComponent();
+    {
+        public UserLockoutInfo()
+        {
+            InitializeComponent();
 
-			this.WhenActivated(d =>
-			{
+            this.WhenActivated(d =>
+            {
                 d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}"));
                 d(this.OneWayBind(ViewModel, vm => vm.LockoutInfos, v => v.LockoutInfosListView.ItemsSource));
 
                 d(this.BindCommand(ViewModel, vm => vm.GetLockoutInfo, v => v.RefreshButton));
-				d(this.BindCommand(ViewModel, vm => vm.Close, v => v.CloseButton));
-			});
-		}
+                d(this.BindCommand(ViewModel, vm => vm.Close, v => v.CloseButton));
+            });
+        }
 
-		public UserLockoutInfoViewModel ViewModel
-		{
-			get { return (UserLockoutInfoViewModel)GetValue(ViewModelProperty); }
-			set { SetValue(ViewModelProperty, value); }
-		}
+        public UserLockoutInfoViewModel ViewModel { get => (UserLockoutInfoViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserLockoutInfoViewModel), typeof(UserLockoutInfo), new PropertyMetadata(null));
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserLockoutInfoViewModel), typeof(UserLockoutInfo), new PropertyMetadata(null));
-
-		object IViewFor.ViewModel
-		{
-			get => ViewModel;
-			set => ViewModel = value as UserLockoutInfoViewModel;
-		}
-	}
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as UserLockoutInfoViewModel; }
+    }
 }

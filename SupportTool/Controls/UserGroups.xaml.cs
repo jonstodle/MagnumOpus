@@ -13,16 +13,16 @@ using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for UserGroups.xaml
-	/// </summary>
-	public partial class UserGroups : UserControl, IViewFor<UserGroupsViewModel>
+    /// <summary>
+    /// Interaction logic for UserGroups.xaml
+    /// </summary>
+    public partial class UserGroups : UserControl, IViewFor<UserGroupsViewModel>
     {
         public UserGroups()
         {
             InitializeComponent();
 
-			ViewModel = new UserGroupsViewModel();
+            ViewModel = new UserGroupsViewModel();
 
             this.WhenActivated(d =>
             {
@@ -48,45 +48,31 @@ namespace SupportTool.Controls
                 d(_allGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindAllGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindAllGroup, v => v.OpenMemberOfAllMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditGroupsButton));
-				d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveGroupsButton));
-				d(this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton));
+                d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveGroupsButton));
+                d(this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton));
 
-				d(ViewModel
-				.WhenAnyValue(x => x.IsShowingAllGroups)
-				.Where(x => x)
-				.Select(_ => Unit.Default)
-				.ObserveOnDispatcher()
-				.InvokeCommand(ViewModel, x => x.GetAllGroups));
+                d(ViewModel
+                .WhenAnyValue(x => x.IsShowingAllGroups)
+                .Where(x => x)
+                .Select(_ => Unit.Default)
+                .ObserveOnDispatcher()
+                .InvokeCommand(ViewModel, x => x.GetAllGroups));
             });
-		}
-
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
-
-		public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
-
-		public UserObject User
-        {
-            get { return (UserObject)GetValue(UserProperty); }
-            set { SetValue(UserProperty, value); }
         }
 
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+        public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
+
+        public UserObject User { get => (UserObject)GetValue(UserProperty); set => SetValue(UserProperty, value); }
         public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(UserGroups), new PropertyMetadata(null));
 
-        public UserGroupsViewModel ViewModel
-        {
-            get { return (UserGroupsViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
-
+        public UserGroupsViewModel ViewModel { get => (UserGroupsViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserGroupsViewModel), typeof(UserGroups), new PropertyMetadata(null));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as UserGroupsViewModel; }
-        }
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as UserGroupsViewModel; }
 
         private Subject<MouseButtonEventArgs> _directGroupsListViewItemDoubleClicks = new Subject<MouseButtonEventArgs>();
         private void DirectGroupsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _directGroupsListViewItemDoubleClicks.OnNext(e);

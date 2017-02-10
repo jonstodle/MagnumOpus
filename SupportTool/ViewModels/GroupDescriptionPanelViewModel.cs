@@ -50,21 +50,13 @@ namespace SupportTool.ViewModels
 
 		public bool IsEditingEnabled => _isEditingEnabled.Value;
 
-		public GroupObject Group
-		{
-			get { return _group; }
-			set { this.RaiseAndSetIfChanged(ref _group, value); }
-		}
+        public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
 
-		public string Description
-		{
-			get { return _description; }
-			set { this.RaiseAndSetIfChanged(ref _description, value); }
-		}
+        public string Description { get => _description; set => this.RaiseAndSetIfChanged(ref _description, value); }
 
 
 
-		private IObservable<Unit> SaveImpl(GroupObject group, string description) => Observable.Start(() =>
+        private IObservable<Unit> SaveImpl(GroupObject group, string description) => Observable.Start(() =>
 		{
 			group.Principal.Description = description.HasValue() ? description : null;
 			group.Principal.Save();

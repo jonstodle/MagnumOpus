@@ -113,23 +113,11 @@ namespace SupportTool.ViewModels
 
         public ReactiveCommand OpenFindUser => _openFindUser;
 
-        public UserObject User
-        {
-            get { return _user; }
-            set { this.RaiseAndSetIfChanged(ref _user, value); }
-        }
+        public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
 
-        public bool IsShowingNewPasswordOptions
-        {
-            get { return _isShowingNewPasswordOptions; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingNewPasswordOptions, value); }
-        }
+        public bool IsShowingNewPasswordOptions { get => _isShowingNewPasswordOptions; set => this.RaiseAndSetIfChanged(ref _isShowingNewPasswordOptions, value); }
 
-        public string NewPassword
-        {
-            get { return _newPassword; }
-            set { this.RaiseAndSetIfChanged(ref _newPassword, value); }
-        }
+        public string NewPassword { get => _newPassword; set => this.RaiseAndSetIfChanged(ref _newPassword, value); }
 
 
 

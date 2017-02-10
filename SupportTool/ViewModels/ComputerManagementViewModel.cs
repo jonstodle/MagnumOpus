@@ -50,11 +50,7 @@ namespace SupportTool.ViewModels
 
 		public ReactiveCommand OpenSccm => _openSccm;
 
-		public ComputerObject Computer
-		{
-			get { return _computer; }
-			set { this.RaiseAndSetIfChanged(ref _computer, value); }
-		}
+        public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
 
 

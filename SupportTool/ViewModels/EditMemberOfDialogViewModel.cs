@@ -131,23 +131,11 @@ namespace SupportTool.ViewModels
 
         public Principal Principal => _principal.Value;
 
-        public string SearchQuery
-        {
-            get { return _searchQuery; }
-            set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-        }
+        public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
 
-        public DirectoryEntry SelectedSearchResult
-        {
-            get { return _selectedSearchResult; }
-            set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
-        }
+        public DirectoryEntry SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
 
-        public DirectoryEntry SelectedPrincipalMember
-        {
-            get { return _selectedPrincipalMember; }
-            set { this.RaiseAndSetIfChanged(ref _selectedPrincipalMember, value); }
-        }
+        public DirectoryEntry SelectedPrincipalMember { get => _selectedPrincipalMember; set => this.RaiseAndSetIfChanged(ref _selectedPrincipalMember, value); }
 
 
 

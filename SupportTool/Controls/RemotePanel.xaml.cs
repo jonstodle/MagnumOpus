@@ -10,18 +10,18 @@ using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for RemotePanel.xaml
-	/// </summary>
-	public partial class RemotePanel : UserControl, IViewFor<RemotePanelViewModel>
+    /// <summary>
+    /// Interaction logic for RemotePanel.xaml
+    /// </summary>
+    public partial class RemotePanel : UserControl, IViewFor<RemotePanelViewModel>
     {
         public RemotePanel()
         {
             InitializeComponent();
 
-			ViewModel = new RemotePanelViewModel();
+            ViewModel = new RemotePanelViewModel();
 
-			this.WhenActivated(d =>
+            this.WhenActivated(d =>
             {
                 d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
 
@@ -37,41 +37,27 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOnUserDetails, v => v.OpenLoggedOnUsersDetailsButton));
-				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
-				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton));
-				d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button));
-				d(this.BindCommand(ViewModel, vm => vm.KillRemoteTools, v => v.KillRemoteToolsButton));
-				d(this.BindCommand(ViewModel, vm => vm.ToggleUac, v => v.ToggleUACButton));
-				d(this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton));
-				d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
-			});
-		}
-
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
-
-		public ComputerObject Computer
-        {
-            get { return (ComputerObject)GetValue(ComputerProperty); }
-            set { SetValue(ComputerProperty, value); }
+                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
+                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton));
+                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button));
+                d(this.BindCommand(ViewModel, vm => vm.KillRemoteTools, v => v.KillRemoteToolsButton));
+                d(this.BindCommand(ViewModel, vm => vm.ToggleUac, v => v.ToggleUACButton));
+                d(this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton));
+                d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
+            });
         }
 
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+        public ComputerObject Computer { get => (ComputerObject)GetValue(ComputerProperty); set => SetValue(ComputerProperty, value); }
         public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(RemotePanel), new PropertyMetadata(null));
 
-        public RemotePanelViewModel ViewModel
-        {
-            get { return (RemotePanelViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
-
+        public RemotePanelViewModel ViewModel { get => (RemotePanelViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemotePanelViewModel), typeof(RemotePanel), new PropertyMetadata(null));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as RemotePanelViewModel; }
-        }
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as RemotePanelViewModel; }
 
         private Subject<MouseButtonEventArgs> _loggedOnUsersListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
         private void LoggedOnUsersListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _loggedOnUsersListViewItemDoubleClick.OnNext(e);

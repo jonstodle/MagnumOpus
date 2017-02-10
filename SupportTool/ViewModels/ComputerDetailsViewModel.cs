@@ -43,15 +43,11 @@ namespace SupportTool.ViewModels
 
         public bool IsShowingDetails => _isShowingDetails.Value;
 
-        public ComputerObject Computer
-        {
-            get { return _computer; }
-            set { this.RaiseAndSetIfChanged(ref _computer, value); }
-        }
+        public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
 
 
-		private IObservable<OperatingSystemInfo> GetOSInfo(ComputerObject computer) => Observable.Start(() =>
+        private IObservable<OperatingSystemInfo> GetOSInfo(ComputerObject computer) => Observable.Start(() =>
 		{
 			var scope = new ManagementScope($@"\\{computer.CN}\root\cimv2");
 			scope.Connect();

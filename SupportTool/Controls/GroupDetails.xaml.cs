@@ -16,7 +16,7 @@ namespace SupportTool.Controls
         {
             InitializeComponent();
 
-			ViewModel = new GroupDetailsViewModel();
+            ViewModel = new GroupDetailsViewModel();
 
             this.WhenActivated(d =>
             {
@@ -24,32 +24,18 @@ namespace SupportTool.Controls
 
                 d(this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.CNTextBlock.Text));
             });
-		}
-
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
-
-		public GroupObject Group
-        {
-            get { return (GroupObject)GetValue(GroupProperty); }
-            set { SetValue(GroupProperty, value); }
         }
 
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+        public GroupObject Group { get => (GroupObject)GetValue(GroupProperty); set => SetValue(GroupProperty, value); }
         public static readonly DependencyProperty GroupProperty = DependencyProperty.Register(nameof(Group), typeof(GroupObject), typeof(GroupDetails), new PropertyMetadata(null));
 
-        public GroupDetailsViewModel ViewModel
-        {
-            get { return (GroupDetailsViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
-
+        public GroupDetailsViewModel ViewModel { get => (GroupDetailsViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupDetailsViewModel), typeof(GroupDetails), new PropertyMetadata(null));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as GroupDetailsViewModel; }
-        }
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as GroupDetailsViewModel; }
     }
 }

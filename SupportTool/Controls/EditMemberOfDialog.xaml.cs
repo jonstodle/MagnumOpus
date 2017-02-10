@@ -20,15 +20,15 @@ namespace SupportTool.Controls
     /// Interaction logic for EditMemberOfDialog.xaml
     /// </summary>
     public partial class EditMemberOfDialog : UserControl, IViewFor<EditMemberOfDialogViewModel>
-	{
-		public EditMemberOfDialog()
-		{
-			InitializeComponent();
+    {
+        public EditMemberOfDialog()
+        {
+            InitializeComponent();
 
-			ViewModel = new EditMemberOfDialogViewModel();
+            ViewModel = new EditMemberOfDialogViewModel();
 
-			this.WhenActivated(d =>
-			{
+            this.WhenActivated(d =>
+            {
                 d(this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : ""));
 
                 d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
@@ -38,55 +38,46 @@ namespace SupportTool.Controls
                 d(this.Bind(ViewModel, vm => vm.SelectedPrincipalMember, v => v.PrincipalMembersListView.SelectedItem));
 
                 SearchQueryTextBox.Focus();
-				d(ViewModel
-					.WhenAnyValue(x => x.Principal)
-					.WhereNotNull()
-					.SubscribeOnDispatcher()
-					.ToSignal()
-					.InvokeCommand(ViewModel, x => x.GetPrincipalMembers));
-				d(Observable.Merge(
-						SearchQueryTextBox.Events()
-							.KeyDown
-							.Where(x => x.Key == Key.Enter)
-							.Select(_ => ViewModel.SearchQuery),
-						ViewModel
-							.WhenAnyValue(x => x.SearchQuery)
-							.Throttle(TimeSpan.FromSeconds(1)))
-					.Where(x => x.HasValue(3))
-					.DistinctUntilChanged()
-					.SubscribeOnDispatcher()
-					.ToSignal()
-					.InvokeCommand(ViewModel, x => x.Search));
+                d(ViewModel
+                    .WhenAnyValue(x => x.Principal)
+                    .WhereNotNull()
+                    .SubscribeOnDispatcher()
+                    .ToSignal()
+                    .InvokeCommand(ViewModel, x => x.GetPrincipalMembers));
+                d(Observable.Merge(
+                        SearchQueryTextBox.Events()
+                            .KeyDown
+                            .Where(x => x.Key == Key.Enter)
+                            .Select(_ => ViewModel.SearchQuery),
+                        ViewModel
+                            .WhenAnyValue(x => x.SearchQuery)
+                            .Throttle(TimeSpan.FromSeconds(1)))
+                    .Where(x => x.HasValue(3))
+                    .DistinctUntilChanged()
+                    .SubscribeOnDispatcher()
+                    .ToSignal()
+                    .InvokeCommand(ViewModel, x => x.Search));
                 d(this.BindCommand(ViewModel, vm => vm.AddToPrincipal, v => v.AddMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem));
                 d(_searchResultsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.AddToPrincipal));
                 d(this.BindCommand(ViewModel, vm => vm.RemoveFromPrincipal, v => v.RemoveMenuItem));
                 d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem));
                 d(_principalMembersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.RemoveFromPrincipal));
-				d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
+                d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
                 d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
-				d(ViewModel
-					.InfoMessages
-					.RegisterInfoHandler(ContainerGrid));
-				d(ViewModel
-					.ErrorMessages
-					.RegisterErrorHandler(ContainerGrid));
-			});
-		}
+                d(ViewModel
+                    .InfoMessages
+                    .RegisterInfoHandler(ContainerGrid));
+                d(ViewModel
+                    .ErrorMessages
+                    .RegisterErrorHandler(ContainerGrid));
+            });
+        }
 
-		public EditMemberOfDialogViewModel ViewModel
-		{
-			get { return (EditMemberOfDialogViewModel)GetValue(ViewModelProperty); }
-			set { SetValue(ViewModelProperty, value); }
-		}
+        public EditMemberOfDialogViewModel ViewModel { get => (EditMemberOfDialogViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(EditMemberOfDialogViewModel), typeof(EditMemberOfDialog), new PropertyMetadata(null));
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(EditMemberOfDialogViewModel), typeof(EditMemberOfDialog), new PropertyMetadata(null));
-
-		object IViewFor.ViewModel
-		{
-			get { return ViewModel; }
-			set { ViewModel = value as EditMemberOfDialogViewModel; }
-		}
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as EditMemberOfDialogViewModel; }
 
         private Subject<MouseButtonEventArgs> _searchResultsListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
         private void SearchResultsListViewItem_DoubleClick(object sender, MouseButtonEventArgs e) => _searchResultsListViewItemDoubleClick.OnNext(e);

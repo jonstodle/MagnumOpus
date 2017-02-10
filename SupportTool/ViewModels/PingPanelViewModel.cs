@@ -62,23 +62,11 @@ namespace SupportTool.ViewModels
 
 		public string MostRecentPingResult => _mostRecentPingResult.Value;
 
-		public string HostName
-		{
-			get { return _hostName; }
-			set { this.RaiseAndSetIfChanged(ref _hostName, value); }
-		}
+        public string HostName { get => _hostName; set => this.RaiseAndSetIfChanged(ref _hostName, value); }
 
-		public bool IsPinging
-		{
-			get { return _isPinging; }
-			set { this.RaiseAndSetIfChanged(ref _isPinging, value); }
-		}
+        public bool IsPinging { get => _isPinging; set => this.RaiseAndSetIfChanged(ref _isPinging, value); }
 
-		public bool IsShowingPingResultDetails
-		{
-			get { return _isShowingPingResultDetails; }
-			set { this.RaiseAndSetIfChanged(ref _isShowingPingResultDetails, value); }
-		}
+        public bool IsShowingPingResultDetails { get => _isShowingPingResultDetails; set => this.RaiseAndSetIfChanged(ref _isShowingPingResultDetails, value); }
 
 
 

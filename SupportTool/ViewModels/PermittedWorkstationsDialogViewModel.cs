@@ -78,23 +78,11 @@ namespace SupportTool.ViewModels
 
         public IReactiveDerivedList<string> Computers => _computers.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
-        public UserObject User
-        {
-            get { return _user; }
-            set { this.RaiseAndSetIfChanged(ref _user, value); }
-        }
+        public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
 
-        public string ComputerName
-        {
-            get { return _computerName; }
-            set { this.RaiseAndSetIfChanged(ref _computerName, value); }
-        }
+        public string ComputerName { get => _computerName; set => this.RaiseAndSetIfChanged(ref _computerName, value); }
 
-        public string SelectedComputer
-        {
-            get { return _selectedComputer; }
-            set { this.RaiseAndSetIfChanged(ref _selectedComputer, value); }
-        }
+        public string SelectedComputer { get => _selectedComputer; set => this.RaiseAndSetIfChanged(ref _selectedComputer, value); }
 
 
 

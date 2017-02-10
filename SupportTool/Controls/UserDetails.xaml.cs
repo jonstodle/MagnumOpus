@@ -11,16 +11,16 @@ using System.Windows.Input;
 
 namespace SupportTool.Controls
 {
-	/// <summary>
-	/// Interaction logic for UserDetails.xaml
-	/// </summary>
-	public partial class UserDetails : UserControl, IViewFor<UserDetailsViewModel>
+    /// <summary>
+    /// Interaction logic for UserDetails.xaml
+    /// </summary>
+    public partial class UserDetails : UserControl, IViewFor<UserDetailsViewModel>
     {
         public UserDetails()
         {
             InitializeComponent();
 
-			ViewModel = new UserDetailsViewModel();
+            ViewModel = new UserDetailsViewModel();
 
             this.WhenActivated(d =>
             {
@@ -48,33 +48,19 @@ namespace SupportTool.Controls
                 d(_directReportsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenDirectReport));
                 d(this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.OpenDirectReportMenuItem));
             });
-		}
-
-		public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-		public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
-
-		public UserObject User
-        {
-            get { return (UserObject)GetValue(UserProperty); }
-            set { SetValue(UserProperty, value); }
         }
 
+        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
+
+        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+
+        public UserObject User { get => (UserObject)GetValue(UserProperty); set => SetValue(UserProperty, value); }
         public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(UserDetails), new PropertyMetadata(null));
 
-        public UserDetailsViewModel ViewModel
-        {
-            get { return (UserDetailsViewModel)GetValue(ViewModelProperty); }
-            set { SetValue(ViewModelProperty, value); }
-        }
-
+        public UserDetailsViewModel ViewModel { get => (UserDetailsViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserDetailsViewModel), typeof(UserDetails), new PropertyMetadata(null));
 
-        object IViewFor.ViewModel
-        {
-            get { return ViewModel; }
-            set { ViewModel = value as UserDetailsViewModel; }
-        }
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as UserDetailsViewModel; }
 
         private Subject<MouseButtonEventArgs> _directReportsListViewItemDoubleClick = new Subject<MouseButtonEventArgs>();
         private void DirectReportsListViewItem_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) => _directReportsListViewItemDoubleClick.OnNext(e);

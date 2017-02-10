@@ -138,47 +138,19 @@ namespace SupportTool.ViewModels
 
         public bool IsLoadingGroups => _isLoadingGroups.Value;
 
-        public UserObject User
-        {
-            get { return _user; }
-            set { this.RaiseAndSetIfChanged(ref _user, value); }
-        }
+        public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
 
-        public bool IsShowingDirectGroups
-        {
-            get { return _isShowingDirectGroups; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
-        }
+        public bool IsShowingDirectGroups { get => _isShowingDirectGroups; set => this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
 
-        public bool IsShowingAllGroups
-        {
-            get { return _isShowingAllGroups; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingAllGroups, value); }
-        }
+        public bool IsShowingAllGroups { get => _isShowingAllGroups; set => this.RaiseAndSetIfChanged(ref _isShowingAllGroups, value); }
 
-        public string SelectedDirectGroup
-        {
-            get { return _selectedDirectGroup; }
-            set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
-        }
+        public string SelectedDirectGroup { get => _selectedDirectGroup; set => this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
 
-        public string SelectedAllGroup
-        {
-            get { return _selectedAllGroup; }
-            set { this.RaiseAndSetIfChanged(ref _selectedAllGroup, value); }
-        }
+        public string SelectedAllGroup { get => _selectedAllGroup; set => this.RaiseAndSetIfChanged(ref _selectedAllGroup, value); }
 
-        public string GroupFilter
-        {
-            get { return _groupFilter; }
-            set { this.RaiseAndSetIfChanged(ref _groupFilter, value); }
-        }
+        public string GroupFilter { get => _groupFilter; set => this.RaiseAndSetIfChanged(ref _groupFilter, value); }
 
-        public bool UseFuzzy
-        {
-            get { return _useFuzzy; }
-            set { this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
-        }
+        public bool UseFuzzy { get => _useFuzzy; set => this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
 
 
 

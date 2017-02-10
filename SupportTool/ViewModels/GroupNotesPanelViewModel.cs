@@ -52,21 +52,13 @@ namespace SupportTool.ViewModels
 
 		public bool IsEditingEnabled => _isEditingEnabled.Value;
 
-		public GroupObject Group
-		{
-			get { return _group; }
-			set { this.RaiseAndSetIfChanged(ref _group, value); }
-		}
+        public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
 
-		public string Notes
-		{
-			get { return _notes; }
-			set { this.RaiseAndSetIfChanged(ref _notes, value); }
-		}
+        public string Notes { get => _notes; set => this.RaiseAndSetIfChanged(ref _notes, value); }
 
 
 
-		private IObservable<Unit> SaveImpl(GroupObject group, string newNotes) => Observable.Start(() =>
+        private IObservable<Unit> SaveImpl(GroupObject group, string newNotes) => Observable.Start(() =>
 		{
 			var directoryEntry = group.Principal.GetUnderlyingObject() as DirectoryEntry;
 			directoryEntry.Properties["info"].Value = newNotes.Replace("\n", "\r\n");

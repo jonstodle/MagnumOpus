@@ -81,17 +81,9 @@ namespace SupportTool.ViewModels
 
         public UserObject Manager => _manager.Value;
 
-        public UserObject User
-        {
-            get { return user; }
-            set { this.RaiseAndSetIfChanged(ref user, value); }
-        }
+        public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
 
-        public UserObject SelectedDirectReport
-        {
-            get { return _selectedDirectReport; }
-            set { this.RaiseAndSetIfChanged(ref _selectedDirectReport, value); }
-        }
+        public UserObject SelectedDirectReport { get => _selectedDirectReport; set => this.RaiseAndSetIfChanged(ref _selectedDirectReport, value); }
 
 
 
@@ -103,7 +95,7 @@ namespace SupportTool.ViewModels
         private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;
         private readonly ObservableAsPropertyHelper<bool> _isShowingOrganizationDetails;
         private readonly ObservableAsPropertyHelper<UserObject> _manager;
-        private UserObject user;
+        private UserObject _user;
         private UserObject _selectedDirectReport;
     }
 }

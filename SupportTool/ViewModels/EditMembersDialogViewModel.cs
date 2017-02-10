@@ -131,23 +131,11 @@ namespace SupportTool.ViewModels
 
         public GroupObject Group => _group.Value;
 
-        public string SearchQuery
-        {
-            get { return _searchQuery; }
-            set { this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-        }
+        public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
 
-        public DirectoryEntry SelectedSearchResult
-        {
-            get { return _selectedSearchResult; }
-            set { this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
-        }
+        public DirectoryEntry SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
 
-        public DirectoryEntry SelectedGroupMember
-        {
-            get { return _selectedGroupMember; }
-            set { this.RaiseAndSetIfChanged(ref _selectedGroupMember, value); }
-        }
+        public DirectoryEntry SelectedGroupMember { get => _selectedGroupMember; set => this.RaiseAndSetIfChanged(ref _selectedGroupMember, value); }
 
 
 

@@ -170,59 +170,23 @@ namespace SupportTool.ViewModels
 
         public ListCollectionView AllMemberOfGroupsView => _allMemberOfGroupsView;
 
-        public GroupObject Group
-        {
-            get { return _group; }
-            set { this.RaiseAndSetIfChanged(ref _group, value); }
-        }
+        public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
 
-        public bool IsShowingDirectMemberOf
-        {
-            get { return _isShowingDirectMemberOf; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingDirectMemberOf, value); }
-        }
+        public bool IsShowingDirectMemberOf { get => _isShowingDirectMemberOf; set => this.RaiseAndSetIfChanged(ref _isShowingDirectMemberOf, value); }
 
-        public bool IsShowingMemberOf
-        {
-            get { return _isShowingMemberOf; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingMemberOf, value); }
-        }
+        public bool IsShowingMemberOf { get => _isShowingMemberOf; set => this.RaiseAndSetIfChanged(ref _isShowingMemberOf, value); }
 
-        public bool IsShowingMembers
-        {
-            get { return _isShowingMembers; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingMembers, value); }
-        }
+        public bool IsShowingMembers { get => _isShowingMembers; set => this.RaiseAndSetIfChanged(ref _isShowingMembers, value); }
 
-        public string SelectedDirectMemberOfGroup
-        {
-            get { return _selectedDirectMemberOfGroup; }
-            set { this.RaiseAndSetIfChanged(ref _selectedDirectMemberOfGroup, value); }
-        }
+        public string SelectedDirectMemberOfGroup { get => _selectedDirectMemberOfGroup; set => this.RaiseAndSetIfChanged(ref _selectedDirectMemberOfGroup, value); }
 
-        public string FilterString
-        {
-            get { return _filterString; }
-            set { this.RaiseAndSetIfChanged(ref _filterString, value); }
-        }
+        public string FilterString { get => _filterString; set => this.RaiseAndSetIfChanged(ref _filterString, value); }
 
-        public bool UseFuzzy
-        {
-            get { return _useFuzzy; }
-            set { this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
-        }
+        public bool UseFuzzy { get => _useFuzzy; set => this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
 
-        public string SelectedAllMemberOfGroup
-        {
-            get { return _selectedAllMemberOfGroup; }
-            set { this.RaiseAndSetIfChanged(ref _selectedAllMemberOfGroup, value); }
-        }
+        public string SelectedAllMemberOfGroup { get => _selectedAllMemberOfGroup; set => this.RaiseAndSetIfChanged(ref _selectedAllMemberOfGroup, value); }
 
-        public string SelectedMemberUser
-        {
-            get { return _selectedMemberUser; }
-            set { this.RaiseAndSetIfChanged(ref _selectedMemberUser, value); }
-        }
+        public string SelectedMemberUser { get => _selectedMemberUser; set => this.RaiseAndSetIfChanged(ref _selectedMemberUser, value); }
 
 
 

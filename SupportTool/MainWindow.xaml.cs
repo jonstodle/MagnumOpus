@@ -15,29 +15,29 @@ using System.Windows.Navigation;
 
 namespace SupportTool
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window, IViewFor<MainWindowViewModel>
-	{
-		public MainWindow()
-		{
-			SupportTool.Services.NavigationServices.NavigationService.Init(this);
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window, IViewFor<MainWindowViewModel>
+    {
+        public MainWindow()
+        {
+            SupportTool.Services.NavigationServices.NavigationService.Init(this);
 
-			InitializeComponent();
+            InitializeComponent();
 
-			ViewModel = new MainWindowViewModel();
+            ViewModel = new MainWindowViewModel();
 
-			this.Events()
-				.Activated
-				.Subscribe(_ =>
-				{
-					SearchQueryTextBox.Focus();
-					SearchQueryTextBox.SelectAll();
-				});
+            this.Events()
+                .Activated
+                .Subscribe(_ =>
+                {
+                    SearchQueryTextBox.Focus();
+                    SearchQueryTextBox.SelectAll();
+                });
 
-			this.WhenActivated(d =>
-			{
+            this.WhenActivated(d =>
+            {
                 d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource));
                 d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
@@ -49,60 +49,51 @@ namespace SupportTool
                 d(this.OneWayBind(ViewModel, vm => vm.Domain, v => v.DomainTextBlock.Text));
 
                 d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
-				d(Observable.Merge(
-					SearchQueryTextBox.Events()
-						.KeyDown
-						.Where(x => x.Key == Key.Enter)
-						.Select(_ => ViewModel.SearchQuery),
-					ViewModel
-						.Paste
-						.Select(_ => ViewModel.SearchQuery),
-					ViewModel
-						.WhenAnyValue(x => x.SearchQuery)
-						.Where(x => x.Length > 0 && !int.TryParse(x.First().ToString(), out int i))
-						.Throttle(TimeSpan.FromSeconds(1)))
-					.DistinctUntilChanged()
-					.Where(x => x.HasValue(3))
-					.Select(_ => Unit.Default)
-					.ObserveOnDispatcher()
-					.InvokeCommand(ViewModel, x => x.Search));
-				d(SearchResultsListView.Events()
-					.MouseDoubleClick
-					.Select(_ => Unit.Default)
-					.InvokeCommand(ViewModel, x => x.Open));
+                d(Observable.Merge(
+                    SearchQueryTextBox.Events()
+                        .KeyDown
+                        .Where(x => x.Key == Key.Enter)
+                        .Select(_ => ViewModel.SearchQuery),
+                    ViewModel
+                        .Paste
+                        .Select(_ => ViewModel.SearchQuery),
+                    ViewModel
+                        .WhenAnyValue(x => x.SearchQuery)
+                        .Where(x => x.Length > 0 && !int.TryParse(x.First().ToString(), out int i))
+                        .Throttle(TimeSpan.FromSeconds(1)))
+                    .DistinctUntilChanged()
+                    .Where(x => x.HasValue(3))
+                    .Select(_ => Unit.Default)
+                    .ObserveOnDispatcher()
+                    .InvokeCommand(ViewModel, x => x.Search));
+                d(SearchResultsListView.Events()
+                    .MouseDoubleClick
+                    .Select(_ => Unit.Default)
+                    .InvokeCommand(ViewModel, x => x.Open));
                 d(this.BindCommand(ViewModel, vm => vm.Open, v => v.OpenSearchResultsMenuItem));
                 d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
-					.Subscribe(e =>
-					{
-						HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
-						HistoryButtonContextMenu.IsOpen = true;
-					}));
-				d(this.BindCommand(ViewModel, vm => vm.OpenSettings, v => v.SettingsButton));
-				d(SearchResultsStackPanel.Events()
-					.MouseDown
-					.ToSignal()
-					.InvokeCommand(ViewModel.ToggleShowVersion));
-				d(this.Events()
-					.Closed
-					.Subscribe(_ => Application.Current.Shutdown()));
-			});
-		}
+                    .Subscribe(e =>
+                    {
+                        HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
+                        HistoryButtonContextMenu.IsOpen = true;
+                    }));
+                d(this.BindCommand(ViewModel, vm => vm.OpenSettings, v => v.SettingsButton));
+                d(SearchResultsStackPanel.Events()
+                    .MouseDown
+                    .ToSignal()
+                    .InvokeCommand(ViewModel.ToggleShowVersion));
+                d(this.Events()
+                    .Closed
+                    .Subscribe(_ => Application.Current.Shutdown()));
+            });
+        }
 
-		
 
-		public MainWindowViewModel ViewModel
-		{
-			get { return (MainWindowViewModel)GetValue(ViewModelProperty); }
-			set { SetValue(ViewModelProperty, value); }
-		}
 
-		public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(null));
+        public MainWindowViewModel ViewModel { get => (MainWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(null));
 
-		object IViewFor.ViewModel
-		{
-			get { return ViewModel; }
-			set { ViewModel = value as MainWindowViewModel; }
-		}
+        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as MainWindowViewModel; }
 
 
 

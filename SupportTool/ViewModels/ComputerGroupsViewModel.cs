@@ -60,23 +60,11 @@ namespace SupportTool.ViewModels
 
         public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
-        public ComputerObject Computer
-        {
-            get { return _computer; }
-            set { this.RaiseAndSetIfChanged(ref _computer, value); }
-        }
+        public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
-        public bool IsShowingDirectGroups
-        {
-            get { return _isShowingDirectGroups; }
-            set { this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
-        }
+        public bool IsShowingDirectGroups { get => _isShowingDirectGroups; set => this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
 
-        public string SelectedDirectGroup
-        {
-            get { return _selectedDirectGroup; }
-            set { this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
-        }
+        public string SelectedDirectGroup { get => _selectedDirectGroup; set => this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
 
 
 

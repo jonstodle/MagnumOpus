@@ -104,27 +104,15 @@ namespace SupportTool.ViewModels
 
 		public bool? IsUacOn => _isUacOn.Value;
 
-		public ComputerObject Computer
-		{
-			get { return _computer; }
-			set { this.RaiseAndSetIfChanged(ref _computer, value); }
-		}
+        public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
-		public bool IsShowingLoggedOnUsers
-		{
-			get { return _isShowingLoggedOnUsers; }
-			set { this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
-		}
+        public bool IsShowingLoggedOnUsers { get => _isShowingLoggedOnUsers; set => this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
 
-		public LoggedOnUserInfo SelectedLoggedOnUser
-		{
-			get { return _selectedLoggedOnUser; }
-			set { this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }
-		}
+        public LoggedOnUserInfo SelectedLoggedOnUser { get => _selectedLoggedOnUser; set => this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }
 
 
 
-		private IObservable<Unit> StartRemoteControlImpl(ComputerObject computer) => Observable.Start(() =>
+        private IObservable<Unit> StartRemoteControlImpl(ComputerObject computer) => Observable.Start(() =>
 		{
 			EnsureComputerIsReachable(computer.CN);
 
