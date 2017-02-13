@@ -55,7 +55,7 @@ namespace SupportTool.ViewModels
                     var de = _user.Principal.GetUnderlyingObject() as DirectoryEntry;
                     de.Properties["profilepath"].Value = _globalProfilePath.HasValue() ? _globalProfilePath : null;
                     de.CommitChanges();
-                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
+                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
                 }));
 
             _cancelGlobalProfilePath = ReactiveCommand.Create(() => { GlobalProfilePath = _user.ProfilePath; });
@@ -70,7 +70,7 @@ namespace SupportTool.ViewModels
                     var p = _user.Principal;
                     p.HomeDirectory = _homeFolderPath.HasValue() ? _homeFolderPath : null;
                     p.Save();
-                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
+                    MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
                 }));
 
             _cancelHomeFolderPath = ReactiveCommand.Create(() => { HomeFolderPath = _user.HomeDirectory; });
@@ -122,7 +122,7 @@ namespace SupportTool.ViewModels
                     .DisposeWith(disposables);
 
                 MessageBus.Current
-                .Listen<string>(ApplicationActionRequest.SetLocalProfileComputerName.ToString())
+                .Listen<string>(ApplicationActionRequest.SetLocalProfileComputerName)
                 .Subscribe(x => ComputerName = x)
                 .DisposeWith(disposables);
 

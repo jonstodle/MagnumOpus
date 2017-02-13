@@ -50,7 +50,7 @@ namespace SupportTool.ViewModels
                 Observable.Return(t.Item2)
                     .Delay(TimeSpan.FromSeconds(1))
                     .ObserveOnDispatcher()
-                    .Subscribe(x => MessageBus.Current.SendMessage(x, ApplicationActionRequest.SetLocalProfileComputerName.ToString()));
+                    .Subscribe(x => MessageBus.Current.SendMessage(x, ApplicationActionRequest.SetLocalProfileComputerName));
 			}
 
 			return Task.FromResult<object>(null);

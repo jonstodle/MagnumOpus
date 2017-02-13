@@ -61,13 +61,13 @@ namespace SupportTool.ViewModels
                 _unlockAccount
                     .Subscribe(async _ =>
                     {
-                        MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString());
+                        MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
                         await _infoMessages.Handle(new MessageInfo("Account unlocked"));
                     })
                     .DisposeWith(disposables);
 
                 _toggleEnabled
-                    .Subscribe(_ => MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh.ToString()))
+                    .Subscribe(_ => MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh))
                     .DisposeWith(disposables);
 
 

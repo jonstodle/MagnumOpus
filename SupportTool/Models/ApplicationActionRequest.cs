@@ -1,9 +1,9 @@
 ﻿namespace SupportTool.Models
 {
-	public enum ApplicationActionRequest
+	public struct ApplicationActionRequest
     {
-        Refresh,
-        LoadDirectGroupsForUser,
-		SetLocalProfileComputerName
+        public static string Refresh => nameof(Refresh);
+        public static string LoadDirectGroupsForUser => nameof(LoadDirectGroupsForUser);
+        public static string SetLocalProfileComputerName => nameof(SetLocalProfileComputerName);
     }
 }
