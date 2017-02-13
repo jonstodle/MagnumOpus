@@ -20,9 +20,9 @@ namespace SupportTool.Models
 
         public string Company => _directoryEntry.Properties.Get<string>("company");
 
-        public string ProfilePath => _directoryEntry.Properties.Get<string>("profilepath");
+        public string ProfilePath => _directoryEntry.Properties.Get<string>("profilepath") ?? "";
 
-		public string HomeDirectory => _directoryEntry.Properties.Get<string>("homedirectory");
+		public string HomeDirectory => _directoryEntry.Properties.Get<string>("homedirectory") ?? "";
 
         public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))
             .SelectMany(x =>
