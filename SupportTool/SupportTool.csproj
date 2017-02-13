@@ -459,7 +459,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Executables\PsExec.exe">
+    <Resource Include="Executables\Files\PsExec.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -473,12 +473,12 @@
     <Resource Include="Assets\Icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Executables\LockoutStatus.exe">
+    <Resource Include="Executables\Files\LockoutStatus.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Executables\PsLoggedon.exe">
+    <Resource Include="Executables\Files\PsLoggedon.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
