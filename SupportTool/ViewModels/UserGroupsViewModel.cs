@@ -162,11 +162,11 @@ namespace SupportTool.ViewModels
         {
             if (!GroupFilter.HasValue()) { return true; }
 
-            var itm = ((string)item).ToLowerInvariant().Replace(" ", string.Empty);
+            var itm = ((string)item).ToLowerInvariant().Replace(" ", "");
 
             if (UseFuzzy)
             {
-                var filterString = GroupFilter.Replace(" ", string.Empty).ToLowerInvariant();
+                var filterString = GroupFilter.Replace(" ", "").ToLowerInvariant();
 
                 var idx = 0;
 

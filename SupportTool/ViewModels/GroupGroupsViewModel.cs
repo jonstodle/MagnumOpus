@@ -214,11 +214,11 @@ namespace SupportTool.ViewModels
         {
             if (!_filterString.HasValue()) { return true; }
 
-            var itm = ((string)item).ToLowerInvariant().Replace(" ", string.Empty);
+            var itm = ((string)item).ToLowerInvariant().Replace(" ", "");
 
             if (_useFuzzy)
             {
-                var filterString = _filterString.Replace(" ", string.Empty).ToLowerInvariant();
+                var filterString = _filterString.Replace(" ", "").ToLowerInvariant();
 
                 var idx = 0;
 

@@ -79,7 +79,7 @@ namespace SupportTool.Models
 
 			foreach (ManagementObject item in searcher.Get())
 			{
-				var argsArray = new string[] { string.Empty };
+				var argsArray = new string[] { "" };
 				item.InvokeMethod("GetOwner", argsArray);
 				var hasSessionID = int.TryParse(item["sessionID"].ToString(), out int sessionID);
 				if (disposed) break;
