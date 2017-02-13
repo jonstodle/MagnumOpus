@@ -86,7 +86,7 @@
             <Button x:Name="RestoreProfileButton" Content="Restore profile" Margin="2"/>
         </StackPanel>
 
-		<StackPanel x:Name="GlobalProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+		<StackPanel x:Name="GlobalProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
@@ -106,7 +106,7 @@
 			</Grid>
 		</StackPanel>
 
-		<StackPanel x:Name="HomeFolderStackPanel" Background="{StaticResource SubSectionBackgroundBrush}">
+        <StackPanel x:Name="HomeFolderStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
