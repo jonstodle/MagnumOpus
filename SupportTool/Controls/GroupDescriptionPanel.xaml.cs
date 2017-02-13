@@ -23,12 +23,8 @@ namespace SupportTool.Controls
                 d(this.Bind(ViewModel, vm => vm.Group, v => v.Group));
 
                 d(this.Bind(ViewModel, vm => vm.Description, v => v.DescriptionTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.DescriptionTextBox.IsEnabled));
-                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.EnableEditingButton.Visibility, x => x ? Visibility.Collapsed : Visibility.Visible));
-                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.SaveButton.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.IsEditingEnabled, v => v.CancelButton.Visibility));
+                d(this.OneWayBind(ViewModel, vm => vm.HasDescriptionChanged, v => v.DescriptionButtonsStackPanel.Visibility));
 
-                d(this.BindCommand(ViewModel, vm => vm.EnabledEditing, v => v.EnableEditingButton));
                 d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
                 d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
             });

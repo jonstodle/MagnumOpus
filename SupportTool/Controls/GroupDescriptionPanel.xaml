@@ -9,16 +9,19 @@
 	<StackPanel>
 		<TextBlock Text="Description" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
-		<StackPanel>
+		<Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
 			<TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" Margin="2"/>
 
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button x:Name="EnableEditingButton" Content="Edit" Margin="2"/>
+			<StackPanel x:Name="DescriptionButtonsStackPanel" Orientation="Horizontal" Visibility="Collapsed" Grid.Column="1">
+				<Button x:Name="SaveButton" Content="Save" Margin="2"/>
 
-				<Button x:Name="SaveButton" Content="Save" Visibility="Collapsed" Margin="2"/>
-
-				<Button x:Name="CancelButton" Content="Cancel" Visibility="Collapsed" Margin="2"/>
+				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
 			</StackPanel>
-		</StackPanel>
+		</Grid>
 	</StackPanel>
 </UserControl>

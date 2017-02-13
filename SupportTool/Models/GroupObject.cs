@@ -12,6 +12,8 @@ namespace SupportTool.Models
 
 
 
+        public string Description { get => _principal.Description.HasValue() ? _principal.Description : ""; set => _principal.Description = value.HasValue() ? value : null; }
+
 		public string Notes => _directoryEntry.Properties.Get<string>("info");
 
         public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))

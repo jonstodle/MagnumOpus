@@ -9,46 +9,41 @@ using System.Reactive.Linq;
 namespace SupportTool.ViewModels
 {
     public class GroupDescriptionPanelViewModel : ViewModelBase
-	{
-		public GroupDescriptionPanelViewModel()
-		{
-            _enableEditing = ReactiveCommand.Create<Unit, bool>(_ => { _descriptionBackup = _description; return true; });
+    {
+        public GroupDescriptionPanelViewModel()
+        {
+            _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(_group, _description));
 
-            _save = ReactiveCommand.CreateFromObservable<Unit, bool>(_ => SaveImpl(_group, _description).Select(x => false));
+            _cancel = ReactiveCommand.Create(() => { Description = _group?.Description; });
 
-			_cancel = ReactiveCommand.Create<Unit, bool>(_ => { Description = _descriptionBackup; return false; });
-
-			_isEditingEnabled = Observable.Merge(
-                _enableEditing,
-                _save,
-                _cancel)
-				.ToProperty(this, x => x.IsEditingEnabled);
+            _hasDescriptionChanged = Observable.CombineLatest(
+                this.WhenAnyValue(x => x.Description),
+                this.WhenAnyValue(y => y.Group).WhereNotNull(),
+                (x, y) => x != y.Description)
+                .ToProperty(this, x => x.HasDescriptionChanged);
 
             this.WhenActivated(disposables =>
             {
-                this.WhenAnyValue(x => x.Group.Principal.Description)
+                this.WhenAnyValue(x => x.Group)
                 .WhereNotNull()
-                .Subscribe(x => Description = x)
+                .Subscribe(x => Description = x.Description)
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _enableEditing.ThrownExceptions,
                     _save.ThrownExceptions,
                     _cancel.ThrownExceptions)
                     .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
                     .DisposeWith(disposables);
             });
-		}
+        }
 
 
 
-        public ReactiveCommand EnabledEditing => _enableEditing;
+        public ReactiveCommand Save => _save;
 
-		public ReactiveCommand Save => _save;
+        public ReactiveCommand Cancel => _cancel;
 
-		public ReactiveCommand Cancel => _cancel;
-
-		public bool IsEditingEnabled => _isEditingEnabled.Value;
+        public bool HasDescriptionChanged => _hasDescriptionChanged.Value;
 
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
 
@@ -57,19 +52,17 @@ namespace SupportTool.ViewModels
 
 
         private IObservable<Unit> SaveImpl(GroupObject group, string description) => Observable.Start(() =>
-		{
-			group.Principal.Description = description.HasValue() ? description : null;
-			group.Principal.Save();
-		});
+        {
+            group.Description = description;
+            group.Principal.Save();
+        });
 
 
 
-        private readonly ReactiveCommand<Unit, bool> _enableEditing;
-		private readonly ReactiveCommand<Unit, bool> _save;
-		private readonly ReactiveCommand<Unit, bool> _cancel;
-		private readonly ObservableAsPropertyHelper<bool> _isEditingEnabled;
-		private GroupObject _group;
-		private string _description;
-		private string _descriptionBackup;
-	}
+        private readonly ReactiveCommand<Unit, Unit> _save;
+        private readonly ReactiveCommand<Unit, Unit> _cancel;
+        private readonly ObservableAsPropertyHelper<bool> _hasDescriptionChanged;
+        private GroupObject _group;
+        private string _description;
+    }
 }
