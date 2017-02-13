@@ -20,6 +20,18 @@ namespace SupportTool.Services.SettingsServices
             set => Set(value);
         }
 
+        public string SCCMPath // Path to SCCM client (https://sccmclictr.codeplex.com/)
+        {
+            get => Get("");
+            set => Set(value);
+        }
+
+        public string LogDirectoryPath // Where to put log files from the application
+        {
+            get => Get("");
+            set => Set(value);
+        }
+
         public IEnumerable<KeyValuePair<string, string>> ComputerCompanyOus // The key should be a part of the DistinguishedName of the DirectoryEntry which only occurs for each specific company, e.g.: "OU=CompanyName". The value is the name of the company, e.g.: "Company Name".
         {
             get => Get(new List<KeyValuePair<string, string>>());

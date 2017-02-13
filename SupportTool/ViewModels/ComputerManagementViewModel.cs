@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using SupportTool.Models;
+using SupportTool.Services.SettingsServices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -26,7 +27,7 @@ namespace SupportTool.ViewModels
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
 
-			_openSccm = ReactiveCommand.Create(() => { ExecuteFile(@"C:\Program Files\SCCM Tools\SCCM Client Center\SMSCliCtrV2.exe", _computer.CN); });
+			_openSccm = ReactiveCommand.Create(() => { ExecuteFile(SettingsService.Current.SCCMPath, _computer.CN); });
 
             this.WhenActivated(disposables =>
             {

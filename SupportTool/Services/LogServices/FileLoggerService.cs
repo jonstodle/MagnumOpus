@@ -6,13 +6,14 @@ using System.Reactive.Subjects;
 using System.IO;
 using System.Security.Principal;
 using System.Reactive.Linq;
+using SupportTool.Services.SettingsServices;
 
 namespace SupportTool.Services.LogServices
 {
 	public class FileLoggerService : ILogger
 	{
 		private const string ApplicationName = "Magnum Opus";
-		private const string LogDirectoryPath = @"C:\Logs\Magnum Opus";
+		private static string LogDirectoryPath = SettingsService.Current.LogDirectoryPath;
 		private readonly string _logFileName;
 		private static Subject<string> _logWriter;
 

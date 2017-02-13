@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SupportTool.Services.SettingsServices;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
@@ -10,7 +11,7 @@ namespace SupportTool.Services.LogServices
 	public static class LogService
 	{
 		private const string ApplicationName = "Magnum Opus";
-		private const string LogDirectoryPath = @"C:\Logs\Magnum Opus";
+        private static string LogDirectoryPath = SettingsService.Current.LogDirectoryPath;
 		private static readonly string _logFileName;
 		private static Subject<string> _logger;
 
