@@ -45,7 +45,6 @@ namespace SupportTool.Controls
                 d(this.BindCommand(ViewModel, vm => vm.OpenPermittedWorkstations, v => v.PermittedWorkstationsButton));
                 d(this.BindCommand(ViewModel, vm => vm.ToggleEnabled, v => v.ToggleEnabledButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
-                //d(this.BindCommand(ViewModel, vm => vm.OpenFindUser, v => v.FindUserButton));
                 d(NewPasswordTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)

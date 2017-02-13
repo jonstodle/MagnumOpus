@@ -38,8 +38,6 @@ namespace SupportTool.ViewModels
                 Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
             });
 
-            _openFindUser = ReactiveCommand.Create(() => ExecutionService.ExecuteInternalFile("FindUserNet.exe"));
-
             this.WhenActivated(disposables =>
             {
                 _setNewPassword
@@ -84,8 +82,7 @@ namespace SupportTool.ViewModels
                     _unlockAccount.ThrownExceptions,
                     _runLockoutStatus.ThrownExceptions,
                     _openPermittedWorkstations.ThrownExceptions,
-                    _toggleEnabled.ThrownExceptions,
-                    _openFindUser.ThrownExceptions)
+                    _toggleEnabled.ThrownExceptions)
                     .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
                     .DisposeWith(disposables);
             });
@@ -110,8 +107,6 @@ namespace SupportTool.ViewModels
         public ReactiveCommand ToggleEnabled => _toggleEnabled;
 
         public ReactiveCommand OpenSplunk => _openSplunk;
-
-        public ReactiveCommand OpenFindUser => _openFindUser;
 
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
 
@@ -165,7 +160,6 @@ namespace SupportTool.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _openPermittedWorkstations;
         private readonly ReactiveCommand<Unit, Unit> _toggleEnabled;
         private readonly ReactiveCommand<Unit, Unit> _openSplunk;
-        private readonly ReactiveCommand<Unit, Unit> _openFindUser;
         private UserObject _user;
         private bool _isShowingNewPasswordOptions;
         private string _newPassword;
