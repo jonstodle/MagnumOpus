@@ -244,3 +244,5 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 SupportTool/Executables/Files/
+
+SupportTool/Services/SettingsServices/SettingsService\.Environment\.cs

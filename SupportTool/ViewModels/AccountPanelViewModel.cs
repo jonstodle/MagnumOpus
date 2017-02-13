@@ -2,6 +2,7 @@
 using SupportTool.Models;
 using SupportTool.Services.ActiveDirectoryServices;
 using SupportTool.Services.FileServices;
+using SupportTool.Services.SettingsServices;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace SupportTool.ViewModels
 
             _openSplunk = ReactiveCommand.Create(() =>
             {
-                Process.Start($"https://sd3-splunksh-03.sikt.sykehuspartner.no/en-us/app/splunk_app_windows_infrastructure/search?q=search%20eventtype%3Dmsad-account-lockout%20user%3D\"{User.Principal.SamAccountName}\"%20dest_nt_domain%3D\"SIKT\"&earliest=-7d%40h&latest=now");
+                Process.Start(string.Format(SettingsService.Current.SplunkUrl, User.Principal.SamAccountName));
             });
 
             this.WhenActivated(disposables =>

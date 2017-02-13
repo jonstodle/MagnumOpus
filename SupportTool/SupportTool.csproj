@@ -270,6 +270,7 @@
     <Compile Include="Services\NavigationServices\INavigable.cs" />
     <Compile Include="Services\NavigationServices\NavigationService.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
+    <Compile Include="Services\SettingsServices\SettingsService.Environment.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.User.cs" />
     <Compile Include="Services\StateServices\StateService.cs" />
     <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
