@@ -4,6 +4,17 @@ Magnum Opus is a support tool specifically developed for use at Sykehuspartner H
 
 ## Setup
 
+### Executables
+
+Magnum Opus is dependent on three exe files for some of the features. These files are as follows:
+
+* [LockoutStatus.exe](https://www.microsoft.com/en-us/download/details.aspx?id=15201)
+* [PsExec and PSLoggedOn](https://technet.microsoft.com/en-us/sysinternals/pstools.aspx)
+
+Add these files to the `Executables/Files` folder. These files are bundled in the built exe file to ensure they're available when running the application
+
+### Environment Variables
+
 Some variables are specific to your environment. These can be set by adding a file named `SettingsService.Environment.cs` to the `SettingsService` folder and adding the following code:
 ```
 using System.Collections.Generic;
