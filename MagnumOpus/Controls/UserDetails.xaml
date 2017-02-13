@@ -1,0 +1,83 @@
+﻿<UserControl x:Class="MagnumOpus.Controls.UserDetails"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MagnumOpus.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel>
+		<StackPanel Orientation="Horizontal">
+		<TextBox x:Name="DisplayNameTextBlock" FontSize="20" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>
+		<TextBox x:Name="EmployeeIDTextBlock" FontSize="20" Style="{StaticResource TextBlockTextBoxStyle}" Opacity=".5" Margin="2"/>
+		</StackPanel>
+
+		<WrapPanel Opacity=".5" Margin="2">
+            <TextBlock Text="User"/>
+			<TextBlock Text=" | "/>
+			<TextBox x:Name="SamTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
+			<TextBlock Text=" | "/>
+			<TextBlock><Hyperlink x:Name="CompanyHyperLink" Foreground="Black"><TextBlock x:Name="CompanyTextBlock"/></Hyperlink></TextBlock>
+            <TextBlock Text=" | "/>
+            <TextBlock x:Name="ExpirationTextBlock"/>
+            <TextBlock Text=" | "/>
+			<TextBlock x:Name="AccountLockedTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="AccountEnabledTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBlock x:Name="PasswordAgeTextBlock"/>
+			<TextBlock Text=" | "/>
+			<TextBox x:Name="EmailAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
+		</WrapPanel>
+
+		<Grid x:Name="OrganizationGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="20"/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<TextBlock Text="Job Title" Margin="2"/>
+			<TextBlock x:Name="JobTitleTextBlock" Grid.Column="2" Margin="2"/>
+
+			<TextBlock Text="Department" Grid.Row="1" Margin="2"/>
+			<TextBlock x:Name="DepartmentTextBlock" Grid.Row="1" Grid.Column="2" Margin="2"/>
+
+			<TextBlock Text="Company" Grid.Row="2" Margin="2"/>
+			<TextBlock x:Name="CompanyNameTextBlock" Grid.Row="2" Grid.Column="2" Margin="2"/>
+
+			<TextBlock Text="Manager" Grid.Row="3" Margin="2"/>
+			<TextBlock Grid.Row="3" Grid.Column="2" Margin="2"><Hyperlink x:Name="ManagerHyperLink"><TextBlock x:Name="ManagerTextBlock"/></Hyperlink></TextBlock>
+
+			<TextBlock Text="Direct Reports" Grid.Row="4" Margin="2"/>
+
+			<ListView x:Name="DirectReportsListView" Height="200" Grid.Row="5" Grid.ColumnSpan="3" Margin="2">
+				<ListView.ItemContainerStyle>
+					<Style TargetType="ListViewItem">
+						<EventSetter Event="MouseDoubleClick" Handler="DirectReportsListViewItem_DoubleClick"/>
+					</Style>
+				</ListView.ItemContainerStyle>
+
+				<ListView.ContextMenu>
+					<ContextMenu>
+						<MenuItem x:Name="OpenDirectReportMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
+					</ContextMenu>
+				</ListView.ContextMenu>
+
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Principal.Name}"/>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Grid>
+    </StackPanel>
+</UserControl>

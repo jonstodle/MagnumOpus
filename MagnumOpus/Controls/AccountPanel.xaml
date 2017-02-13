@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="MagnumOpus.Controls.AccountPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MagnumOpus.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+	<StackPanel>
+		<TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
+
+		<WrapPanel>
+			<ToggleButton x:Name="NewPasswordToggleButton" Content="New password" Margin="2"/>
+
+			<Button x:Name="ExpirePasswordButton" Content="Expire password" Margin="2"/>
+
+			<Button x:Name="UnlockAccountButton" Content="Unlock account" Margin="2"/>
+
+			<Button x:Name="LockOutStatusButton" Content="LockOutStatus" Margin="2"/>
+
+			<Button x:Name="PermittedWorkstationsButton" Content="Log on to" Margin="2"/>
+
+			<Button x:Name="ToggleEnabledButton" Content="Disable" Margin="2"/>
+
+			<Button x:Name="SplunkButton" Content="Splunk" Margin="2"/>
+
+			<!--<Button x:Name="FindUserButton" Content="Find user" Margin="2"/>-->
+		</WrapPanel>
+
+		<Grid x:Name="NewPasswordGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<StackPanel>
+				<StackPanel Margin="2">
+					<TextBlock Text="New password" FontSize="10"/>
+					<TextBox x:Name="NewPasswordTextBox" Grid.Row="1"/>
+				</StackPanel>
+
+				<Button x:Name="SetNewPasswordButton" Content="Set password" Margin="2"/>
+			</StackPanel>
+
+			<StackPanel Grid.Column="1" VerticalAlignment="Bottom">
+				<Button x:Name="SetNewSimplePasswordButton" Content="Set simple password" Margin="2"/>
+
+				<Button x:Name="SetNewComplexPasswordButton" Content="Set complex password" Margin="2"/>
+			</StackPanel>
+		</Grid>
+	</StackPanel>
+</UserControl>

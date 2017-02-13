@@ -1,0 +1,45 @@
+﻿<UserControl x:Class="MagnumOpus.Controls.UserLockoutInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MagnumOpus.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+	
+    <Grid>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+				
+				<TextBlock x:Name="TitleTextBlock" FontSize="20" Margin="2"/>
+
+				<Button x:Name="RefreshButton" Content="Refresh" Grid.Column="1" Margin="2"/>
+			</Grid>
+
+			<ListView x:Name="LockoutInfosListView" Grid.Row="1" Margin="2">
+				<ListView.View>
+					<GridView>
+						<GridViewColumn Header="DC" DisplayMemberBinding="{Binding DomainControllerName}"/>
+						<GridViewColumn Header="User state" DisplayMemberBinding="{Binding UserState}"/>
+						<GridViewColumn Header="Bad passwords" DisplayMemberBinding="{Binding BadPasswordCount}"/>
+						<GridViewColumn Header="Last bad passwords" DisplayMemberBinding="{Binding LastBadPassword}"/>
+						<GridViewColumn Header="Password last set" DisplayMemberBinding="{Binding PasswordLastSet}"/>
+						<GridViewColumn Header="Lockout time" DisplayMemberBinding="{Binding LockoutTime}"/>
+					</GridView>
+				</ListView.View>
+			</ListView>
+
+			<Button x:Name="CloseButton" Content="Close" HorizontalAlignment="Right" Grid.Row="2" Margin="2"/>
+		</Grid>
+	</Grid>
+</UserControl>

@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="MagnumOpus.Controls.EditMemberOfDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MagnumOpus.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+	<Grid x:Name="ContainerGrid">
+		<Grid Margin="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+
+			<TextBlock x:Name="TitleTextBlock" FontSize="20" Grid.ColumnSpan="2" Margin="2"/>
+
+			<Grid Grid.Row="1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<TextBox x:Name="SearchQueryTextBox" Margin="2"/>
+
+				<ListView x:Name="SearchResultsListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Grid.Row="1" Margin="2">
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<EventSetter Event="MouseDoubleClick" Handler="SearchResultsListViewItem_DoubleClick"/>
+						</Style>
+					</ListView.ItemContainerStyle>
+					
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem x:Name="AddMenuItem" Header="Add" Style="{StaticResource PrimaryActionStyle}"/>
+							<MenuItem x:Name="OpenSearchResultMenuItem" Header="Open"/>
+						</ContextMenu>
+					</ListView.ContextMenu>
+				</ListView>
+			</Grid>
+
+			<Grid Grid.Row="1" Grid.Column="1">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<ListView x:Name="PrincipalMembersListView" ItemTemplate="{StaticResource DirectoryEntryDataTemplate}" Margin="2">
+					<ListView.ItemContainerStyle>
+						<Style TargetType="ListViewItem">
+							<EventSetter Event="MouseDoubleClick" Handler="PrincipalMembersListViewItem_DoubleClick"/>
+						</Style>
+					</ListView.ItemContainerStyle>
+					
+					<ListView.ContextMenu>
+						<ContextMenu>
+							<MenuItem x:Name="RemoveMenuItem" Header="Remove" Style="{StaticResource PrimaryActionStyle}"/>
+							<MenuItem x:Name="OpenMembersPrincipalMenuItem" Header="Open"/>
+						</ContextMenu>
+					</ListView.ContextMenu>
+				</ListView>
+
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="3" Grid.Column="2">
+					<Button x:Name="SaveButton" Content="&#x1F4BE; Save" Margin="2"/>
+
+					<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+				</StackPanel>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

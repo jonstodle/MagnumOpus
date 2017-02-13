@@ -1,0 +1,31 @@
+﻿<local:DetailsWindow x:Class="MagnumOpus.Views.UserWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MagnumOpus.Views"
+		xmlns:controls="clr-namespace:MagnumOpus.Controls"
+        mc:Ignorable="d"
+		Icon="/Assets/Icon.ico"
+        Height="600" Width="600">
+
+	<Grid x:Name="ContainerGrid">
+		<ScrollViewer>
+			<Grid Margin="2">
+				<StackPanel>
+					<controls:UserDetails x:Name="UserDetails"/>
+
+					<controls:AccountPanel x:Name="UserAccountPanel"/>
+
+					<controls:ProfilePanel x:Name="UserProfilePanel"/>
+
+					<controls:UserGroups x:Name="UserGroups"/>
+				</StackPanel>
+
+				<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
+				<Hyperlink x:Name="RefreshHyperLink">Refresh</Hyperlink>
+				</TextBlock>
+			</Grid>
+		</ScrollViewer>
+	</Grid>
+</local:DetailsWindow>

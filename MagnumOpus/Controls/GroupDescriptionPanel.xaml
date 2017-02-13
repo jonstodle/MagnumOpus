@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="MagnumOpus.Controls.GroupDescriptionPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MagnumOpus.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="30" d:DesignWidth="300">
+	<StackPanel>
+		<TextBlock Text="Description" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
+
+		<Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+			<TextBox x:Name="DescriptionTextBox" TextWrapping="Wrap" Margin="2"/>
+
+			<StackPanel x:Name="DescriptionButtonsStackPanel" Orientation="Horizontal" Visibility="Collapsed" Grid.Column="1">
+				<Button x:Name="SaveButton" Content="Save" Margin="2"/>
+
+				<Button x:Name="CancelButton" Content="Cancel" Margin="2"/>
+			</StackPanel>
+		</Grid>
+	</StackPanel>
+</UserControl>
