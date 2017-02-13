@@ -61,6 +61,14 @@ namespace SupportTool.ViewModels
             _showVersion = _toggleShowVersion
                 .ToProperty(this, x => x.ShowVersion, false);
 
+            _isNoResults = _search
+                .Select(x => Observable.Concat(
+                    Observable.Return(false),
+                    x.Aggregate(0, (acc, curr) => acc + 1).Select(y => y == 0)))
+                .Switch()
+                .ObserveOnDispatcher()
+                .ToProperty(this, x => x.IsNoResults);
+
             Observable.Merge(
                 _search.ThrownExceptions,
                 _paste.ThrownExceptions,
@@ -100,6 +108,8 @@ namespace SupportTool.ViewModels
 
         public bool ShowVersion => _showVersion.Value;
 
+        public bool IsNoResults => _isNoResults.Value;
+
         public string Version => _version;
 
         public string Domain => ActiveDirectoryService.Current.CurrentDomain;
@@ -120,6 +130,7 @@ namespace SupportTool.ViewModels
         private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
         private readonly ReactiveList<string> _history;
         private readonly ObservableAsPropertyHelper<bool> _showVersion;
+        private readonly ObservableAsPropertyHelper<bool> _isNoResults;
         private SortDescription _listSortDescription;
         private string _searchQuery;
         private DirectoryEntryInfo _selectedSearchResult;

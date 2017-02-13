@@ -67,7 +67,9 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-			<Grid Grid.Row="2">
+            <TextBlock x:Name="NoResultsTextBlock" Text="NO RESULTS" FontSize="17" TextAlignment="Center" VerticalAlignment="Center" Opacity=".5" IsHitTestVisible="False" Visibility="Collapsed" Grid.Row="1" Margin="2"/>
+
+            <Grid Grid.Row="2">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition/>
