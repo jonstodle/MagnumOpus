@@ -9,7 +9,7 @@ namespace SupportTool.Executables
 	{
 		public static void WriteExecutableToDisk(string executable)
 		{
-			var rStream = Application.GetResourceStream(new Uri($"pack://application:,,,/Executables/{executable}"));
+			var rStream = Application.GetResourceStream(new Uri($"pack://application:,,,/Executables/Files/{executable}"));
 			using (var fs = new FileStream(Path.Combine(FileService.LocalAppData, executable), FileMode.Create, FileAccess.Write))
 			using (var stream = new MemoryStream())
 			using (var writer = new BinaryWriter(fs))
