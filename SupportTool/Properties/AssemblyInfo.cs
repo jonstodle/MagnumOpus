@@ -5,12 +5,12 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Magnum Opus by Jon Stødle")]
-[assembly: AssemblyDescription("Lets perform common service desk tasks from one application")]
+[assembly: AssemblyTitle("Magnum Opus")]
+[assembly: AssemblyDescription("Magnum Opus is a support tool specifically developed for use at Sykehuspartner HF. It covers a wide range of different tasks which are common at the Service Desk.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Sykehuspartner")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Magnum Opus")]
-[assembly: AssemblyCopyright("Copyright © Sykehuspartner 2016")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

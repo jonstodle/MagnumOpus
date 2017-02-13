@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SupportTool.Views"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
-        Title="Settings also by Jon Stødle" Height="500" Width="400">
+        Title="Settings" Height="500" Width="400">
 
 	<Window.Resources>
 		<Style x:Key="SettingsHeaderStyle" TargetType="TextBlock">

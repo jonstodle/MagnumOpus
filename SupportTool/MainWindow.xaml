@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         x:Name="ThisWindow"
         Icon="/Assets/Icon.ico"
-        Title="Magnum Opus by Jon Stødle" MinHeight="200" MinWidth="200" Height="400" Width="900">
+        Title="Magnum Opus" MinHeight="200" MinWidth="200" Height="400" Width="900">
 
     <Grid Margin="2">
 		<Grid>
