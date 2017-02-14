@@ -13,9 +13,9 @@ namespace MagnumOpus
     {
 		public App()
 		{
+			SettingsService.Init();
 			Locator.CurrentMutable.RegisterConstant(new FileLoggerService(), typeof(ILogger));
 			this.Log().Info("Application start");
-			SettingsService.Init();
 
 			this.Events()
 				.Exit
