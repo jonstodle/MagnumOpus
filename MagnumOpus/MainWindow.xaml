@@ -55,7 +55,7 @@
 							<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="{StaticResource NameColumnWidth}"/>
 							<GridViewColumn Header="ID" DisplayMemberBinding="{Binding SamAccountName}" Width="{StaticResource IDColumnWidth}"/>
 							<GridViewColumn Header="Type" DisplayMemberBinding="{Binding ObjectType}" Width="{StaticResource IDColumnWidth}"/>
-							<GridViewColumn Header="Path" DisplayMemberBinding="{Binding Path}" Width="200"/>
+							<GridViewColumn Header="Company" DisplayMemberBinding="{Binding Company}" Width="200"/>
 						</GridView.Columns>
 					</GridView>
 				</ListView.View>
