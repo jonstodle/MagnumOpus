@@ -75,7 +75,7 @@ namespace MagnumOpus.Controls
         }
 
         public EditMembersDialogViewModel ViewModel { get => (EditMembersDialogViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(EditMembersDialogViewModel), typeof(EditMemberOfDialog), new PropertyMetadata(null));
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(EditMembersDialogViewModel), typeof(EditMembersDialog), new PropertyMetadata(null));
 
         object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as EditMembersDialogViewModel; }
 
