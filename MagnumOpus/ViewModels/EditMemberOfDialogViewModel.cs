@@ -121,13 +121,9 @@ namespace MagnumOpus.ViewModels
 
         public ReactiveCommand Cancel => _cancel;
 
-        public ReactiveList<DirectoryEntry> SearchResults => _searchResults;
+        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
-        public ReactiveList<DirectoryEntry> PrincipalMembers => _principalMembers;
-
-        public IReactiveDerivedList<DirectoryEntry> MembersToAdd => _membersToAdd.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
-
-        public IReactiveDerivedList<DirectoryEntry> MembersToRemove => _membersToRemove.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
+        public IReactiveDerivedList<DirectoryEntry> PrincipalMembers => _principalMembers.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
         public Principal Principal => _principal.Value;
 
