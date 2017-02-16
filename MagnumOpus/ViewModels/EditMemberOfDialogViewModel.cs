@@ -145,37 +145,39 @@ namespace MagnumOpus.ViewModels
 
             foreach (var groupDe in membersToAdd)
             {
-                var group = ActiveDirectoryService.Current.GetGroup(groupDe.Properties.Get<string>("cn")).Wait();
+                var groupCN = groupDe.Properties.Get<string>("cn");
+                var group = ActiveDirectoryService.Current.GetGroup(groupCN).Wait();
 
                 try
                 {
                     if (group == null) throw new NullReferenceException("Not a group");
                     group.Principal.Members.Add(principal);
                     group.Principal.Save();
-                    this.Log().Info($"Added \"{ group.CN}\" to \"{principal.Name}\"");
+                    this.Log().Info($"Added \"{groupCN}\" to \"{principal.Name}\"");
                 }
                 catch (Exception ex)
                 {
-                    result.Add($"{group.CN} - {ex.Message}");
-                    this.Log().Error($"Could not add \"{ group.CN}\" to \"{principal.Name}\"");
+                    result.Add($"{groupCN} - {ex.Message}");
+                    this.Log().Error($"Could not add \"{groupCN}\" to \"{principal.Name}\"");
                 }
             }
 
             foreach (var groupDe in membersToRemove)
             {
-                var group = ActiveDirectoryService.Current.GetGroup(groupDe.Properties.Get<string>("cn")).Wait();
+                var groupCN = groupDe.Properties.Get<string>("cn");
+                var group = ActiveDirectoryService.Current.GetGroup(groupCN).Wait();
 
                 try
                 {
                     if (group == null) throw new NullReferenceException("Not a group");
                     group.Principal.Members.Remove(principal);
                     group.Principal.Save();
-                    this.Log().Info($"Removed \"{ group.CN}\" from \"{principal.Name}\"");
+                    this.Log().Info($"Removed \"{groupCN}\" from \"{principal.Name}\"");
                 }
                 catch (Exception ex)
                 {
-                    result.Add($"{group.CN} - {ex.Message}");
-                    this.Log().Error($"Could not remove \"{ group.CN}\" from \"{principal.Name}\"");
+                    result.Add($"{groupCN} - {ex.Message}");
+                    this.Log().Error($"Could not remove \"{groupCN}\" from \"{principal.Name}\"");
                 }
             }
 
