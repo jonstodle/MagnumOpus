@@ -42,8 +42,8 @@ namespace MagnumOpus.Controls
 
                 d(this.Bind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingMembers, v => v.MembersGrid.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.MemberUsers, v => v.MembersListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedMemberUser, v => v.MembersListView.SelectedItem));
+                d(this.OneWayBind(ViewModel, vm => vm.Members, v => v.MembersListView.ItemsSource));
+                d(this.Bind(ViewModel, vm => vm.SelectedMember, v => v.MembersListView.SelectedItem));
 
                 d(_directMemberOfListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectMemberOfGroup));
                 d(this.BindCommand(ViewModel, vm => vm.FindDirectMemberOfGroup, v => v.OpenMemberOfMenuItem));
@@ -54,8 +54,8 @@ namespace MagnumOpus.Controls
                 d(this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton));
                 d(this.BindCommand(ViewModel, vm => vm.OpenEditMembers, v => v.MembersButton));
                 d(this.BindCommand(ViewModel, vm => vm.SaveMembers, v => v.SaveMembersButton));
-                d(_membersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindMemberUser));
-                d(this.BindCommand(ViewModel, vm => vm.FindMemberUser, v => v.OpenMembersMenuItem));
+                d(_membersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindMember));
+                d(this.BindCommand(ViewModel, vm => vm.FindMember, v => v.OpenMembersMenuItem));
 
                 d(ViewModel
                 .WhenAnyValue(x => x.IsShowingMemberOf)

@@ -67,11 +67,17 @@ namespace MagnumOpus.ViewModels
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    await ExcelService.SaveUsersToExcelFile(_memberUsers, saveFileDialog.FileName);
+                    await ExcelService.SaveUsersToExcelFile(_members, saveFileDialog.FileName);
                 }
             });
 
-            _findMemberUser = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.UserWindow>(_selectedMemberUser));
+            _findMember = ReactiveCommand.CreateFromTask(() => 
+            {
+                var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(_selectedMember);
+                if (principalType == PrincipalType.Group) return NavigationService.ShowWindow<Views.GroupWindow>(_selectedMember);
+                else if (principalType == PrincipalType.Computer) return NavigationService.ShowWindow<Views.ComputerWindow>(_selectedMember);
+                else return NavigationService.ShowWindow<Views.UserWindow>(_selectedMember);
+            });
 
             this.WhenActivated(disposables =>
             {
@@ -122,10 +128,10 @@ namespace MagnumOpus.ViewModels
                     this.WhenAnyValue(x => x.Group).WhereNotNull(),
                     _openEditMembers.Select(_ => _group))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
-                    .Do(_ => _memberUsers.Clear())
-                    .SelectMany(x => GetMemberUsers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
+                    .Do(_ => _members.Clear())
+                    .SelectMany(x => GetMembers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
                     .ObserveOnDispatcher()
-                    .Subscribe(x => _memberUsers.Add(x))
+                    .Subscribe(x => _members.Add(x))
                     .DisposeWith(disposables);
 
                 Observable.Merge(
@@ -136,7 +142,7 @@ namespace MagnumOpus.ViewModels
                     _saveAllGroups.ThrownExceptions,
                     _openEditMembers.ThrownExceptions,
                     _saveMembers.ThrownExceptions,
-                    _findMemberUser.ThrownExceptions)
+                    _findMember.ThrownExceptions)
                     .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
                     .DisposeWith(disposables);
             });
@@ -160,13 +166,13 @@ namespace MagnumOpus.ViewModels
 
         public ReactiveCommand SaveMembers => _saveMembers;
 
-        public ReactiveCommand FindMemberUser => _findMemberUser;
-
+        public ReactiveCommand FindMember => _findMember;
+    
         public IReactiveDerivedList<string> DirectMemberOfGroups => _directMemberOfGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
         public ReactiveList<string> AllMemberOfGroups => _allMemberOfGroups;
 
-        public IReactiveDerivedList<string> MemberUsers => _memberUsers.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> Members => _members.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
 
         public ListCollectionView AllMemberOfGroupsView => _allMemberOfGroupsView;
 
@@ -186,7 +192,7 @@ namespace MagnumOpus.ViewModels
 
         public string SelectedAllMemberOfGroup { get => _selectedAllMemberOfGroup; set => this.RaiseAndSetIfChanged(ref _selectedAllMemberOfGroup, value); }
 
-        public string SelectedMemberUser { get => _selectedMemberUser; set => this.RaiseAndSetIfChanged(ref _selectedMemberUser, value); }
+        public string SelectedMember { get => _selectedMember; set => this.RaiseAndSetIfChanged(ref _selectedMember, value); }
 
 
 
@@ -194,7 +200,7 @@ namespace MagnumOpus.ViewModels
             .SelectMany(x => x.Principal.GetGroups().ToObservable())
             .Select(x => x.Name);
 
-        private IObservable<string> GetMemberUsers(string identity) => Observable.Create<string>(observer =>
+        private IObservable<string> GetMembers(string identity) => Observable.Create<string>(observer =>
         {
             var disposed = false;
 
@@ -252,10 +258,10 @@ namespace MagnumOpus.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
         private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
         private readonly ReactiveCommand<Unit, Unit> _saveMembers;
-        private readonly ReactiveCommand<Unit, Unit> _findMemberUser;
+        private readonly ReactiveCommand<Unit, Unit> _findMember;
         private readonly ReactiveList<string> _directMemberOfGroups = new ReactiveList<string>();
         private readonly ReactiveList<string> _allMemberOfGroups = new ReactiveList<string>();
-        private readonly ReactiveList<string> _memberUsers = new ReactiveList<string>();
+        private readonly ReactiveList<string> _members = new ReactiveList<string>();
         private readonly ListCollectionView _allMemberOfGroupsView;
         private GroupObject _group;
         private bool _isShowingDirectMemberOf;
@@ -265,6 +271,6 @@ namespace MagnumOpus.ViewModels
         private string _filterString;
         private bool _useFuzzy;
         private string _selectedAllMemberOfGroup;
-        private string _selectedMemberUser;
+        private string _selectedMember;
     }
 }
