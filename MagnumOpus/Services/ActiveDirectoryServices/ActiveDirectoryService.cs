@@ -20,6 +20,8 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
 
 
+        public PrincipalType DeterminePrincipalType(string identity) => DeterminePrincipalType(GetPrincipal(identity).Wait());
+
 		public PrincipalType DeterminePrincipalType(Principal principal)
 		{
 			if (principal is UserPrincipal) return PrincipalType.User;
