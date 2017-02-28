@@ -4,6 +4,7 @@ using MagnumOpus.ViewModels;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Windows;
+using System.Reactive.Linq;
 
 namespace MagnumOpus.Views
 {
@@ -27,6 +28,10 @@ namespace MagnumOpus.Views
                 d(this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupNotes.Group));
 
                 d(this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Group.CN)));
+                d(this.Events().KeyDown
+                    .Where(x => x.Key == System.Windows.Input.Key.F5)
+                    .Select(_ => ViewModel.Group.CN)
+                    .InvokeCommand(ViewModel.SetGroup));
                 d(new List<Interaction<MessageInfo, Unit>>
                 {
                     GroupDetails.InfoMessages,

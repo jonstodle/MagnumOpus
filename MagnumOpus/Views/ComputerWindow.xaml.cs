@@ -4,6 +4,7 @@ using MagnumOpus.ViewModels;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Windows;
+using System.Reactive.Linq;
 
 namespace MagnumOpus.Views
 {
@@ -28,6 +29,10 @@ namespace MagnumOpus.Views
                 d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer));
 
                 d(this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)));
+                d(this.Events().KeyDown
+                    .Where(x => x.Key == System.Windows.Input.Key.F5)
+                    .Select(_ => ViewModel.Computer.CN)
+                    .InvokeCommand(ViewModel.SetComputer));
                 d(ComputerManagement
                     .PromptMessages
                     .RegisterPromptHandler(ContainerGrid));

@@ -34,6 +34,10 @@ namespace MagnumOpus.Views
                     .Where(x => x == ViewModel.User?.CN)
                     .InvokeCommand(ViewModel, x => x.SetUser));
                 d(this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)));
+                d(this.Events().KeyDown
+                    .Where(x => x.Key == System.Windows.Input.Key.F5)
+                    .Select(_ => ViewModel.User.CN)
+                    .InvokeCommand(ViewModel.SetUser));
                 d(new List<Interaction<MessageInfo, Unit>>
                 {
                     UserDetails.InfoMessages,
