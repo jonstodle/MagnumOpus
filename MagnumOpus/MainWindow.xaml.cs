@@ -39,65 +39,60 @@ namespace MagnumOpus
 
             this.WhenActivated(d =>
             {
-                if(ActiveDirectoryService.Current.CurrentDomain == null)
-                {
-                    MainGrid.IsEnabled = false;
-                    NoDomainStackPanel.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    MainGrid.IsEnabled = true;
-                    NoDomainStackPanel.Visibility = Visibility.Collapsed;
-                }
+                MainGrid.IsEnabled = ActiveDirectoryService.IsInDomain();
+                NoDomainStackPanel.Visibility = ActiveDirectoryService.IsInDomain() ? Visibility.Collapsed : Visibility.Visible;
 
-                d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource));
-                d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem));
-                d(this.OneWayBind(ViewModel, vm => vm.IsNoResults, v => v.NoResultsTextBlock.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.SearchResults.Count, v => v.SearchResultsCountTextBox.Text, x => $"{x} {(x == 1 ? "result" : "results")}"));
-                d(this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.SearchResultsStackPanel.Opacity, x => x ? 0 : 1));
-                d(this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.VersionTextBlock.Opacity, x => x ? 1 : 0));
-                d(this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.Domain, v => v.DomainTextBlock.Text));
+                if (ActiveDirectoryService.IsInDomain())
+                {
+                    d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
+                    d(this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource));
+                    d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
+                    d(this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem));
+                    d(this.OneWayBind(ViewModel, vm => vm.IsNoResults, v => v.NoResultsTextBlock.Visibility));
+                    d(this.OneWayBind(ViewModel, vm => vm.SearchResults.Count, v => v.SearchResultsCountTextBox.Text, x => $"{x} {(x == 1 ? "result" : "results")}"));
+                    d(this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.SearchResultsStackPanel.Opacity, x => x ? 0 : 1));
+                    d(this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.VersionTextBlock.Opacity, x => x ? 1 : 0));
+                    d(this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text));
+                    d(this.OneWayBind(ViewModel, vm => vm.Domain, v => v.DomainTextBlock.Text));
 
-                d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
-                d(Observable.Merge(
-                    SearchQueryTextBox.Events()
-                        .KeyDown
-                        .Where(x => x.Key == Key.Enter)
-                        .Select(_ => ViewModel.SearchQuery),
-                    ViewModel
-                        .Paste
-                        .Select(_ => ViewModel.SearchQuery),
-                    ViewModel
-                        .WhenAnyValue(x => x.SearchQuery)
-                        .Where(x => x.Length > 0 && !int.TryParse(x.First().ToString(), out int i))
-                        .Throttle(TimeSpan.FromSeconds(1)))
-                    .DistinctUntilChanged()
-                    .Where(x => x.HasValue(3))
-                    .Select(_ => Unit.Default)
-                    .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.Search));
-                d(SearchResultsListView.Events()
-                    .MouseDoubleClick
-                    .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.Open));
-                d(this.BindCommand(ViewModel, vm => vm.Open, v => v.OpenSearchResultsMenuItem));
-                d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
-                    .Subscribe(e =>
-                    {
-                        HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
-                        HistoryButtonContextMenu.IsOpen = true;
-                    }));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSettings, v => v.SettingsButton));
-                d(SearchResultsStackPanel.Events()
-                    .MouseDown
-                    .ToSignal()
-                    .InvokeCommand(ViewModel.ToggleShowVersion));
-                d(this.Events()
-                    .Closed
-                    .Subscribe(_ => Application.Current.Shutdown()));
+                    d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
+                    d(Observable.Merge(
+                        SearchQueryTextBox.Events()
+                            .KeyDown
+                            .Where(x => x.Key == Key.Enter)
+                            .Select(_ => ViewModel.SearchQuery),
+                        ViewModel
+                            .Paste
+                            .Select(_ => ViewModel.SearchQuery),
+                        ViewModel
+                            .WhenAnyValue(x => x.SearchQuery)
+                            .Where(x => x.Length > 0 && !int.TryParse(x.First().ToString(), out int i))
+                            .Throttle(TimeSpan.FromSeconds(1)))
+                        .DistinctUntilChanged()
+                        .Where(x => x.HasValue(3))
+                        .Select(_ => Unit.Default)
+                        .ObserveOnDispatcher()
+                        .InvokeCommand(ViewModel, x => x.Search));
+                    d(SearchResultsListView.Events()
+                        .MouseDoubleClick
+                        .Select(_ => Unit.Default)
+                        .InvokeCommand(ViewModel, x => x.Open));
+                    d(this.BindCommand(ViewModel, vm => vm.Open, v => v.OpenSearchResultsMenuItem));
+                    d(Observable.FromEventPattern(HistoryButton, nameof(Button.Click))
+                        .Subscribe(e =>
+                        {
+                            HistoryButtonContextMenu.PlacementTarget = e.Sender as Button;
+                            HistoryButtonContextMenu.IsOpen = true;
+                        }));
+                    d(this.BindCommand(ViewModel, vm => vm.OpenSettings, v => v.SettingsButton));
+                    d(SearchResultsStackPanel.Events()
+                        .MouseDown
+                        .ToSignal()
+                        .InvokeCommand(ViewModel.ToggleShowVersion));
+                    d(this.Events()
+                        .Closed
+                        .Subscribe(_ => Application.Current.Shutdown())); 
+                }
             });
         }
 
