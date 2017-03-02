@@ -93,7 +93,7 @@
 		<StackPanel x:Name="NoDomainStackPanel" VerticalAlignment="Center" Opacity=".7" Visibility="Collapsed">
 			<TextBlock Text="NO DOMAIN DETECTED" FontSize="40" TextAlignment="Center"/>
 
-			<TextBlock Text="Magnum Opus will only function when running from within a domain" FontFamily="20" TextAlignment="Center"/>
+			<TextBlock Text="Magnum Opus will only function when running in a domain" FontFamily="20" TextAlignment="Center"/>
 		</StackPanel>
 	</Grid>
 </Window>
