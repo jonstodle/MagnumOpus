@@ -8,7 +8,21 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 {
 	public partial class ActiveDirectoryService
     {
-        public static ActiveDirectoryService Current { get; } = new ActiveDirectoryService();
+        private static ActiveDirectoryService _current;
+        public static ActiveDirectoryService Current
+        {
+            get
+            {
+                if (_current == null) _current = new ActiveDirectoryService();
+                return _current;
+            }
+        }
+
+        public static bool IsInDomain()
+        {
+            try { return Domain.GetComputerDomain()?.Name != null; }
+            catch { return false; }
+        }
 
 
 
