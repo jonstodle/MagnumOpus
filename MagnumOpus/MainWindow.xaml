@@ -10,21 +10,21 @@
         Icon="/Assets/Icon.ico"
         Title="Magnum Opus" MinHeight="200" MinWidth="200" Height="400" Width="900">
 
-    <Grid Margin="2">
-		<Grid>
+	<Grid Margin="2">
+		<Grid x:Name="MainGrid">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition/>
 				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
-			
+
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition/>
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
-				
+
 				<Button x:Name="PasteButton" Content="Paste" Margin="2"/>
 
 				<TextBox x:Name="SearchQueryTextBox" CharacterCasing="Upper" Grid.Column="1" Margin="2"/>
@@ -59,7 +59,7 @@
 						</GridView.Columns>
 					</GridView>
 				</ListView.View>
-				
+
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenSearchResultsMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
@@ -67,9 +67,9 @@
 				</ListView.ContextMenu>
 			</ListView>
 
-            <TextBlock x:Name="NoResultsTextBlock" Text="NO RESULTS" FontSize="17" TextAlignment="Center" VerticalAlignment="Center" Opacity=".5" IsHitTestVisible="False" Visibility="Collapsed" Grid.Row="1" Margin="2"/>
+			<TextBlock x:Name="NoResultsTextBlock" Text="NO RESULTS" FontSize="17" TextAlignment="Center" VerticalAlignment="Center" Opacity=".5" IsHitTestVisible="False" Visibility="Collapsed" Grid.Row="1" Margin="2"/>
 
-            <Grid Grid.Row="2">
+			<Grid Grid.Row="2">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition/>
@@ -89,5 +89,11 @@
 				<Button x:Name="SettingsButton" Content="Settings" Grid.Column="2" Margin="2"/>
 			</Grid>
 		</Grid>
+
+		<StackPanel x:Name="NoDomainStackPanel" VerticalAlignment="Center" Opacity=".7" Visibility="Collapsed">
+			<TextBlock Text="NO DOMAIN DETECTED" FontSize="40" TextAlignment="Center"/>
+
+			<TextBlock Text="Magnum Opus will only function when running from within a domain" FontFamily="20" TextAlignment="Center"/>
+		</StackPanel>
 	</Grid>
 </Window>

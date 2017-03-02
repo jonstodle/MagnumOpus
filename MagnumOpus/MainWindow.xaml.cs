@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using MagnumOpus.Services.ActiveDirectoryServices;
 
 namespace MagnumOpus
 {
@@ -38,6 +39,17 @@ namespace MagnumOpus
 
             this.WhenActivated(d =>
             {
+                if(ActiveDirectoryService.Current.CurrentDomain == null)
+                {
+                    MainGrid.IsEnabled = false;
+                    NoDomainStackPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    MainGrid.IsEnabled = true;
+                    NoDomainStackPanel.Visibility = Visibility.Collapsed;
+                }
+
                 d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource));
                 d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
