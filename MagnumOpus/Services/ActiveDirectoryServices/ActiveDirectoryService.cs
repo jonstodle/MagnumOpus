@@ -13,7 +13,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
 
         private readonly PrincipalContext _principalContext = new PrincipalContext(ContextType.Domain);
-		public string CurrentDomain => Domain.GetCurrentDomain().Name;
+		public string CurrentDomain => Domain.GetCurrentDomain()?.Name;
 
 
 		private ActiveDirectoryService() { }
