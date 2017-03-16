@@ -36,18 +36,24 @@
 
 		<StackPanel x:Name="LoggedOnUsersStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
 			<ListView x:Name="LoggedOnUsersListView" Height="100">
+				<ListView.View>
+					<GridView>
+						<GridView.Columns>
+							<GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" Width="{StaticResource IDColumnWidth}"/>
+							<GridViewColumn Header="Session ID" DisplayMemberBinding="{Binding SessionID}"/>
+							<GridViewColumn Header="State" DisplayMemberBinding="{Binding State}"/>
+							<GridViewColumn Header="Idle Time" DisplayMemberBinding="{Binding IdleTime}"/>
+							<GridViewColumn Header="Logon Time" DisplayMemberBinding="{Binding LogonTime, StringFormat={}{0:g}}"/>
+						</GridView.Columns>
+					</GridView>
+				</ListView.View>
+
 				<ListView.ItemContainerStyle>
 					<Style TargetType="ListViewItem">
 						<EventSetter Event="MouseDoubleClick" Handler="LoggedOnUsersListViewItem_DoubleClick"/>
 					</Style>
 				</ListView.ItemContainerStyle>
 
-				<ListView.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding Username}"/>
-					</DataTemplate>
-				</ListView.ItemTemplate>
-				
 				<ListView.ContextMenu>
 					<ContextMenu>
 						<MenuItem x:Name="OpenUserMenuItem" Header="Open user" Style="{StaticResource PrimaryActionStyle}"/>

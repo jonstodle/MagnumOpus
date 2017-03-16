@@ -14,7 +14,23 @@ namespace MagnumOpus.Services.FileServices
 
         public static void RunInCmd(string filePath, string arguments = "", bool showWindow = true) => RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K {filePath} {arguments}", showWindow);
 
-		public static void RunFile(string filePath, string arguments = "", bool showWindow = true)
+        public static string RunInCmdWithOuput(string filePath, string arguments = "")
+        {
+            if (!File.Exists(filePath)) throw new ArgumentException($"Could not find {filePath}");
+
+            return Process.Start(new ProcessStartInfo
+            {
+                FileName = filePath,
+                Arguments = arguments,
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            })
+            .StandardOutput
+            .ReadToEnd();
+        }
+
+        public static void RunFile(string filePath, string arguments = "", bool showWindow = true)
 		{
 			if (File.Exists(filePath)) Process.Start(new ProcessStartInfo(filePath, arguments) { CreateNoWindow = !showWindow });
 			else throw new ArgumentException($"Could not find {filePath}");

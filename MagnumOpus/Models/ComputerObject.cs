@@ -1,8 +1,10 @@
 ﻿using MagnumOpus.Services.ActiveDirectoryServices;
+using MagnumOpus.Services.FileServices;
 using MagnumOpus.Services.SettingsServices;
 using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net;
@@ -29,33 +31,21 @@ namespace MagnumOpus.Models
 			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
 			.Catch(Observable.Return(""));
 
-		public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Create<LoggedOnUserInfo>(observer =>
-		{
-			var disposed = false;
-
-			var conOptions = new ConnectionOptions()
-			{
-				Impersonation = ImpersonationLevel.Impersonate,
-				EnablePrivileges = true
-			};
-			var scope = new ManagementScope($"\\\\{CN}\\ROOT\\CIMV2", conOptions);
-			scope.Connect();
-
-			var query = new ObjectQuery("SELECT * FROM Win32_Process where name='explorer.exe'");
-			var searcher = new ManagementObjectSearcher(scope, query);
-
-			foreach (ManagementObject item in searcher.Get())
-			{
-				var argsArray = new string[] { "" };
-				item.InvokeMethod("GetOwner", argsArray);
-				var hasSessionID = int.TryParse(item["sessionID"].ToString(), out int sessionID);
-				if (disposed) break;
-				observer.OnNext(new LoggedOnUserInfo { Username = argsArray[0], SessionID = hasSessionID ? sessionID : -1 });
-			}
-
-			observer.OnCompleted();
-			return () => disposed = true;
-		});
+        public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Return(ExecutionService.RunInCmdWithOuput(Path.Combine(ExecutionService.System32Path, "quser.exe"), $"/server:{CN}"))
+            .SelectMany(x => x.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToObservable())
+            .Select(x =>
+            {
+                var details = x.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                return new LoggedOnUserInfo
+                {
+                    Username = details[0].Replace(">", ""),
+                    SessionName = details[1],
+                    SessionID = int.TryParse(details[2], out var sid) ? sid : -1,
+                    State = details[3],
+                    IdleTime = TimeSpan.TryParse(details[4], out var it) ? it : TimeSpan.Zero,
+                    LogonTime = DateTimeOffset.TryParse($"{details[5]} {details[6]}", out var lt) ? lt : DateTimeOffset.Now
+                };
+            });
 
         public IObservable<UserObject> GetManagedBy() => Observable.Return(_directoryEntry.Properties.Get<string>("managedby"))
             .SelectMany(x =>
