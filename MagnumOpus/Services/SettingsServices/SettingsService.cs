@@ -8,8 +8,8 @@ namespace MagnumOpus.Services.SettingsServices
 {
 	public partial class SettingsService : IEnableLogger
 	{
-		public static SettingsService Current { get; private set; }
-		static SettingsService() { Current = Current ?? new SettingsService(); }
+        private static SettingsService _current;
+		public static SettingsService Current { get => _current != null ? _current : _current = new SettingsService(); }
 
 
 
