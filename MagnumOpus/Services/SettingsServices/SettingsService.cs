@@ -24,8 +24,8 @@ namespace MagnumOpus.Services.SettingsServices
 
 
 
-		private T Get<T>(T defaultValue = default(T), [CallerMemberName]string key = null) => BlobCache.LocalMachine.GetObject<T>(key).Catch(Observable.Return(defaultValue)).Wait();
+		private T Get<T>(T defaultValue = default(T), [CallerMemberName]string key = null) => BlobCache.UserAccount.GetObject<T>(key).Catch(Observable.Return(defaultValue)).Wait();
 
-		private async void Set<T>(T value, [CallerMemberName]string key = null) => await BlobCache.LocalMachine.InsertObject(key, value);
+		private async void Set<T>(T value, [CallerMemberName]string key = null) => await BlobCache.UserAccount.InsertObject(key, value);
 	}
 }
