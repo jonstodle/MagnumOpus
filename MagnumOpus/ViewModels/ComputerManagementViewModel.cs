@@ -19,15 +19,15 @@ namespace MagnumOpus.ViewModels
 			{
 				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No")) == 0)
 				{
-					ExecuteFile(Path.Combine(System32Path, "shutdown.exe"), $@"-r -f -m \\{_computer.CN} -t 0", false);
+					RunFile(Path.Combine(System32Path, "shutdown.exe"), $@"-r -f -m \\{_computer.CN} -t 0", false);
 				}
 			});
 
-			_runPSExec = ReactiveCommand.Create(() => ExecuteInternalCmd("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
+			_runPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
 
-			_openSccm = ReactiveCommand.Create(() => { ExecuteFile(SettingsService.Current.SCCMPath, _computer.CN); });
+			_openSccm = ReactiveCommand.Create(() => { RunFile(SettingsService.Current.SCCMPath, _computer.CN); });
 
             this.WhenActivated(disposables =>
             {

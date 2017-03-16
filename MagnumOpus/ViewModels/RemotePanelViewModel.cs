@@ -23,9 +23,9 @@ namespace MagnumOpus.ViewModels
 
 			_copyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser.Username));
 
-			_logOffUser = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "logoff.exe"), $"{_selectedLoggedOnUser.SessionID} /server:{_computer.CN}", false));
+			_logOffUser = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "logoff.exe"), $"{_selectedLoggedOnUser.SessionID} /server:{_computer.CN}", false));
 
-			_openLoggedOnUserDetails = ReactiveCommand.Create(() => ExecuteCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
+			_openLoggedOnUserDetails = ReactiveCommand.Create(() => RunInCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
 
 			_startRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
@@ -37,9 +37,9 @@ namespace MagnumOpus.ViewModels
 
 			_toggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer));
 
-			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"));
+			_startRemoteAssistance = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"));
 
-			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
+			_startRdp = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
 
 			_loggedOnUsers = new ReactiveList<LoggedOnUserInfo>();
 
@@ -124,15 +124,15 @@ namespace MagnumOpus.ViewModels
 			else StartRemoteControl2012Impl(computer);
 		});
 
-		private void StartRemoteControlClassicImpl(ComputerObject computer) => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {computer.CN}");
+		private void StartRemoteControlClassicImpl(ComputerObject computer) => RunFile(SettingsService.Current.RemoteControlClassicPath, $"1 {computer.CN}");
 
-		private void StartRemoteControl2012Impl(ComputerObject computer) => ExecuteFile(SettingsService.Current.RemoteControl2012Path, computer.CN);
+		private void StartRemoteControl2012Impl(ComputerObject computer) => RunFile(SettingsService.Current.RemoteControl2012Path, computer.CN);
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{
-			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f", false);
-			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f", false);
-			ExecuteFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f", false);
 		});
 
 		private IObservable<bool> ToggleUacImpl(ComputerObject computer) => Observable.Start(() =>

@@ -10,21 +10,25 @@ namespace MagnumOpus.Services.FileServices
 	{
 		public static string System32Path => Environment.GetFolderPath(Environment.SpecialFolder.System);
 
-		public static void ExecuteCmd(string fileName, string arguments = "", bool showWindow = true) => ExecuteFile(Path.Combine(System32Path, "cmd.exe"), $@"/K {fileName} {arguments}", showWindow);
 
-		public static void ExecuteFile(string fileName, string arguments = "", bool showWindow = true)
+
+        public static void RunInCmd(string filePath, string arguments = "", bool showWindow = true) => RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K {filePath} {arguments}", showWindow);
+
+		public static void RunFile(string filePath, string arguments = "", bool showWindow = true)
 		{
-			if (File.Exists(fileName)) Process.Start(new ProcessStartInfo(fileName, arguments) { CreateNoWindow = !showWindow });
-			else throw new ArgumentException($"Could not find {fileName}");
+			if (File.Exists(filePath)) Process.Start(new ProcessStartInfo(filePath, arguments) { CreateNoWindow = !showWindow });
+			else throw new ArgumentException($"Could not find {filePath}");
 		}
 
-		public static void ExecuteInternalCmd(string fileName, string arguments = "", bool showWindow = true) => ExecuteFile(Path.Combine(System32Path, "cmd.exe"), $"/K \"{Path.Combine(FileService.LocalAppData, fileName)}\" {arguments}", showWindow);
 
-		public static void ExecuteInternalFile(string fileName, string arguments = "", bool showWindow = true)
+
+        public static void RunInCmdFromCache(string fileName, string arguments = "", bool showWindow = true) => RunFile(Path.Combine(System32Path, "cmd.exe"), $"/K \"{Path.Combine(FileService.LocalAppData, fileName)}\" {arguments}", showWindow);
+
+		public static void RunFileFromCache(string fileName, string arguments = "", bool showWindow = true)
 		{
 			var filePath = Path.Combine(FileService.LocalAppData, fileName);
 			EnsureExecutableIsAvailable(fileName);
-			ExecuteFile(filePath, arguments, showWindow);
+			RunFile(filePath, arguments, showWindow);
 		}
 	}
 }
