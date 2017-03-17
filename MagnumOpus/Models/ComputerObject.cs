@@ -39,7 +39,7 @@ namespace MagnumOpus.Models
                 var details = x.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 return new LoggedOnUserInfo
                 {
-                    Username = details[0].Replace(">", ""),
+                    Username = details[0].Replace(">", "").ToUpperInvariant(),
                     SessionName = details[1],
                     SessionID = int.TryParse(details[2], out var sid) ? sid : -1,
                     State = details[3],
