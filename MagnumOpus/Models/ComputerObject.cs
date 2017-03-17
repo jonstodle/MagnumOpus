@@ -13,25 +13,25 @@ using System.Reactive.Linq;
 
 namespace MagnumOpus.Models
 {
-	public class ComputerObject : ActiveDirectoryObject<ComputerPrincipal>
+    public class ComputerObject : ActiveDirectoryObject<ComputerPrincipal>
     {
         public ComputerObject(ComputerPrincipal principal) : base(principal) { }
 
 
 
-		public string OperatingSystem => _directoryEntry.Properties.Get<string>("operatingsystem");
+        public string OperatingSystem => _directoryEntry.Properties.Get<string>("operatingsystem");
 
-		public string ServicePack => _directoryEntry.Properties.Get<string>("operatingsystemservicepack");
+        public string ServicePack => _directoryEntry.Properties.Get<string>("operatingsystemservicepack");
 
         public string Company => SettingsService.Current.ComputerCompanyOus.FirstOrDefault(x => _principal.DistinguishedName.Contains(x.Key)).Value ?? "";
 
 
 
-		public IObservable<string> GetIPAddress() => Observable.Start(() => 
-			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
-			.Catch(Observable.Return(""));
+        public IObservable<string> GetIPAddress() => Observable.Start(() =>
+            Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
+            .Catch(Observable.Return(""));
 
-        public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Start(() => 
+        public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Start(() =>
             ExecutionService.RunInCmdWithOuput(Path.Combine(ExecutionService.System32Path, "quser.exe"), $"/server:{CN}"))
             .SelectMany(x => x.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToObservable())
             .Select(x =>
@@ -43,7 +43,7 @@ namespace MagnumOpus.Models
                     SessionName = details[1],
                     SessionID = int.TryParse(details[2], out var sid) ? sid : -1,
                     State = details[3],
-                    IdleTime = TimeSpan.TryParse(details[4], out var it) ? it : TimeSpan.Zero,
+                    IdleTime = TimeSpan.TryParse(!details[4].Contains(":") ? details[4].Insert(0, "0:") : details[4], out var it) ? it : TimeSpan.Zero,
                     LogonTime = DateTimeOffset.TryParse($"{details[5]} {details[6]}", out var lt) ? lt : DateTimeOffset.Now
                 };
             });
@@ -56,5 +56,5 @@ namespace MagnumOpus.Models
             })
             .Catch(Observable.Return<UserObject>(null))
             .Take(1);
-	}
+    }
 }
