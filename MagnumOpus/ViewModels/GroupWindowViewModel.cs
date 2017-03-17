@@ -37,9 +37,9 @@ namespace MagnumOpus.ViewModels
 
 		public Task OnNavigatedTo(object parameter)
 		{
-			if (parameter is string)
+			if (parameter is string s)
 			{
-				Observable.Return(parameter as string)
+				Observable.Return(s)
 					.InvokeCommand(_setGroup);
 			}
 

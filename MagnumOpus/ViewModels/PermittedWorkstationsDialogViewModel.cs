@@ -105,7 +105,7 @@ namespace MagnumOpus.ViewModels
         {
             _close = close;
 
-            if (parameter is string)
+            if (parameter is string s)
             {
                 User = await ActiveDirectoryService.Current.GetUser(parameter as string);
             }
