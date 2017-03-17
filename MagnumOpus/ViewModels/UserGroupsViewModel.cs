@@ -154,7 +154,7 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetDirectGroups(string identity) => Observable.Return(ActiveDirectoryService.Current.GetUser(identity).Wait())
+        private IObservable<DirectoryEntry> GetDirectGroups(string identity) => ActiveDirectoryService.Current.GetUser(identity)
             .SelectMany(x => x.Principal.GetGroups().ToObservable())
             .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 

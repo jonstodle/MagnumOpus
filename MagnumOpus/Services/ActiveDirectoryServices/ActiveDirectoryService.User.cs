@@ -115,7 +115,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 			};
 		});
 
-        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Return(Domain.GetCurrentDomain().DomainControllers)
+        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Start(() => Domain.GetCurrentDomain().DomainControllers)
             .SelectMany(dcs =>
             {
                 var dcList = new List<DomainController>();
