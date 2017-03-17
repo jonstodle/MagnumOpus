@@ -42,7 +42,7 @@ namespace MagnumOpus.ViewModels
 			_loggedOnUsers = new ReactiveList<LoggedOnUserInfo>();
 
 			_isUacOn = Observable.Merge(
-				this.WhenAnyValue(x => x.Computer).WhereNotNull().SelectMany(x => GetIsUacOn(x.CN).Select(y => (bool?)y).Catch(Observable.Return<bool?>(null))),
+				this.WhenAnyValue(x => x.Computer).WhereNotNull().SelectMany(x => GetIsUacOn(x.CN).Select(y => (bool?)y).CatchAndReturn(null)),
 				_toggleUac.Select(x => (bool?)x))
 				.ObserveOnDispatcher()
 				.ToProperty(this, x => x.IsUacOn);
@@ -51,7 +51,7 @@ namespace MagnumOpus.ViewModels
             {
                 this.WhenAnyValue(x => x.Computer)
                 .WhereNotNull()
-                .Select(x => x.GetLoggedInUsers().Catch(Observable.Return<LoggedOnUserInfo>(null)).WhereNotNull())
+                .Select(x => x.GetLoggedInUsers().CatchAndReturn(null).WhereNotNull())
                 .Do(_ => _loggedOnUsers.Clear())
                 .Switch()
                 .ObserveOnDispatcher()

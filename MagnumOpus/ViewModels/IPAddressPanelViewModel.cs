@@ -59,7 +59,7 @@ namespace MagnumOpus.ViewModels
 			_hostName = this.WhenAnyValue(x => x.IPAddress)
 				.Where(x => x.HasValue())
 				.Select(x => Dns.GetHostEntry(x).HostName)
-				.Catch(Observable.Return(""))
+				.CatchAndReturn("")
 				.ToProperty(this, x => x.HostName, null);
 
             this.WhenActivated(disposables =>

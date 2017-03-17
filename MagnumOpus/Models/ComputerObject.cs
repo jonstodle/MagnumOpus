@@ -29,7 +29,7 @@ namespace MagnumOpus.Models
 
         public IObservable<string> GetIPAddress() => Observable.Start(() =>
             Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
-            .Catch(Observable.Return(""));
+            .CatchAndReturn("");
 
         public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Start(() =>
             ExecutionService.RunInCmdWithOuput(Path.Combine(ExecutionService.System32Path, "quser.exe"), $"/server:{CN}"))
@@ -54,7 +54,7 @@ namespace MagnumOpus.Models
                 if (x == null) return Observable.Return<UserObject>(null);
                 else return ActiveDirectoryService.Current.GetUser(x);
             })
-            .Catch(Observable.Return<UserObject>(null))
+            .CatchAndReturn(null)
             .Take(1);
     }
 }

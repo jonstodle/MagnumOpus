@@ -22,7 +22,7 @@ namespace MagnumOpus.Models
                 if (x == null) return Observable.Return<UserObject>(null);
                 else return ActiveDirectoryService.Current.GetUser(x);
             })
-            .Catch(Observable.Return<UserObject>(null))
+            .CatchAndReturn(null)
             .Take(1);
     }
 }

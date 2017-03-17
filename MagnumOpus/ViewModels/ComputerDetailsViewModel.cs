@@ -21,7 +21,7 @@ namespace MagnumOpus.ViewModels
                 .RefCount();
 
 			_operatingSystemInfo = newComputer
-				.SelectMany(x => GetOSInfo(x).Catch(Observable.Return<OperatingSystemInfo>(null)))
+				.SelectMany(x => GetOSInfo(x).CatchAndReturn(null))
 				.ToProperty(this, x => x.OperatingSystemInfo, null, scheduler: DispatcherScheduler.Current);
 
 			_ipAddress = newComputer
