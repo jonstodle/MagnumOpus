@@ -14,8 +14,6 @@
         <WrapPanel>
 			<ToggleButton x:Name="LoggedOnUsersToggleButton" Content="Logged on" Margin="2"/>
 
-			<Button x:Name="OpenLoggedOnUsersDetailsButton" Content="Logged on details" Margin="2"/>
-
 			<ext:SplitButton x:Name="RemoteControlButton" Content="Remote control" Margin="2">
 				<ext:SplitButton.DropDownContent>
 					<StackPanel>

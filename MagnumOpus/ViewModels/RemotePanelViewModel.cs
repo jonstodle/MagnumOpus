@@ -25,8 +25,6 @@ namespace MagnumOpus.ViewModels
 
 			_logOffUser = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "logoff.exe"), $"{_selectedLoggedOnUser.SessionID} /server:{_computer.CN}", false));
 
-			_openLoggedOnUserDetails = ReactiveCommand.Create(() => RunInCmd(Path.Combine(System32Path, "quser.exe"), $"/server:{_computer.CN}"));
-
 			_startRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
 			_startRemoteControlClassic = ReactiveCommand.Create(() => StartRemoteControlClassicImpl(_computer));
@@ -62,7 +60,6 @@ namespace MagnumOpus.ViewModels
 
                 Observable.Merge(
                     _openUser.ThrownExceptions,
-                    _openLoggedOnUserDetails.ThrownExceptions,
                     _startRemoteControl.ThrownExceptions,
                     _startRemoteControlClassic.ThrownExceptions,
                     _startRemoteControl2012.ThrownExceptions,
@@ -83,8 +80,6 @@ namespace MagnumOpus.ViewModels
 		public ReactiveCommand CopyUserName => _copyUserName;
 
         public ReactiveCommand LogOffUser => _logOffUser;
-
-		public ReactiveCommand OpenLoggedOnUserDetails => _openLoggedOnUserDetails;
 
 		public ReactiveCommand StartRemoteControl => _startRemoteControl;
 
@@ -179,7 +174,6 @@ namespace MagnumOpus.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _openUser;
         private readonly ReactiveCommand<Unit, Unit> _copyUserName;
         private readonly ReactiveCommand<Unit, Unit> _logOffUser;
-        private readonly ReactiveCommand<Unit, Unit> _openLoggedOnUserDetails;
         private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
         private readonly ReactiveCommand<Unit, Unit> _startRemoteControlClassic;
         private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
