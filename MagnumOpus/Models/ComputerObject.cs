@@ -31,7 +31,8 @@ namespace MagnumOpus.Models
 			Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
 			.Catch(Observable.Return(""));
 
-        public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Start(() => ExecutionService.RunInCmdWithOuput(Path.Combine(ExecutionService.System32Path, "quser.exe"), $"/server:{CN}"))
+        public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Start(() => 
+            ExecutionService.RunInCmdWithOuput(Path.Combine(ExecutionService.System32Path, "quser.exe"), $"/server:{CN}"))
             .SelectMany(x => x.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Skip(1).ToObservable())
             .Select(x =>
             {
