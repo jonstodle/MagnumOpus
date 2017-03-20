@@ -15,39 +15,22 @@ Add these files to the `Executables/Files` folder. These files are bundled in th
 
 ### Environment Variables
 
-Some variables are specific to your environment. These can be set by adding a file named `SettingsService.Environment.cs` to the `SettingsService` folder and adding the following code:
-```
-using System.Collections.Generic;
+Some variables are specific to your environment. These are set by adding a file named `EnvironmentDefaults.json` to the root of the project. It has to match the `EnvironmentDefaults` class located in `SettingsService.Environment.cs`. The structure should match the following (without the C-style comments):
 
-namespace SupportTool.Services.SettingsServices
+``` json
 {
-    public partial class SettingsService
+  "SplunkUrl": "https://splunk.internally.com/search?msad-account={0}", // Insert {0} where the username should be inserted in the url
+  "SCCMPath": "C:\\Program Files\\SCCM Tools\\SCCM Client Center\\SMSCliCtrV2.exe", // Path to SCCM client (https://sccmclictr.codeplex.com/)
+  "LogDirectoryPath": "C:\\Logs\\Magnum Opus", // Where to put log files from the application
+  "ComputerCompanyOus": [ // The key should be a part of the DistinguishedName of the DirectoryEntry which only occurs for each specific company, e.g.: "OU=CompanyName". The value is the name of the company, e.g.: "Company Name".
     {
-        // Variables specific to the current environment
-
-        public string SplunkUrl // Insert {0} where the username should be inserted in the url
-        {
-            get => Get("");
-            set => Set(value);
-        }
-
-        public string SCCMPath // Path to SCCM client (https://sccmclictr.codeplex.com/)
-        {
-            get => Get("");
-            set => Set(value);
-        }
-
-        public string LogDirectoryPath // Where to put log files from the application
-        {
-            get => Get("");
-            set => Set(value);
-        }
-
-        public IEnumerable<KeyValuePair<string, string>> ComputerCompanyOus // The key should be a part of the DistinguishedName of the DirectoryEntry which only occurs for each specific company, e.g.: "OU=CompanyName". The value is the name of the company, e.g.: "Company Name".
-        {
-            get => Get(new List<KeyValuePair<string, string>>());
-            set => Set(value);
-        }
+      "Key": "OU=ALPHASOFT",
+      "Value": "Alpha Software Industries"
+    },
+    {
+      "Key": "OU=BETAINC",
+      "Value": "Beta Incorporated"
     }
+  ]
 }
 ```
