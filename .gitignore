@@ -246,3 +246,5 @@ ModelManifest.xml
 SupportTool/Executables/Files/
 
 SupportTool/Services/SettingsServices/SettingsService\.Environment\.cs
+
+MagnumOpus/EnvironmentDefaults\.json
