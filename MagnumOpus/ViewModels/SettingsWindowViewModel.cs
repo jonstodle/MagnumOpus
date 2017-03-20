@@ -1,13 +1,18 @@
 ﻿using MagnumOpus.Services.NavigationServices;
 using MagnumOpus.Services.SettingsServices;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace MagnumOpus.ViewModels
 {
 	public class SettingsWindowViewModel : ViewModelBase, IDialog
 	{
-		public SettingsWindowViewModel() { }
+		public SettingsWindowViewModel() {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            var assemblyTime = Assembly.GetExecutingAssembly().GetLinkerTime();
+            _version = $"{version.Major}.{version.Minor}.{assemblyTime.Day.ToString("00")}{assemblyTime.Month.ToString("00")}{assemblyTime.Year.ToString().Substring(2, 2)}.{assemblyTime.Hour.ToString("00")}{assemblyTime.Minute.ToString("00")}{assemblyTime.Second.ToString("00")}";
+        }
 
 
 
@@ -41,6 +46,8 @@ namespace MagnumOpus.ViewModels
 			set => SettingsService.Current.RemoteControl2012Path = value;
 		}
 
+        public string Version => _version;
+
 
 
 		public Task Opening(Action close, object parameter)
@@ -51,6 +58,7 @@ namespace MagnumOpus.ViewModels
 
 
 
+        private readonly string _version;
         private Action _close;
     }
 }

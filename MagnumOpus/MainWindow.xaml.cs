@@ -50,9 +50,6 @@ namespace MagnumOpus
                     d(this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem));
                     d(this.OneWayBind(ViewModel, vm => vm.IsNoResults, v => v.NoResultsTextBlock.Visibility));
                     d(this.OneWayBind(ViewModel, vm => vm.SearchResults.Count, v => v.SearchResultsCountTextBox.Text, x => $"{x} {(x == 1 ? "result" : "results")}"));
-                    d(this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.SearchResultsStackPanel.Opacity, x => x ? 0 : 1));
-                    d(this.OneWayBind(ViewModel, vm => vm.ShowVersion, v => v.VersionTextBlock.Opacity, x => x ? 1 : 0));
-                    d(this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text));
                     d(this.OneWayBind(ViewModel, vm => vm.Domain, v => v.DomainTextBlock.Text));
 
                     d(this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton));
@@ -85,10 +82,6 @@ namespace MagnumOpus
                             HistoryButtonContextMenu.IsOpen = true;
                         }));
                     d(this.BindCommand(ViewModel, vm => vm.OpenSettings, v => v.SettingsButton));
-                    d(SearchResultsStackPanel.Events()
-                        .MouseDown
-                        .ToSignal()
-                        .InvokeCommand(ViewModel.ToggleShowVersion));
                     d(this.Events()
                         .Closed
                         .Subscribe(_ => Application.Current.Shutdown())); 

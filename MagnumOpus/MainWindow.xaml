@@ -84,8 +84,6 @@
 					<TextBlock Text=" (maximum 1000)" Opacity=".5" Margin="2"/>
 				</StackPanel>
 
-				<TextBlock x:Name="VersionTextBlock" Opacity="0" IsHitTestVisible="False" VerticalAlignment="Center" Margin="2"/>
-
 				<Button x:Name="SettingsButton" Content="Settings" Grid.Column="2" Margin="2"/>
 			</Grid>
 		</Grid>

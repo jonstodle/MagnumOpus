@@ -10,7 +10,7 @@
 
 	<Window.Resources>
 		<Style x:Key="SettingsHeaderStyle" TargetType="TextBlock">
-			<Setter Property="Margin" Value="2,10,2,2"/>
+			<Setter Property="Margin" Value="2,12,2,2"/>
 			<Setter Property="FontWeight" Value="SemiBold"/>
 		</Style>
 	</Window.Resources>
@@ -37,6 +37,9 @@
 
 				<TextBlock Text="Aknowledgements" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBlock Text="Wrench icon from Icons8" Margin="2"/>
+
+				<TextBlock Text="Version" Style="{StaticResource SettingsHeaderStyle}"/>
+				<TextBlock x:Name="VersionTextBlock" Margin="2"/>
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>

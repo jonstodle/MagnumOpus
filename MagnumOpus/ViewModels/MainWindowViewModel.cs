@@ -22,10 +22,6 @@ namespace MagnumOpus.ViewModels
             _searchResults = new ReactiveList<DirectoryEntryInfo>();
             _history = new ReactiveList<string>();
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var assemblyTime = Assembly.GetExecutingAssembly().GetLinkerTime();
-            _version = $"{version.Major}.{version.Minor}.{assemblyTime.Day.ToString("00")}{assemblyTime.Month.ToString("00")}{assemblyTime.Year.ToString().Substring(2, 2)}.{assemblyTime.Hour.ToString("00")}{assemblyTime.Minute.ToString("00")}{assemblyTime.Second.ToString("00")}";
-
             _search = ReactiveCommand.CreateFromTask(async () =>
             {
                 if (_searchQuery.IsIPAddress())
@@ -56,11 +52,6 @@ namespace MagnumOpus.ViewModels
 
             _openSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
 
-            _toggleShowVersion = ReactiveCommand.Create<Unit, bool>(_ => !_showVersion.Value);
-
-            _showVersion = _toggleShowVersion
-                .ToProperty(this, x => x.ShowVersion, false);
-
             _isNoResults = _search
                 .Select(x => Observable.Concat(
                     Observable.Return(false),
@@ -73,8 +64,7 @@ namespace MagnumOpus.ViewModels
                 _search.ThrownExceptions,
                 _paste.ThrownExceptions,
                 _open.ThrownExceptions,
-                _openSettings.ThrownExceptions,
-                _toggleShowVersion.ThrownExceptions)
+                _openSettings.ThrownExceptions)
                 .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)));
 
             StateService.Get(nameof(_history), Enumerable.Empty<string>())
@@ -100,17 +90,11 @@ namespace MagnumOpus.ViewModels
 
         public ReactiveCommand OpenSettings => _openSettings;
 
-        public ReactiveCommand ToggleShowVersion => _toggleShowVersion;
-
         public IReactiveDerivedList<DirectoryEntryInfo> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
 
         public ReactiveList<string> History => _history;
 
-        public bool ShowVersion => _showVersion.Value;
-
         public bool IsNoResults => _isNoResults.Value;
-
-        public string Version => _version;
 
         public string Domain => ActiveDirectoryService.Current.CurrentDomain;
 
@@ -126,14 +110,11 @@ namespace MagnumOpus.ViewModels
         private readonly ReactiveCommand<Unit, Unit> _paste;
         private readonly ReactiveCommand<Unit, Unit> _open;
         private readonly ReactiveCommand<Unit, Unit> _openSettings;
-        private readonly ReactiveCommand<Unit, bool> _toggleShowVersion;
         private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
         private readonly ReactiveList<string> _history;
-        private readonly ObservableAsPropertyHelper<bool> _showVersion;
         private readonly ObservableAsPropertyHelper<bool> _isNoResults;
         private SortDescription _listSortDescription;
         private string _searchQuery;
         private DirectoryEntryInfo _selectedSearchResult;
-        private string _version;
     }
 }
