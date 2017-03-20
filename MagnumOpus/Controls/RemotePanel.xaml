@@ -39,9 +39,9 @@
 						<GridView.Columns>
 							<GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" Width="{StaticResource IDColumnWidth}"/>
 							<GridViewColumn Header="Session ID" DisplayMemberBinding="{Binding SessionID}"/>
-							<GridViewColumn Header="State" DisplayMemberBinding="{Binding State}"/>
-							<GridViewColumn Header="Idle Time" DisplayMemberBinding="{Binding IdleTime}"/>
-							<GridViewColumn Header="Logon Time" DisplayMemberBinding="{Binding LogonTime, StringFormat={}{0:g}}"/>
+							<!--<GridViewColumn Header="State" DisplayMemberBinding="{Binding State}"/>-->
+							<!--<GridViewColumn Header="Idle Time" DisplayMemberBinding="{Binding IdleTime}"/>-->
+							<!--<GridViewColumn Header="Logon Time" DisplayMemberBinding="{Binding LogonTime, StringFormat={}{0:g}}"/>-->
 						</GridView.Columns>
 					</GridView>
 				</ListView.View>

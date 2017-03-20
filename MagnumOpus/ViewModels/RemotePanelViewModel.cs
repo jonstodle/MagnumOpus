@@ -51,7 +51,7 @@ namespace MagnumOpus.ViewModels
             {
                 this.WhenAnyValue(x => x.Computer)
                 .WhereNotNull()
-                .Select(x => x.GetLoggedInUsers().CatchAndReturn(null).WhereNotNull())
+                .Select(x => x.GetLoggedInUsers().SubscribeOn(RxApp.TaskpoolScheduler).CatchAndReturn(null).WhereNotNull())
                 .Do(_ => _loggedOnUsers.Clear())
                 .Switch()
                 .ObserveOnDispatcher()
