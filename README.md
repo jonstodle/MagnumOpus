@@ -1,4 +1,4 @@
-# Magnum Opus
+<div><h1 style="display:inline"><img src="./MagnumOpus/Assets/Icon-64.png" alt="Wrench icon" style="height: .7em"/> Magnum Opus</h1></div>
 
 Magnum Opus is a support tool specifically developed for use at Sykehuspartner HF. It covers a wide range of different tasks which are common at the Service Desk.
 
@@ -34,3 +34,8 @@ Some variables are specific to your environment. These are set by adding a file 
   ]
 }
 ```
+
+### Icon
+
+[![Wrench icon](./MagnumOpus/Assets/Icon-128.png)  
+Support by Icons8](https://icons8.com/web-app/21107/support)
