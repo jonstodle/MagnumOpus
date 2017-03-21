@@ -36,7 +36,11 @@
 				<TextBox x:Name="RemoteControl2012PathTextBox" Margin="2"/>
 
 				<TextBlock Text="Aknowledgements" Style="{StaticResource SettingsHeaderStyle}"/>
-				<TextBlock Text="Wrench icon from Icons8" Margin="2"/>
+				<StackPanel Orientation="Horizontal">
+					<Image Source="/Assets/icon-64.png" MaxHeight="{Binding ActualHeight, ElementName=Icons8AttributionTextBlock}" Margin="2"/>
+
+					<TextBlock x:Name="Icons8AttributionTextBlock" Margin="2"><Hyperlink x:Name="Icons8AttributionHyperlink" NavigateUri="https://icons8.com/web-app/21107/support">Support icon from Icons8</Hyperlink></TextBlock>
+				</StackPanel>
 
 				<TextBlock Text="Version" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBlock x:Name="VersionTextBlock" Margin="2"/>

@@ -1,7 +1,11 @@
 ﻿using ReactiveUI;
 using MagnumOpus.Models;
 using MagnumOpus.ViewModels;
+using System;
 using System.Windows;
+using System.Reactive.Linq;
+using System.Windows.Navigation;
+using System.Diagnostics;
 
 namespace MagnumOpus.Views
 {
@@ -24,6 +28,10 @@ namespace MagnumOpus.Views
                 d(this.Bind(ViewModel, vm => vm.RemoteControlClassicPath, v => v.RemoteControlClassicPathTextBox.Text));
                 d(this.Bind(ViewModel, vm => vm.RemoteControl2012Path, v => v.RemoteControl2012PathTextBox.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text));
+
+                d(Observable.FromEventPattern<RequestNavigateEventArgs>(Icons8AttributionHyperlink, nameof(Icons8AttributionHyperlink.RequestNavigate))
+                    .Select(args => args.EventArgs.Uri.AbsoluteUri)
+                    .Subscribe(uri => Process.Start(uri)));
 
                 d(ViewModel
                     .InfoMessages
