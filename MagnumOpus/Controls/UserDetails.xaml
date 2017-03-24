@@ -25,7 +25,7 @@
 			<TextBlock Text=" | "/>
 			<TextBlock x:Name="AccountEnabledTextBlock"/>
 			<TextBlock Text=" | "/>
-			<TextBlock x:Name="PasswordAgeTextBlock"/>
+			<TextBlock x:Name="PasswordStatusTextBlock"/>
 			<TextBlock Text=" | "/>
 			<TextBox x:Name="EmailAddressTextBlock" Style="{StaticResource TextBlockTextBoxStyle}"/>
 		</WrapPanel>

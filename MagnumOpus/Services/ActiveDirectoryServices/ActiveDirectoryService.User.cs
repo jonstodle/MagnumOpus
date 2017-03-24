@@ -122,6 +122,6 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
                 foreach (DomainController dc in dcs) dcList.Add(dc);
                 return dcList.ToObservable();
             })
-            .SelectMany(dc => Observable.Start(() => action(dc)).CatchAndReturn(default(TResult)));
+            .SelectMany(dc => Observable.Start(() => action(dc)));
     }
 }

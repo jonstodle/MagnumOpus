@@ -1,4 +1,5 @@
-﻿using Splat;
+﻿using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,10 +34,11 @@ namespace MagnumOpus.Controls
 
             MessageTextBlock.Text = message;
 
+            Button focusButton = null;
             foreach (var buttonInfo in _buttons)
             {
                 var button = new Button { Content = buttonInfo.Text, Tag = buttonInfo.Id };
-                button.IsDefault = buttonInfo.IsDefault;
+                if(button.IsDefault = buttonInfo.IsDefault) focusButton = button;
                 button.Click += HandleButtonClick;
                 ButtonStackPanel.Children.Add(button);
             }
@@ -44,6 +46,8 @@ namespace MagnumOpus.Controls
             this.Log().Info($"Showing dialog with content: {message}");
 
             _parent.Children.Add(this);
+
+            if (focusButton != null) Observable.Timer(TimeSpan.FromSeconds(.5), RxApp.MainThreadScheduler).Subscribe(_ => focusButton.Focus());
         }
 
         public DialogControl(Grid parent, string caption, string message, params DialogButtonInfo[] buttons) : this(parent, message, buttons)

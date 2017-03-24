@@ -35,6 +35,17 @@ namespace MagnumOpus.ViewModels
                 .Select(x => DateTime.Now - x.Principal.LastPasswordSet.Value.ToLocalTime())
                 .ToProperty(this, x => x.PasswordAge);
 
+            _passwordStatus = Observable.CombineLatest(
+                newUser,
+                this.WhenAnyValue(x => x.PasswordAge),
+                (nu, pa) =>
+                {
+                    if (nu.Principal.PasswordNeverExpires) return "Password never expires";
+                    else if ((nu.Principal.LastPasswordSet ?? DateTime.MinValue) == DateTime.MinValue) return "Password must change";
+                    else return $"Password age: {pa.Days}d {pa.Hours}h {pa.Minutes}m";
+                })
+                .ToProperty(this, x => x.PasswordStatus);
+
             _isShowingOrganizationDetails = _toggleOrganizationDetails
                 .ToProperty(this, x => x.IsShowingOrganizationDetails);
 
@@ -77,6 +88,8 @@ namespace MagnumOpus.ViewModels
 
         public TimeSpan PasswordAge => _passwordAge.Value;
 
+        public string PasswordStatus => _passwordStatus.Value;
+
         public bool IsShowingOrganizationDetails => _isShowingOrganizationDetails.Value;
 
         public UserObject Manager => _manager.Value;
@@ -93,6 +106,7 @@ namespace MagnumOpus.ViewModels
         private readonly ReactiveList<UserObject> _directReports = new ReactiveList<UserObject>();
         private readonly ObservableAsPropertyHelper<bool> _isAccountLocked;
         private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;
+        private readonly ObservableAsPropertyHelper<string> _passwordStatus;
         private readonly ObservableAsPropertyHelper<bool> _isShowingOrganizationDetails;
         private readonly ObservableAsPropertyHelper<UserObject> _manager;
         private UserObject _user;
