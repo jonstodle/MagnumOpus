@@ -34,7 +34,7 @@ namespace MagnumOpus.Controls
                 d(this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked"));
                 d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, x => x != null ? (bool)x ? "User enabled" : "User disabled" : "Status unavailable"));
                 d(this.OneWayBind(ViewModel, vm => vm.PasswordStatus, v => v.PasswordStatusTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text));
+                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text, x => x.HasValue() ? x : "No email address"));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingOrganizationDetails, v => v.OrganizationGrid.Visibility));
                 d(this.OneWayBind(ViewModel, vm => vm.User.JobTitle, v => v.JobTitleTextBlock.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.User.Department, v => v.DepartmentTextBlock.Text));
