@@ -8,7 +8,13 @@
 			set => Set(value);
 		}
 
-		public double DetailsWindowTimeoutLength
+        public bool OpenDuplicateWindows
+        {
+            get => Get(false);
+            set => Set(value);
+        }
+
+        public double DetailsWindowTimeoutLength
 		{
 			get => Get(2d);
 			set => Set(value); 

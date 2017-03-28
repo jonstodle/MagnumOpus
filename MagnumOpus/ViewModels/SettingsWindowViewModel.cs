@@ -20,9 +20,15 @@ namespace MagnumOpus.ViewModels
 		{
 			get => SettingsService.Current.HistoryCountLimit.ToString();
 			set { if(int.TryParse(value, out int i)) SettingsService.Current.HistoryCountLimit = i; }
-		}
+        }
 
-		public string DetailWindowTimeoutLength
+        public bool OpenDuplicateWindows
+        {
+            get => SettingsService.Current.OpenDuplicateWindows;
+            set => SettingsService.Current.OpenDuplicateWindows = value;
+        }
+
+        public string DetailWindowTimeoutLength
 		{
 			get => SettingsService.Current.DetailsWindowTimeoutLength.ToString();
 			set { if (double.TryParse(value, out double i)) SettingsService.Current.DetailsWindowTimeoutLength = i > 0 ? i : 1; }

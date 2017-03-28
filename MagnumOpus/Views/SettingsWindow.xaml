@@ -23,6 +23,9 @@
 				<TextBlock Text="Number of items in history" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBox x:Name="HistoryCountLimitTextBox" Margin="2"/>
 
+				<TextBlock Text="Open duplicate windows" Style="{StaticResource SettingsHeaderStyle}"/>
+				<CheckBox x:Name="OpenDuplicateWindowsCheckBox" Content="Enabled" Margin="2"/>
+
 				<TextBlock Text="Close detail windows after (hours)" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBox x:Name="DetailWindowTimeoutLengthTextBox" Margin="2"/>
 

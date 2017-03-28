@@ -111,6 +111,10 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Management.Automation.dll.10.0.10586.0\lib\net40\System.Management.Automation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Reactive.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Rx-Core.2.2.5\lib\net45\System.Reactive.Core.dll</HintPath>
       <Private>True</Private>
@@ -242,6 +246,7 @@
     </Compile>
     <Compile Include="Executables\Helpers.cs" />
     <Compile Include="Extensions\SystemDirectoryServicesAccountManagement.cs" />
+    <Compile Include="Extensions\SystemLinqExtensions.cs" />
     <Compile Include="Extensions\SystemReflectionExtensions.cs" />
     <Compile Include="Extensions\SystemDirectoryServicesExtensions.cs" />
     <Compile Include="Extensions\SystemExtensions.cs" />

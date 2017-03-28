@@ -5,6 +5,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using MagnumOpus.Services.SettingsServices;
 
 namespace MagnumOpus.Services.NavigationServices
 {
@@ -35,11 +36,20 @@ namespace MagnumOpus.Services.NavigationServices
 
         public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
         {
-            var newWindow = new TWindow();
+            var existingWindow = !SettingsService.Current.OpenDuplicateWindows ? App.Current.Windows.ToGeneric<Window>().Where(x => x is IViewFor).FirstOrDefault(x => x.Tag?.Equals(parameter) ?? false) : null;
 
-            await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+            if (existingWindow != null) existingWindow.Activate();
+            else
+            {
+                var newWindow = new TWindow
+                {
+                    Tag = parameter
+                };
 
-            newWindow.Show();
+                await (newWindow.ViewModel as INavigable)?.OnNavigatedTo(parameter);
+
+                newWindow.Show();
+            }
         }
 
         public static Task ShowPrincipalWindow(Principal principal)
