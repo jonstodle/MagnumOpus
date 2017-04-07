@@ -511,6 +511,15 @@
     <EmbeddedResource Include="Costura32\e_sqlite3.dll" />
     <EmbeddedResource Include="Costura64\e_sqlite3.dll" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Warning.png" />
+    <Resource Include="Assets\Error.png" />
+    <Resource Include="Assets\Info.png" />
+    <Resource Include="Assets\Success.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Question.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.1.29.4\build\dotnet\Fody.targets" Condition="Exists('..\packages\Fody.1.29.4\build\dotnet\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

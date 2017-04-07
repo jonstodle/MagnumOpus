@@ -31,7 +31,9 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 
-				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="10,0">
+				<Image x:Name="IconImage" Width="40" VerticalAlignment="Center" Margin="2"/>
+
+				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="5,0">
 					<TextBlock x:Name="CaptionTextBlock" FontSize="14" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
 
 					<TextBox x:Name="MessageTextBlock" TextWrapping="Wrap" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>

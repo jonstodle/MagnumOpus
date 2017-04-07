@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace MagnumOpus.Controls
 {
@@ -22,7 +23,7 @@ namespace MagnumOpus.Controls
             InitializeComponent();
         }
 
-        public DialogControl(Grid parent, string message, params DialogButtonInfo[] buttons)
+        public DialogControl(Grid parent, string message, DialogType? dialogType, params DialogButtonInfo[] buttons)
         {
             InitializeComponent();
 
@@ -32,7 +33,10 @@ namespace MagnumOpus.Controls
             SetValue(Grid.RowSpanProperty, _parent.RowDefinitions.Count > 0 ? _parent.RowDefinitions.Count : 1);
             SetValue(Grid.ColumnSpanProperty, _parent.ColumnDefinitions.Count > 0 ? _parent.ColumnDefinitions.Count : 1);
 
-            MessageTextBlock.Text = message;
+            if (dialogType == null) IconImage.Visibility = Visibility.Collapsed;
+            else IconImage.Source = new BitmapImage(new Uri($@"\Assets\{dialogType.ToString()}.png", UriKind.Relative));
+
+            MessageTextBlock.Text = message.Trim();
 
             Button focusButton = null;
             foreach (var buttonInfo in _buttons)
@@ -50,16 +54,16 @@ namespace MagnumOpus.Controls
             if (focusButton != null) Observable.Timer(TimeSpan.FromSeconds(.5), RxApp.MainThreadScheduler).Subscribe(_ => focusButton.Focus());
         }
 
-        public DialogControl(Grid parent, string caption, string message, params DialogButtonInfo[] buttons) : this(parent, message, buttons)
+        public DialogControl(Grid parent, string caption, string message, DialogType? dialogType, params DialogButtonInfo[] buttons) : this(parent, message, dialogType, buttons)
         {
             if (caption.HasValue())
             {
-                CaptionTextBlock.Text = caption;
+                CaptionTextBlock.Text = caption.Trim();
                 CaptionTextBlock.Visibility = Visibility.Visible;
             }
         }
 
-        public DialogControl(Grid parent, string caption, string message, TimeSpan timeout, params DialogButtonInfo[] buttons) : this(parent, caption, message, buttons)
+        public DialogControl(Grid parent, string caption, string message, DialogType? dialogType, TimeSpan timeout, params DialogButtonInfo[] buttons) : this(parent, caption, message, dialogType, buttons)
         {
             _timeoutObservable = Observable.Timer(timeout)
                 .TakeUntil(_resultSubject);
@@ -69,9 +73,9 @@ namespace MagnumOpus.Controls
 
 
 
-        public static DialogControl InfoDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK", isDefault: true));
+        public static DialogControl InfoDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, DialogType.Info, new DialogButtonInfo("OK", isDefault: true));
 
-        public static DialogControl ErrorDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, new DialogButtonInfo("OK", isDefault: true));
+        public static DialogControl ErrorDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, DialogType.Error, new DialogButtonInfo("OK", isDefault: true));
 
 
 
@@ -109,6 +113,8 @@ namespace MagnumOpus.Controls
         private List<DialogButtonInfo> _buttons;
         private IObservable<long> _timeoutObservable;
     }
+
+    public enum DialogType { Info, Question, Success, Warning, Error }
 
     public struct DialogButtonInfo
     {
