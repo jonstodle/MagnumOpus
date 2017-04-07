@@ -10,7 +10,7 @@
 		<TextBlock Text="Account" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
 		<WrapPanel>
-			<ToggleButton x:Name="NewPasswordToggleButton" Content="New password" Margin="2"/>
+			<ToggleButton x:Name="NewPasswordToggleButton" Content="New password" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
 			<Button x:Name="ExpirePasswordButton" Content="Expire password" Margin="2"/>
 

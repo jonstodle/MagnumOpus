@@ -11,11 +11,11 @@
 		<TextBlock Text="Groups" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
 		<WrapPanel>
-			<ToggleButton x:Name="DirectMemberOfToggleButton" Content="Member of" Margin="2"/>
+			<ToggleButton x:Name="DirectMemberOfToggleButton" Content="Member of" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
-			<ToggleButton x:Name="MemberOfToggleButton" Content="Member of (all)" Margin="2"/>
+			<ToggleButton x:Name="MemberOfToggleButton" Content="Member of (all)" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
-			<ToggleButton x:Name="MembersToggleButton" Content="Members" Margin="2"/>
+			<ToggleButton x:Name="MembersToggleButton" Content="Members" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 		</WrapPanel>
 
 		<StackPanel x:Name="DirectMemberOfGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">

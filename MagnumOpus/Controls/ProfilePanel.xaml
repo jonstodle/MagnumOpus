@@ -11,15 +11,15 @@
         <TextBlock Text="Profile" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-            <ToggleButton x:Name="ResetProfileToggleButton" Content="Reset profile" Margin="2"/>
+            <ToggleButton x:Name="ResetProfileToggleButton" Content="Reset profile" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
-			<ToggleButton x:Name="RestoreProfileToggleButton" Content="Restore profile" Margin="2"/>
+			<ToggleButton x:Name="RestoreProfileToggleButton" Content="Restore profile" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
 			<Button x:Name="ResetCitrixProfileButton" Content="Reset citrix profile" Margin="2"/>
 
-			<ToggleButton x:Name="GlobalProfileToggleButton" Content="Global profile" Margin="2"/>
+			<ToggleButton x:Name="GlobalProfileToggleButton" Content="Global profile" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
-			<ToggleButton x:Name="HomeFolderToggleButton" Content="Home folder" Margin="2"/>
+			<ToggleButton x:Name="HomeFolderToggleButton" Content="Home folder" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 		</WrapPanel>
 
         <Grid x:Name="ResetProfileGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">

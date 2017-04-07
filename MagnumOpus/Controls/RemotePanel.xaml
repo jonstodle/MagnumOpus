@@ -12,7 +12,7 @@
         <TextBlock Text="Remote" Style="{StaticResource SectionHeaderStyle}" Margin="2"/>
 
         <WrapPanel>
-			<ToggleButton x:Name="LoggedOnUsersToggleButton" Content="Logged on" Margin="2"/>
+			<ToggleButton x:Name="LoggedOnUsersToggleButton" Content="Logged on" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
 			<ext:SplitButton x:Name="RemoteControlButton" Content="Remote control" Margin="2">
 				<ext:SplitButton.DropDownContent>
