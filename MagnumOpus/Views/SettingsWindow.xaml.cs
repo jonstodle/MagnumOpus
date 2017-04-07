@@ -3,6 +3,7 @@ using MagnumOpus.Models;
 using MagnumOpus.ViewModels;
 using System;
 using System.Windows;
+using System.Windows.Documents;
 using System.Reactive.Linq;
 using System.Windows.Navigation;
 using System.Diagnostics;
@@ -30,7 +31,13 @@ namespace MagnumOpus.Views
                 d(this.Bind(ViewModel, vm => vm.RemoteControl2012Path, v => v.RemoteControl2012PathTextBox.Text));
                 d(this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text));
 
-                d(Observable.FromEventPattern<RequestNavigateEventArgs>(Icons8AttributionHyperlink, nameof(Icons8AttributionHyperlink.RequestNavigate))
+                d(Observable.Merge(
+                    Observable.FromEventPattern<RequestNavigateEventArgs>(SupportIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                    Observable.FromEventPattern<RequestNavigateEventArgs>(InfoIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                    Observable.FromEventPattern<RequestNavigateEventArgs>(QuestionIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                    Observable.FromEventPattern<RequestNavigateEventArgs>(SuccessIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                    Observable.FromEventPattern<RequestNavigateEventArgs>(WarningIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                    Observable.FromEventPattern<RequestNavigateEventArgs>(ErrorIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)))
                     .Select(args => args.EventArgs.Uri.AbsoluteUri)
                     .Subscribe(uri => Process.Start(uri)));
 

@@ -39,11 +39,44 @@
 				<TextBox x:Name="RemoteControl2012PathTextBox" Margin="2"/>
 
 				<TextBlock Text="Aknowledgements" Style="{StaticResource SettingsHeaderStyle}"/>
-				<StackPanel Orientation="Horizontal">
-					<Image Source="/Assets/icon-64.png" MaxHeight="{Binding ActualHeight, ElementName=Icons8AttributionTextBlock}" Margin="2"/>
+				<Grid>
+					<Grid.Resources>
+						<Style TargetType="TextBlock">
+							<Setter Property="VerticalAlignment" Value="Center"/>
+						</Style>
+					</Grid.Resources>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="25"/>
+						<ColumnDefinition Width="5"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+					
+					<Image Source="/Assets/icon-64.png" Margin="2"/>
+					<TextBlock Grid.Column="2" Margin="2"><Hyperlink x:Name="SupportIconAttributionHyperlink" NavigateUri="https://icons8.com/web-app/21107/support">Support from Icons8</Hyperlink></TextBlock>
 
-					<TextBlock x:Name="Icons8AttributionTextBlock" Margin="2"><Hyperlink x:Name="Icons8AttributionHyperlink" NavigateUri="https://icons8.com/web-app/21107/support">Support icon from Icons8</Hyperlink></TextBlock>
-				</StackPanel>
+					<Image Source="/Assets/Info.png" Grid.Row="1" Margin="2"/>
+					<TextBlock Grid.Row="1" Grid.Column="2" Margin="2"><Hyperlink x:Name="InfoIconAttributionHyperlink" NavigateUri="https://icons8.com/web-app/21085/info">Info from Icons8</Hyperlink></TextBlock>
+
+					<Image Source="/Assets/Question.png" Grid.Row="2" Margin="2"/>
+					<TextBlock Grid.Row="2" Grid.Column="2" Margin="2"><Hyperlink x:Name="QuestionIconAttributionHyperlink" NavigateUri="https://icons8.com/web-app/21352/help">Help from Icons8</Hyperlink></TextBlock>
+
+					<Image Source="/Assets/Success.png" Grid.Row="3" Margin="2"/>
+					<TextBlock Grid.Row="3" Grid.Column="2" Margin="2"><Hyperlink x:Name="SuccessIconAttributionHyperlink" NavigateUri="https://icons8.com/web-app/39050/ok">Ok from Icons8</Hyperlink></TextBlock>
+
+					<Image Source="/Assets/Warning.png" Grid.Row="4" Margin="2"/>
+					<TextBlock Grid.Row="4" Grid.Column="2" Margin="2"><Hyperlink x:Name="WarningIconAttributionHyperlink" NavigateUri="https://icons8.com/web-app/21063/attention">Attention from Icons8</Hyperlink></TextBlock>
+
+					<Image Source="/Assets/Error.png" Grid.Row="5" Margin="2"/>
+					<TextBlock Grid.Row="5" Grid.Column="2" Margin="2"><Hyperlink x:Name="ErrorIconAttributionHyperlink" NavigateUri="https://icons8.com/web-app/21067/cancel">Cancel from Icons8</Hyperlink></TextBlock>
+				</Grid>
 
 				<TextBlock Text="Version" Style="{StaticResource SettingsHeaderStyle}"/>
 				<TextBlock x:Name="VersionTextBlock" Margin="2"/>
