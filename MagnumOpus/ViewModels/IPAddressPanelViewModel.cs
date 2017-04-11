@@ -66,7 +66,8 @@ namespace MagnumOpus.ViewModels
             {
                 _openCDrive
                     .ThrownExceptions
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")))
+                    .Subscribe()
                     .DisposeWith(disposables);
 
                 Observable.Merge(
@@ -79,7 +80,8 @@ namespace MagnumOpus.ViewModels
                 _killRemoteControl.ThrownExceptions,
                 _startRemoteAssistance.ThrownExceptions,
                 _startRdp.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")))
+                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")))
+                .Subscribe()
                 .DisposeWith(disposables);
             });
 		}

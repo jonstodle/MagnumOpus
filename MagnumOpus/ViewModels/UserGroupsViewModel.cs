@@ -79,7 +79,8 @@ namespace MagnumOpus.ViewModels
 
                 _getAllGroups
                     .ThrownExceptions
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")))
+                    .Subscribe()
                     .DisposeWith(disposables);
 
                 Observable.Merge(
@@ -111,7 +112,8 @@ namespace MagnumOpus.ViewModels
                     _saveDirectGroups.ThrownExceptions,
                     _findDirectGroup.ThrownExceptions,
                     _findAllGroup.ThrownExceptions)
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .Subscribe()
                     .DisposeWith(disposables);
             });
         }

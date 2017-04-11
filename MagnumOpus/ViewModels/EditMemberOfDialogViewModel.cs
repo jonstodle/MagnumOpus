@@ -73,17 +73,9 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 _save
-                    .Subscribe(async x =>
-                    {
-                        if (x.Count() > 0)
-                        {
-                            var builder = new StringBuilder();
-                            foreach (var message in x) builder.AppendLine(message);
-                            await _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{builder.ToString()}"));
-                        }
-
-                        _close();
-                    })
+                    .SelectMany(x => x.Count() > 0 ? _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(Unit.Default))
+                    .Do(_ => _close())
+                    .Subscribe()
                     .DisposeWith(disposables);
 
                 Observable.Merge(
@@ -96,7 +88,8 @@ namespace MagnumOpus.ViewModels
                    _removeFromPrincipal.ThrownExceptions,
                    _save.ThrownExceptions,
                    _cancel.ThrownExceptions)
-               .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+               .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+               .Subscribe()
                .DisposeWith(disposables);
             });
         }

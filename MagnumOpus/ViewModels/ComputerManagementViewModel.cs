@@ -44,7 +44,8 @@ namespace MagnumOpus.ViewModels
                 _runPSExec.ThrownExceptions,
                 _openCDrive.ThrownExceptions,
                 _openSccm.ThrownExceptions)
-                .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .Subscribe()
                 .DisposeWith(disposables);
             });
         }

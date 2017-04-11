@@ -37,7 +37,8 @@ namespace MagnumOpus.ViewModels
                     _enableEditing.ThrownExceptions,
                     _save.ThrownExceptions,
                     _cancel.ThrownExceptions)
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .Subscribe()
                     .DisposeWith(disposables);
             });
 		}

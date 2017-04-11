@@ -69,7 +69,8 @@ namespace MagnumOpus.ViewModels
                 Observable.Merge(
                     _toggleOrganizationDetails.ThrownExceptions,
                     _openManager.ThrownExceptions)
-                    .Subscribe(async ex => await _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .Subscribe()
                     .DisposeWith(disposables);
             });
         }
