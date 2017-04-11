@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using MagnumOpus.Models;
+using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -70,6 +71,8 @@ namespace MagnumOpus.Controls
             _timeoutObservable
                 .Subscribe(_ => Close());
         }
+
+        public DialogControl(Grid parent, MessageInfo messageInfo) : this(parent, messageInfo.Caption, messageInfo.Message, (DialogType)messageInfo.Type, messageInfo.Buttons) { }
 
 
 
