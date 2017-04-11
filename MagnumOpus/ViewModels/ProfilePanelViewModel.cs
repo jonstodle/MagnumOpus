@@ -365,7 +365,7 @@ namespace MagnumOpus.ViewModels
             try { reply = pinger.Send(nameOrAddress, 1000); }
             catch { /* Do nothing */ }
 
-            if (reply.Status == IPStatus.Success) return reply.RoundtripTime;
+            if (reply?.Status == IPStatus.Success) return reply.RoundtripTime;
             else return -1L;
         }
 
