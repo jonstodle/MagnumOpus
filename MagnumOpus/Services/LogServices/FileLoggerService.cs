@@ -26,7 +26,7 @@ namespace MagnumOpus.Services.LogServices
 			if (!Directory.Exists(LogDirectoryPath)) Directory.CreateDirectory(LogDirectoryPath);
 
 			var now = DateTimeOffset.Now;
-			_logFileName = $"{WindowsIdentity.GetCurrent().Name.Split('\\').Last()}-{$"{now.Year}{now.Month.ToString("00")}{now.Day.ToString("00")}-{now.Hour.ToString("00")}{now.Minute.ToString("00")}{now.Second.ToString("00")}"}.txt";
+			_logFileName = $"{WindowsIdentity.GetCurrent().Name.Split('\\').Last()}.txt";
 
 			_logWriter = new Subject<string>();
 			_logWriter
