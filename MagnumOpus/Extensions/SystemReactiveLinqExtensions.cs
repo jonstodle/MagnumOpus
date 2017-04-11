@@ -9,13 +9,13 @@ namespace System.Reactive.Linq
 
 		public static IObservable<bool> IsNotNull<T>(this IObservable<T> source) where T : class => source.Select(x => x != null);
 
-		public static IObservable<bool> IsTrue<T>(this IObservable<bool> source) where T : class => source.Select(x => x == true);
+		public static IObservable<bool> IsTrue(this IObservable<bool> source) => source.Select(x => x == true);
 
-		public static IObservable<bool> IsFalse<T>(this IObservable<bool> source) where T : class => source.Select(x => x == false);
+		public static IObservable<bool> IsFalse(this IObservable<bool> source) => source.Select(x => x == false);
 
-		public static IObservable<Unit> ToSignal<T>(this IObservable<T> source) where T : class => source.Select(_ => Unit.Default);
+		public static IObservable<Unit> ToSignal<T>(this IObservable<T> source) => source.Select(_ => Unit.Default);
 
-        public static IObservable<Unit> ToEventCommandSignal<T>(this IObservable<T> source) where T : class => source.Select(_ => Unit.Default).Delay(TimeSpan.FromMilliseconds(10), DispatcherScheduler.Current);
+        public static IObservable<Unit> ToEventCommandSignal<T>(this IObservable<T> source) => source.Select(_ => Unit.Default).Delay(TimeSpan.FromMilliseconds(10), DispatcherScheduler.Current);
 
         public static IObservable<T> CatchAndReturn<T>(this IObservable<T> source, T returnValue) => source.Catch(Observable.Return(returnValue));
 	}
