@@ -16,15 +16,12 @@ namespace MagnumOpus.ViewModels
     {
         public ComputerGroupsViewModel()
         {
-            _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
+            _openEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
 
-            _saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
+            _saveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
-                }
+                return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
             _findDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup));

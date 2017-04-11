@@ -24,24 +24,18 @@ namespace MagnumOpus.ViewModels
             _allGroupsCollectionView.SortDescriptions.Add(new SortDescription());
             _allGroupsCollectionView.Filter = TextFilter;
 
-            _openEditMemberOf = ReactiveCommand.CreateFromTask(async () => await _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
+            _openEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
 
-            _saveDirectGroups = ReactiveCommand.CreateFromTask(async () =>
+            _saveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    await ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName);
-                }
+                return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            _saveAllGroups = ReactiveCommand.CreateFromTask(async () =>
+            _saveAllGroups = ReactiveCommand.CreateFromObservable(() =>
             {
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    await ExcelService.SaveGroupsToExcelFile(_allGroups, saveFileDialog.FileName);
-                }
+                return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_allGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
             _getAllGroups = ReactiveCommand.CreateFromObservable(

@@ -38,13 +38,11 @@ namespace MagnumOpus.ViewModels
 
 			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
 
-			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
-			{
-				if (await _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No")) == 0)
-				{
-					ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0");
-				}
-			});
+			_rebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No"))
+                .Where(x => x == 0)
+                .Do(_ => ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0"))
+                .ToSignal()
+			);
 
 			_startRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
 
