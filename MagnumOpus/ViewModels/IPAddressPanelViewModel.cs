@@ -40,7 +40,7 @@ namespace MagnumOpus.ViewModels
 
 			_rebootComputer = ReactiveCommand.CreateFromTask(async () =>
 			{
-				if (await _promptMessages.Handle(new MessageInfo($"Reboot {_ipAddress}?", "", "Yes", "No")) == 0)
+				if (await _promptMessages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No")) == 0)
 				{
 					ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0");
 				}
@@ -66,7 +66,7 @@ namespace MagnumOpus.ViewModels
             {
                 _openCDrive
                     .ThrownExceptions
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message, "Could not open location")))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open location")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -80,7 +80,7 @@ namespace MagnumOpus.ViewModels
                 _killRemoteControl.ThrownExceptions,
                 _startRemoteAssistance.ThrownExceptions,
                 _startRdp.ThrownExceptions)
-                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message, "Could not launch external program")))
+                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

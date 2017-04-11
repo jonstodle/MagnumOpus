@@ -16,7 +16,7 @@ namespace MagnumOpus.ViewModels
     {
         public ComputerManagementViewModel()
         {
-            _rebootComputer = ReactiveCommand.CreateFromObservable(() => _promptMessages.Handle(new MessageInfo($"Reboot {_computer.CN}?", "", "Yes", "No"))
+            _rebootComputer = ReactiveCommand.CreateFromObservable(() => _promptMessages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_computer.CN}?", "", "Yes", "No"))
                 .Where(x => x == 0)
                 .SelectMany(x => Observable.Start(() =>
                 {
@@ -44,7 +44,7 @@ namespace MagnumOpus.ViewModels
                 _runPSExec.ThrownExceptions,
                 _openCDrive.ThrownExceptions,
                 _openSccm.ThrownExceptions)
-                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

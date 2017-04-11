@@ -22,7 +22,7 @@ namespace MagnumOpus.ViewModels
             {
                 _setGroup
                     .ThrownExceptions
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

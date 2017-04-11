@@ -93,7 +93,7 @@ namespace MagnumOpus.ViewModels
 
                 _getAllMemberOfGroups
                     .ThrownExceptions
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message, "Couldn't get groups")))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Couldn't get groups")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -144,7 +144,7 @@ namespace MagnumOpus.ViewModels
                     _openEditMembers.ThrownExceptions,
                     _saveMembers.ThrownExceptions,
                     _findMember.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

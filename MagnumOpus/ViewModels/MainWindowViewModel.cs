@@ -65,7 +65,7 @@ namespace MagnumOpus.ViewModels
                 _paste.ThrownExceptions,
                 _open.ThrownExceptions,
                 _openSettings.ThrownExceptions)
-                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                 .Subscribe();
 
             StateService.Get(nameof(_history), Enumerable.Empty<string>())

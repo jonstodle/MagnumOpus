@@ -42,7 +42,7 @@ namespace MagnumOpus.ViewModels
             this.WhenActivated(disposables =>
             {
                 _setNewPassword
-                    .SelectMany(newPass => _infoMessages.Handle(new MessageInfo($"New password is: {newPass}", "Password set")))
+                    .SelectMany(newPass => _infoMessages.Handle(new MessageInfo(MessageType.Success, $"New password is: {newPass}", "Password set")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -57,7 +57,7 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 _expirePassword
-                    .SelectMany(_ => _infoMessages.Handle(new MessageInfo("User must change password at next login", "Password expired")))
+                    .SelectMany(_ => _infoMessages.Handle(new MessageInfo(MessageType.Success, "User must change password at next login", "Password expired")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -65,7 +65,7 @@ namespace MagnumOpus.ViewModels
                     .SelectMany(_ =>
                     {
                         MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
-                        return _infoMessages.Handle(new MessageInfo("Account unlocked"));
+                    return _infoMessages.Handle(new MessageInfo(MessageType.Success, "Account unlocked"));
                     })
                     .Subscribe()
                     .DisposeWith(disposables);
@@ -90,7 +90,7 @@ namespace MagnumOpus.ViewModels
                     _runLockoutStatus.ThrownExceptions,
                     _openPermittedWorkstations.ThrownExceptions,
                     _toggleEnabled.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

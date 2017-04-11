@@ -73,7 +73,7 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 _save
-                    .SelectMany(x => x.Count() > 0 ? _infoMessages.Handle(new MessageInfo($"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(Unit.Default))
+                    .SelectMany(x => x.Count() > 0 ? _infoMessages.Handle(new MessageInfo(MessageType.Info, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(Unit.Default))
                     .Do(_ => _close())
                     .Subscribe()
                     .DisposeWith(disposables);
@@ -88,7 +88,7 @@ namespace MagnumOpus.ViewModels
                    _removeFromPrincipal.ThrownExceptions,
                    _save.ThrownExceptions,
                    _cancel.ThrownExceptions)
-               .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+               .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                .Subscribe()
                .DisposeWith(disposables);
             });

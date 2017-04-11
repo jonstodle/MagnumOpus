@@ -35,7 +35,7 @@ namespace MagnumOpus.ViewModels
 
                 _startPing
                     .ThrownExceptions
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -48,7 +48,7 @@ namespace MagnumOpus.ViewModels
                 Observable.Merge(
                     _startPing.ThrownExceptions,
                     _stopPing.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

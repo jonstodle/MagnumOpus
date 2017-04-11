@@ -109,7 +109,7 @@ namespace MagnumOpus.ViewModels
                     _resetLocalProfile.Select(_ => "Local profile reset"),
                     _restoreProfile.Select(_ => "Profile restored"),
                     _resetCitrixProfile.Select(_ => "Citrix profile reset"))
-                    .SelectMany(x => _infoMessages.Handle(new MessageInfo(x, "Success")))
+                    .SelectMany(x => _infoMessages.Handle(new MessageInfo(MessageType.Success, x, "Success")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -152,7 +152,7 @@ namespace MagnumOpus.ViewModels
                     _openHomeFolder.ThrownExceptions,
                     _saveHomeFolderPath.ThrownExceptions,
                     _cancelHomeFolderPath.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(ex.Message)))
+                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

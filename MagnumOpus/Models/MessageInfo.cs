@@ -12,35 +12,43 @@ namespace MagnumOpus.Models
 {
 	public struct MessageInfo
 	{
-		public MessageInfo(string message, string caption = "")
+		public MessageInfo(MessageType messageType, string message, string caption = "")
 		{
+            Type = messageType;
 			Message = message;
 			Caption = caption;
 			Buttons = null;
 		}
 
-		public MessageInfo(string message, string caption, params DialogButtonInfo[] buttons) : this(message, caption)
+		public MessageInfo(MessageType messageType, string message, string caption, params DialogButtonInfo[] buttons) : this(messageType, message, caption)
 		{
 			Buttons = buttons;
 		}
 
-		public MessageInfo(string message, string caption, params string[] buttons) : this(message, caption)
+		public MessageInfo(MessageType messageType, string message, string caption, params string[] buttons) : this(messageType, message, caption)
 		{
 			Buttons = buttons.Select(x => new DialogButtonInfo(x)).ToArray();
 		}
 
 
 
+        public MessageType Type { get; private set; }
         public string Caption { get; private set; }
         public string Message { get; private set; }
         public DialogButtonInfo[] Buttons { get; private set; }
 
-        public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo($"New password is: {password}\nMust be changed at next logon", "Password set");
+        public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo(MessageType.Success, $"New password is: {password}\nMust be changed at next logon", "Password set");
 
-		public static MessageInfo PasswordSetErrorMessageInfo(string message = null) => new MessageInfo(message ?? $"Could not set password", "Password not set");
+		public static MessageInfo PasswordSetErrorMessageInfo(string message = null) => new MessageInfo(MessageType.Error, message ?? $"Could not set password", "Password not set");
 	}
 
-	public static class MessageInfoHelpers
+
+
+    public enum MessageType { Info, Question, Success, Warning, Error }
+
+
+
+    public static class MessageInfoHelpers
 	{
 		public static IDisposable RegisterPromptHandler(this Interaction<MessageInfo, int> source, Grid parent) => source.RegisterHandler(async interaction => { interaction.SetOutput(await new DialogControl(parent, interaction.Input.Caption.HasValue() ? interaction.Input.Caption : null, interaction.Input.Message, DialogType.Question, interaction.Input.Buttons).Result.Take(1)); });
 
