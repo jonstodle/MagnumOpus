@@ -67,9 +67,9 @@ namespace MagnumOpus.ViewModels
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _toggleOrganizationDetails.ThrownExceptions,
-                    _openManager.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    _toggleOrganizationDetails.ThrownExceptions.Select(ex => ("Could not toggle visibility", ex.Message)),
+                    _openManager.ThrownExceptions.Select(ex => ("Could not open manager", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

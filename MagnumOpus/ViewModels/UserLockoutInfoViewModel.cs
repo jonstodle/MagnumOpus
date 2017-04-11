@@ -34,10 +34,10 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                _setUser.ThrownExceptions,
-                _getLockoutInfo.ThrownExceptions,
-                _close.ThrownExceptions)
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                _setUser.ThrownExceptions.Select(ex => ("Could not load user", ex.Message)),
+                _getLockoutInfo.ThrownExceptions.Select(ex => ("Could not get lockout info", ex.Message)),
+                _close.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
+                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

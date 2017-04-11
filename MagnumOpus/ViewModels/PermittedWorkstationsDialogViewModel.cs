@@ -54,12 +54,12 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                _addComputer.ThrownExceptions,
-                _removeComputer.ThrownExceptions,
-                _removeAllComputers.ThrownExceptions,
-                _save.ThrownExceptions,
-                _cancel.ThrownExceptions)
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                _addComputer.ThrownExceptions.Select(ex => ("Could not add computer", ex.Message)),
+                _removeComputer.ThrownExceptions.Select(ex => ("Could not remove computer", ex.Message)),
+                _removeAllComputers.ThrownExceptions.Select(ex => ("Could not remove all computers", ex.Message)),
+                _save.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
+                _cancel.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
+                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

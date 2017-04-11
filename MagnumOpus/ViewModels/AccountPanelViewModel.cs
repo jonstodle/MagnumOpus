@@ -85,12 +85,12 @@ namespace MagnumOpus.ViewModels
 
 
                 Observable.Merge(
-                    _expirePassword.ThrownExceptions,
-                    _unlockAccount.ThrownExceptions,
-                    _runLockoutStatus.ThrownExceptions,
-                    _openPermittedWorkstations.ThrownExceptions,
-                    _toggleEnabled.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    _expirePassword.ThrownExceptions.Select(ex => ("Could not expire password", ex.Message)),
+                    _unlockAccount.ThrownExceptions.Select(ex => ("Could not unlock acount", ex.Message)),
+                    _runLockoutStatus.ThrownExceptions.Select(ex => ("Could not open LockOutStatus", ex.Message)),
+                    _openPermittedWorkstations.ThrownExceptions.Select(ex => ("Could not open Permitted Workstations", ex.Message)),
+                    _toggleEnabled.ThrownExceptions.Select(ex => ("Could not toggle enabled status", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

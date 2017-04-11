@@ -141,18 +141,18 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _resetGlobalProfile.ThrownExceptions,
-                    _resetLocalProfile.ThrownExceptions,
-                    _searchForProfiles.ThrownExceptions,
-                    _restoreProfile.ThrownExceptions,
-                    _resetCitrixProfile.ThrownExceptions,
-                    _openGlobalProfile.ThrownExceptions,
-                    _saveGlobalProfilePath.ThrownExceptions,
-                    _cancelGlobalProfilePath.ThrownExceptions,
-                    _openHomeFolder.ThrownExceptions,
-                    _saveHomeFolderPath.ThrownExceptions,
-                    _cancelHomeFolderPath.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    _resetGlobalProfile.ThrownExceptions.Select(ex => ("Could not reset global profile", ex.Message)),
+                    _resetLocalProfile.ThrownExceptions.Select(ex => ("Could not reset local profile", ex.Message)),
+                    _searchForProfiles.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
+                    _restoreProfile.ThrownExceptions.Select(ex => ("Could not restore profile", ex.Message)),
+                    _resetCitrixProfile.ThrownExceptions.Select(ex => ("Could not reset Citrix profile", ex.Message)),
+                    _openGlobalProfile.ThrownExceptions.Select(ex => ("Could not open global profile", ex.Message)),
+                    _saveGlobalProfilePath.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
+                    _cancelGlobalProfilePath.ThrownExceptions.Select(ex => ("Could not reverse changes", ex.Message)),
+                    _openHomeFolder.ThrownExceptions.Select(ex => ("Could not home folder", ex.Message)),
+                    _saveHomeFolderPath.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
+                    _cancelHomeFolderPath.ThrownExceptions.Select(ex => ("Could not reverse changes", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

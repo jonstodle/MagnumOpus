@@ -79,16 +79,16 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                        _setGroup.ThrownExceptions,
-                        _getGroupMembers.ThrownExceptions,
-                        _search.ThrownExceptions,
-                        _openSearchResult.ThrownExceptions,
-                        _openGroupMember.ThrownExceptions,
-                        _addToGroup.ThrownExceptions,
-                        _removeFromGroup.ThrownExceptions,
-                        _save.ThrownExceptions,
-                        _cancel.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                        _setGroup.ThrownExceptions.Select(ex => ("Could not load group", ex.Message)),
+                        _getGroupMembers.ThrownExceptions.Select(ex => ("Could not get members", ex.Message)),
+                        _search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
+                        _openSearchResult.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
+                        _openGroupMember.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
+                        _addToGroup.ThrownExceptions.Select(ex => ("Could not add member", ex.Message)),
+                        _removeFromGroup.ThrownExceptions.Select(ex => ("Could not remove member", ex.Message)),
+                        _save.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
+                        _cancel.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

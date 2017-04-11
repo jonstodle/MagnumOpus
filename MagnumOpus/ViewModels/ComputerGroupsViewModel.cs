@@ -39,10 +39,10 @@ namespace MagnumOpus.ViewModels
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _openEditMemberOf.ThrownExceptions,
-                    _saveDirectGroups.ThrownExceptions,
-                    _findDirectGroup.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    _openEditMemberOf.ThrownExceptions.Select(ex => ("Could not open dialog", ex.Message)),
+                    _saveDirectGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
+                    _findDirectGroup.ThrownExceptions.Select(ex => ("Could not open group", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

@@ -84,7 +84,7 @@ namespace MagnumOpus.ViewModels
 
                 _getAllMemberOfGroups
                     .ThrownExceptions
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Couldn't get groups")))
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not get groups")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -127,15 +127,15 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _openEditMemberOf.ThrownExceptions,
-                    _saveDirectGroups.ThrownExceptions,
-                    _findDirectMemberOfGroup.ThrownExceptions,
-                    _findAllMemberOfGroup.ThrownExceptions,
-                    _saveAllGroups.ThrownExceptions,
-                    _openEditMembers.ThrownExceptions,
-                    _saveMembers.ThrownExceptions,
-                    _findMember.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    _openEditMemberOf.ThrownExceptions.Select(ex => ("Could not open dialog", ex.Message)),
+                    _saveDirectGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
+                    _findDirectMemberOfGroup.ThrownExceptions.Select(ex => ("Could not open group", ex.Message)),
+                    _findAllMemberOfGroup.ThrownExceptions.Select(ex => ("Could not find all groups", ex.Message)),
+                    _saveAllGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
+                    _openEditMembers.ThrownExceptions.Select(ex => ("Could not open dialog", ex.Message)),
+                    _saveMembers.ThrownExceptions.Select(ex => ("Could not save members", ex.Message)),
+                    _findMember.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

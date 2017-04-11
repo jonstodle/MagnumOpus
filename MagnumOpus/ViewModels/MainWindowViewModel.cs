@@ -55,11 +55,11 @@ namespace MagnumOpus.ViewModels
                 .ToProperty(this, x => x.IsNoResults);
 
             Observable.Merge(
-                _search.ThrownExceptions,
-                _paste.ThrownExceptions,
-                _open.ThrownExceptions,
-                _openSettings.ThrownExceptions)
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                _search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
+                _paste.ThrownExceptions.Select(ex => ("Could not not paste text", ex.Message)),
+                _open.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
+                _openSettings.ThrownExceptions.Select(ex => ("Could not open settings", ex.Message)))
+                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                 .Subscribe();
 
             StateService.Get(nameof(_history), Enumerable.Empty<string>())

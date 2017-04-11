@@ -22,7 +22,7 @@ namespace MagnumOpus.ViewModels
             {
                 _setComputer
                 .ThrownExceptions
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open computer")))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

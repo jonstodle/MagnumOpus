@@ -59,16 +59,16 @@ namespace MagnumOpus.ViewModels
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _openUser.ThrownExceptions,
-                    _startRemoteControl.ThrownExceptions,
-                    _startRemoteControlClassic.ThrownExceptions,
-                    _startRemoteControl2012.ThrownExceptions,
-                    _killRemoteTools.ThrownExceptions,
-                    _toggleUac.ThrownExceptions,
-                    _startRemoteAssistance.ThrownExceptions,
-                    _startRdp.ThrownExceptions,
-                    _isUacOn.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
+                    _openUser.ThrownExceptions.Select(ex => ("Could not open user", ex.Message)),
+                    _startRemoteControl.ThrownExceptions.Select(ex => ("Could not start remote control", ex.Message)),
+                    _startRemoteControlClassic.ThrownExceptions.Select(ex => ("Could not start remote control", ex.Message)),
+                    _startRemoteControl2012.ThrownExceptions.Select(ex => ("Could not start remote control", ex.Message)),
+                    _killRemoteTools.ThrownExceptions.Select(ex => ("Could not kill remote tools", ex.Message)),
+                    _toggleUac.ThrownExceptions.Select(ex => ("Could not disable UAC", ex.Message)),
+                    _startRemoteAssistance.ThrownExceptions.Select(ex => ("Could not start remote assistance", ex.Message)),
+                    _startRdp.ThrownExceptions.Select(ex => ("Could not start RDP", ex.Message)),
+                    _isUacOn.ThrownExceptions.Select(ex => ("Could not get UAC status", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

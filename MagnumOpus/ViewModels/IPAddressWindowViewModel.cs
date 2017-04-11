@@ -21,7 +21,7 @@ namespace MagnumOpus.ViewModels
             {
                 _setIPAddress
                 .ThrownExceptions
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not load IP address")))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

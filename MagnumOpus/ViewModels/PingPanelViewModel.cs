@@ -33,12 +33,6 @@ namespace MagnumOpus.ViewModels
                     .Subscribe(x => PingResults.Insert(0, x))
                     .DisposeWith(disposables);
 
-                _startPing
-                    .ThrownExceptions
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
-                    .Subscribe()
-                    .DisposeWith(disposables);
-
                 this
                 .WhenAnyValue(x => x.IsPinging)
                 .Where(x => !x)
@@ -46,9 +40,9 @@ namespace MagnumOpus.ViewModels
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _startPing.ThrownExceptions,
-                    _stopPing.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    _startPing.ThrownExceptions.Select(ex => ("Could not start pinging", ex.Message)),
+                    _stopPing.ThrownExceptions.Select(ex => ("Could not stop pinging", ex.Message)))
+                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

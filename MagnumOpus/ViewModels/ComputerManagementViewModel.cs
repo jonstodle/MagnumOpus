@@ -40,11 +40,11 @@ namespace MagnumOpus.ViewModels
             this.WhenActivated(disposables =>
             {
                 Observable.Merge(
-                _rebootComputer.ThrownExceptions,
-                _runPSExec.ThrownExceptions,
-                _openCDrive.ThrownExceptions,
-                _openSccm.ThrownExceptions)
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                _rebootComputer.ThrownExceptions.Select(ex => ("Could not reboot computer", ex.Message)),
+                _runPSExec.ThrownExceptions.Select(ex => ("Could not run PSExec", ex.Message)),
+                _openCDrive.ThrownExceptions.Select(ex => ("Could not open C$ drive", ex.Message)),
+                _openSccm.ThrownExceptions.Select(ex => ("Could not open SCCM", ex.Message)))
+                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                 .Subscribe()
                 .DisposeWith(disposables);
             });
