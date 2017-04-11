@@ -323,6 +323,8 @@ namespace MagnumOpus.ViewModels
 
         private IObservable<Unit> ResetCitrixProfileImpl(UserObject user) => Observable.Start(() =>
         {
+            if (!Directory.Exists(Path.Combine(user.HomeDirectory, "windows"))) throw new ArgumentException("Could not find Citrix profile directory");
+
             foreach (var folderName in new[] { "xa_profile", "App-V" })
             {
                 var destination = Path.Combine(user.HomeDirectory, "windows", folderName);
