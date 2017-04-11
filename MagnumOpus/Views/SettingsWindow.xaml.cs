@@ -42,11 +42,8 @@ namespace MagnumOpus.Views
                     .Subscribe(uri => Process.Start(uri)));
 
                 d(ViewModel
-                    .InfoMessages
-                    .RegisterInfoHandler(ContainerGrid));
-                d(ViewModel
-                    .ErrorMessages
-                    .RegisterErrorHandler(ContainerGrid));
+                    .Messages
+                    .RegisterMessageHandler(ContainerGrid));
             });
         }
 

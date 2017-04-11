@@ -42,22 +42,22 @@ namespace MagnumOpus.ViewModels
             this.WhenActivated(disposables =>
             {
                 _setNewPassword
-                    .SelectMany(newPass => _infoMessages.Handle(new MessageInfo(MessageType.Success, $"New password is: {newPass}", "Password set")))
+                    .SelectMany(newPass => _messages.Handle(new MessageInfo(MessageType.Success, $"New password is: {newPass}", "Password set")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 _setNewSimplePassword
-                    .SelectMany(newPass => _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
+                    .SelectMany(newPass => _messages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 _setNewComplexPassword
-                    .SelectMany(newPass => _infoMessages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
+                    .SelectMany(newPass => _messages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 _expirePassword
-                    .SelectMany(_ => _infoMessages.Handle(new MessageInfo(MessageType.Success, "User must change password at next login", "Password expired")))
+                    .SelectMany(_ => _messages.Handle(new MessageInfo(MessageType.Success, "User must change password at next login", "Password expired")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -65,7 +65,7 @@ namespace MagnumOpus.ViewModels
                     .SelectMany(_ =>
                     {
                         MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
-                    return _infoMessages.Handle(new MessageInfo(MessageType.Success, "Account unlocked"));
+                    return _messages.Handle(new MessageInfo(MessageType.Success, "Account unlocked"));
                     })
                     .Subscribe()
                     .DisposeWith(disposables);
@@ -79,7 +79,7 @@ namespace MagnumOpus.ViewModels
                     _setNewPassword.ThrownExceptions,
                     _setNewSimplePassword.ThrownExceptions,
                     _setNewComplexPassword.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)))
+                    .SelectMany(ex => _messages.Handle(MessageInfo.PasswordSetErrorMessageInfo(ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -90,7 +90,7 @@ namespace MagnumOpus.ViewModels
                     _runLockoutStatus.ThrownExceptions,
                     _openPermittedWorkstations.ThrownExceptions,
                     _toggleEnabled.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

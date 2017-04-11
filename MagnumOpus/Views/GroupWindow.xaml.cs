@@ -32,20 +32,13 @@ namespace MagnumOpus.Views
                     .Where(x => x.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.Group.CN)
                     .InvokeCommand(ViewModel.SetGroup));
-                d(new List<Interaction<MessageInfo, Unit>>
+                d(new List<Interaction<MessageInfo, int>>
                 {
-                    GroupDetails.InfoMessages,
-                    GroupDescription.InfoMessages,
-                    GroupGroups.InfoMessages,
-                    GroupNotes.InfoMessages
-                }.RegisterInfoHandler(ContainerGrid));
-                d(new List<Interaction<MessageInfo, Unit>>
-                {
-                    GroupDetails.ErrorMessages,
-                    GroupDescription.ErrorMessages,
-                    GroupGroups.ErrorMessages,
-                    GroupNotes.ErrorMessages
-                }.RegisterErrorHandler(ContainerGrid));
+                    GroupDetails.Messages,
+                    GroupDescription.Messages,
+                    GroupGroups.Messages,
+                    GroupNotes.Messages
+                }.RegisterMessageHandler(ContainerGrid));
                 d(GroupGroups
                     .DialogRequests
                     .RegisterDialogHandler(ContainerGrid));

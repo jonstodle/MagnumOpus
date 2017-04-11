@@ -37,9 +37,7 @@ namespace MagnumOpus.Controls
             });
         }
 
-        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
         public Interaction<DialogInfo, Unit> DialogRequests => ViewModel.DialogRequests;
 

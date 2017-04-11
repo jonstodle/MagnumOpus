@@ -33,25 +33,14 @@ namespace MagnumOpus.Views
                     .Where(x => x.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.Computer.CN)
                     .InvokeCommand(ViewModel.SetComputer));
-                d(ComputerManagement
-                    .PromptMessages
-                    .RegisterPromptHandler(ContainerGrid));
-                d(new List<Interaction<MessageInfo, Unit>>
+                d(new List<Interaction<MessageInfo, int>>
                 {
-                    ComputerDetails.InfoMessages,
-                    RemotePanel.InfoMessages,
-                    ComputerManagement.InfoMessages,
-                    PingPanel.InfoMessages,
-                    ComputerGroups.InfoMessages
-                }.RegisterInfoHandler(ContainerGrid));
-                d(new List<Interaction<MessageInfo, Unit>>
-                {
-                    ComputerDetails.ErrorMessages,
-                    RemotePanel.ErrorMessages,
-                    ComputerManagement.ErrorMessages,
-                    PingPanel.ErrorMessages,
-                    ComputerGroups.ErrorMessages
-                }.RegisterErrorHandler(ContainerGrid));
+                    ComputerDetails.Messages,
+                    RemotePanel.Messages,
+                    ComputerManagement.Messages,
+                    PingPanel.Messages,
+                    ComputerGroups.Messages
+                }.RegisterMessageHandler(ContainerGrid));
                 d(ComputerGroups
                     .DialogRequests
                     .RegisterDialogHandler(ContainerGrid));

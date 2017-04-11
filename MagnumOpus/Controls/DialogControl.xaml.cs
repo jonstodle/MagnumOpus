@@ -24,7 +24,7 @@ namespace MagnumOpus.Controls
             InitializeComponent();
         }
 
-        public DialogControl(Grid parent, string message, DialogType? dialogType, params DialogButtonInfo[] buttons)
+        public DialogControl(Grid parent, DialogType? dialogType, string message, params DialogButtonInfo[] buttons)
         {
             InitializeComponent();
 
@@ -55,7 +55,7 @@ namespace MagnumOpus.Controls
             if (focusButton != null) Observable.Timer(TimeSpan.FromSeconds(.5), RxApp.MainThreadScheduler).Subscribe(_ => focusButton.Focus());
         }
 
-        public DialogControl(Grid parent, string caption, string message, DialogType? dialogType, params DialogButtonInfo[] buttons) : this(parent, message, dialogType, buttons)
+        public DialogControl(Grid parent, DialogType? dialogType, string caption, string message, params DialogButtonInfo[] buttons) : this(parent, dialogType, message, buttons)
         {
             if (caption.HasValue())
             {
@@ -64,7 +64,7 @@ namespace MagnumOpus.Controls
             }
         }
 
-        public DialogControl(Grid parent, string caption, string message, DialogType? dialogType, TimeSpan timeout, params DialogButtonInfo[] buttons) : this(parent, caption, message, dialogType, buttons)
+        public DialogControl(Grid parent, DialogType? dialogType, string caption, string message, TimeSpan timeout, params DialogButtonInfo[] buttons) : this(parent, dialogType, caption, message, buttons)
         {
             _timeoutObservable = Observable.Timer(timeout)
                 .TakeUntil(_resultSubject);
@@ -72,13 +72,7 @@ namespace MagnumOpus.Controls
                 .Subscribe(_ => Close());
         }
 
-        public DialogControl(Grid parent, MessageInfo messageInfo) : this(parent, messageInfo.Caption, messageInfo.Message, (DialogType)messageInfo.Type, messageInfo.Buttons) { }
-
-
-
-        public static DialogControl InfoDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, DialogType.Info, new DialogButtonInfo("OK", isDefault: true));
-
-        public static DialogControl ErrorDialog(Grid parent, string caption, string message) => new DialogControl(parent, caption, message, DialogType.Error, new DialogButtonInfo("OK", isDefault: true));
+        public DialogControl(Grid parent, MessageInfo messageInfo) : this(parent, (DialogType)messageInfo.Type, messageInfo.Caption, messageInfo.Message, messageInfo.Buttons) { }
 
 
 

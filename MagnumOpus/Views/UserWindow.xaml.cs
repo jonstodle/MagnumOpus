@@ -38,20 +38,13 @@ namespace MagnumOpus.Views
                     .Where(x => x.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.User.CN)
                     .InvokeCommand(ViewModel.SetUser));
-                d(new List<Interaction<MessageInfo, Unit>>
+                d(new List<Interaction<MessageInfo, int>>
                 {
-                    UserDetails.InfoMessages,
-                    UserAccountPanel.InfoMessages,
-                    UserProfilePanel.InfoMessages,
-                    UserGroups.InfoMessages
-                }.RegisterInfoHandler(ContainerGrid));
-                d(new List<Interaction<MessageInfo, Unit>>
-                {
-                    UserDetails.ErrorMessages,
-                    UserAccountPanel.ErrorMessages,
-                    UserProfilePanel.ErrorMessages,
-                    UserGroups.ErrorMessages
-                }.RegisterErrorHandler(ContainerGrid));
+                    UserDetails.Messages,
+                    UserAccountPanel.Messages,
+                    UserProfilePanel.Messages,
+                    UserGroups.Messages
+                }.RegisterMessageHandler(ContainerGrid));
                 d(new List<Interaction<DialogInfo, Unit>>
                 {
                     UserAccountPanel.DialogRequests,

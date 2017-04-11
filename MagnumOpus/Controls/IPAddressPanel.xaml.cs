@@ -38,11 +38,7 @@ namespace MagnumOpus.Controls
             });
         }
 
-        public Interaction<MessageInfo, int> PromptMessages => ViewModel.PromptMessages;
-
-        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
         public string IPAddress { get => (string)GetValue(IPAddressProperty); set => SetValue(IPAddressProperty, value); }
         public static readonly DependencyProperty IPAddressProperty = DependencyProperty.Register(nameof(IPAddress), typeof(string), typeof(IPAddressPanel), new PropertyMetadata(null));

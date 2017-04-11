@@ -68,7 +68,7 @@ namespace MagnumOpus.ViewModels
                     _startRemoteAssistance.ThrownExceptions,
                     _startRdp.ThrownExceptions,
                     _isUacOn.ThrownExceptions)
-                    .SelectMany(ex => _errorMessages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

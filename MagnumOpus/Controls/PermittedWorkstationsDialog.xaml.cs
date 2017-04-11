@@ -46,11 +46,8 @@ namespace MagnumOpus.Controls
                     .InvokeCommand(ViewModel, x => x.RemoveComputer));
                 d(this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerMenuItem));
                 d(ViewModel
-                    .InfoMessages
-                    .RegisterInfoHandler(ContainerGrid));
-                d(ViewModel
-                    .ErrorMessages
-                    .RegisterErrorHandler(ContainerGrid));
+                    .Messages
+                    .RegisterMessageHandler(ContainerGrid));
             });
         }
 

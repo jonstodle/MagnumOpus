@@ -78,9 +78,7 @@ namespace MagnumOpus.Controls
             });
         }
 
-        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
         public UserObject User { get => (UserObject)GetValue(UserProperty); set => SetValue(UserProperty, value); }
         public static readonly DependencyProperty UserProperty = DependencyProperty.Register(nameof(User), typeof(UserObject), typeof(ProfilePanel), new PropertyMetadata(null));

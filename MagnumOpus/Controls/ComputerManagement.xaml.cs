@@ -29,11 +29,7 @@ namespace MagnumOpus.Controls
             });
         }
 
-        public Interaction<MessageInfo, int> PromptMessages => ViewModel.PromptMessages;
-
-        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
         public ComputerObject Computer { get => (ComputerObject)GetValue(ComputerProperty); set => SetValue(ComputerProperty, value); }
         public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerManagement), new PropertyMetadata(null));

@@ -24,19 +24,11 @@ namespace MagnumOpus.Views
                 d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress));
                 d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName));
 
-                d(IPAddressPanel
-                    .PromptMessages
-                    .RegisterPromptHandler(ContainerGrid));
-                d(new List<Interaction<MessageInfo, Unit>>
+                d(new List<Interaction<MessageInfo, int>>
                 {
-                    IPAddressPanel.InfoMessages,
-                    PingPanel.InfoMessages
-                }.RegisterInfoHandler(ContainerGrid));
-                d(new List<Interaction<MessageInfo, Unit>>
-                {
-                    IPAddressPanel.ErrorMessages,
-                    PingPanel.ErrorMessages
-                }.RegisterErrorHandler(ContainerGrid));
+                    IPAddressPanel.Messages,
+                    PingPanel.Messages
+                }.RegisterMessageHandler(ContainerGrid));
             });
         }
 

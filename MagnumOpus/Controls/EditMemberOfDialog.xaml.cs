@@ -66,11 +66,8 @@ namespace MagnumOpus.Controls
                 d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
                 d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
                 d(ViewModel
-                    .InfoMessages
-                    .RegisterInfoHandler(ContainerGrid));
-                d(ViewModel
-                    .ErrorMessages
-                    .RegisterErrorHandler(ContainerGrid));
+                    .Messages
+                    .RegisterMessageHandler(ContainerGrid));
             });
         }
 

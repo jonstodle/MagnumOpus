@@ -53,9 +53,7 @@ namespace MagnumOpus.Controls
             });
         }
 
-        public Interaction<MessageInfo, Unit> InfoMessages => ViewModel.InfoMessages;
-
-        public Interaction<MessageInfo, Unit> ErrorMessages => ViewModel.ErrorMessages;
+        public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
         public string HostName { get => (string)GetValue(HostNameProperty); set => SetValue(HostNameProperty, value); }
         public static readonly DependencyProperty HostNameProperty = DependencyProperty.Register(nameof(HostName), typeof(string), typeof(PingPanel), new PropertyMetadata(null));
