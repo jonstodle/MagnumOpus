@@ -6,6 +6,7 @@ using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -116,12 +117,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 		});
 
         private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Start(() => Domain.GetCurrentDomain().DomainControllers)
-            .SelectMany(dcs =>
-            {
-                var dcList = new List<DomainController>();
-                foreach (DomainController dc in dcs) dcList.Add(dc);
-                return dcList.ToObservable();
-            })
-            .SelectMany(dc => Observable.Start(() => action(dc)));
+            .SelectMany(dcs => dcs.ToGeneric<DomainController>().ToObservable())
+            .SelectMany(dc => Observable.Start(() => action(dc), NewThreadScheduler.Default));
     }
 }
