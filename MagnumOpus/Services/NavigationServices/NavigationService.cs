@@ -16,6 +16,10 @@ namespace MagnumOpus.Services.NavigationServices
 
 
         private NavigationService() { }
+        /// <summary>
+        /// Needs to be called before use of the NavigationService. Failing to do so will lead to never instantiating the Current property
+        /// </summary>
+        /// <param name="mainWindow">The MainWindow of the application</param>
         public static void Init(Window mainWindow)
         {
             Current = new NavigationService();
@@ -24,6 +28,12 @@ namespace MagnumOpus.Services.NavigationServices
 
 
 
+        /// <summary>
+        /// Displays a windows as a dialog (preventing interaction with other windows while it's open) and passes the parameter object to the view model.
+        /// </summary>
+        /// <typeparam name="TWindow">The type of window to display</typeparam>
+        /// <param name="parameter">An object to be passed to the Opening method in the view model</param>
+        /// <returns></returns>
         public async static Task ShowDialog<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
         {
             var dialogWindow = new TWindow();
@@ -34,6 +44,12 @@ namespace MagnumOpus.Services.NavigationServices
         }
 
 
+        /// <summary>
+        /// Displays a new window and passes the parameter object to the view model. If a window with the same parameter already exists, that window is activated.
+        /// </summary>
+        /// <typeparam name="TWindow">The type of window to display</typeparam>
+        /// <param name="parameter">An object to be passed to the OnNavigatedTo method in the view model</param>
+        /// <returns></returns>
         public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
         {
             var existingWindow = !SettingsService.Current.OpenDuplicateWindows ? App.Current.Windows.ToGeneric<Window>().Where(x => x is IViewFor).FirstOrDefault(x => x.Tag?.Equals(parameter) ?? false) : null;
@@ -52,6 +68,11 @@ namespace MagnumOpus.Services.NavigationServices
             }
         }
 
+        /// <summary>
+        /// Calls ShowWindow with the correct generic parameter and passes in the Name property as the parameter
+        /// </summary>
+        /// <param name="principal">The principal to open</param>
+        /// <returns></returns>
         public static Task ShowPrincipalWindow(Principal principal)
         {
             switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
