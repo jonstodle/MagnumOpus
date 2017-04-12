@@ -43,7 +43,7 @@ namespace MagnumOpus.Services.FileServices
 		public static void RunFileFromCache(string fileName, string arguments = "", bool showWindow = true)
 		{
 			var filePath = Path.Combine(FileService.LocalAppData, fileName);
-			EnsureExecutableIsAvailable(fileName);
+			EnsureFileIsAvailable(fileName);
 			RunFile(filePath, arguments, showWindow);
 		}
 	}

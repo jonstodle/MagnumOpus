@@ -20,19 +20,19 @@ namespace MagnumOpus.ViewModels
 		{
 			_openLoggedOn = ReactiveCommand.Create(() =>
 			{
-				EnsureExecutableIsAvailable("PsLoggedon.exe");
+				EnsureFileIsAvailable("PsLoggedon.exe");
 				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_ipAddress}");
 			});
 
 			_openLoggedOnPlus = ReactiveCommand.Create(() =>
 			{
-				EnsureExecutableIsAvailable("PsExec.exe");
+				EnsureFileIsAvailable("PsExec.exe");
 				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe /K query user");
 			});
 
 			_openRemoteExecution = ReactiveCommand.Create(() =>
 			{
-				EnsureExecutableIsAvailable("PsExec.exe");
+				EnsureFileIsAvailable("PsExec.exe");
 				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe");
 			});
 
