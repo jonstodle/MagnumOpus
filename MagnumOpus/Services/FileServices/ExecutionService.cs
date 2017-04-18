@@ -21,7 +21,7 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="filePath">Full path to the file to be executed</param>
         /// <param name="arguments">Arguments to be passed</param>
         /// <param name="showWindow">Set to false to hide CMD window when executing the file</param>
-        public static void RunInCmd(string filePath, string arguments = "", bool showWindow = true) => RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K {filePath} {arguments}", showWindow);
+        public static void RunInCmd(string filePath, string arguments = "", bool showWindow = true) => RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K ""{filePath}"" {arguments}", showWindow);
 
         /// <summary>
         /// Runs a file in CMD with the given arguments and returns the output
@@ -65,7 +65,11 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="fileName">Name of the file</param>
         /// <param name="arguments">Arguments to be passed</param>
         /// <param name="showWindow">Set to false to hide window</param>
-        public static void RunInCmdFromCache(string fileName, string arguments = "", bool showWindow = true) => RunFile(Path.Combine(System32Path, "cmd.exe"), $"/K \"{Path.Combine(FileService.LocalAppData, fileName)}\" {arguments}", showWindow);
+        public static void RunInCmdFromCache(string fileName, string arguments = "", bool showWindow = true)
+        {
+            EnsureFileIsAvailable(fileName);
+            RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K ""{Path.Combine(FileService.LocalAppData, fileName)}"" {arguments}", showWindow);
+        }
 
         /// <summary>
         /// Runs a file bundled in the application package in a new process with the given arguments
@@ -75,9 +79,8 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="showWindow">Set to false to hide window</param>
 		public static void RunFileFromCache(string fileName, string arguments = "", bool showWindow = true)
 		{
-			var filePath = Path.Combine(FileService.LocalAppData, fileName);
 			EnsureFileIsAvailable(fileName);
-			RunFile(filePath, arguments, showWindow);
+			RunFile(Path.Combine(FileService.LocalAppData, fileName), arguments, showWindow);
 		}
 	}
 }
