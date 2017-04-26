@@ -74,6 +74,7 @@ namespace MagnumOpus.ViewModels
 
                 _save
                     .SelectMany(x => x.Count() > 0 ? _messages.Handle(new MessageInfo(MessageType.Info, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(0))
+                    .ObserveOnDispatcher()
                     .Do(_ => _close())
                     .Subscribe()
                     .DisposeWith(disposables);
