@@ -30,7 +30,7 @@ namespace MagnumOpus.ViewModels
 
             _saveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
-                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _group.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directMemberOfGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
@@ -50,7 +50,7 @@ namespace MagnumOpus.ViewModels
 
             _saveAllGroups = ReactiveCommand.CreateFromObservable(() =>
             {
-                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _group.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_allMemberOfGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
@@ -58,7 +58,7 @@ namespace MagnumOpus.ViewModels
 
             _saveMembers = ReactiveCommand.CreateFromObservable(() =>
             {
-                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _group.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveUsersToExcelFile(_members, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 

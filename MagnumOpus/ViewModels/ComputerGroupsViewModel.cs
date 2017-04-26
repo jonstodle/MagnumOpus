@@ -20,7 +20,7 @@ namespace MagnumOpus.ViewModels
 
             _saveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
-                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter };
+                var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _computer.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
