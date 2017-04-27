@@ -18,7 +18,7 @@ namespace MagnumOpus.ViewModels
         public AccountPanelViewModel()
         {
             _setNewPassword = ReactiveCommand.CreateFromObservable(
-                () => SetNewPasswordImpl(),
+                () => SetNewPasswordImpl(_newPassword),
                 this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
 
             _setNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
@@ -43,16 +43,20 @@ namespace MagnumOpus.ViewModels
             this.WhenActivated(disposables =>
             {
                 _setNewPassword
+                    .ObserveOnDispatcher()
+                    .Do(_ => NewPassword = "")
                     .SelectMany(newPass => _messages.Handle(new MessageInfo(MessageType.Success, $"New password is: {newPass}", "Password set")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 _setNewSimplePassword
+                    .ObserveOnDispatcher()
                     .SelectMany(newPass => _messages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 _setNewComplexPassword
+                    .ObserveOnDispatcher()
                     .SelectMany(newPass => _messages.Handle(MessageInfo.PasswordSetMessageInfo(newPass)))
                     .Subscribe()
                     .DisposeWith(disposables);
@@ -66,7 +70,7 @@ namespace MagnumOpus.ViewModels
                     .SelectMany(_ =>
                     {
                         MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
-                    return _messages.Handle(new MessageInfo(MessageType.Success, "Account unlocked"));
+                        return _messages.Handle(new MessageInfo(MessageType.Success, "Account unlocked"));
                     })
                     .Subscribe()
                     .DisposeWith(disposables);
@@ -125,38 +129,21 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<string> SetNewPasswordImpl() => Observable.Start(() =>
-        {
-            var password = new string(NewPassword.ToArray());
+        private IObservable<string> SetNewPasswordImpl(string newPassword) => Observable.Return(newPassword)
+            .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false, TaskPoolScheduler.Default).Select(_ => password));
 
-            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false).Wait();
-
-            NewPassword = "";
-
-            return password;
-        }, TaskPoolScheduler.Default);
-
-        private IObservable<string> SetNewSimplePasswordImpl() => Observable.Start(() =>
-        {
-            var password = $"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute.ToString("00")}";
-
-            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
-
-            return password;
-        }, TaskPoolScheduler.Default);
+        private IObservable<string> SetNewSimplePasswordImpl() => Observable.Return($"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute.ToString("00")}")
+            .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Select(_ => password));
 
         private IObservable<string> SetNewComplexPasswordImpl() => Observable.Start(() =>
         {
             var possibleChars = "abcdefgijkmnopqrstwxyzABCDEFGHJKLMNPQRSTWXYZ23456789*$-+?_&=!%{}/";
             var randGen = new Random(DateTime.Now.Second);
             var password = "";
-
             for (int i = 0; i < 16; i++) password += possibleChars[randGen.Next(possibleChars.Length)];
-
-            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
-
             return password;
-        }, TaskPoolScheduler.Default);
+        }, TaskPoolScheduler.Default)
+        .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, scheduler: CurrentThreadScheduler.Instance).Select(_ => password));
 
 
 
