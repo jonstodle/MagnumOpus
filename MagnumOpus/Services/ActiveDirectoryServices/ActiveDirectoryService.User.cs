@@ -14,11 +14,11 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 {
 	public partial class ActiveDirectoryService
     {
-        public IObservable<UserObject> GetUser(string identity) => Observable.Start(() =>
+        public IObservable<UserObject> GetUser(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
             var up = UserPrincipal.FindByIdentity(_principalContext, identity);
             return up != null ? new UserObject(up) : null;
-        });
+        }, scheduler ?? TaskPoolScheduler.Default);
 
 		public IObservable<DirectoryEntry> GetUsers(string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
 		{
@@ -43,7 +43,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 			}
 		});
 
-		public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true) => Observable.Start(() =>
+		public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true, IScheduler scheduler = null) => Observable.Start(() =>
         {
             GetUser(identity).Wait().Principal.SetPassword(password);
 
@@ -57,9 +57,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
                 return Unit.Default;
             }).Wait();
-        });
+        }, scheduler ?? TaskPoolScheduler.Default);
 
-        public IObservable<Unit> ExpirePassword(string identity) => Observable.Start(() =>
+        public IObservable<Unit> ExpirePassword(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
             DoActionOnAllDCs(x =>
             {
@@ -70,9 +70,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
                 return Unit.Default;
             }).Wait();
-        });
+        }, scheduler ?? TaskPoolScheduler.Default);
 
-        public IObservable<Unit> UnlockUser(string identity) => Observable.Start(() =>
+        public IObservable<Unit> UnlockUser(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
             DoActionOnAllDCs(x =>
             {
@@ -83,9 +83,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
                 return Unit.Default;
             }).Wait();
-        });
+        }, scheduler ?? TaskPoolScheduler.Default);
 
-		public IObservable<Unit> SetEnabled(string identity, bool enabled) => Observable.Start(() =>
+		public IObservable<Unit> SetEnabled(string identity, bool enabled, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			DoActionOnAllDCs(x =>
 			{
@@ -97,7 +97,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
 				return Unit.Default;
 			}).Wait();
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 
 		public IObservable<LockoutInfo> GetLockoutInfo(string identity) => DoActionOnAllDCs(x =>
 		{
@@ -116,7 +116,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 			};
 		});
 
-        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action) => Observable.Start(() => Domain.GetCurrentDomain().DomainControllers)
+        private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action, IScheduler scheduler = null) => Observable.Start(() => Domain.GetCurrentDomain().DomainControllers, scheduler ?? TaskPoolScheduler.Default)
             .SelectMany(dcs => dcs.ToGeneric<DomainController>().ToObservable())
             .SelectMany(dc => Observable.Start(() => action(dc), NewThreadScheduler.Default));
     }

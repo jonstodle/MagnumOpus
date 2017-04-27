@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -124,27 +125,27 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<string> SetNewPasswordImpl() => Observable.StartAsync(async () =>
+        private IObservable<string> SetNewPasswordImpl() => Observable.Start(() =>
         {
             var password = new string(NewPassword.ToArray());
 
-            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false);
+            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false).Wait();
 
             NewPassword = "";
 
             return password;
-        });
+        }, TaskPoolScheduler.Default);
 
-        private IObservable<string> SetNewSimplePasswordImpl() => Observable.StartAsync(async () =>
+        private IObservable<string> SetNewSimplePasswordImpl() => Observable.Start(() =>
         {
             var password = $"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute.ToString("00")}";
 
-            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password);
+            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
 
             return password;
-        });
+        }, TaskPoolScheduler.Default);
 
-        private IObservable<string> SetNewComplexPasswordImpl() => Observable.StartAsync(async () =>
+        private IObservable<string> SetNewComplexPasswordImpl() => Observable.Start(() =>
         {
             var possibleChars = "abcdefgijkmnopqrstwxyzABCDEFGHJKLMNPQRSTWXYZ23456789*$-+?_&=!%{}/";
             var randGen = new Random(DateTime.Now.Second);
@@ -152,10 +153,10 @@ namespace MagnumOpus.ViewModels
 
             for (int i = 0; i < 16; i++) password += possibleChars[randGen.Next(possibleChars.Length)];
 
-            await ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password);
+            ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Wait();
 
             return password;
-        });
+        }, TaskPoolScheduler.Default);
 
 
 

@@ -9,6 +9,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -91,14 +92,14 @@ namespace MagnumOpus.ViewModels
         {
             if (ActiveDirectoryService.Current.GetComputer(computerName).Wait() == null) throw new Exception("Could not find computer");
             return computerName;
-        });
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> SaveImpl(UserObject user, IEnumerable<string> computers) => Observable.Start(() =>
         {
             user.Principal.PermittedWorkstations.Clear();
             foreach (var computer in computers) user.Principal.PermittedWorkstations.Add(computer);
             user.Principal.Save();
-        });
+        }, TaskPoolScheduler.Default);
 
 
 

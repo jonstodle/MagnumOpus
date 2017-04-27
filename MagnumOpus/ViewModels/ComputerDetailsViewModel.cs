@@ -57,7 +57,7 @@ namespace MagnumOpus.ViewModels
 				enumerator.MoveNext();
 				return new OperatingSystemInfo((ManagementObject)enumerator.Current);
 			}
-		});
+		}, TaskPoolScheduler.Default);
 
 
 

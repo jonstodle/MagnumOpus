@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 namespace MagnumOpus.Services.FileServices
@@ -25,11 +26,11 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="key">An identifier of the data (will also be used as file name)</param>
         /// <param name="data">A string containing the data to be written</param>
         /// <returns></returns>
-		public static IObservable<Unit> WriteToLocalAppData(string key, string data) => Observable.Start(() =>
+		public static IObservable<Unit> WriteToLocalAppData(string key, string data, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			Directory.CreateDirectory(LocalAppData);
 			File.WriteAllText(Path.Combine(LocalAppData, $"{key}.txt"), data);
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 
         /// <summary>
         /// Writes the data string to %APPDATA%\Magnum Opus. This will overwrite any data written previously with the same key
@@ -37,25 +38,25 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="key">An identifier of the data (will also be used as file name)</param>
         /// <param name="data">A string containing the data to be writter</param>
         /// <returns></returns>
-		public static IObservable<Unit> WriteToAppData(string key, string data) => Observable.Start(() =>
+		public static IObservable<Unit> WriteToAppData(string key, string data, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			Directory.CreateDirectory(AppData);
 			File.WriteAllText(Path.Combine(AppData, $"{key}.txt"), data);
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 
         /// <summary>
         /// Reads the string data from %LOCALAPPDATA%\Magnum Opus. Throws an exception if there's no data for the given key
         /// </summary>
         /// <param name="key">The identifier of the data</param>
         /// <returns></returns>
-		public static IObservable<string> ReadFromLocalAppData(string key) => Observable.Start(() => File.ReadAllText(Path.Combine(LocalAppData, $"{key}.txt")));
+		public static IObservable<string> ReadFromLocalAppData(string key, IScheduler scheduler = null) => Observable.Start(() => File.ReadAllText(Path.Combine(LocalAppData, $"{key}.txt")), scheduler ?? TaskPoolScheduler.Default);
 
         /// <summary>
         /// Read the string data from %APPDATA%\Magnum Opus. Throws an exception if there's no data for the give key
         /// </summary>
         /// <param name="key">The identifier of the data</param>
         /// <returns></returns>
-		public static IObservable<string> ReadFromAppData(string key) => Observable.Start(() => File.ReadAllText(Path.Combine(AppData, $"{key}.txt")));
+		public static IObservable<string> ReadFromAppData(string key, IScheduler scheduler = null) => Observable.Start(() => File.ReadAllText(Path.Combine(AppData, $"{key}.txt")), scheduler ?? TaskPoolScheduler.Default);
 
 
 
@@ -65,7 +66,7 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="key">An identifier of the data (will also be used as file name)</param>
         /// <param name="data">The data to be stored</param>
         /// <returns></returns>
-		public static IObservable<Unit> SerializeToDisk<T>(string key, T data) => WriteToLocalAppData(key, JsonConvert.SerializeObject(data));
+		public static IObservable<Unit> SerializeToDisk<T>(string key, T data, IScheduler scheduler = null) => WriteToLocalAppData(key, JsonConvert.SerializeObject(data), scheduler);
 
         /// <summary>
         /// Reads the data from %LOCALAPPDATA%\Magnum Opus and attempts to deserialize JSON using Json.NET
@@ -73,6 +74,6 @@ namespace MagnumOpus.Services.FileServices
         /// <typeparam name="T">The type to deserialize the data to</typeparam>
         /// <param name="key">The dientifier of the data</param>
         /// <returns></returns>
-		public static IObservable<T> DeserializeFromDisk<T>(string key) => Observable.Start(() => JsonConvert.DeserializeObject<T>(ReadFromLocalAppData(key).Wait()));
+		public static IObservable<T> DeserializeFromDisk<T>(string key, IScheduler scheduler = null) => Observable.Start(() => JsonConvert.DeserializeObject<T>(ReadFromLocalAppData(key).Wait()), scheduler ?? TaskPoolScheduler.Default);
 	}
 }

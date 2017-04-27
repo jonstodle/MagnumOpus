@@ -9,6 +9,7 @@ using System.Linq;
 using System.Management;
 using System.Net;
 using System.Net.Sockets;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 namespace MagnumOpus.Models
@@ -27,8 +28,8 @@ namespace MagnumOpus.Models
 
 
 
-        public IObservable<string> GetIPAddress() => Observable.Start(() =>
-            Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString())
+        public IObservable<string> GetIPAddress(IScheduler scheduler = null) => Observable.Start(() =>
+            Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString(), scheduler ?? TaskPoolScheduler.Default)
             .CatchAndReturn("");
 
         public IObservable<LoggedOnUserInfo> GetLoggedInUsers() => Observable.Create<LoggedOnUserInfo>(observer =>

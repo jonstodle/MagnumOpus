@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -66,7 +67,7 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<string> PingHost(string hostName) => Observable.Interval(TimeSpan.FromSeconds(2d))
+        private IObservable<string> PingHost(string hostName) => Observable.Interval(TimeSpan.FromSeconds(2d), TaskPoolScheduler.Default)
                 .SelectMany(_ => Observable.Start(() =>
                     {
                         PingReply reply = null;
@@ -74,7 +75,7 @@ namespace MagnumOpus.ViewModels
 
                         if (reply?.Status == IPStatus.Success) return $"{hostName} responded after {reply.RoundtripTime}ms";
                         else throw new Exception("Ping reply status was not 'Success'");
-                    })
+                    }, CurrentThreadScheduler.Instance)
                     .CatchAndReturn($"{hostName} did not respond")
                     .Select(x => $"{DateTimeOffset.Now.ToString("T")} - {x}"))
                 .StartWith($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");

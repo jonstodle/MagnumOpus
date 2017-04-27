@@ -9,6 +9,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using static MagnumOpus.Services.FileServices.ExecutionService;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -28,7 +29,7 @@ namespace MagnumOpus.ViewModels
                                 .AddParameter("Force")
                             .Invoke();
                     }
-                }))
+                }, TaskPoolScheduler.Default))
             );
 
             _runPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));

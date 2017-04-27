@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -64,7 +65,7 @@ namespace MagnumOpus.ViewModels
 			var directoryEntry = group.Principal.GetUnderlyingObject() as DirectoryEntry;
 			directoryEntry.Properties["info"].Value = newNotes.Replace("\n", "\r\n");
 			directoryEntry.CommitChanges();
-		});
+		}, TaskPoolScheduler.Default);
 
 
 

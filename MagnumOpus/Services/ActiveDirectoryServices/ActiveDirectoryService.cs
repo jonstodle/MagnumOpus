@@ -2,6 +2,7 @@
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 namespace MagnumOpus.Services.ActiveDirectoryServices
@@ -47,7 +48,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
             }
         }
 
-        public IObservable<Principal> GetPrincipal(string identity) => Observable.Start(() => Principal.FindByIdentity(_principalContext, identity));
+        public IObservable<Principal> GetPrincipal(string identity, IScheduler scheduler = null) => Observable.Start(() => Principal.FindByIdentity(_principalContext, identity), scheduler ?? TaskPoolScheduler.Default);
 
         public IObservable<DirectoryEntry> SearchDirectory(string searchTerm) => Observable.Create<DirectoryEntry>(observer =>
         {

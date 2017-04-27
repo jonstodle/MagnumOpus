@@ -118,7 +118,7 @@ namespace MagnumOpus.ViewModels
 
 			if (sccmMajorVersion == 4) StartRemoteControlClassicImpl(computer);
 			else StartRemoteControl2012Impl(computer);
-		});
+		}, TaskPoolScheduler.Default);
 
 		private void StartRemoteControlClassicImpl(ComputerObject computer) => RunFile(SettingsService.Current.RemoteControlClassicPath, $"1 {computer.CN}");
 
@@ -129,7 +129,7 @@ namespace MagnumOpus.ViewModels
 			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f", false);
 			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f", false);
 			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f", false);
-		});
+		}, TaskPoolScheduler.Default);
 
 		private IObservable<bool> ToggleUacImpl(ComputerObject computer) => Observable.Start(() =>
 		{
@@ -147,7 +147,7 @@ namespace MagnumOpus.ViewModels
 				key.SetValue(regValueName, 1);
 				return true;
 			}
-		}).Concat(GetIsUacOn(computer.CN));
+		}, TaskPoolScheduler.Default).Concat(GetIsUacOn(computer.CN));
 
 
 
@@ -168,7 +168,7 @@ namespace MagnumOpus.ViewModels
 			{
 				throw new Exception("Could not read registry value");
 			}
-		});
+		}, TaskPoolScheduler.Default);
 
 
 

@@ -6,6 +6,7 @@ using System.Data;
 using System.DirectoryServices;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
 namespace MagnumOpus.Services.ExportServices
@@ -14,12 +15,12 @@ namespace MagnumOpus.Services.ExportServices
 	{
 		public static string ExcelFileFilter = "Excel file (*.xlsx)|*.xlsx";
 
-		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<string> users, string path) => Observable.Start(() =>
+		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<string> users, string path, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			SaveUsersToExcelFile(users.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 
-		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<DirectoryEntry> users, string path) => Observable.Start(() =>
+		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<DirectoryEntry> users, string path, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			var table = new DataTable("Sheet 1")
 			{
@@ -48,14 +49,14 @@ namespace MagnumOpus.Services.ExportServices
 			var workBook = new XLWorkbook();
 			workBook.Worksheets.Add(table);
 			workBook.SaveAs(path);
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 
-		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<string> groups, string path) => Observable.Start(() =>
+		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<string> groups, string path, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			SaveGroupsToExcelFile(groups.Select(x => ActiveDirectoryService.Current.SearchDirectory(x).Take(1).Wait()), path);
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 
-		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<DirectoryEntry> groups, string path) => Observable.Start(() =>
+		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<DirectoryEntry> groups, string path, IScheduler scheduler = null) => Observable.Start(() =>
 		{
 			var table = new DataTable("Sheet 1")
 			{
@@ -78,6 +79,6 @@ namespace MagnumOpus.Services.ExportServices
 			var workBook = new XLWorkbook();
 			workBook.Worksheets.Add(table);
 			workBook.SaveAs(path);
-		});
+		}, scheduler ?? TaskPoolScheduler.Default);
 	}
 }

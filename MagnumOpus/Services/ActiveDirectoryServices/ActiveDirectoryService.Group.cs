@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -11,11 +12,11 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 {
 	public partial class ActiveDirectoryService
     {
-        public IObservable<GroupObject> GetGroup(string identity) => Observable.Start(() =>
+        public IObservable<GroupObject> GetGroup(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
             var up = GroupPrincipal.FindByIdentity(_principalContext, identity);
             return up != null ? new GroupObject(up) : null;
-        });
+        }, scheduler ?? TaskPoolScheduler.Default);
 
         public IObservable<DirectoryEntry> GetGroups(string searchProperty, string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
         {

@@ -14,6 +14,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -56,7 +57,7 @@ namespace MagnumOpus.ViewModels
                     de.Properties["profilepath"].Value = _globalProfilePath.HasValue() ? _globalProfilePath : null;
                     de.CommitChanges();
                     MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
-                }));
+                }, TaskPoolScheduler.Default));
 
             _cancelGlobalProfilePath = ReactiveCommand.Create(() => { GlobalProfilePath = _user.ProfilePath; });
 
@@ -71,7 +72,7 @@ namespace MagnumOpus.ViewModels
                     p.HomeDirectory = _homeFolderPath.HasValue() ? _homeFolderPath : null;
                     p.Save();
                     MessageBus.Current.SendMessage(_user.CN, ApplicationActionRequest.Refresh);
-                }));
+                }, TaskPoolScheduler.Default));
 
             _cancelHomeFolderPath = ReactiveCommand.Create(() => { HomeFolderPath = _user.HomeDirectory; });
 
@@ -234,7 +235,7 @@ namespace MagnumOpus.ViewModels
             if (globalProfileDirecotry == null) throw new Exception("Could not get profile path");
 
             foreach (var dir in globalProfileDirecotry.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
-        });
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> ResetLocalProfileImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
@@ -292,7 +293,7 @@ namespace MagnumOpus.ViewModels
                 try { policyGuidKey.DeleteSubKeyTree(bracketedGuid); }
                 catch { /* Do nothing */ }
             }
-        });
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
@@ -306,7 +307,7 @@ namespace MagnumOpus.ViewModels
             profileDirectories.Remove(profileDir);
 
             return Tuple.Create(profileDir, profileDirectories.AsEnumerable());
-        });
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> RestoreProfileImpl(DirectoryInfo newProfileDir, DirectoryInfo oldProfileDir) => Observable.Start(() =>
         {
@@ -319,7 +320,7 @@ namespace MagnumOpus.ViewModels
             if (ShouldRestoreWindowsExplorerFavorites) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, "Links"); }
 
             if (ShouldRestoreStickyNotes) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, @"AppData\Roaming\Microsoft\Sticky Notes"); }
-        });
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> ResetCitrixProfileImpl(UserObject user) => Observable.Start(() =>
         {
@@ -337,7 +338,7 @@ namespace MagnumOpus.ViewModels
 
                 Directory.Move(Path.Combine(user.HomeDirectory, "windows", folderName), destination);
             }
-        });
+        }, TaskPoolScheduler.Default);
 
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -56,7 +57,7 @@ namespace MagnumOpus.ViewModels
         {
             group.Description = description;
             group.Principal.Save();
-        });
+        }, TaskPoolScheduler.Default);
 
 
 
