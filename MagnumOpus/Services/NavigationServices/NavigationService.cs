@@ -28,6 +28,8 @@ namespace MagnumOpus.Services.NavigationServices
 
 
 
+        public static void ShowMainWindow() => Current._navigationStack.First().Activate();
+
         /// <summary>
         /// Displays a windows as a dialog (preventing interaction with other windows while it's open) and passes the parameter object to the view model.
         /// </summary>

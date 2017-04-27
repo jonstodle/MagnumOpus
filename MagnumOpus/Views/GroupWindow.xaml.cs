@@ -11,7 +11,7 @@ namespace MagnumOpus.Views
     /// <summary>
     /// Interaction logic for GroupWindow.xaml
     /// </summary>
-    public partial class GroupWindow : DetailsWindow, IViewFor<GroupWindowViewModel>
+    public partial class GroupWindow : DetailsWindow<GroupWindowViewModel>
     {
         public GroupWindow()
         {
@@ -44,10 +44,5 @@ namespace MagnumOpus.Views
                     .RegisterDialogHandler(ContainerGrid));
             });
         }
-
-        public GroupWindowViewModel ViewModel { get => (GroupWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(GroupWindowViewModel), typeof(GroupWindow), new PropertyMetadata(null));
-
-        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as GroupWindowViewModel; }
     }
 }

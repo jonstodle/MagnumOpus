@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MagnumOpus.Views"
 		xmlns:controls="clr-namespace:MagnumOpus.Controls"
+		xmlns:vms="clr-namespace:MagnumOpus.ViewModels"
+		x:TypeArguments="vms:ComputerWindowViewModel"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
         Height="600" Width="600">

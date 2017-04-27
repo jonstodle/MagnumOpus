@@ -1,9 +1,11 @@
-﻿<Window x:Class="MagnumOpus.Views.SettingsWindow"
+﻿<local:WindowBase x:Class="MagnumOpus.Views.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MagnumOpus.Views"
+		xmlns:vms="clr-namespace:MagnumOpus.ViewModels"
+		x:TypeArguments="vms:SettingsWindowViewModel"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
         Title="Settings" Height="500" Width="400">
@@ -83,4 +85,4 @@
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>
-</Window>
+</local:WindowBase>

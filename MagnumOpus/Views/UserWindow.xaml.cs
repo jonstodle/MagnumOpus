@@ -13,7 +13,7 @@ namespace MagnumOpus.Views
     /// <summary>
     /// Interaction logic for UserWindow.xaml
     /// </summary>
-    public partial class UserWindow : DetailsWindow, IViewFor<UserWindowViewModel>
+    public partial class UserWindow : DetailsWindow<UserWindowViewModel>
     {
         public UserWindow()
         {
@@ -52,10 +52,5 @@ namespace MagnumOpus.Views
                 }.RegisterDialogHandler(ContainerGrid));
             });
         }
-
-        public UserWindowViewModel ViewModel { get => (UserWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(UserWindowViewModel), typeof(UserWindow), new PropertyMetadata(null));
-
-        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as UserWindowViewModel; }
     }
 }

@@ -11,7 +11,7 @@ namespace MagnumOpus.Views
     /// <summary>
     /// Interaction logic for ComputerWindow.xaml
     /// </summary>
-    public partial class ComputerWindow : DetailsWindow, IViewFor<ComputerWindowViewModel>
+    public partial class ComputerWindow : DetailsWindow<ComputerWindowViewModel>
     {
         public ComputerWindow()
         {
@@ -46,10 +46,5 @@ namespace MagnumOpus.Views
                     .RegisterDialogHandler(ContainerGrid));
             });
         }
-
-        public ComputerWindowViewModel ViewModel { get => (ComputerWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerWindowViewModel), typeof(ComputerWindow), new PropertyMetadata(null));
-
-        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as ComputerWindowViewModel; }
     }
 }

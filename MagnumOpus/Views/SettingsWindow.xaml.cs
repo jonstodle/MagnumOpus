@@ -13,7 +13,7 @@ namespace MagnumOpus.Views
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window, IViewFor<SettingsWindowViewModel>
+    public partial class SettingsWindow : WindowBase<SettingsWindowViewModel>
     {
         public SettingsWindow()
         {
@@ -46,10 +46,5 @@ namespace MagnumOpus.Views
                     .RegisterMessageHandler(ContainerGrid));
             });
         }
-
-        public SettingsWindowViewModel ViewModel { get => (SettingsWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(SettingsWindowViewModel), typeof(SettingsWindow), new PropertyMetadata(null));
-
-        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as SettingsWindowViewModel; }
     }
 }

@@ -13,13 +13,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using MagnumOpus.Services.ActiveDirectoryServices;
+using MagnumOpus.Views;
 
 namespace MagnumOpus
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IViewFor<MainWindowViewModel>
+    public partial class MainWindow : WindowBase<MainWindowViewModel>
     {
         public MainWindow()
         {
@@ -88,13 +89,6 @@ namespace MagnumOpus
                 }
             });
         }
-
-
-
-        public MainWindowViewModel ViewModel { get => (MainWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(MainWindowViewModel), typeof(MainWindow), new PropertyMetadata(null));
-
-        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as MainWindowViewModel; }
 
 
 

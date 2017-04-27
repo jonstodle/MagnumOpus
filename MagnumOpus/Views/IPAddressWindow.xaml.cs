@@ -10,7 +10,7 @@ namespace MagnumOpus.Views
     /// <summary>
     /// Interaction logic for IPAddressWindow.xaml
     /// </summary>
-    public partial class IPAddressWindow : DetailsWindow, IViewFor<IPAddressWindowViewModel>
+    public partial class IPAddressWindow : DetailsWindow<IPAddressWindowViewModel>
     {
         public IPAddressWindow()
         {
@@ -31,10 +31,5 @@ namespace MagnumOpus.Views
                 }.RegisterMessageHandler(ContainerGrid));
             });
         }
-
-        public IPAddressWindowViewModel ViewModel { get => (IPAddressWindowViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
-        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(IPAddressWindowViewModel), typeof(IPAddressWindow), new PropertyMetadata(null));
-
-        object IViewFor.ViewModel { get => ViewModel; set => ViewModel = value as IPAddressWindowViewModel; }
     }
 }

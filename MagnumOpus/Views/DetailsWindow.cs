@@ -8,14 +8,12 @@ using System.Windows;
 
 namespace MagnumOpus.Views
 {
-	public class DetailsWindow : Window
+	public class DetailsWindow<TViewModel> : WindowBase<TViewModel> where TViewModel : class
 	{
 		public DetailsWindow()
 		{
-            var keyDowns = this.Events().KeyDown.Publish().RefCount();
-
             Observable.Merge(
-                keyDowns.ToSignal(),
+                _keyDownEvents.ToSignal(),
                 this.Events().PreviewMouseDown.ToSignal(),
                 Observable.Return(Unit.Default))
                 .Select(_ => Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
@@ -26,7 +24,7 @@ namespace MagnumOpus.Views
 
             if (SettingsService.Current.UseEscapeToCloseDetailsWindows)
             {
-                keyDowns
+                _keyDownEvents
                     .Where(x => x.Key == System.Windows.Input.Key.Escape)
                     .Subscribe(_ => this.Close())
                     .DisposeWith(_subscriptions);
