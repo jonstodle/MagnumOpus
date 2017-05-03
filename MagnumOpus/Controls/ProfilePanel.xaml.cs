@@ -45,6 +45,7 @@ namespace MagnumOpus.Controls
                 d(this.Bind(ViewModel, vm => vm.ShouldRestoreOutlookSignatures, v => v.OutlookSignaturesCheckBox.IsChecked));
                 d(this.Bind(ViewModel, vm => vm.ShouldRestoreWindowsExplorerFavorites, v => v.WindowsExplorerFavoritesCheckBox.IsChecked));
                 d(this.Bind(ViewModel, vm => vm.ShouldRestoreStickyNotes, v => v.StickyNotesCheckBox.IsChecked));
+                d(this.OneWayBind(ViewModel, vm => vm.IsExecutingRestoreProfile, v => v.RestoreProfileButton.Content, x=> x ? "Restoring profile..." : "Restore profile"));
                 d(this.Bind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileToggleButton.IsChecked));
                 d(this.OneWayBind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileStackPanel.Visibility));
                 d(this.Bind(ViewModel, vm => vm.GlobalProfilePath, v => v.GlobalProfilePathTextBox.Text));

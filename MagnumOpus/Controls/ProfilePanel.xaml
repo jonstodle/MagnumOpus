@@ -83,7 +83,7 @@
 				<CheckBox x:Name="StickyNotesCheckBox" Content="Sticky Notes"/>
             </WrapPanel>
 
-            <Button x:Name="RestoreProfileButton" Content="Restore profile" Margin="2"/>
+            <Button x:Name="RestoreProfileButton" Margin="2"/>
         </StackPanel>
 
 		<StackPanel x:Name="GlobalProfileStackPanel" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">

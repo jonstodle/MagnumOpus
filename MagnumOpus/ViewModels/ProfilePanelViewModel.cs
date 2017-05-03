@@ -82,6 +82,9 @@ namespace MagnumOpus.ViewModels
             _isExecutingResetLocalProfile = _resetLocalProfile.IsExecuting
                 .ToProperty(this, x => x.IsExecutingResetLocalProfile);
 
+            _isExecutingRestoreProfile = _restoreProfile.IsExecuting
+                .ToProperty(this, x => x.IsExecutingRestoreProfile);
+
             _hasGlobalProfilePathChanged = Observable.CombineLatest(
                 this.WhenAnyValue(x => x.GlobalProfilePath),
                 this.WhenAnyValue(y => y.User).WhereNotNull(),
@@ -188,6 +191,8 @@ namespace MagnumOpus.ViewModels
         public bool IsExecutingResetGlobalProfile => _isExecutingResetGlobalProfile.Value;
 
         public bool IsExecutingResetLocalProfile => _isExecutingResetLocalProfile.Value;
+
+        public bool IsExecutingRestoreProfile => _isExecutingRestoreProfile.Value;
 
         public bool HasGlobalProfilePathChanged => _hasGlobalProfilePathChanged.Value;
 
@@ -411,6 +416,7 @@ namespace MagnumOpus.ViewModels
         private readonly ReactiveList<DirectoryInfo> _profiles = new ReactiveList<DirectoryInfo>();
         private readonly ObservableAsPropertyHelper<bool> _isExecutingResetGlobalProfile;
         private readonly ObservableAsPropertyHelper<bool> _isExecutingResetLocalProfile;
+        private readonly ObservableAsPropertyHelper<bool> _isExecutingRestoreProfile;
         private readonly ObservableAsPropertyHelper<bool> _hasGlobalProfilePathChanged;
         private readonly ObservableAsPropertyHelper<bool> _hasHomeFolderPathChanged;
         private UserObject _user;
