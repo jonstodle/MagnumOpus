@@ -4,6 +4,7 @@ using MagnumOpus.ViewModels;
 using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -20,13 +21,13 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.Group, v => v.Group));
+                this.Bind(ViewModel, vm => vm.Group, v => v.Group).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.Description, v => v.DescriptionTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.HasDescriptionChanged, v => v.DescriptionButtonsStackPanel.Visibility));
+                this.Bind(ViewModel, vm => vm.Description, v => v.DescriptionTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.HasDescriptionChanged, v => v.DescriptionButtonsStackPanel.Visibility).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
-                d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
+                this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton).DisposeWith(d);
             });
         }
 

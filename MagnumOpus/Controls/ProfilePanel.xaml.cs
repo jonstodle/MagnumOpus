@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -28,54 +29,54 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+                this.Bind(ViewModel, vm => vm.User, v => v.User).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileGrid.Visibility));
-                d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.ResetProfileComputerNameTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.IsExecutingResetGlobalProfile, v => v.ResetGlobalProfileButton.Content, x => x ? "Resetting global profile..." : "Reset global profile"));
-                d(this.OneWayBind(ViewModel, vm => vm.IsExecutingResetLocalProfile, v => v.ResetLocalProfileButton.Content, x => x ? "Resetting local profile..." : "Reset local profile"));
-                d(this.Bind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileStackPanel.Visibility));
-                d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.RestoreProfileComputerNameTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.Profiles, v => v.RestoreProfileListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedProfileIndex, v => v.RestoreProfileListView.SelectedIndex));
-                d(this.Bind(ViewModel, vm => vm.ShouldRestoreDesktopItems, v => v.DesktopItemsCheckBox.IsChecked));
-                d(this.Bind(ViewModel, vm => vm.ShouldRestoreInternetExplorerFavorites, v => v.InternetExplorerFavoritesCheckBox.IsChecked));
-                d(this.Bind(ViewModel, vm => vm.ShouldRestoreOutlookSignatures, v => v.OutlookSignaturesCheckBox.IsChecked));
-                d(this.Bind(ViewModel, vm => vm.ShouldRestoreWindowsExplorerFavorites, v => v.WindowsExplorerFavoritesCheckBox.IsChecked));
-                d(this.Bind(ViewModel, vm => vm.ShouldRestoreStickyNotes, v => v.StickyNotesCheckBox.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsExecutingRestoreProfile, v => v.RestoreProfileButton.Content, x=> x ? "Restoring profile..." : "Restore profile"));
-                d(this.Bind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileStackPanel.Visibility));
-                d(this.Bind(ViewModel, vm => vm.GlobalProfilePath, v => v.GlobalProfilePathTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.HasGlobalProfilePathChanged, v => v.GlobalProfilePathButtonsStackPanel.Visibility));
-                d(this.Bind(ViewModel, vm => vm.IsShowingHomeFolder, v => v.HomeFolderToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingHomeFolder, v => v.HomeFolderStackPanel.Visibility));
-                d(this.Bind(ViewModel, vm => vm.HomeFolderPath, v => v.HomeFolderPathTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.HasHomeFolderPathChanged, v => v.HomeFolderPathButtonsStackPanel.Visibility));
+                this.Bind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileGrid.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ComputerName, v => v.ResetProfileComputerNameTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsExecutingResetGlobalProfile, v => v.ResetGlobalProfileButton.Content, x => x ? "Resetting global profile..." : "Reset global profile").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsExecutingResetLocalProfile, v => v.ResetLocalProfileButton.Content, x => x ? "Resetting local profile..." : "Reset local profile").DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileStackPanel.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ComputerName, v => v.RestoreProfileComputerNameTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Profiles, v => v.RestoreProfileListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedProfileIndex, v => v.RestoreProfileListView.SelectedIndex).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ShouldRestoreDesktopItems, v => v.DesktopItemsCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ShouldRestoreInternetExplorerFavorites, v => v.InternetExplorerFavoritesCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ShouldRestoreOutlookSignatures, v => v.OutlookSignaturesCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ShouldRestoreWindowsExplorerFavorites, v => v.WindowsExplorerFavoritesCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ShouldRestoreStickyNotes, v => v.StickyNotesCheckBox.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsExecutingRestoreProfile, v => v.RestoreProfileButton.Content, x=> x ? "Restoring profile..." : "Restore profile").DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingGlobalProfile, v => v.GlobalProfileStackPanel.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.GlobalProfilePath, v => v.GlobalProfilePathTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.HasGlobalProfilePathChanged, v => v.GlobalProfilePathButtonsStackPanel.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsShowingHomeFolder, v => v.HomeFolderToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingHomeFolder, v => v.HomeFolderStackPanel.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.HomeFolderPath, v => v.HomeFolderPathTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.HasHomeFolderPathChanged, v => v.HomeFolderPathButtonsStackPanel.Visibility).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.ResetGlobalProfile, v => v.ResetGlobalProfileButton));
-                d(this.BindCommand(ViewModel, vm => vm.ResetLocalProfile, v => v.ResetLocalProfileButton));
-                d(this.BindCommand(ViewModel, vm => vm.SearchForProfiles, v => v.SearchButton));
-                d(this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton));
-                d(this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenGlobalProfile, v => v.OpenGlobalProfileButton));
-                d(this.BindCommand(ViewModel, vm => vm.SaveGlobalProfilePath, v => v.GlobalProfilePathSaveButton));
-                d(this.BindCommand(ViewModel, vm => vm.CancelGlobalProfilePath, v => v.GlobalProfilePathCancelButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenHomeFolder, v => v.OpenHomeFolderButton));
-                d(this.BindCommand(ViewModel, vm => vm.SaveHomeFolderPath, v => v.HomeFolderPathSaveButton));
-                d(this.BindCommand(ViewModel, vm => vm.CancelHomeFolderPath, v => v.HomeFolderPathCancelButton));
-                d(ResetProfileComputerNameTextBox.Events()
+                this.BindCommand(ViewModel, vm => vm.ResetGlobalProfile, v => v.ResetGlobalProfileButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.ResetLocalProfile, v => v.ResetLocalProfileButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SearchForProfiles, v => v.SearchButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RestoreProfile, v => v.RestoreProfileButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.ResetCitrixProfile, v => v.ResetCitrixProfileButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenGlobalProfile, v => v.OpenGlobalProfileButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SaveGlobalProfilePath, v => v.GlobalProfilePathSaveButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.CancelGlobalProfilePath, v => v.GlobalProfilePathCancelButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenHomeFolder, v => v.OpenHomeFolderButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SaveHomeFolderPath, v => v.HomeFolderPathSaveButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.CancelHomeFolderPath, v => v.HomeFolderPathCancelButton).DisposeWith(d);
+                ResetProfileComputerNameTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.ResetLocalProfile));
-                d(RestoreProfileComputerNameTextBox.Events()
+                    .InvokeCommand(ViewModel, x => x.ResetLocalProfile).DisposeWith(d);
+                RestoreProfileComputerNameTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.SearchForProfiles));
+                    .InvokeCommand(ViewModel, x => x.SearchForProfiles).DisposeWith(d);
             });
         }
 

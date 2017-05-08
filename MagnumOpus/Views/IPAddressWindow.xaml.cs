@@ -4,6 +4,7 @@ using MagnumOpus.ViewModels;
 using System.Collections.Generic;
 using System.Reactive;
 using System.Windows;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Views
 {
@@ -20,15 +21,15 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? ""));
-                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress));
-                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName));
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName).DisposeWith(d);
 
-                d(new List<Interaction<MessageInfo, int>>
+                new List<Interaction<MessageInfo, int>>
                 {
                     IPAddressPanel.Messages,
                     PingPanel.Messages
-                }.RegisterMessageHandler(ContainerGrid));
+                }.RegisterMessageHandler(ContainerGrid).DisposeWith(d);
             });
         }
     }

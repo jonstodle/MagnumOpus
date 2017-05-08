@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Windows;
 using System.Reactive.Linq;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Views
 {
@@ -21,27 +22,27 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, x => x ?? ""));
-                d(this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group));
-                d(this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDescription.Group));
-                d(this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group));
-                d(this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupNotes.Group));
+                this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDescription.Group).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupNotes.Group).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Group.CN)));
-                d(this.Events().KeyDown
+                this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Group.CN)).DisposeWith(d);
+                this.Events().KeyDown
                     .Where(x => x.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.Group.CN)
-                    .InvokeCommand(ViewModel.SetGroup));
-                d(new List<Interaction<MessageInfo, int>>
+                    .InvokeCommand(ViewModel.SetGroup).DisposeWith(d);
+                new List<Interaction<MessageInfo, int>>
                 {
                     GroupDetails.Messages,
                     GroupDescription.Messages,
                     GroupGroups.Messages,
                     GroupNotes.Messages
-                }.RegisterMessageHandler(ContainerGrid));
-                d(GroupGroups
+                }.RegisterMessageHandler(ContainerGrid).DisposeWith(d);
+                GroupGroups
                     .DialogRequests
-                    .RegisterDialogHandler(ContainerGrid));
+                    .RegisterDialogHandler(ContainerGrid).DisposeWith(d);
             });
         }
     }

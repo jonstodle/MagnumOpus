@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -30,24 +31,24 @@ namespace MagnumOpus.Controls
             {
                 ComputerNameTextBox.Focus();
 
-                d(this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations"));
-                d(this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.Computers, v => v.ComputersListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedComputer, v => v.ComputersListView.SelectedItem));
+                this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations").DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computers, v => v.ComputersListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedComputer, v => v.ComputersListView.SelectedItem).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.AddComputer, v => v.AddComputerButton));
-                d(this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerButton));
-                d(this.BindCommand(ViewModel, vm => vm.RemoveAllComputers, v => v.RemoveAllComputersButton));
-                d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
-                d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
-                d(ComputersListView.Events()
+                this.BindCommand(ViewModel, vm => vm.AddComputer, v => v.AddComputerButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RemoveAllComputers, v => v.RemoveAllComputersButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton).DisposeWith(d);
+                ComputersListView.Events()
                     .MouseDoubleClick
                     .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.RemoveComputer));
-                d(this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerMenuItem));
-                d(ViewModel
+                    .InvokeCommand(ViewModel, x => x.RemoveComputer).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerMenuItem).DisposeWith(d);
+                ViewModel
                     .Messages
-                    .RegisterMessageHandler(ContainerGrid));
+                    .RegisterMessageHandler(ContainerGrid).DisposeWith(d);
             });
         }
 

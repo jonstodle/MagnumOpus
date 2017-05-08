@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Views
 {
@@ -23,33 +24,33 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.Title, x => x ?? ""));
-                d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User));
-                d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User));
-                d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User));
-                d(this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User));
+                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User, v => v.UserGroups.User).DisposeWith(d);
 
-                d(MessageBus.Current.Listen<string>(ApplicationActionRequest.Refresh)
+                MessageBus.Current.Listen<string>(ApplicationActionRequest.Refresh)
                     .ObserveOnDispatcher()
                     .Where(x => x == ViewModel.User?.CN)
-                    .InvokeCommand(ViewModel, x => x.SetUser));
-                d(this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)));
-                d(this.Events().KeyDown
+                    .InvokeCommand(ViewModel, x => x.SetUser).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)).DisposeWith(d);
+                this.Events().KeyDown
                     .Where(x => x.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.User.CN)
-                    .InvokeCommand(ViewModel.SetUser));
-                d(new List<Interaction<MessageInfo, int>>
+                    .InvokeCommand(ViewModel.SetUser).DisposeWith(d);
+                new List<Interaction<MessageInfo, int>>
                 {
                     UserDetails.Messages,
                     UserAccountPanel.Messages,
                     UserProfilePanel.Messages,
                     UserGroups.Messages
-                }.RegisterMessageHandler(ContainerGrid));
-                d(new List<Interaction<DialogInfo, Unit>>
+                }.RegisterMessageHandler(ContainerGrid).DisposeWith(d);
+                new List<Interaction<DialogInfo, Unit>>
                 {
                     UserAccountPanel.DialogRequests,
                     UserGroups.DialogRequests
-                }.RegisterDialogHandler(ContainerGrid));
+                }.RegisterDialogHandler(ContainerGrid).DisposeWith(d);
             });
         }
     }

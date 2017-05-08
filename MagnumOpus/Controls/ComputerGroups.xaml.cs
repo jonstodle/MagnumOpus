@@ -7,6 +7,7 @@ using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -23,17 +24,17 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+                this.Bind(ViewModel, vm => vm.Computer, v => v.Computer).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsStackPanel.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem));
+                this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsStackPanel.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem).DisposeWith(d);
 
-                d(_directGroupsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectGroup));
-                d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.FindDirectGroupMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton));
-                d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton));
+                _directGroupsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectGroup).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.FindDirectGroupMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditDirectGroupsButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveDirectGroupsButton).DisposeWith(d);
             });
         }
 

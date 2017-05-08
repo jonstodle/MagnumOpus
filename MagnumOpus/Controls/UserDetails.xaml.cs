@@ -8,6 +8,7 @@ using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -24,29 +25,29 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+                this.Bind(ViewModel, vm => vm.User, v => v.User).DisposeWith(d);
 
-                d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.DisplayNameTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.EmployeeId, v => v.EmployeeIDTextBlock.Text, x => $"({x})"));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.SamAccountName, v => v.SamTextBlock.Text, x => x?.ToUpperInvariant()));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text, x => x.HasValue() ? x : "No company"));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"User expires {((DateTime)x).ToShortDateString()}" : "User never expires"));
-                d(this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked"));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, x => x != null ? (bool)x ? "User enabled" : "User disabled" : "Status unavailable"));
-                d(this.OneWayBind(ViewModel, vm => vm.PasswordStatus, v => v.PasswordStatusTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text, x => x.HasValue() ? x : "No email address"));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingOrganizationDetails, v => v.OrganizationGrid.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.User.JobTitle, v => v.JobTitleTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Department, v => v.DepartmentTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyNameTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.Manager.Name, v => v.ManagerTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.DirectReports, v => v.DirectReportsListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedDirectReport, v => v.DirectReportsListView.SelectedItem));
+                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.DisplayNameTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.EmployeeId, v => v.EmployeeIDTextBlock.Text, x => $"({x})").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.SamAccountName, v => v.SamTextBlock.Text, x => x?.ToUpperInvariant()).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text, x => x.HasValue() ? x : "No company").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"User expires {((DateTime)x).ToShortDateString()}" : "User never expires").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, x => x != null ? (bool)x ? "User enabled" : "User disabled" : "Status unavailable").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.PasswordStatus, v => v.PasswordStatusTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text, x => x.HasValue() ? x : "No email address").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingOrganizationDetails, v => v.OrganizationGrid.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.JobTitle, v => v.JobTitleTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Department, v => v.DepartmentTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyNameTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Manager.Name, v => v.ManagerTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.DirectReports, v => v.DirectReportsListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedDirectReport, v => v.DirectReportsListView.SelectedItem).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.ToggleOrganizationDetails, v => v.CompanyHyperLink));
-                d(this.BindCommand(ViewModel, vm => vm.OpenManager, v => v.ManagerHyperLink));
-                d(_directReportsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenDirectReport));
-                d(this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.OpenDirectReportMenuItem));
+                this.BindCommand(ViewModel, vm => vm.ToggleOrganizationDetails, v => v.CompanyHyperLink).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenManager, v => v.ManagerHyperLink).DisposeWith(d);
+                _directReportsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenDirectReport).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenDirectReport, v => v.OpenDirectReportMenuItem).DisposeWith(d);
             });
         }
 

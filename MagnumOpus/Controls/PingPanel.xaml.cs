@@ -6,6 +6,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -22,34 +23,34 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.HostName, v => v.HostName));
+                this.Bind(ViewModel, vm => vm.HostName, v => v.HostName).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, x => !x ? "Start" : "Stop"));
-                d(this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingResultDetailsToggleButton.IsEnabled));
-                d(this.Bind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsStackPanel.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.PingResults, v => v.PingResultDetailsListView.ItemsSource));
+                this.Bind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, x => !x ? "Start" : "Stop").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingResultDetailsToggleButton.IsEnabled).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsStackPanel.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.PingResults, v => v.PingResultDetailsListView.ItemsSource).DisposeWith(d);
 
-                d(ViewModel
+                ViewModel
                     .WhenAnyValue(x => x.IsPinging)
                     .Where(x => x)
                     .Select(_ => Unit.Default)
                     .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.StartPing));
-                d(ViewModel
+                    .InvokeCommand(ViewModel, x => x.StartPing).DisposeWith(d);
+                ViewModel
                     .WhenAnyValue(x => x.IsPinging)
                     .Where(x => !x)
                     .Select(_ => Unit.Default)
                     .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.StopPing));
-                d(ViewModel
+                    .InvokeCommand(ViewModel, x => x.StopPing).DisposeWith(d);
+                ViewModel
                     .WhenAnyValue(x => x.HostName)
                     .Where(x => x == null)
                     .Select(_ => Unit.Default)
                     .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.StopPing));
+                    .InvokeCommand(ViewModel, x => x.StopPing).DisposeWith(d);
             });
         }
 

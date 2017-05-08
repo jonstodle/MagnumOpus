@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -29,22 +30,23 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : ""));
+                this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : "").DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem));
-                d(this.OneWayBind(ViewModel, vm => vm.PrincipalMembers, v => v.PrincipalMembersListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedPrincipalMember, v => v.PrincipalMembersListView.SelectedItem));
+                this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.PrincipalMembers, v => v.PrincipalMembersListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedPrincipalMember, v => v.PrincipalMembersListView.SelectedItem).DisposeWith(d);
 
                 SearchQueryTextBox.Focus();
-                d(ViewModel
+                ViewModel
                     .WhenAnyValue(x => x.Principal)
                     .WhereNotNull()
                     .SubscribeOnDispatcher()
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.GetPrincipalMembers));
-                d(Observable.Merge(
+                    .InvokeCommand(ViewModel, x => x.GetPrincipalMembers)
+                    .DisposeWith(d);
+                Observable.Merge(
                         SearchQueryTextBox.Events()
                             .KeyDown
                             .Where(x => x.Key == Key.Enter)
@@ -56,18 +58,20 @@ namespace MagnumOpus.Controls
                     .DistinctUntilChanged()
                     .SubscribeOnDispatcher()
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.Search));
-                d(this.BindCommand(ViewModel, vm => vm.AddToPrincipal, v => v.AddMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem));
-                d(_searchResultsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.AddToPrincipal));
-                d(this.BindCommand(ViewModel, vm => vm.RemoveFromPrincipal, v => v.RemoveMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem));
-                d(_principalMembersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.RemoveFromPrincipal));
-                d(this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton));
-                d(this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton));
-                d(ViewModel
+                    .InvokeCommand(ViewModel, x => x.Search)
+                    .DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.AddToPrincipal, v => v.AddMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem).DisposeWith(d);
+                _searchResultsListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.AddToPrincipal).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RemoveFromPrincipal, v => v.RemoveMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenMembersPrincipal, v => v.OpenMembersPrincipalMenuItem).DisposeWith(d);
+                _principalMembersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.RemoveFromPrincipal).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Save, v => v.SaveButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Cancel, v => v.CancelButton).DisposeWith(d);
+                ViewModel
                     .Messages
-                    .RegisterMessageHandler(ContainerGrid));
+                    .RegisterMessageHandler(ContainerGrid)
+                    .DisposeWith(d);
             });
         }
 

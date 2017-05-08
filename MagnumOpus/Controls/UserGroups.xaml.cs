@@ -10,6 +10,7 @@ using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -26,37 +27,37 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+                this.Bind(ViewModel, vm => vm.User, v => v.User).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsGrid.Visibility));
-                d(this.Bind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsGrid.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem));
-                d(this.Bind(ViewModel, vm => vm.SelectedAllGroup, v => v.AllGroupsListView.SelectedItem));
-                d(this.Bind(ViewModel, vm => vm.GroupFilter, v => v.GroupFilterTextBox.Text));
-                d(this.Bind(ViewModel, vm => vm.UseFuzzy, v => v.UseFuzzyToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.AllGroupsCollectionView, v => v.AllGroupsListView.ItemsSource));
-                d(this.OneWayBind(ViewModel, vm => vm.IsLoadingGroups, v => v.IsLoadingGroupsProgressBar.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.IsLoadingGroups, v => v.IsLoadingGroupsProgressBar.IsIndeterminate));
-                d(this.OneWayBind(ViewModel, vm => vm.AllGroupsCollectionView.Count, v => v.ShowingCountRun.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.AllGroups.Count, v => v.TotalCountRun.Text));
+                this.Bind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingDirectGroups, v => v.DirectGroupsGrid.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingAllGroups, v => v.AllGroupsGrid.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.DirectGroups, v => v.DirectGroupsListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedDirectGroup, v => v.DirectGroupsListView.SelectedItem).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedAllGroup, v => v.AllGroupsListView.SelectedItem).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.GroupFilter, v => v.GroupFilterTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.UseFuzzy, v => v.UseFuzzyToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AllGroupsCollectionView, v => v.AllGroupsListView.ItemsSource).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsLoadingGroups, v => v.IsLoadingGroupsProgressBar.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsLoadingGroups, v => v.IsLoadingGroupsProgressBar.IsIndeterminate).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AllGroupsCollectionView.Count, v => v.ShowingCountRun.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AllGroups.Count, v => v.TotalCountRun.Text).DisposeWith(d);
 
-                d(_directGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectGroup));
-                d(this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.OpenMemberOfMenuItem));
-                d(_allGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindAllGroup));
-                d(this.BindCommand(ViewModel, vm => vm.FindAllGroup, v => v.OpenMemberOfAllMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditGroupsButton));
-                d(this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveGroupsButton));
-                d(this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton));
+                _directGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindDirectGroup).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.FindDirectGroup, v => v.OpenMemberOfMenuItem).DisposeWith(d);
+                _allGroupsListViewItemDoubleClicks.ToEventCommandSignal().InvokeCommand(ViewModel.FindAllGroup).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.FindAllGroup, v => v.OpenMemberOfAllMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenEditMemberOf, v => v.EditGroupsButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SaveDirectGroups, v => v.SaveGroupsButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton).DisposeWith(d);
 
-                d(ViewModel
+                ViewModel
                 .WhenAnyValue(x => x.IsShowingAllGroups)
                 .Where(x => x)
                 .Select(_ => Unit.Default)
                 .ObserveOnDispatcher()
-                .InvokeCommand(ViewModel, x => x.GetAllGroups));
+                .InvokeCommand(ViewModel, x => x.GetAllGroups).DisposeWith(d);
             });
         }
 

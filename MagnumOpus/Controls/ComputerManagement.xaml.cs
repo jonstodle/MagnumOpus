@@ -4,6 +4,7 @@ using MagnumOpus.ViewModels;
 using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -20,12 +21,12 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+                this.Bind(ViewModel, vm => vm.Computer, v => v.Computer).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton));
-                d(this.BindCommand(ViewModel, vm => vm.RunPSExec, v => v.RunPSExecButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSccm, v => v.OpenSccmButton));
+                this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RunPSExec, v => v.RunPSExecButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenSccm, v => v.OpenSccmButton).DisposeWith(d);
             });
         }
 

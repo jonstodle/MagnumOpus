@@ -2,6 +2,7 @@
 using MagnumOpus.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -16,11 +17,11 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}"));
-                d(this.OneWayBind(ViewModel, vm => vm.LockoutInfos, v => v.LockoutInfosListView.ItemsSource));
+                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.LockoutInfos, v => v.LockoutInfosListView.ItemsSource).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.GetLockoutInfo, v => v.RefreshButton));
-                d(this.BindCommand(ViewModel, vm => vm.Close, v => v.CloseButton));
+                this.BindCommand(ViewModel, vm => vm.GetLockoutInfo, v => v.RefreshButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Close, v => v.CloseButton).DisposeWith(d);
             });
         }
 

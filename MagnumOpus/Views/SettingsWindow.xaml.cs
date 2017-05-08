@@ -7,6 +7,7 @@ using System.Windows.Documents;
 using System.Reactive.Linq;
 using System.Windows.Navigation;
 using System.Diagnostics;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Views
 {
@@ -23,27 +24,29 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.HistoryCountLimit, v => v.HistoryCountLimitTextBox.Text));
-                d(this.Bind(ViewModel, vm => vm.OpenDuplicateWindows, v => v.OpenDuplicateWindowsCheckBox.IsChecked));
-                d(this.Bind(ViewModel, vm => vm.DetailWindowTimeoutLength, v => v.DetailWindowTimeoutLengthTextBox.Text));
-                d(this.Bind(ViewModel, vm => vm.UseEscapeToCloseDetailsWindows, v => v.UseEscapeToCloseDetailsWindowsCheckBox.IsChecked));
-                d(this.Bind(ViewModel, vm => vm.RemoteControlClassicPath, v => v.RemoteControlClassicPathTextBox.Text));
-                d(this.Bind(ViewModel, vm => vm.RemoteControl2012Path, v => v.RemoteControl2012PathTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text));
+                this.Bind(ViewModel, vm => vm.HistoryCountLimit, v => v.HistoryCountLimitTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.OpenDuplicateWindows, v => v.OpenDuplicateWindowsCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.DetailWindowTimeoutLength, v => v.DetailWindowTimeoutLengthTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.UseEscapeToCloseDetailsWindows, v => v.UseEscapeToCloseDetailsWindowsCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.RemoteControlClassicPath, v => v.RemoteControlClassicPathTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.RemoteControl2012Path, v => v.RemoteControl2012PathTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text).DisposeWith(d);
 
-                d(Observable.Merge(
-                    Observable.FromEventPattern<RequestNavigateEventArgs>(SupportIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                    Observable.FromEventPattern<RequestNavigateEventArgs>(InfoIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                    Observable.FromEventPattern<RequestNavigateEventArgs>(QuestionIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                    Observable.FromEventPattern<RequestNavigateEventArgs>(SuccessIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                    Observable.FromEventPattern<RequestNavigateEventArgs>(WarningIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                    Observable.FromEventPattern<RequestNavigateEventArgs>(ErrorIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)))
+                Observable.Merge(
+                        Observable.FromEventPattern<RequestNavigateEventArgs>(SupportIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                        Observable.FromEventPattern<RequestNavigateEventArgs>(InfoIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                        Observable.FromEventPattern<RequestNavigateEventArgs>(QuestionIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                        Observable.FromEventPattern<RequestNavigateEventArgs>(SuccessIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                        Observable.FromEventPattern<RequestNavigateEventArgs>(WarningIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
+                        Observable.FromEventPattern<RequestNavigateEventArgs>(ErrorIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)))
                     .Select(args => args.EventArgs.Uri.AbsoluteUri)
-                    .Subscribe(uri => Process.Start(uri)));
+                    .Subscribe(uri => Process.Start(uri))
+                    .DisposeWith(d);
 
-                d(ViewModel
+                ViewModel
                     .Messages
-                    .RegisterMessageHandler(ContainerGrid));
+                    .RegisterMessageHandler(ContainerGrid)
+                    .DisposeWith(d);
             });
         }
     }

@@ -4,6 +4,7 @@ using MagnumOpus.ViewModels;
 using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -20,21 +21,21 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.IPAddress, v => v.IPAddress));
+                this.Bind(ViewModel, vm => vm.IPAddress, v => v.IPAddress).DisposeWith(d);
 
-                d(this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}"));
-                d(this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})"));
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})").DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenRemoteExecution, v => v.RemoteExecutionButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton));
-                d(this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button));
-                d(this.BindCommand(ViewModel, vm => vm.KillRemoteControl, v => v.KillRemoteConrolButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
+                this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenRemoteExecution, v => v.RemoteExecutionButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.KillRemoteControl, v => v.KillRemoteConrolButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton).DisposeWith(d);
             });
         }
 

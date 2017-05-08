@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -28,28 +29,28 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.User, v => v.User));
+                this.Bind(ViewModel, vm => vm.User, v => v.User).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility));
-                d(this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, x => x != null ? (bool)x ? "Disable" : "Enable" : "Unavailable"));
-                d(this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, x => x != null ? true : false));
+                this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, x => x != null ? (bool)x ? "Disable" : "Enable" : "Unavailable").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, x => x != null ? true : false).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton));
-                d(this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton));
-                d(this.BindCommand(ViewModel, vm => vm.SetNewComplexPassword, v => v.SetNewComplexPasswordButton));
-                d(this.BindCommand(ViewModel, vm => vm.ExpirePassword, v => v.ExpirePasswordButton));
-                d(this.BindCommand(ViewModel, vm => vm.UnlockAccount, v => v.UnlockAccountButton));
-                d(this.BindCommand(ViewModel, vm => vm.RunLockoutStatus, v => v.LockOutStatusButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenPermittedWorkstations, v => v.PermittedWorkstationsButton));
-                d(this.BindCommand(ViewModel, vm => vm.ToggleEnabled, v => v.ToggleEnabledButton));
-                d(this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton));
-                d(NewPasswordTextBox.Events()
+                this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SetNewComplexPassword, v => v.SetNewComplexPasswordButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.ExpirePassword, v => v.ExpirePasswordButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.UnlockAccount, v => v.UnlockAccountButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RunLockoutStatus, v => v.LockOutStatusButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenPermittedWorkstations, v => v.PermittedWorkstationsButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.ToggleEnabled, v => v.ToggleEnabledButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton).DisposeWith(d);
+                NewPasswordTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .Select(_ => Unit.Default)
-                    .InvokeCommand(ViewModel, x => x.SetNewPassword));
+                    .InvokeCommand(ViewModel, x => x.SetNewPassword).DisposeWith(d);
             });
         }
 

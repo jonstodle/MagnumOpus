@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Windows;
 using System.Reactive.Linq;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Views
 {
@@ -21,29 +22,29 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                d(this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? ""));
-                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer));
-                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer));
-                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerManagement.Computer));
-                d(this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName));
-                d(this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer));
+                this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerManagement.Computer).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer).DisposeWith(d);
 
-                d(this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)));
-                d(this.Events().KeyDown
+                this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)).DisposeWith(d);
+                this.Events().KeyDown
                     .Where(x => x.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.Computer.CN)
-                    .InvokeCommand(ViewModel.SetComputer));
-                d(new List<Interaction<MessageInfo, int>>
+                    .InvokeCommand(ViewModel.SetComputer).DisposeWith(d);
+                new List<Interaction<MessageInfo, int>>
                 {
                     ComputerDetails.Messages,
                     RemotePanel.Messages,
                     ComputerManagement.Messages,
                     PingPanel.Messages,
                     ComputerGroups.Messages
-                }.RegisterMessageHandler(ContainerGrid));
-                d(ComputerGroups
+                }.RegisterMessageHandler(ContainerGrid).DisposeWith(d);
+                ComputerGroups
                     .DialogRequests
-                    .RegisterDialogHandler(ContainerGrid));
+                    .RegisterDialogHandler(ContainerGrid).DisposeWith(d);
             });
         }
     }

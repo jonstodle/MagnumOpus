@@ -7,6 +7,7 @@ using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Reactive.Disposables;
 
 namespace MagnumOpus.Controls
 {
@@ -23,26 +24,26 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                d(this.Bind(ViewModel, vm => vm.Computer, v => v.Computer));
+                this.Bind(ViewModel, vm => vm.Computer, v => v.Computer).DisposeWith(d);
 
-                d(this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked));
-                d(this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility));
-                d(this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null));
-                d(this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, x => x ?? true ? "Disable UAC" : "Enable UAC"));
-                d(this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource));
-                d(this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem));
+                this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, x => x ?? true ? "Disable UAC" : "Enable UAC").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem).DisposeWith(d);
 
-                d(_loggedOnUsersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenUser));
-                d(this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem));
-                //d(this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button));
-                d(this.BindCommand(ViewModel, vm => vm.KillRemoteTools, v => v.KillRemoteToolsButton));
-                d(this.BindCommand(ViewModel, vm => vm.ToggleUac, v => v.ToggleUACButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton));
-                d(this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton));
+                _loggedOnUsersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenUser).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem).DisposeWith(d);
+                //this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.KillRemoteTools, v => v.KillRemoteToolsButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.ToggleUac, v => v.ToggleUACButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton).DisposeWith(d);
             });
         }
 
