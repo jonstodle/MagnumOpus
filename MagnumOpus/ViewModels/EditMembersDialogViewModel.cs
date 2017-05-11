@@ -21,17 +21,17 @@ namespace MagnumOpus.ViewModels
     {
         public EditMembersDialogViewModel()
         {
-            _setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
+            SetGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
 
-            _getGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value).SubscribeOn(RxApp.TaskpoolScheduler));
+            GetGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value).SubscribeOn(RxApp.TaskpoolScheduler));
 
-            _search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
+            Search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery).Take(1000).SubscribeOn(RxApp.TaskpoolScheduler));
 
-            _openSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedSearchResult.Properties.Get<string>("name")));
+            OpenSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedSearchResult.Properties.Get<string>("name")));
 
-            _openGroupMember = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedGroupMember.Properties.Get<string>("name")));
+            OpenGroupMember = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedGroupMember.Properties.Get<string>("name")));
 
-            _addToGroup = ReactiveCommand.Create(
+            AddToGroup = ReactiveCommand.Create(
                 () =>
                 {
                     if (_groupMembers.Contains(_selectedSearchResult) || _membersToAdd.Contains(_selectedSearchResult)) return;
@@ -41,7 +41,7 @@ namespace MagnumOpus.ViewModels
                 },
                 this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
 
-            _removeFromGroup = ReactiveCommand.Create(
+            RemoveFromGroup = ReactiveCommand.Create(
                 () =>
                 {
                     if (_membersToAdd.Contains(_selectedGroupMember)) _membersToAdd.Remove(_selectedGroupMember);
@@ -50,86 +50,70 @@ namespace MagnumOpus.ViewModels
                 },
                 this.WhenAnyValue(x => x.SelectedGroupMember).IsNotNull());
 
-            _save = ReactiveCommand.CreateFromTask(
+            Save = ReactiveCommand.CreateFromTask(
                 async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
                 Observable.CombineLatest(_membersToAdd.CountChanged.StartWith(0), _membersToRemove.CountChanged.StartWith(0), (x, y) => x > 0 || y > 0));
 
-            _cancel = ReactiveCommand.Create(() => _close());
+            Cancel = ReactiveCommand.Create(() => _close());
 
-            _group = _setGroup
+            _group = SetGroup
                 .ToProperty(this, x => x.Group);
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
-            _getGroupMembers
-                .ObserveOnDispatcher()
+                GetGroupMembers
+                    .ObserveOnDispatcher()
                 .Subscribe(x => _groupMembers.Add(x))
                 .DisposeWith(disposables);
 
-            _search
-                .Do(_ => _searchResults.Clear())
+                    Search
+                    .Do((IObservable<DirectoryEntry> _) => _searchResults.Clear())
                 .Switch()
                 .ObserveOnDispatcher()
                 .Subscribe(x => _searchResults.Add(x))
                 .DisposeWith(disposables);
 
-            _save
-                .SelectMany(x => x.Count() > 0 ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(0))
+                    Save
+                    .SelectMany((IEnumerable<string> x) => x.Count() > 0 ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(0))
                     .ObserveOnDispatcher()
                     .Do(_ => _close())
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                        _setGroup.ThrownExceptions.Select(ex => ("Could not load group", ex.Message)),
-                        _getGroupMembers.ThrownExceptions.Select(ex => ("Could not get members", ex.Message)),
-                        _search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
-                        _openSearchResult.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
-                        _openGroupMember.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
-                        _addToGroup.ThrownExceptions.Select(ex => ("Could not add member", ex.Message)),
-                        _removeFromGroup.ThrownExceptions.Select(ex => ("Could not remove member", ex.Message)),
-                        _save.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
-                        _cancel.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
-                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                        Observable.Select<Exception, (string, string)>(this.SetGroup.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not load group", (string)ex.Message)))),
+                        GetGroupMembers.ThrownExceptions.Select(ex => (("Could not get members", ex.Message))),
+                        Search.ThrownExceptions.Select(ex => (("Could not complete search", ex.Message))),
+                        OpenSearchResult.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
+                        OpenGroupMember.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
+                        AddToGroup.ThrownExceptions.Select(ex => (("Could not add member", ex.Message))),
+                        RemoveFromGroup.ThrownExceptions.Select(ex => (("Could not remove member", ex.Message))),
+                        Save.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
+                        Cancel.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
+                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            });
+            }));
         }
 
 
 
-        public ReactiveCommand SetGroup => _setGroup;
-
-        public ReactiveCommand GetGroupMembers => _getGroupMembers;
-
-        public ReactiveCommand Search => _search;
-
-        public ReactiveCommand OpenSearchResult => _openSearchResult;
-
-        public ReactiveCommand OpenGroupMember => _openGroupMember;
-
-        public ReactiveCommand AddToGroup => _addToGroup;
-
-        public ReactiveCommand RemoveFromGroup => _removeFromGroup;
-
-        public ReactiveCommand Save => _save;
-
-        public ReactiveCommand Cancel => _cancel;
-
+        public ReactiveCommand<string, GroupObject> SetGroup { get; private set; }
+        public ReactiveCommand<Unit, DirectoryEntry> GetGroupMembers { get; private set; }
+        public ReactiveCommand<Unit, IObservable<DirectoryEntry>> Search { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenSearchResult { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenGroupMember { get; private set; }
+        public ReactiveCommand<Unit, Unit> AddToGroup { get; private set; }
+        public ReactiveCommand<Unit, Unit> RemoveFromGroup { get; private set; }
+        public ReactiveCommand<Unit, IEnumerable<string>> Save { get; private set; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
         public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
-
         public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
-
         public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;
-
         public ReactiveList<DirectoryEntry> MembersToRemove => _membersToRemove;
-
         public GroupObject Group => _group.Value;
-
         public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-
         public DirectoryEntry SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
-
         public DirectoryEntry SelectedGroupMember { get => _selectedGroupMember; set => this.RaiseAndSetIfChanged(ref _selectedGroupMember, value); }
 
 
@@ -200,7 +184,7 @@ namespace MagnumOpus.ViewModels
             if (parameter is string s)
             {
                 Observable.Return(s)
-                    .InvokeCommand(_setGroup);
+                    .InvokeCommand(SetGroup);
             }
 
             return Task.FromResult<object>(null);
@@ -208,15 +192,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<string, GroupObject> _setGroup;
-        private readonly ReactiveCommand<Unit, DirectoryEntry> _getGroupMembers;
-        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntry>> _search;
-        private readonly ReactiveCommand<Unit, Unit> _openSearchResult;
-        private readonly ReactiveCommand<Unit, Unit> _openGroupMember;
-        private readonly ReactiveCommand<Unit, Unit> _addToGroup;
-        private readonly ReactiveCommand<Unit, Unit> _removeFromGroup;
-        private readonly ReactiveCommand<Unit, IEnumerable<string>> _save;
-        private readonly ReactiveCommand<Unit, Unit> _cancel;
         private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
         private readonly ReactiveList<DirectoryEntry> _groupMembers = new ReactiveList<DirectoryEntry>();
         private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();

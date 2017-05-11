@@ -15,44 +15,40 @@ namespace MagnumOpus.ViewModels
 	{
 		public UserLockoutInfoViewModel()
 		{
-			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(x => ActiveDirectoryService.Current.GetUser(x).SubscribeOn(TaskPoolScheduler.Default));
+			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(x => ActiveDirectoryService.Current.GetUser(x).SubscribeOn(TaskPoolScheduler.Default));
 
-			_getLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN).SubscribeOn(TaskPoolScheduler.Default));
+			GetLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN).SubscribeOn(TaskPoolScheduler.Default));
 
-			_close = ReactiveCommand.Create(_closeAction);
+			Close = ReactiveCommand.Create(_closeAction);
 
-			_user = _setUser
+			_user = SetUser
 				.ToProperty(this, x => x.User);
 
             this.WhenActivated(disposables =>
             {
-                _getLockoutInfo
-                    .Do(_ => _lockoutInfos.Clear())
+                GetLockoutInfo
+                    .Do((IObservable<LockoutInfo> _) => _lockoutInfos.Clear())
                     .Switch()
                     .ObserveOnDispatcher()
                     .Subscribe(x => _lockoutInfos.Add(x))
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                _setUser.ThrownExceptions.Select(ex => ("Could not load user", ex.Message)),
-                _getLockoutInfo.ThrownExceptions.Select(ex => ("Could not get lockout info", ex.Message)),
-                _close.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
-                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
-                .Subscribe()
-                .DisposeWith(disposables);
+                        SetUser.ThrownExceptions.Select(ex => (("Could not load user", ex.Message))),
+                        GetLockoutInfo.ThrownExceptions.Select(ex => (("Could not get lockout info", ex.Message))),
+                        Close.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
+                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                    .Subscribe()
+                    .DisposeWith(disposables);
             });
 		}
 
 
 
-		public ReactiveCommand<string, UserObject> SetUser => _setUser;
-
-		public ReactiveCommand GetLockoutInfo => _getLockoutInfo;
-
-		public ReactiveCommand Close => _close;
-
-		public ReactiveList<LockoutInfo> LockoutInfos => _lockoutInfos;
-
+		public ReactiveCommand<string, UserObject> SetUser { get; private set; }
+        public ReactiveCommand<Unit, IObservable<LockoutInfo>> GetLockoutInfo { get; private set; }
+        public ReactiveCommand<Unit, Unit> Close { get; private set; }
+        public ReactiveList<LockoutInfo> LockoutInfos => _lockoutInfos;
 		public UserObject User => _user.Value;
 
 
@@ -64,7 +60,7 @@ namespace MagnumOpus.ViewModels
 			if (parameter is string s)
 			{
 				Observable.Return(s)
-					.InvokeCommand(_setUser);
+					.InvokeCommand(SetUser);
 			}
 
 			return Task.FromResult<object>(null);
@@ -72,9 +68,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-		private readonly ReactiveCommand<string, UserObject> _setUser;
-		private readonly ReactiveCommand<Unit, IObservable<LockoutInfo>> _getLockoutInfo;
-		private readonly ReactiveCommand<Unit, Unit> _close;
 		private readonly ReactiveList<LockoutInfo> _lockoutInfos = new ReactiveList<LockoutInfo>();
 		private readonly ObservableAsPropertyHelper<UserObject> _user;
 		private Action _closeAction;

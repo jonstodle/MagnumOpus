@@ -12,25 +12,24 @@ namespace MagnumOpus.ViewModels
     {
         public IPAddressWindowViewModel()
         {
-            _setIPAddress = ReactiveCommand.Create<string, string>(ipAddress => ipAddress);
+            SetIPAddress = ReactiveCommand.Create<string, string>(ipAddress => ipAddress);
 
-            _ipAddress = _setIPAddress
+            _ipAddress = SetIPAddress
                 .ToProperty(this, x => x.IPAddress);
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
-                _setIPAddress
+                Observable.SelectMany<Exception, int>(this.SetIPAddress
                 .ThrownExceptions
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not load IP address")))
+, (Func<Exception, IObservable<int>>)(ex => (IObservable<int>)_messages.Handle((MessageInfo)new MessageInfo((MessageType)MessageType.Error, (string)ex.Message, (string)"Could not load IP address"))))
                 .Subscribe()
                 .DisposeWith(disposables);
-            });
+            }));
         }
 
 
 
-        public ReactiveCommand SetIPAddress => _setIPAddress;
-
+        public ReactiveCommand<string, string> SetIPAddress { get; private set; }
         public string IPAddress => _ipAddress.Value;
 
 
@@ -40,7 +39,7 @@ namespace MagnumOpus.ViewModels
             if (parameter is string s)
             {
                 Observable.Return(s)
-                    .InvokeCommand(_setIPAddress);
+                    .InvokeCommand(SetIPAddress);
             }
 
             return Task.FromResult<object>(null);
@@ -50,7 +49,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<string, string> _setIPAddress;
         private readonly ObservableAsPropertyHelper<string> _ipAddress;
     }
 }

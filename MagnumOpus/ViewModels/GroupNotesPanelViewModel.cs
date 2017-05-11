@@ -14,48 +14,43 @@ namespace MagnumOpus.ViewModels
 	{
 		public GroupNotesPanelViewModel()
 		{
-			_enableEditing = ReactiveCommand.Create<Unit, bool>(_ => { _notesBackup = _notes; return true; });
+			EnableEditing = ReactiveCommand.Create<Unit, bool>(_ => { _notesBackup = _notes; return true; });
 
-			_save = ReactiveCommand.CreateFromObservable<Unit, bool>(_ => SaveImpl(_group, _notes).Select(x => false));
+			Save = ReactiveCommand.CreateFromObservable<Unit, bool>(_ => SaveImpl(_group, _notes).Select(x => false));
 
-			_cancel = ReactiveCommand.Create<Unit, bool>(_ => { Notes = _notesBackup; return false; });
+			Cancel = ReactiveCommand.Create<Unit, bool>(_ => { Notes = _notesBackup; return false; });
 
 			_isEditingEnabled = Observable.Merge(
-				_enableEditing,
-				_save,
-				_cancel)
+				EnableEditing,
+				Save,
+				Cancel)
 				.ToProperty(this, x => x.IsEditingEnabled);
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
-                this.WhenAnyValue(x => x.Group)
+                (this).WhenAnyValue(x => x.Group)
                 .WhereNotNull()
                 .Select(x => x.Notes?.Replace("\r", ""))
                 .Subscribe(x => Notes = x)
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _enableEditing.ThrownExceptions,
-                    _save.ThrownExceptions,
-                    _cancel.ThrownExceptions)
+(IObservable<Exception>)this.EnableEditing.ThrownExceptions,
+                    Save.ThrownExceptions,
+                    Cancel.ThrownExceptions)
                     .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            });
+            }));
 		}
 
 
 
-		public ReactiveCommand EnableEditing => _enableEditing;
-
-		public ReactiveCommand Save => _save;
-
-		public ReactiveCommand Cancel => _cancel;
-
-		public bool IsEditingEnabled => _isEditingEnabled.Value;
-
+		public ReactiveCommand<Unit, bool> EnableEditing { get; private set; }
+		public ReactiveCommand<Unit, bool> Save { get; private set; }
+        public ReactiveCommand<Unit, bool> Cancel { get; private set; }
+        public bool IsEditingEnabled => _isEditingEnabled.Value;
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
-
         public string Notes { get => _notes; set => this.RaiseAndSetIfChanged(ref _notes, value); }
 
 
@@ -69,9 +64,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-		private readonly ReactiveCommand<Unit, bool> _enableEditing;
-		private readonly ReactiveCommand<Unit, bool> _save;
-		private readonly ReactiveCommand<Unit, bool> _cancel;
 		private readonly ObservableAsPropertyHelper<bool> _isEditingEnabled;
 		private GroupObject _group;
 		private string _notes;

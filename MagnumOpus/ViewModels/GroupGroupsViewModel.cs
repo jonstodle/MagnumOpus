@@ -26,17 +26,17 @@ namespace MagnumOpus.ViewModels
                 SortDescriptions = { new SortDescription() }
             };
 
-            _openEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _group.CN)));
+            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _group.CN)));
 
-            _saveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
+            SaveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _group.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directMemberOfGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            _findDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup));
+            FindDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup));
 
-            _getAllMemberOfGroups = ReactiveCommand.CreateFromObservable(
+            GetAllGroups = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
                     _allMemberOfGroups.Clear();
@@ -46,23 +46,23 @@ namespace MagnumOpus.ViewModels
                 },
                 this.WhenAnyValue(x => x.IsShowingMemberOf));
 
-            _findAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup));
+            FindAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup));
 
-            _saveAllGroups = ReactiveCommand.CreateFromObservable(() =>
+            SaveAllGroups = ReactiveCommand.CreateFromObservable(() =>
             {
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _group.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_allMemberOfGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            _openEditMembers = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMembersDialog(), _group.CN)));
+            OpenEditMembers = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMembersDialog(), _group.CN)));
 
-            _saveMembers = ReactiveCommand.CreateFromObservable(() =>
+            SaveMembers = ReactiveCommand.CreateFromObservable(() =>
             {
                 var saveFileDialog = new SaveFileDialog { Filter = ExcelService.ExcelFileFilter, FileName = _group.CN };
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveUsersToExcelFile(_members, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            _findMember = ReactiveCommand.CreateFromTask(() => 
+            FindMember = ReactiveCommand.CreateFromTask(() => 
             {
                 var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(_selectedMember);
                 if (principalType == PrincipalType.Group) return NavigationService.ShowWindow<Views.GroupWindow>(_selectedMember);
@@ -74,25 +74,25 @@ namespace MagnumOpus.ViewModels
             {
                 this
                     .WhenAnyValue(x => x.FilterString, y => y.UseFuzzy)
-                    .Subscribe(_ => _allMemberOfGroupsView?.Refresh())
+                    .Subscribe((Tuple<string, bool> _) => _allMemberOfGroupsView?.Refresh())
                     .DisposeWith(disposables);
 
-                _getAllMemberOfGroups
+                GetAllGroups
                     .ObserveOnDispatcher()
                     .Subscribe(x => _allMemberOfGroups.Add(x))
                     .DisposeWith(disposables);
 
-                _getAllMemberOfGroups
+                GetAllGroups
                     .ThrownExceptions
                     .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not get groups")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 this
-                .WhenAnyValue(x => x.IsShowingMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
-                .Where(x => x)
-                .Subscribe(_ => IsShowingDirectMemberOf = false)
-                .DisposeWith(disposables);
+                    .WhenAnyValue(x => x.IsShowingMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
+                    .Where(x => x)
+                    .Subscribe(_ => IsShowingDirectMemberOf = false)
+                    .DisposeWith(disposables);
 
                 this
                     .WhenAnyValue(x => x.IsShowingDirectMemberOf, y => y.IsShowingMembers, (x, y) => x || y)
@@ -107,8 +107,8 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    this.WhenAnyValue(x => x.Group).WhereNotNull(),
-                    _openEditMemberOf.Select(_ => _group))
+                        this.WhenAnyValue(x => x.Group).WhereNotNull(),
+                        OpenEditMemberOf.Select(_ => _group))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _directMemberOfGroups.Clear())
                     .SelectMany(x => GetDirectGroups(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
@@ -117,8 +117,8 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    this.WhenAnyValue(x => x.Group).WhereNotNull(),
-                    _openEditMembers.Select(_ => _group))
+                        this.WhenAnyValue(x => x.Group).WhereNotNull(),
+                        OpenEditMembers.Select(_ => _group))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _members.Clear())
                     .SelectMany(x => GetMembers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
@@ -127,15 +127,15 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _openEditMemberOf.ThrownExceptions.Select(ex => ("Could not open dialog", ex.Message)),
-                    _saveDirectGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
-                    _findDirectMemberOfGroup.ThrownExceptions.Select(ex => ("Could not open group", ex.Message)),
-                    _findAllMemberOfGroup.ThrownExceptions.Select(ex => ("Could not find all groups", ex.Message)),
-                    _saveAllGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
-                    _openEditMembers.ThrownExceptions.Select(ex => ("Could not open dialog", ex.Message)),
-                    _saveMembers.ThrownExceptions.Select(ex => ("Could not save members", ex.Message)),
-                    _findMember.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)))
-                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                        OpenEditMemberOf.ThrownExceptions.Select(ex => (("Could not open dialog", ex.Message))),
+                        SaveDirectGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
+                        FindDirectMemberOfGroup.ThrownExceptions.Select(ex => (("Could not open group", ex.Message))),
+                        FindAllMemberOfGroup.ThrownExceptions.Select(ex => (("Could not find all groups", ex.Message))),
+                        SaveAllGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
+                        OpenEditMembers.ThrownExceptions.Select(ex => (("Could not open dialog", ex.Message))),
+                        SaveMembers.ThrownExceptions.Select(ex => (("Could not save members", ex.Message))),
+                        FindMember.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))))
+                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });
@@ -143,48 +143,27 @@ namespace MagnumOpus.ViewModels
 
 
 
-        public ReactiveCommand OpenEditMemberOf => _openEditMemberOf;
-
-        public ReactiveCommand SaveDirectGroups => _saveDirectGroups;
-
-        public ReactiveCommand FindDirectMemberOfGroup => _findDirectMemberOfGroup;
-
-        public ReactiveCommand GetAllGroups => _getAllMemberOfGroups;
-
-        public ReactiveCommand FindAllMemberOfGroup => _findAllMemberOfGroup;
-
-        public ReactiveCommand SaveAllGroups => _saveAllGroups;
-
-        public ReactiveCommand OpenEditMembers => _openEditMembers;
-
-        public ReactiveCommand SaveMembers => _saveMembers;
-
-        public ReactiveCommand FindMember => _findMember;
-    
+        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; private set; }
+        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; private set; }
+        public ReactiveCommand<Unit, Unit> FindDirectMemberOfGroup { get; private set; }
+        public ReactiveCommand<Unit, string> GetAllGroups { get; private set; }
+        public ReactiveCommand<Unit, Unit> FindAllMemberOfGroup { get; private set; }
+        public ReactiveCommand<Unit, Unit> SaveAllGroups { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenEditMembers { get; private set; }
+        public ReactiveCommand<Unit, Unit> SaveMembers { get; private set; }
+        public ReactiveCommand<Unit, Unit> FindMember { get; private set; }
         public IReactiveDerivedList<string> DirectMemberOfGroups => _directMemberOfGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
-
         public ReactiveList<string> AllMemberOfGroups => _allMemberOfGroups;
-
         public IReactiveDerivedList<string> Members => _members.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
-
         public ListCollectionView AllMemberOfGroupsView => _allMemberOfGroupsView;
-
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
-
         public bool IsShowingDirectMemberOf { get => _isShowingDirectMemberOf; set => this.RaiseAndSetIfChanged(ref _isShowingDirectMemberOf, value); }
-
         public bool IsShowingMemberOf { get => _isShowingMemberOf; set => this.RaiseAndSetIfChanged(ref _isShowingMemberOf, value); }
-
         public bool IsShowingMembers { get => _isShowingMembers; set => this.RaiseAndSetIfChanged(ref _isShowingMembers, value); }
-
         public string SelectedDirectMemberOfGroup { get => _selectedDirectMemberOfGroup; set => this.RaiseAndSetIfChanged(ref _selectedDirectMemberOfGroup, value); }
-
         public string FilterString { get => _filterString; set => this.RaiseAndSetIfChanged(ref _filterString, value); }
-
         public bool UseFuzzy { get => _useFuzzy; set => this.RaiseAndSetIfChanged(ref _useFuzzy, value); }
-
         public string SelectedAllMemberOfGroup { get => _selectedAllMemberOfGroup; set => this.RaiseAndSetIfChanged(ref _selectedAllMemberOfGroup, value); }
-
         public string SelectedMember { get => _selectedMember; set => this.RaiseAndSetIfChanged(ref _selectedMember, value); }
 
 
@@ -243,15 +222,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<Unit, Unit> _openEditMemberOf;
-        private readonly ReactiveCommand<Unit, Unit> _saveDirectGroups;
-        private readonly ReactiveCommand<Unit, Unit> _findDirectMemberOfGroup;
-        private readonly ReactiveCommand<Unit, string> _getAllMemberOfGroups;
-        private readonly ReactiveCommand<Unit, Unit> _findAllMemberOfGroup;
-        private readonly ReactiveCommand<Unit, Unit> _saveAllGroups;
-        private readonly ReactiveCommand<Unit, Unit> _openEditMembers;
-        private readonly ReactiveCommand<Unit, Unit> _saveMembers;
-        private readonly ReactiveCommand<Unit, Unit> _findMember;
         private readonly ReactiveList<string> _directMemberOfGroups = new ReactiveList<string>();
         private readonly ReactiveList<string> _allMemberOfGroups = new ReactiveList<string>();
         private readonly ReactiveList<string> _members = new ReactiveList<string>();

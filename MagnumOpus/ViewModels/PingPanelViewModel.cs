@@ -14,36 +14,37 @@ namespace MagnumOpus.ViewModels
 	{
 		public PingPanelViewModel()
 		{
-			_startPing = ReactiveCommand.CreateFromObservable(() =>
-				{
-					PingResults.Clear();
-					return PingHost(_hostName).TakeUntil(_stopPing);
-				});
+			StartPing = ReactiveCommand.CreateFromObservable(() =>
+                {
+                    PingResults.Clear();
+                    return PingHost(_hostName).TakeUntil(StopPing);
+                });
 
-			_stopPing = ReactiveCommand.Create(() => Unit.Default);
+			StopPing = ReactiveCommand.Create(() => Unit.Default);
 
             _mostRecentPingResult = Observable.Merge(
 				_pingResults.ItemsAdded,
-				_stopPing.Select(_ => ""),
+				StopPing.Select(_ => ""),
 				this.WhenAnyValue(x => x.HostName).WhereNotNull().Select(_ => ""))
 				.ToProperty(this, x => x.MostRecentPingResult);
 
             this.WhenActivated(disposables =>
             {
-                _startPing
-                    .Subscribe(x => PingResults.Insert(0, x))
+                StartPing
+                    .Do(x => PingResults.Insert(0, x))
+                    .Subscribe()
                     .DisposeWith(disposables);
 
                 this
-                .WhenAnyValue(x => x.IsPinging)
-                .Where(x => !x)
-                .Subscribe(_ => IsShowingPingResultDetails = false)
-                .DisposeWith(disposables);
+                    .WhenAnyValue(x => x.IsPinging)
+                    .Where(x => !x)
+                    .Subscribe(_ => IsShowingPingResultDetails = false)
+                    .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _startPing.ThrownExceptions.Select(ex => ("Could not start pinging", ex.Message)),
-                    _stopPing.ThrownExceptions.Select(ex => ("Could not stop pinging", ex.Message)))
-                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                    Observable.Select(StartPing.ThrownExceptions, ex => (("Could not start pinging", ex.Message))),
+                    StopPing.ThrownExceptions.Select(ex => (("Could not stop pinging", ex.Message))))
+                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });
@@ -51,18 +52,12 @@ namespace MagnumOpus.ViewModels
 
 
 
-		public ReactiveCommand StartPing => _startPing;
-
-		public ReactiveCommand StopPing => _stopPing;
-
-		public ReactiveList<string> PingResults => _pingResults;
-
+		public ReactiveCommand<Unit, string> StartPing { get; private set; }
+		public ReactiveCommand<Unit, Unit> StopPing { get; private set; }
+        public ReactiveList<string> PingResults => _pingResults;
 		public string MostRecentPingResult => _mostRecentPingResult.Value;
-
         public string HostName { get => _hostName; set => this.RaiseAndSetIfChanged(ref _hostName, value); }
-
         public bool IsPinging { get => _isPinging; set => this.RaiseAndSetIfChanged(ref _isPinging, value); }
-
         public bool IsShowingPingResultDetails { get => _isShowingPingResultDetails; set => this.RaiseAndSetIfChanged(ref _isShowingPingResultDetails, value); }
 
 
@@ -82,8 +77,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<Unit, string> _startPing;
-        private readonly ReactiveCommand<Unit, Unit> _stopPing;
         private readonly ReactiveList<string> _pingResults = new ReactiveList<string>();
         private readonly ObservableAsPropertyHelper<string> _mostRecentPingResult;
         private string _hostName;

@@ -17,73 +17,65 @@ namespace MagnumOpus.ViewModels
     {
         public PermittedWorkstationsDialogViewModel()
         {
-            _addComputer = ReactiveCommand.CreateFromObservable(
+            AddComputer = ReactiveCommand.CreateFromObservable(
                 () => AddComputerImpl(ComputerName),
                 this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
 
-            _removeComputer = ReactiveCommand.Create(
+            RemoveComputer = ReactiveCommand.Create(
                 () => _computers.Remove(SelectedComputer as string),
                 this.WhenAnyValue(x => x.SelectedComputer).Select(x => x != null));
 
-            _removeAllComputers = ReactiveCommand.Create(
+            RemoveAllComputers = ReactiveCommand.Create(
                 () => _computers.Clear(),
                 this.WhenAnyObservable(x => x._computers.CountChanged).Select(x => x > 0));
 
-            _save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
+            Save = ReactiveCommand.CreateFromObservable(() => SaveImpl(User, _computers));
 
-            _cancel = ReactiveCommand.Create(() => _close());
+            Cancel = ReactiveCommand.Create(() => _close());
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
-                _addComputer
-                    .Do(_ => ComputerName = "")
+                Observable.Do<string>(this.AddComputer
+, (Action<string>)(_ => ComputerName = ""))
                     .Subscribe(x => _computers.Add(x))
                     .DisposeWith(disposables);
 
-                _save
+                Save
                     .Subscribe(_ => _close())
                     .DisposeWith(disposables);
 
-                this
+                (this)
                     .WhenAnyValue(x => x.User)
                     .WhereNotNull()
                     .Select(x => x.Principal.PermittedWorkstations)
-                    .Subscribe(x =>
+                    .Subscribe((System.DirectoryServices.AccountManagement.PrincipalValueCollection<string> x) =>
                     {
                         using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
                     })
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                _addComputer.ThrownExceptions.Select(ex => ("Could not add computer", ex.Message)),
-                _removeComputer.ThrownExceptions.Select(ex => ("Could not remove computer", ex.Message)),
-                _removeAllComputers.ThrownExceptions.Select(ex => ("Could not remove all computers", ex.Message)),
-                _save.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
-                _cancel.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
-                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Select<Exception, (string, string)>(this.AddComputer.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not add computer", (string)ex.Message)))),
+                RemoveComputer.ThrownExceptions.Select(ex => (("Could not remove computer", ex.Message))),
+                RemoveAllComputers.ThrownExceptions.Select(ex => (("Could not remove all computers", ex.Message))),
+                Save.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
+                Cancel.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
+                .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                 .Subscribe()
                 .DisposeWith(disposables);
-            });
+            }));
         }
 
 
 
-        public ReactiveCommand AddComputer => _addComputer;
-
-        public ReactiveCommand RemoveComputer => _removeComputer;
-
-        public ReactiveCommand RemoveAllComputers => _removeAllComputers;
-
-        public ReactiveCommand Save => _save;
-
-        public ReactiveCommand Cancel => _cancel;
-
+        public ReactiveCommand<Unit, string> AddComputer { get; private set; }
+        public ReactiveCommand<Unit, bool> RemoveComputer { get; private set; }
+        public ReactiveCommand<Unit, Unit> RemoveAllComputers { get; private set; }
+        public ReactiveCommand<Unit, Unit> Save { get; private set; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
         public IReactiveDerivedList<string> Computers => _computers.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
-
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
-
         public string ComputerName { get => _computerName; set => this.RaiseAndSetIfChanged(ref _computerName, value); }
-
         public string SelectedComputer { get => _selectedComputer; set => this.RaiseAndSetIfChanged(ref _selectedComputer, value); }
 
 
@@ -115,11 +107,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<Unit, string> _addComputer;
-        private readonly ReactiveCommand<Unit, bool> _removeComputer;
-        private readonly ReactiveCommand<Unit, Unit> _removeAllComputers;
-        private readonly ReactiveCommand<Unit, Unit> _save;
-        private readonly ReactiveCommand<Unit, Unit> _cancel;
         private readonly ReactiveList<string> _computers = new ReactiveList<string>();
         private UserObject _user;
         private string _computerName;

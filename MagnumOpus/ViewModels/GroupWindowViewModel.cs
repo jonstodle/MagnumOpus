@@ -13,26 +13,25 @@ namespace MagnumOpus.ViewModels
 	{
 		public GroupWindowViewModel()
 		{
-			_setGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
+			SetGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
 
-            _group = _setGroup
+            _group = SetGroup
                 .ToProperty(this, x => x.Group);
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
-                _setGroup
+                Observable.SelectMany<Exception, int>(this.SetGroup
                     .ThrownExceptions
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not load group")))
+, (Func<Exception, IObservable<int>>)(ex => (IObservable<int>)_messages.Handle((MessageInfo)new MessageInfo((MessageType)MessageType.Error, (string)ex.Message, (string)"Could not load group"))))
                     .Subscribe()
                     .DisposeWith(disposables);
-            });
+            }));
 		}
 
 
 
-		public ReactiveCommand SetGroup => _setGroup;
-
-		public GroupObject Group => _group.Value;
+		public ReactiveCommand<string, GroupObject> SetGroup { get; private set; }
+        public GroupObject Group => _group.Value;
 
 
 
@@ -41,7 +40,7 @@ namespace MagnumOpus.ViewModels
 			if (parameter is string s)
 			{
 				Observable.Return(s)
-					.InvokeCommand(_setGroup);
+					.InvokeCommand(SetGroup);
 			}
 
 			return Task.FromResult<object>(null);
@@ -51,7 +50,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<string, GroupObject> _setGroup;
         private readonly ObservableAsPropertyHelper<GroupObject> _group;
     }
 }

@@ -13,11 +13,11 @@ namespace MagnumOpus.ViewModels
 	{
         public UserDetailsViewModel()
         {
-            _toggleOrganizationDetails = ReactiveCommand.Create<Unit, bool>(_ => !_isShowingOrganizationDetails.Value);
+            ToggleOrganizationDetails = ReactiveCommand.Create<Unit, bool>(_ => !_isShowingOrganizationDetails.Value);
 
-            _openManager = ReactiveCommand.CreateFromTask(() => NavigationService.ShowPrincipalWindow(_manager.Value.Principal));
+            OpenManager = ReactiveCommand.CreateFromTask(() => NavigationService.ShowPrincipalWindow(_manager.Value.Principal));
 
-            _openDirectReport = ReactiveCommand.CreateFromTask(
+            OpenDirectReport = ReactiveCommand.CreateFromTask(
                 () => NavigationService.ShowPrincipalWindow(_selectedDirectReport.Principal),
                 this.WhenAnyValue(x => x.SelectedDirectReport).Select(x => x != null));
 
@@ -46,7 +46,7 @@ namespace MagnumOpus.ViewModels
                 })
                 .ToProperty(this, x => x.PasswordStatus);
 
-            _isShowingOrganizationDetails = _toggleOrganizationDetails
+            _isShowingOrganizationDetails = ToggleOrganizationDetails
                 .ToProperty(this, x => x.IsShowingOrganizationDetails);
 
             _manager = newUser
@@ -54,56 +54,43 @@ namespace MagnumOpus.ViewModels
                 .ObserveOnDispatcher()
                 .ToProperty(this, x => x.Manager);
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
                 Observable.Zip(
                 newUser,
-                this.WhenAnyValue(x => x.IsShowingOrganizationDetails).Where(x => x),
+                (this).WhenAnyValue(x => x.IsShowingOrganizationDetails).Where(x => x),
                 (usr, _) => usr.GetDirectReports())
-                .Do(_ => _directReports.Clear())
+                .Do((IObservable<UserObject> _) => _directReports.Clear())
                 .Switch()
                 .ObserveOnDispatcher()
                 .Subscribe(x => _directReports.Add(x))
                 .DisposeWith(disposables);
 
                 Observable.Merge(
-                    _toggleOrganizationDetails.ThrownExceptions.Select(ex => ("Could not toggle visibility", ex.Message)),
-                    _openManager.ThrownExceptions.Select(ex => ("Could not open manager", ex.Message)))
-                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                    Observable.Select<Exception, (string, string)>(this.ToggleOrganizationDetails.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not toggle visibility", (string)ex.Message)))),
+                    OpenManager.ThrownExceptions.Select(ex => (("Could not open manager", ex.Message))))
+                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            });
+            }));
         }
 
 
 
-        public ReactiveCommand ToggleOrganizationDetails => _toggleOrganizationDetails;
-
-        public ReactiveCommand OpenManager => _openManager;
-
-        public ReactiveCommand OpenDirectReport => _openDirectReport;
-
+        public ReactiveCommand<Unit, bool> ToggleOrganizationDetails { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenManager { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenDirectReport { get; private set; }
         public IReactiveDerivedList<UserObject> DirectReports => _directReports.CreateDerivedCollection(x => x, orderer: (one, two) => one.Principal.Name.CompareTo(two.Principal.Name));
-
         public bool IsAccountLocked => _isAccountLocked.Value;
-
         public TimeSpan PasswordAge => _passwordAge.Value;
-
         public string PasswordStatus => _passwordStatus.Value;
-
         public bool IsShowingOrganizationDetails => _isShowingOrganizationDetails.Value;
-
         public UserObject Manager => _manager.Value;
-
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
-
         public UserObject SelectedDirectReport { get => _selectedDirectReport; set => this.RaiseAndSetIfChanged(ref _selectedDirectReport, value); }
 
 
 
-        private readonly ReactiveCommand<Unit, bool> _toggleOrganizationDetails;
-        private readonly ReactiveCommand<Unit, Unit> _openManager;
-        private readonly ReactiveCommand<Unit, Unit> _openDirectReport;
         private readonly ReactiveList<UserObject> _directReports = new ReactiveList<UserObject>();
         private readonly ObservableAsPropertyHelper<bool> _isAccountLocked;
         private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;

@@ -22,18 +22,18 @@ namespace MagnumOpus.ViewModels
             _searchResults = new ReactiveList<DirectoryEntryInfo>();
             _history = new ReactiveList<string>();
 
-            _search = ReactiveCommand.Create(() => _searchQuery.IsIPAddress()
+            Search = ReactiveCommand.Create(() => _searchQuery.IsIPAddress()
                 ? Observable.FromAsync(() => NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
                 : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim()).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)).SubscribeOn(RxApp.TaskpoolScheduler));
-            _search
+            Search
                 .Do(_ => _searchResults.Clear())
                 .Switch()
                 .ObserveOnDispatcher()
                 .Subscribe(x => _searchResults.Add(x));
 
-            _paste = ReactiveCommand.Create(() => { SearchQuery = Clipboard.GetText().Trim().ToUpperInvariant(); });
+            Paste = ReactiveCommand.Create(() => { SearchQuery = Clipboard.GetText().Trim().ToUpperInvariant(); });
 
-            _open = ReactiveCommand.CreateFromTask(
+            Open = ReactiveCommand.CreateFromTask(
                 async () =>
                 {
                     var principal = await ActiveDirectoryService.Current.GetPrincipal(_selectedSearchResult.CN);
@@ -44,9 +44,9 @@ namespace MagnumOpus.ViewModels
                 },
                 this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
 
-            _openSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
+            OpenSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
 
-            _isNoResults = _search
+            _isNoResults = Search
                 .Select(x => Observable.Concat(
                     Observable.Return(false),
                     x.Aggregate(0, (acc, curr) => acc + 1).Select(y => y == 0)))
@@ -55,10 +55,10 @@ namespace MagnumOpus.ViewModels
                 .ToProperty(this, x => x.IsNoResults);
 
             Observable.Merge(
-                _search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
-                _paste.ThrownExceptions.Select(ex => ("Could not not paste text", ex.Message)),
-                _open.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
-                _openSettings.ThrownExceptions.Select(ex => ("Could not open settings", ex.Message)))
+                Search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
+                Paste.ThrownExceptions.Select(ex => ("Could not not paste text", ex.Message)),
+                Open.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
+                OpenSettings.ThrownExceptions.Select(ex => ("Could not open settings", ex.Message)))
                 .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
                 .Subscribe();
 
@@ -77,34 +77,20 @@ namespace MagnumOpus.ViewModels
 
 
 
-        public ReactiveCommand Search => _search;
-
-        public ReactiveCommand<Unit, Unit> Paste => _paste;
-
-        public ReactiveCommand Open => _open;
-
-        public ReactiveCommand OpenSettings => _openSettings;
-
+        public ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> Search { get; private set; }
+        public ReactiveCommand<Unit, Unit> Paste { get; private set; }
+        public ReactiveCommand<Unit, Unit> Open { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenSettings { get; private set; }
         public IReactiveDerivedList<DirectoryEntryInfo> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
-
         public ReactiveList<string> History => _history;
-
         public bool IsNoResults => _isNoResults.Value;
-
         public string Domain => ActiveDirectoryService.Current.CurrentDomain;
-
         public SortDescription ListSortDescription { get => _listSortDescription; set => this.RaiseAndSetIfChanged(ref _listSortDescription, value); }
-
         public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
-
         public DirectoryEntryInfo SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
 
 
 
-        private readonly ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> _search;
-        private readonly ReactiveCommand<Unit, Unit> _paste;
-        private readonly ReactiveCommand<Unit, Unit> _open;
-        private readonly ReactiveCommand<Unit, Unit> _openSettings;
         private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
         private readonly ReactiveList<string> _history;
         private readonly ObservableAsPropertyHelper<bool> _isNoResults;

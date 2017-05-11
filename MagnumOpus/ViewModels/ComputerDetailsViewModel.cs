@@ -13,7 +13,7 @@ namespace MagnumOpus.ViewModels
     {
         public ComputerDetailsViewModel()
         {
-            _toggleIsShowingDetails = ReactiveCommand.Create(() => !_isShowingDetails.Value);
+            ToggleIsShowingDetails = ReactiveCommand.Create(() => !_isShowingDetails.Value);
 
             var newComputer = this.WhenAnyValue(x => x.Computer)
                 .WhereNotNull()
@@ -29,20 +29,16 @@ namespace MagnumOpus.ViewModels
 				.ObserveOnDispatcher()
 				.ToProperty(this, x => x.IPAddress, null);
 
-            _isShowingDetails = _toggleIsShowingDetails
+            _isShowingDetails = ToggleIsShowingDetails
                 .ToProperty(this, x => x.IsShowingDetails);
         }
 
 
 
-        public ReactiveCommand ToggleIsShowingDetails => _toggleIsShowingDetails;
-
-		public OperatingSystemInfo OperatingSystemInfo => _operatingSystemInfo.Value;
-
+        public ReactiveCommand<Unit, bool> ToggleIsShowingDetails { get; private set; }
+        public OperatingSystemInfo OperatingSystemInfo => _operatingSystemInfo.Value;
 		public string IPAddress => _ipAddress.Value;
-
         public bool IsShowingDetails => _isShowingDetails.Value;
-
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
 
@@ -61,7 +57,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<Unit, bool> _toggleIsShowingDetails;
         private readonly ObservableAsPropertyHelper<OperatingSystemInfo> _operatingSystemInfo;
         private readonly ObservableAsPropertyHelper<string> _ipAddress;
         private readonly ObservableAsPropertyHelper<bool> _isShowingDetails;

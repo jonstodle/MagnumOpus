@@ -18,41 +18,41 @@ namespace MagnumOpus.ViewModels
 	{
 		public IPAddressPanelViewModel()
 		{
-			_openLoggedOn = ReactiveCommand.Create(() =>
+			OpenLoggedOn = ReactiveCommand.Create(() =>
 			{
 				EnsureFileIsAvailable("PsLoggedon.exe");
 				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_ipAddress}");
 			});
 
-			_openLoggedOnPlus = ReactiveCommand.Create(() =>
+			OpenLoggedOnPlus = ReactiveCommand.Create(() =>
 			{
 				EnsureFileIsAvailable("PsExec.exe");
 				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe /K query user");
 			});
 
-			_openRemoteExecution = ReactiveCommand.Create(() =>
+			OpenRemoteExecution = ReactiveCommand.Create(() =>
 			{
 				EnsureFileIsAvailable("PsExec.exe");
 				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe");
 			});
 
-			_openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
+			OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
 
-			_rebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No"))
+			RebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No"))
                 .Where(x => x == 0)
                 .Do(_ => ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0"))
                 .ToSignal()
 			);
 
-			_startRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
+			StartRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
 
-			_startRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
+			StartRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
 
-			_killRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
+			KillRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
 
-			_startRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "msra.exe"), $"/offerra {_ipAddress}"));
+			StartRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "msra.exe"), $"/offerra {_ipAddress}"));
 
-			_startRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "mstsc.exe"), $"/v {_ipAddress}"));
+			StartRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "mstsc.exe"), $"/v {_ipAddress}"));
 
 			_hostName = this.WhenAnyValue(x => x.IPAddress)
 				.Where(x => x.HasValue())
@@ -60,54 +60,43 @@ namespace MagnumOpus.ViewModels
 				.CatchAndReturn("")
 				.ToProperty(this, x => x.HostName, null);
 
-            this.WhenActivated(disposables =>
+            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
-                _openCDrive
+                OpenCDrive
                     .ThrownExceptions
                     .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open location")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                _openLoggedOn.ThrownExceptions,
-                _openLoggedOnPlus.ThrownExceptions,
-                _openRemoteExecution.ThrownExceptions,
-                _rebootComputer.ThrownExceptions,
-                _startRemoteControl.ThrownExceptions,
-                _startRemoteControl2012.ThrownExceptions,
-                _killRemoteControl.ThrownExceptions,
-                _startRemoteAssistance.ThrownExceptions,
-                _startRdp.ThrownExceptions)
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
-                .Subscribe()
-                .DisposeWith(disposables);
-            });
+                        OpenLoggedOn.ThrownExceptions,
+                        OpenLoggedOnPlus.ThrownExceptions,
+                        OpenRemoteExecution.ThrownExceptions,
+                        RebootComputer.ThrownExceptions,
+                        StartRemoteControl.ThrownExceptions,
+                        StartRemoteControl2012.ThrownExceptions,
+                        KillRemoteControl.ThrownExceptions,
+                        StartRemoteAssistance.ThrownExceptions,
+                        StartRdp.ThrownExceptions)
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
+                    .Subscribe()
+                    .DisposeWith(disposables);
+            }));
 		}
 
 
 
-		public ReactiveCommand OpenLoggedOn => _openLoggedOn;
-
-		public ReactiveCommand OpenLoggedOnPlus => _openLoggedOnPlus;
-
-		public ReactiveCommand OpenRemoteExecution => _openRemoteExecution;
-
-		public ReactiveCommand OpenCDrive => _openCDrive;
-
-		public ReactiveCommand RebootComputer => _rebootComputer;
-
-		public ReactiveCommand StartRemoteControl => _startRemoteControl;
-
-		public ReactiveCommand StartRemoteControl2012 => _startRemoteControl2012;
-
-		public ReactiveCommand KillRemoteControl => _killRemoteControl;
-
-		public ReactiveCommand StartRemoteAssistance => _startRemoteAssistance;
-
-		public ReactiveCommand StartRdp => _startRdp;
-
-		public string HostName => _hostName.Value;
-
+		public ReactiveCommand<Unit, Unit> OpenLoggedOn { get; private set; }
+		public ReactiveCommand<Unit, Unit> OpenLoggedOnPlus { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenRemoteExecution { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenCDrive { get; private set; }
+        public ReactiveCommand<Unit, Unit> RebootComputer { get; private set; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControl { get; private set; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControl2012 { get; private set; }
+        public ReactiveCommand<Unit, Unit> KillRemoteControl { get; private set; }
+        public ReactiveCommand<Unit, Unit> StartRemoteAssistance { get; private set; }
+        public ReactiveCommand<Unit, Unit> StartRdp { get; private set; }
+        public string HostName => _hostName.Value;
         public string IPAddress { get => _ipAddress; set => this.RaiseAndSetIfChanged(ref _ipAddress, value); }
 
 
@@ -122,16 +111,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<Unit, Unit> _openLoggedOn;
-        private readonly ReactiveCommand<Unit, Unit> _openLoggedOnPlus;
-        private readonly ReactiveCommand<Unit, Unit> _openRemoteExecution;
-        private readonly ReactiveCommand<Unit, Unit> _openCDrive;
-        private readonly ReactiveCommand<Unit, Unit> _rebootComputer;
-        private readonly ReactiveCommand<Unit, Unit> _startRemoteControl;
-        private readonly ReactiveCommand<Unit, Unit> _startRemoteControl2012;
-        private readonly ReactiveCommand<Unit, Unit> _killRemoteControl;
-        private readonly ReactiveCommand<Unit, Unit> _startRemoteAssistance;
-        private readonly ReactiveCommand<Unit, Unit> _startRdp;
         private readonly ObservableAsPropertyHelper<string> _hostName;
         private string _ipAddress;
     }

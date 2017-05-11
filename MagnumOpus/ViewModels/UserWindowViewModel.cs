@@ -13,26 +13,25 @@ namespace MagnumOpus.ViewModels
 	{
 		public UserWindowViewModel()
 		{
-			_setUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
+			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
 
-            _user = _setUser
+            _user = SetUser
                 .ToProperty(this, x => x.User);
 
             this.WhenActivated(disposables =>
             {
-                _setUser
-                .ThrownExceptions
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not load user")))
-                .Subscribe()
-                .DisposeWith(disposables);
+                SetUser
+                    .ThrownExceptions
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not load user")))
+                    .Subscribe()
+                    .DisposeWith(disposables);
             });
 		}
 
 
 
-		public ReactiveCommand SetUser => _setUser;
-
-		public UserObject User => _user.Value;
+		public ReactiveCommand<string, UserObject> SetUser { get; private set; }
+        public UserObject User => _user.Value;
 
 
 
@@ -41,12 +40,12 @@ namespace MagnumOpus.ViewModels
 			if (parameter is string s)
 			{
 				Observable.Return(s)
-					.InvokeCommand(_setUser);
+					.InvokeCommand(SetUser);
 			}
 			else if (parameter is Tuple<string,string> t)
 			{
 				Observable.Return(t.Item1)
-					.InvokeCommand(_setUser);
+					.InvokeCommand(SetUser);
 
                 Observable.Return(t.Item2)
                     .Delay(TimeSpan.FromSeconds(1))
@@ -61,7 +60,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<string, UserObject> _setUser;
         private readonly ObservableAsPropertyHelper<UserObject> _user;
     }
 }

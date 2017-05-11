@@ -13,24 +13,24 @@ namespace MagnumOpus.ViewModels
 	{
 		public ComputerWindowViewModel()
 		{
-			_setComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
+			SetComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
 
-            _computer = _setComputer
+            _computer = SetComputer
 				.ToProperty(this, x => x.Computer);
 
             this.WhenActivated(disposables =>
             {
-                _setComputer
-                .ThrownExceptions
-                .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open computer")))
-                .Subscribe()
-                .DisposeWith(disposables);
+                SetComputer
+                    .ThrownExceptions
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open computer")))
+                    .Subscribe()
+                    .DisposeWith(disposables);
             });
 		}
 
 
 
-		public ReactiveCommand SetComputer => _setComputer;
+		public ReactiveCommand<string, ComputerObject> SetComputer { get; private set; }
 
 		public ComputerObject Computer => _computer.Value;
 
@@ -41,7 +41,7 @@ namespace MagnumOpus.ViewModels
 			if (parameter is string s)
 			{
 				Observable.Return(s)
-					.InvokeCommand(_setComputer);
+					.InvokeCommand(SetComputer);
 			}
 
 			return Task.FromResult<object>(null);
@@ -51,7 +51,6 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private readonly ReactiveCommand<string, ComputerObject> _setComputer;
         private readonly ObservableAsPropertyHelper<ComputerObject> _computer;
     }
 }

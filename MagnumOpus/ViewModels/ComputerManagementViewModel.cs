@@ -53,14 +53,10 @@ namespace MagnumOpus.ViewModels
 
 
 
-        public ReactiveCommand RebootComputer => _rebootComputer;
-
-        public ReactiveCommand RunPSExec => _runPSExec;
-
-        public ReactiveCommand OpenCDrive => _openCDrive;
-
-        public ReactiveCommand OpenSccm => _openSccm;
-
+        public ReactiveCommand<Unit, Unit> RebootComputer => _rebootComputer;
+        public ReactiveCommand<Unit, Unit> RunPSExec => _runPSExec;
+        public ReactiveCommand<Unit, Unit> OpenCDrive => _openCDrive;
+        public ReactiveCommand<Unit, Unit> OpenSccm => _openSccm;
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
 
