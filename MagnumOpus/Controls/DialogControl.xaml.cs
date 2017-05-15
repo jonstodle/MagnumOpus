@@ -52,7 +52,7 @@ namespace MagnumOpus.Controls
 
             _parent.Children.Add(this);
 
-            if (focusButton != null) Observable.Timer(TimeSpan.FromSeconds(.5), RxApp.MainThreadScheduler).Subscribe(_ => focusButton.Focus());
+            if (focusButton != null) Observable.Timer(TimeSpan.FromSeconds(.1), RxApp.MainThreadScheduler).Subscribe(_ => focusButton.Focus());
         }
 
         public DialogControl(Grid parent, DialogType? dialogType, string caption, string message, params DialogButtonInfo[] buttons) : this(parent, dialogType, message, buttons)
