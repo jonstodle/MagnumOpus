@@ -18,6 +18,14 @@ namespace MagnumOpus.Views
         {
             _keyDownEvents = this.Events<KeyEventArgs>(nameof(KeyDown)).Select(ep => ep.EventArgs).Publish().RefCount();
             _keyUpEvents = this.Events<KeyEventArgs>(nameof(KeyUp)).Select(ep => ep.EventArgs).Publish().RefCount();
+
+            this.WhenActivated(d =>
+            {
+                _keyDownEvents
+                    .Where(args => args.Key == Key.F3)
+                    .Subscribe(_ => NavigationService.ShowMainWindow())
+                    .DisposeWith(d);
+            });
         }
 
 
