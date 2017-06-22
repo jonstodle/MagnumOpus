@@ -67,7 +67,7 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="showWindow">Set to false to hide window</param>
         public static void RunInCmdFromCache(string fileName, string arguments = "", bool showWindow = true)
         {
-            EnsureFileIsAvailable(fileName);
+            WriteApplicationFilesToDisk(fileName);
             RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K ""{Path.Combine(FileService.LocalAppData, fileName)}"" {arguments}", showWindow);
         }
 
@@ -79,7 +79,7 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="showWindow">Set to false to hide window</param>
 		public static void RunFileFromCache(string fileName, string arguments = "", bool showWindow = true)
 		{
-			EnsureFileIsAvailable(fileName);
+			WriteApplicationFilesToDisk(fileName);
 			RunFile(Path.Combine(FileService.LocalAppData, fileName), arguments, showWindow);
 		}
 	}

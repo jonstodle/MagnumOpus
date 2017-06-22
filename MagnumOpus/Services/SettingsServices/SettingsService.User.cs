@@ -25,17 +25,5 @@
             get => Get(true);
             set => Set(value);
         }
-
-		public string RemoteControlClassicPath
-		{
-			get => Get(@"C:\SCCM Remote Control\rc.exe");
-			set => Set(value);
-		}
-
-		public string RemoteControl2012Path
-		{
-			get => Get(@"C:\RemoteControl2012\CmRcViewer.exe");
-			set => Set(value); 
-		}
 	}
 }

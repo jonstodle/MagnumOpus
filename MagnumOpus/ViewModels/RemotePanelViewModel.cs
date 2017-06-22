@@ -12,6 +12,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using static MagnumOpus.Services.FileServices.ExecutionService;
+using MagnumOpus.Services.FileServices;
 
 namespace MagnumOpus.ViewModels
 {
@@ -27,9 +28,9 @@ namespace MagnumOpus.ViewModels
 
 			StartRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
-			StartRemoteControlClassic = ReactiveCommand.Create(() => StartRemoteControlClassicImpl(_computer));
+			StartRemoteControlClassic = ReactiveCommand.CreateFromObservable(() => StartRemoteControlClassicImpl(_computer));
 
-			StartRemoteControl2012 = ReactiveCommand.Create(() => StartRemoteControl2012Impl(_computer));
+			StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_computer));
 
 			KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer));
 
@@ -106,9 +107,17 @@ namespace MagnumOpus.ViewModels
 			else StartRemoteControl2012Impl(computer);
 		}, TaskPoolScheduler.Default);
 
-		private void StartRemoteControlClassicImpl(ComputerObject computer) => RunFile(SettingsService.Current.RemoteControlClassicPath, $"1 {computer.CN}");
+        private IObservable<Unit> StartRemoteControlClassicImpl(ComputerObject computer) => Observable.Start(() =>
+        {
+            Executables.Helpers.WriteApplicationFilesToDisk("RemoteControl");
+            RunFile(Path.Combine(FileService.LocalAppData, "RemoteControl", "rc.exe"), $"1 {computer.CN}");
+        }, RxApp.TaskpoolScheduler);
 
-		private void StartRemoteControl2012Impl(ComputerObject computer) => RunFile(SettingsService.Current.RemoteControl2012Path, computer.CN);
+        private IObservable<Unit> StartRemoteControl2012Impl(ComputerObject computer) => Observable.Start(() =>
+        {
+            Executables.Helpers.WriteApplicationFilesToDisk("RemoteControl2012");
+            RunFile(Path.Combine(FileService.LocalAppData, "RemoteControl2012", "CmRcViewer.exe"), computer.CN);
+        }, RxApp.TaskpoolScheduler);
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{

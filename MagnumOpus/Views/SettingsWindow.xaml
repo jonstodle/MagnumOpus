@@ -34,12 +34,6 @@
 				<TextBlock Text="Use 'Esc' to close details windows" Style="{StaticResource SettingsHeaderStyle}"/>
 				<CheckBox x:Name="UseEscapeToCloseDetailsWindowsCheckBox" Content="Enabled" Margin="2"/>
 
-				<TextBlock Text="Remote Control Classic path" Style="{StaticResource SettingsHeaderStyle}"/>
-				<TextBox x:Name="RemoteControlClassicPathTextBox" Margin="2"/>
-
-				<TextBlock Text="Remote Control 2012 path" Style="{StaticResource SettingsHeaderStyle}"/>
-				<TextBox x:Name="RemoteControl2012PathTextBox" Margin="2"/>
-
 				<TextBlock Text="Aknowledgements" Style="{StaticResource SettingsHeaderStyle}"/>
 				<Grid>
 					<Grid.Resources>

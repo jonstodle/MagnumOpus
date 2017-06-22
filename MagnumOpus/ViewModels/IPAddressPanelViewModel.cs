@@ -20,20 +20,20 @@ namespace MagnumOpus.ViewModels
 		{
 			OpenLoggedOn = ReactiveCommand.Create(() =>
 			{
-				EnsureFileIsAvailable("PsLoggedon.exe");
-				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_ipAddress}");
+				//EnsureFileIsAvailable("PsLoggedon.exe");
+				//ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsLoggedon.exe"), $@"\\{_ipAddress}");
 			});
 
 			OpenLoggedOnPlus = ReactiveCommand.Create(() =>
 			{
-				EnsureFileIsAvailable("PsExec.exe");
-				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe /K query user");
+				//EnsureFileIsAvailable("PsExec.exe");
+				//ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe /K query user");
 			});
 
 			OpenRemoteExecution = ReactiveCommand.Create(() =>
 			{
-				EnsureFileIsAvailable("PsExec.exe");
-				ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe");
+				//EnsureFileIsAvailable("PsExec.exe");
+				//ExecuteCmd(Path.Combine(Directory.GetCurrentDirectory(), "PsExec.exe"), $@"\\{_ipAddress} C:\Windows\System32\cmd.exe");
 			});
 
 			OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
@@ -44,9 +44,9 @@ namespace MagnumOpus.ViewModels
                 .ToSignal()
 			);
 
-			StartRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
+			//StartRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
 
-			StartRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
+			//StartRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
 
 			KillRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
 

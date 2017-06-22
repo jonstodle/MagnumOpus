@@ -40,18 +40,6 @@ namespace MagnumOpus.ViewModels
             set => SettingsService.Current.UseEscapeToCloseDetailsWindows = value;
         }
 
-		public string RemoteControlClassicPath
-		{
-			get => SettingsService.Current.RemoteControlClassicPath;
-			set => SettingsService.Current.RemoteControlClassicPath = value;
-		}
-
-		public string RemoteControl2012Path
-		{
-			get => SettingsService.Current.RemoteControl2012Path;
-			set => SettingsService.Current.RemoteControl2012Path = value;
-		}
-
         public string Version => _version;
 
 
