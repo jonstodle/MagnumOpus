@@ -1,4 +1,5 @@
 ﻿using MagnumOpus.Models;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -43,7 +44,31 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 			}
 		});
 
-		public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true, IScheduler scheduler = null) => Observable.Start(() =>
+        private TimeSpan? _domainMaxPasswordAge = null;
+        public TimeSpan DomainMaxPasswordAge
+        {
+            get
+            {
+                if (_domainMaxPasswordAge == null)
+                {
+                    using(var directoryEntry = GetDomainDirectoryEntry())
+                    using (var searcher = new DirectorySearcher(directoryEntry, "(objectCategory=domainDNS)"))
+                    {
+                        _domainMaxPasswordAge = TimeSpan.FromTicks(searcher.FindOne().Properties.Get<long>("maxPwdAge")).Duration();
+                    }
+                }
+                return (TimeSpan)_domainMaxPasswordAge;
+            }
+        }
+
+        public IObservable<TimeSpan> GetMaxPasswordAge(string identity, IScheduler scheduler = null) => GetUsers(identity, "msDS-ResultantPSO")
+            .SubscribeOn(scheduler ?? RxApp.TaskpoolScheduler)
+            .Take(1)
+            .Select(userDe => userDe.Properties.Get<long>("msDS-ResultantPSO"))
+            .Select(maxAge => TimeSpan.FromTicks(Math.Abs(maxAge)))
+            .CatchAndReturn(DomainMaxPasswordAge);
+
+        public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true, IScheduler scheduler = null) => Observable.Start(() =>
         {
             GetUser(identity).Wait().Principal.SetPassword(password);
 
