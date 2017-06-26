@@ -38,8 +38,10 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
                 if (_currentDomainShortName == null)
                 {
                     var partitions = new DirectoryEntry(@"LDAP://cn=Partitions," + new DirectoryEntry(@"LDAP://RootDSE").Properties["configurationNamingContext"].Value);
-                    var searcher = new DirectorySearcher(partitions, "(&(objectcategory=Crossref)(netBIOSName=*))", new[] { "netBIOSName" });
-                    _currentDomainShortName = searcher.FindOne().Properties["netBIOSName"]?[0]?.ToString();
+                    using (var searcher = new DirectorySearcher(partitions, "(&(objectcategory=Crossref)(netBIOSName=*))", new[] { "netBIOSName" }))
+                    {
+                        _currentDomainShortName = searcher.FindOne().Properties["netBIOSName"]?[0]?.ToString();
+                    }
                 }
                 return _currentDomainShortName;
             }
