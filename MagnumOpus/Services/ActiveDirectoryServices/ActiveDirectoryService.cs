@@ -70,7 +70,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
         public IObservable<DirectoryEntry> SearchDirectory(string searchTerm, IScheduler scheduler = null) => 
             Observable.Create<DirectoryEntry>(observer =>
-                (scheduler ?? RxApp.TaskpoolScheduler).Schedule(() =>
+                (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
                     {
                         using (var directoryEntry = GetDomainDirectoryEntry())
                         using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm}*)(distinguishedName={searchTerm}*)(name={searchTerm}*)))"))

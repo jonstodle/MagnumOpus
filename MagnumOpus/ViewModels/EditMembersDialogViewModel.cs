@@ -25,7 +25,7 @@ namespace MagnumOpus.ViewModels
 
             GetGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value));
 
-            Search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery, RxApp.TaskpoolScheduler).Take(1000));
+            Search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery, TaskPoolScheduler.Default).Take(1000));
 
             OpenSearchResult = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedSearchResult.Properties.Get<string>("name")));
 
@@ -120,7 +120,7 @@ namespace MagnumOpus.ViewModels
 
         private IObservable<DirectoryEntry> GetGroupMembersImpl(GroupObject group) => Observable.Create<DirectoryEntry>(
             observer =>
-                RxApp.TaskpoolScheduler.Schedule(() =>
+                TaskPoolScheduler.Default.Schedule(() =>
                     {
                         foreach (Principal item in group.Principal.Members)
                         {

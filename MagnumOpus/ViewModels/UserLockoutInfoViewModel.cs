@@ -15,9 +15,9 @@ namespace MagnumOpus.ViewModels
 	{
 		public UserLockoutInfoViewModel()
 		{
-			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(x => ActiveDirectoryService.Current.GetUser(x, RxApp.TaskpoolScheduler));
+			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(x => ActiveDirectoryService.Current.GetUser(x, TaskPoolScheduler.Default));
 
-			GetLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN, RxApp.TaskpoolScheduler));
+			GetLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN, TaskPoolScheduler.Default));
 
 			Close = ReactiveCommand.Create(_closeAction);
 

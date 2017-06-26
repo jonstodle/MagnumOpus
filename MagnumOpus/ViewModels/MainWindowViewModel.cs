@@ -24,7 +24,7 @@ namespace MagnumOpus.ViewModels
 
             Search = ReactiveCommand.Create(() => _searchQuery.IsIPAddress()
                 ? Observable.FromAsync(() => NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
-                : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), RxApp.TaskpoolScheduler).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)));
+                : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)));
             Search
                 .Do(_ => _searchResults.Clear())
                 .Switch()

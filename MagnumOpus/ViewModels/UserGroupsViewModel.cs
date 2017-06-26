@@ -83,7 +83,7 @@ namespace MagnumOpus.ViewModels
                         Observable.Select(OpenEditMemberOf, _ => User))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _directGroups.Clear())
-                    .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName, RxApp.TaskpoolScheduler))
+                    .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName, TaskPoolScheduler.Default))
                     .Select(x => x.Properties.Get<string>("cn"))
                     .ObserveOnDispatcher()
                     .Subscribe(x => _directGroups.Add(x))

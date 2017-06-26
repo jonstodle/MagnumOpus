@@ -111,13 +111,13 @@ namespace MagnumOpus.ViewModels
         {
             Executables.Helpers.WriteApplicationFilesToDisk("RemoteControl");
             RunFile(Path.Combine(FileService.LocalAppData, "RemoteControl", "rc.exe"), $"1 {computer.CN}");
-        }, RxApp.TaskpoolScheduler);
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> StartRemoteControl2012Impl(ComputerObject computer) => Observable.Start(() =>
         {
             Executables.Helpers.WriteApplicationFilesToDisk("RemoteControl2012");
             RunFile(Path.Combine(FileService.LocalAppData, "RemoteControl2012", "CmRcViewer.exe"), computer.CN);
-        }, RxApp.TaskpoolScheduler);
+        }, TaskPoolScheduler.Default);
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{
