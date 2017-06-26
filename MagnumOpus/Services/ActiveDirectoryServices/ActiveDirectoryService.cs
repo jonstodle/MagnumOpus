@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReactiveUI;
+using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
@@ -67,23 +68,21 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
         public IObservable<Principal> GetPrincipal(string identity, IScheduler scheduler = null) => Observable.Start(() => Principal.FindByIdentity(_principalContext, identity), scheduler ?? TaskPoolScheduler.Default);
 
-        public IObservable<DirectoryEntry> SearchDirectory(string searchTerm) => Observable.Create<DirectoryEntry>(observer =>
-        {
-            var disposed = false;
+        public IObservable<DirectoryEntry> SearchDirectory(string searchTerm, IScheduler scheduler = null) => 
+            Observable.Create<DirectoryEntry>(observer =>
+                (scheduler ?? RxApp.TaskpoolScheduler).Schedule(() =>
+                    {
+                        using (var directoryEntry = GetDomainDirectoryEntry())
+                        using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm}*)(distinguishedName={searchTerm}*)(name={searchTerm}*)))"))
+                        {
+                            foreach (SearchResult result in searcher.FindAll())
+                            {
+                                observer.OnNext(result.GetDirectoryEntry());
+                            }
+                        }
 
-            using (var directoryEntry = GetDomainDirectoryEntry())
-            using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm}*)(distinguishedName={searchTerm}*)(name={searchTerm}*)))"))
-            {
-                foreach (SearchResult result in searcher.FindAll())
-                {
-                    if (disposed) break;
-                    observer.OnNext(result.GetDirectoryEntry());
-                }
-            }
-
-            observer.OnCompleted();
-            return () => disposed = true;
-        });
+                        observer.OnCompleted();
+                    }));
 
         private DirectoryEntry GetDomainDirectoryEntry() => new DirectoryEntry($"LDAP://{CurrentDomain}");
 
