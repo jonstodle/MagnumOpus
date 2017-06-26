@@ -7,6 +7,8 @@ namespace System.Reactive.Linq
 	{
 		public static IObservable<T> WhereNotNull<T>(this IObservable<T> source) where T : class => source.Where(x => x != null);
 
+        public static IObservable<bool> Where(this IObservable<bool> source, bool desiredBool) => source.Where(value => value == desiredBool);
+
 		public static IObservable<bool> IsNotNull<T>(this IObservable<T> source) where T : class => source.Select(x => x != null);
 
 		public static IObservable<bool> IsTrue(this IObservable<bool> source) => source.Select(x => x == true);
