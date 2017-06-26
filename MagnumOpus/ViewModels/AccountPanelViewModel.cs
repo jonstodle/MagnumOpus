@@ -37,7 +37,7 @@ namespace MagnumOpus.ViewModels
 
             OpenSplunk = ReactiveCommand.Create(() =>
             {
-                Process.Start(string.Format(SettingsService.Current.SplunkUrl, User.Principal.SamAccountName));
+                Process.Start(string.Format(SettingsService.Current.SplunkUrl, ActiveDirectoryService.Current.CurrentDomainShortName, User.Principal.SamAccountName));
             });
 
             this.WhenActivated(disposables =>
