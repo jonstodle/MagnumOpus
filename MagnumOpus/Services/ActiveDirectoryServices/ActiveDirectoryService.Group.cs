@@ -41,9 +41,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
             }
         });
 
-		public IObservable<DirectoryEntry> GetParents(IEnumerable<string> initialElements) => new ParentGroupsState(initialElements).Results;
+		public IObservable<DirectoryEntry> GetParents(IEnumerable<string> initialElements, IScheduler scheduler = null) => new ParentGroupsState(initialElements, scheduler).Results;
 
-		public IObservable<DirectoryEntry> GetParents(params string[] initialElements) => GetParents(initialElements);
+		//public IObservable<DirectoryEntry> GetParents(params string[] initialElements) => GetParents(initialElements);
 
         public string GetNameFromPath(string path) => path.Split(',')[0].Split('=')[1];
 
@@ -58,12 +58,12 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
 	public class ParentGroupsState
 	{
-		public ParentGroupsState(IEnumerable<string> initialElements)
+		public ParentGroupsState(IEnumerable<string> initialElements, IScheduler scheduler = null)
 		{
 			Observable.Start(() =>
 			{
 				foreach (var element in initialElements) GetAllGroups(element);
-			})
+			}, scheduler ?? TaskPoolScheduler.Default)
 			.Subscribe()
 			.AddTo(_disposables);
 

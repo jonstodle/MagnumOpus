@@ -13,6 +13,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -42,7 +43,7 @@ namespace MagnumOpus.ViewModels
                 () =>
                 {
                     AllGroups.Clear();
-                    return User.Principal.GetAllGroups().SubscribeOn(RxApp.TaskpoolScheduler)
+                    return User.Principal.GetAllGroups(TaskPoolScheduler.Default)
                             .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x));
                 },
                 this.WhenAnyValue(x => x.IsShowingAllGroups));
@@ -82,7 +83,7 @@ namespace MagnumOpus.ViewModels
                         Observable.Select(OpenEditMemberOf, _ => User))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _directGroups.Clear())
-                    .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName).SubscribeOn(RxApp.TaskpoolScheduler))
+                    .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName, RxApp.TaskpoolScheduler))
                     .Select(x => x.Properties.Get<string>("cn"))
                     .ObserveOnDispatcher()
                     .Subscribe(x => _directGroups.Add(x))
@@ -134,7 +135,7 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetDirectGroups(string identity) => ActiveDirectoryService.Current.GetUser(identity)
+        private IObservable<DirectoryEntry> GetDirectGroups(string identity, IScheduler scheduler = null) => ActiveDirectoryService.Current.GetUser(identity, scheduler)
             .SelectMany(x => x.Principal.GetGroups().ToObservable())
             .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 

@@ -21,28 +21,28 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
             return up != null ? new UserObject(up) : null;
         }, scheduler ?? TaskPoolScheduler.Default);
 
-		public IObservable<DirectoryEntry> GetUsers(string searchTerm, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(observer =>
-		{
-			var disposed = false;
+        public IObservable<DirectoryEntry> GetUsers(string searchTerm, params string[] propertiesToLoad) => GetUsers(searchTerm, TaskPoolScheduler.Default, propertiesToLoad);
 
-			using (var directoryEntry = GetDomainDirectoryEntry())
-			using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory=user)({searchTerm}))", propertiesToLoad))
-			{
-				searcher.PageSize = 1000;
+		public IObservable<DirectoryEntry> GetUsers(string searchTerm, IScheduler scheduler, params string[] propertiesToLoad) => Observable.Create<DirectoryEntry>(
+            observer =>
+                (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
+		            {
+			            using (var directoryEntry = GetDomainDirectoryEntry())
+			            using (var searcher = new DirectorySearcher(directoryEntry, $"(&(objectCategory=user)({searchTerm}))", propertiesToLoad))
+			            {
+				            searcher.PageSize = 1000;
 
-				using (var results = searcher.FindAll())
-				{
-					foreach (SearchResult result in results)
-					{
-						if (disposed) break;
-						observer.OnNext(result.GetDirectoryEntry());
-					}
-				}
+				            using (var results = searcher.FindAll())
+				            {
+					            foreach (SearchResult result in results)
+					            {
+						            observer.OnNext(result.GetDirectoryEntry());
+					            }
+				            }
 
-				observer.OnCompleted();
-				return () => disposed = true;
-			}
-		});
+				            observer.OnCompleted();
+			            }
+		            }));
 
         private TimeSpan? _domainMaxPasswordAge = null;
         public TimeSpan DomainMaxPasswordAge
@@ -61,8 +61,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
             }
         }
 
-        public IObservable<TimeSpan> GetMaxPasswordAge(string identity, IScheduler scheduler = null) => GetUsers(identity, "msDS-ResultantPSO")
-            .SubscribeOn(scheduler ?? RxApp.TaskpoolScheduler)
+        public IObservable<TimeSpan> GetMaxPasswordAge(string identity, IScheduler scheduler = null) => GetUsers(identity, scheduler, "msDS-ResultantPSO")
             .Take(1)
             .Select(userDe => userDe.Properties.Get<long>("msDS-ResultantPSO"))
             .Select(maxAge => TimeSpan.FromTicks(Math.Abs(maxAge)))
@@ -124,7 +123,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 			}).Wait();
 		}, scheduler ?? TaskPoolScheduler.Default);
 
-		public IObservable<LockoutInfo> GetLockoutInfo(string identity) => DoActionOnAllDCs(x =>
+		public IObservable<LockoutInfo> GetLockoutInfo(string identity, IScheduler scheduler = null) => DoActionOnAllDCs(x =>
 		{
 			var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
 
@@ -139,7 +138,7 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 				PasswordLastSet = user.LastPasswordSet,
 				LockoutTime = user.AccountLockoutTime
 			};
-		});
+		}, scheduler);
 
         private IObservable<TResult> DoActionOnAllDCs<TResult>(Func<DomainController, TResult> action, IScheduler scheduler = null) => Observable.Start(() => Domain.GetCurrentDomain().DomainControllers, scheduler ?? TaskPoolScheduler.Default)
             .SelectMany(dcs => dcs.ToGeneric<DomainController>().ToObservable())

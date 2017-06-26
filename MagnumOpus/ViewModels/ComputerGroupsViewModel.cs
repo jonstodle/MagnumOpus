@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -32,7 +33,7 @@ namespace MagnumOpus.ViewModels
                 (this).WhenAnyValue(x => x.Computer).WhereNotNull(),
                Observable.Select<Unit, ComputerObject>(this.OpenEditMemberOf, (Func<Unit, ComputerObject>)(_ => (ComputerObject)Computer)))
                 .Do(_ => _directGroups.Clear())
-                .SelectMany(x => GetDirectGroups(x).SubscribeOn(RxApp.TaskpoolScheduler))
+                .SelectMany(x => GetDirectGroups(x, TaskPoolScheduler.Default))
                 .Select(x => x.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
                 .Subscribe(x => _directGroups.Add(x))
@@ -60,8 +61,8 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer) => computer.Principal.GetGroups()
-            .ToObservable()
+        private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer, IScheduler scheduler = null) => computer.Principal.GetGroups()
+            .ToObservable(scheduler ?? TaskPoolScheduler.Default)
             .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 
 

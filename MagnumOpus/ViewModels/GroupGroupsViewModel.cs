@@ -13,6 +13,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
+using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels
 {
@@ -40,7 +41,7 @@ namespace MagnumOpus.ViewModels
                 () =>
                 {
                     _allMemberOfGroups.Clear();
-                    return _group.Principal.GetAllGroups().SubscribeOn(RxApp.TaskpoolScheduler)
+                    return _group.Principal.GetAllGroups(TaskPoolScheduler.Default)
                                 .Select(x => x.Properties.Get<string>("name"))
                                 .TakeUntil(this.WhenAnyValue(x => x.IsShowingMemberOf).Where(x => !x));
                 },
@@ -111,7 +112,7 @@ namespace MagnumOpus.ViewModels
                         OpenEditMemberOf.Select(_ => _group))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _directMemberOfGroups.Clear())
-                    .SelectMany(x => GetDirectGroups(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
+                    .SelectMany(x => GetDirectGroups(x.CN, TaskPoolScheduler.Default))
                     .ObserveOnDispatcher()
                     .Subscribe(x => _directMemberOfGroups.Add(x))
                     .DisposeWith(disposables);
@@ -121,7 +122,7 @@ namespace MagnumOpus.ViewModels
                         OpenEditMembers.Select(_ => _group))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _members.Clear())
-                    .SelectMany(x => GetMembers(x.CN).SubscribeOn(RxApp.TaskpoolScheduler))
+                    .SelectMany(x => GetMembers(x.CN, TaskPoolScheduler.Default))
                     .ObserveOnDispatcher()
                     .Subscribe(x => _members.Add(x))
                     .DisposeWith(disposables);
@@ -168,25 +169,23 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<string> GetDirectGroups(string identity) => ActiveDirectoryService.Current.GetGroup(identity)
+        private IObservable<string> GetDirectGroups(string identity, IScheduler scheduler = null) => ActiveDirectoryService.Current.GetGroup(identity, scheduler)
             .SelectMany(x => x.Principal.GetGroups().ToObservable())
             .Select(x => x.Name);
 
-        private IObservable<string> GetMembers(string identity) => Observable.Create<string>(observer =>
-        {
-            var disposed = false;
+        private IObservable<string> GetMembers(string identity, IScheduler scheduler = null) => Observable.Create<string>(
+            observer =>
+                (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
+                    {
+                        var group = ActiveDirectoryService.Current.GetGroup(identity).Wait();
 
-            var group = ActiveDirectoryService.Current.GetGroup(identity).Wait();
+                        foreach (Principal item in group.Principal.Members)
+                        {
+                            observer.OnNext(item.Name);
+                        }
 
-            foreach (Principal item in group.Principal.Members)
-            {
-                if (disposed) break;
-                observer.OnNext(item.Name);
-            }
-
-            observer.OnCompleted();
-            return () => disposed = true;
-        });
+                        observer.OnCompleted();
+                    }));
 
         bool TextFilter(object item)
         {

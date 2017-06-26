@@ -23,7 +23,7 @@ namespace MagnumOpus.ViewModels
         {
             SetPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
 
-            GetPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value).SubscribeOn(RxApp.TaskpoolScheduler));
+            GetPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value, TaskPoolScheduler.Default));
 
             Search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery, RxApp.TaskpoolScheduler).Take(1000));
 
@@ -116,8 +116,8 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal) => principal.GetGroups()
-            .ToObservable()
+        private IObservable<DirectoryEntry> GetPrincipalMembersImpl(Principal principal, IScheduler scheduler = null) => principal.GetGroups()
+            .ToObservable(scheduler ?? TaskPoolScheduler.Default)
             .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
 
         private IObservable<IEnumerable<string>> SaveImpl(Principal principal, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>

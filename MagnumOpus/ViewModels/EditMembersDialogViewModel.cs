@@ -23,7 +23,7 @@ namespace MagnumOpus.ViewModels
         {
             SetGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
 
-            GetGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value).SubscribeOn(RxApp.TaskpoolScheduler));
+            GetGroupMembers = ReactiveCommand.CreateFromObservable(() => GetGroupMembersImpl(_group.Value));
 
             Search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery, RxApp.TaskpoolScheduler).Take(1000));
 
@@ -118,19 +118,17 @@ namespace MagnumOpus.ViewModels
 
 
 
-        private IObservable<DirectoryEntry> GetGroupMembersImpl(GroupObject group) => Observable.Create<DirectoryEntry>(observer =>
-        {
-            var disposed = false;
+        private IObservable<DirectoryEntry> GetGroupMembersImpl(GroupObject group) => Observable.Create<DirectoryEntry>(
+            observer =>
+                RxApp.TaskpoolScheduler.Schedule(() =>
+                    {
+                        foreach (Principal item in group.Principal.Members)
+                        {
+                            observer.OnNext(item.GetUnderlyingObject() as DirectoryEntry);
+                        }
 
-            foreach (Principal item in group.Principal.Members)
-            {
-                if (disposed) break;
-                observer.OnNext(item.GetUnderlyingObject() as DirectoryEntry);
-            }
-
-            observer.OnCompleted();
-            return () => disposed = true;
-        });
+                        observer.OnCompleted();
+                    }));
 
         private IObservable<IEnumerable<string>> SaveImpl(GroupObject group, IEnumerable<DirectoryEntry> membersToAdd, IEnumerable<DirectoryEntry> membersToRemove) => Observable.Start(() =>
         {
