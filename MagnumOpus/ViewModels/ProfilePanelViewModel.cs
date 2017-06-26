@@ -294,23 +294,25 @@ namespace MagnumOpus.ViewModels
             if (ShouldRestoreStickyNotes) { CopyDirectoryContents(oldProfileDir.FullName, newProfileDir.FullName, @"AppData\Roaming\Microsoft\Sticky Notes"); }
         }, TaskPoolScheduler.Default);
 
-        private IObservable<Unit> ResetCitrixProfileImpl(UserObject user) => Observable.Start(() =>
-        {
-            if (!Directory.Exists(Path.Combine(user.HomeDirectory, "windows"))) throw new ArgumentException("Could not find Citrix profile directory");
-
-            foreach (var folderName in new[] { "xa_profile", "App-V" })
-            {
-                var destination = Path.Combine(user.HomeDirectory, "windows", folderName);
-                if (!Directory.Exists(destination)) continue;
-
-                while (Directory.Exists(destination))
+        private IObservable<Unit> ResetCitrixProfileImpl(UserObject user) => Messages.Handle(new MessageInfo(MessageType.Question, "Do you want to reset the Citrix profile?", "", "Yes", "No"))
+            .Where(result => result == 0)
+            .SelectMany(_ => Observable.Start(() =>
                 {
-                    destination = destination.Insert(destination.ToLowerInvariant().IndexOf(folderName), "!");
-                }
+                    if (!Directory.Exists(Path.Combine(user.HomeDirectory, "windows"))) throw new ArgumentException("Could not find Citrix profile directory");
 
-                Directory.Move(Path.Combine(user.HomeDirectory, "windows", folderName), destination);
-            }
-        }, TaskPoolScheduler.Default);
+                    foreach (var folderName in new[] { "xa_profile", "App-V" })
+                    {
+                        var destination = Path.Combine(user.HomeDirectory, "windows", folderName);
+                        if (!Directory.Exists(destination)) continue;
+
+                        while (Directory.Exists(destination))
+                        {
+                            destination = destination.Insert(destination.ToLowerInvariant().IndexOf(folderName), "!");
+                        }
+
+                        Directory.Move(Path.Combine(user.HomeDirectory, "windows", folderName), destination);
+                    }
+                }, TaskPoolScheduler.Default));
 
 
 
