@@ -30,6 +30,21 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
         private readonly PrincipalContext _principalContext = new PrincipalContext(ContextType.Domain);
         public string CurrentDomain => Domain.GetCurrentDomain()?.Name;
 
+        private string _currentDomainShortName;
+        public string CurrentDomainShortName
+        {
+            get
+            {
+                if (_currentDomainShortName == null)
+                {
+                    var partitions = new DirectoryEntry(@"LDAP://cn=Partitions," + new DirectoryEntry(@"LDAP://RootDSE").Properties["configurationNamingContext"].Value);
+                    var searcher = new DirectorySearcher(partitions, "(&(objectcategory=Crossref)(netBIOSName=*))", new[] { "netBIOSName" });
+                    _currentDomainShortName = searcher.FindOne().Properties["netBIOSName"]?[0]?.ToString();
+                }
+                return _currentDomainShortName;
+            }
+        }
+
 
         private ActiveDirectoryService() { }
 
