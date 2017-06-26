@@ -21,7 +21,7 @@ Some variables are specific to your environment. These are set by adding a file 
 
 ``` json
 {
-  "SplunkUrl": "https://splunk.internally.com/search?msad-account={0}", // Insert {0} where the username should be inserted in the url
+  "SplunkUrl": "https://splunk.internally.com/search?q=%60lockouts-for-user({0}%2C{1})%60", // Insert {0} where the domain should be inserted and {1} where the username should be inserted in the url
   "LogDirectoryPath": "C:\\Logs\\Magnum Opus", // Where to put log files from the application
   "ComputerCompanyOus": [ // The key should be a part of the DistinguishedName of the DirectoryEntry which only occurs for each specific company, e.g.: "OU=CompanyName". The value is the name of the company, e.g.: "Company Name".
     {
