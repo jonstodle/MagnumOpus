@@ -35,6 +35,7 @@ namespace MagnumOpus.Controls
                 this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, x => x != null ? (bool)x ? "User enabled" : "User disabled" : "Status unavailable").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.PasswordStatus, v => v.PasswordStatusTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.PasswordMaxAge, v => v.PasswordMaxAgeTextBlock.Text, duration => duration != null && duration > TimeSpan.Zero ? $" ({duration.TotalDays}d)" : "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text, x => x.HasValue() ? x : "No email address").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingOrganizationDetails, v => v.OrganizationGrid.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User.JobTitle, v => v.JobTitleTextBlock.Text).DisposeWith(d);

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using MagnumOpus.Services.ActiveDirectoryServices;
 
 namespace MagnumOpus.ViewModels
 {
@@ -46,6 +47,13 @@ namespace MagnumOpus.ViewModels
                 })
                 .ToProperty(this, x => x.PasswordStatus);
 
+            _passwordMaxAge = newUser
+                .SelectMany(user => user.Principal.PasswordNeverExpires || (user.Principal.LastPasswordSet ?? DateTime.MinValue) == DateTime.MinValue
+                    ? Observable.Return(TimeSpan.Zero)
+                    : ActiveDirectoryService.Current.GetMaxPasswordAge(user.Principal.SamAccountName, RxApp.TaskpoolScheduler))
+                .ObserveOnDispatcher()
+                .ToProperty(this, vm => vm.PasswordMaxAge);
+
             _isShowingOrganizationDetails = ToggleOrganizationDetails
                 .ToProperty(this, x => x.IsShowingOrganizationDetails);
 
@@ -84,6 +92,7 @@ namespace MagnumOpus.ViewModels
         public bool IsAccountLocked => _isAccountLocked.Value;
         public TimeSpan PasswordAge => _passwordAge.Value;
         public string PasswordStatus => _passwordStatus.Value;
+        public TimeSpan PasswordMaxAge => _passwordMaxAge.Value;
         public bool IsShowingOrganizationDetails => _isShowingOrganizationDetails.Value;
         public UserObject Manager => _manager.Value;
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
@@ -95,6 +104,7 @@ namespace MagnumOpus.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isAccountLocked;
         private readonly ObservableAsPropertyHelper<TimeSpan> _passwordAge;
         private readonly ObservableAsPropertyHelper<string> _passwordStatus;
+        private readonly ObservableAsPropertyHelper<TimeSpan> _passwordMaxAge;
         private readonly ObservableAsPropertyHelper<bool> _isShowingOrganizationDetails;
         private readonly ObservableAsPropertyHelper<UserObject> _manager;
         private UserObject _user;
