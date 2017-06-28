@@ -65,13 +65,13 @@ namespace MagnumOpus
                                 .Throttle(TimeSpan.FromSeconds(1)))
                         .DistinctUntilChanged()
                         .Where(x => x.HasValue(3))
-                        .Select(_ => Unit.Default)
+                        .ToSignal()
                         .ObserveOnDispatcher()
                         .InvokeCommand(ViewModel, x => x.Search)
                         .DisposeWith(d);
                     SearchResultsListView.Events()
                         .MouseDoubleClick
-                        .Select(_ => Unit.Default)
+                        .ToSignal()
                         .InvokeCommand(ViewModel, x => x.Open)
                         .DisposeWith(d);
                     this.BindCommand(ViewModel, vm => vm.Open, v => v.OpenSearchResultsMenuItem).DisposeWith(d);

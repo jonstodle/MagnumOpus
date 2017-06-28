@@ -55,7 +55,7 @@ namespace MagnumOpus.Controls
                 ViewModel
                 .WhenAnyValue(x => x.IsShowingAllGroups)
                 .Where(x => x)
-                .Select(_ => Unit.Default)
+                .ToSignal()
                 .ObserveOnDispatcher()
                 .InvokeCommand(ViewModel, x => x.GetAllGroups).DisposeWith(d);
             });

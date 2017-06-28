@@ -17,7 +17,7 @@ namespace System.Reactive.Linq
 
 		public static IObservable<Unit> ToSignal<T>(this IObservable<T> source) => source.Select(_ => Unit.Default);
 
-        public static IObservable<Unit> ToEventCommandSignal<T>(this IObservable<T> source) => source.Select(_ => Unit.Default).Delay(TimeSpan.FromMilliseconds(10), DispatcherScheduler.Current);
+        public static IObservable<Unit> ToEventCommandSignal<T>(this IObservable<T> source) => source.ToSignal().Delay(TimeSpan.FromMilliseconds(10), DispatcherScheduler.Current);
 
         public static IObservable<EventPattern<object>> Events(this object source, string eventName) => Observable.FromEventPattern(source, eventName);
 

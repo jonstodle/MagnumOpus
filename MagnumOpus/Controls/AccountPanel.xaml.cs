@@ -49,7 +49,7 @@ namespace MagnumOpus.Controls
                 NewPasswordTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
-                    .Select(_ => Unit.Default)
+                    .ToSignal()
                     .InvokeCommand(ViewModel, x => x.SetNewPassword).DisposeWith(d);
             });
         }
