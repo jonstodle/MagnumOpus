@@ -33,11 +33,7 @@ namespace MagnumOpus
 
             this.Events()
                 .Activated
-                .Subscribe(_ =>
-                {
-                    SearchQueryTextBox.Focus();
-                    SearchQueryTextBox.SelectAll();
-                });
+                .Subscribe(_ => SearchQueryTextBox.Focus());
 
             this.WhenActivated(d =>
             {
@@ -90,6 +86,9 @@ namespace MagnumOpus
                     this.Events()
                         .Closed
                         .Subscribe(_ => Application.Current.Shutdown())
+                        .DisposeWith(d);
+                    SearchQueryTextBox.Events().GotFocus
+                        .Subscribe(_ => SearchQueryTextBox.SelectAll())
                         .DisposeWith(d);
                     SearchQueryTextBox.Events().KeyUp
                         .Where(args => args.Key == Key.Down && SearchResultsListView.Items.Count > 0)
