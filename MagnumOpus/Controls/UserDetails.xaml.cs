@@ -28,15 +28,15 @@ namespace MagnumOpus.Controls
                 this.Bind(ViewModel, vm => vm.User, v => v.User).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.DisplayNameTextBlock.Text).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.EmployeeId, v => v.EmployeeIDTextBlock.Text, x => $"({x})").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.SamAccountName, v => v.SamTextBlock.Text, x => x?.ToUpperInvariant()).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text, x => x.HasValue() ? x : "No company").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, x => x != null ? $"User expires {((DateTime)x).ToShortDateString()}" : "User never expires").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, x => x ? "Locked" : "Not locked").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, x => x != null ? (bool)x ? "User enabled" : "User disabled" : "Status unavailable").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.EmployeeId, v => v.EmployeeIDTextBlock.Text, employeeId => $"({employeeId})").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.SamAccountName, v => v.SamTextBlock.Text, samAccountName => samAccountName?.ToUpperInvariant()).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Company, v => v.CompanyTextBlock.Text, company => company.HasValue() ? company : "No company").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.AccountExpirationDate, v => v.ExpirationTextBlock.Text, expirationDate => expirationDate != null ? $"User expires {((DateTime)expirationDate).ToShortDateString()}" : "User never expires").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsAccountLocked, v => v.AccountLockedTextBlock.Text, isLocked => isLocked ? "Locked" : "Not locked").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.AccountEnabledTextBlock.Text, isEnabled => isEnabled != null ? (bool)isEnabled ? "User enabled" : "User disabled" : "Status unavailable").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.PasswordStatus, v => v.PasswordStatusTextBlock.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.PasswordMaxAge, v => v.PasswordMaxAgeTextBlock.Text, duration => duration != null && duration > TimeSpan.Zero ? $" ({duration.TotalDays}d)" : "").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text, x => x.HasValue() ? x : "No email address").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.EmailAddress, v => v.EmailAddressTextBlock.Text, emailAddress => emailAddress.HasValue() ? emailAddress : "No email address").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingOrganizationDetails, v => v.OrganizationGrid.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User.JobTitle, v => v.JobTitleTextBlock.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User.Department, v => v.DepartmentTextBlock.Text).DisposeWith(d);

@@ -47,24 +47,24 @@ namespace MagnumOpus
                     this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource).DisposeWith(d);
                     this.Bind(ViewModel, vm => vm.SelectedSearchResult, v => v.SearchResultsListView.SelectedItem).DisposeWith(d);
                     this.OneWayBind(ViewModel, vm => vm.IsNoResults, v => v.NoResultsTextBlock.Visibility).DisposeWith(d);
-                    this.OneWayBind(ViewModel, vm => vm.SearchResults.Count, v => v.SearchResultsCountTextBox.Text, x => $"{x} {(x == 1 ? "result" : "results")}").DisposeWith(d);
+                    this.OneWayBind(ViewModel, vm => vm.SearchResults.Count, v => v.SearchResultsCountTextBox.Text, count => $"{count} {(count == 1 ? "result" : "results")}").DisposeWith(d);
                     this.OneWayBind(ViewModel, vm => vm.Domain, v => v.DomainTextBlock.Text).DisposeWith(d);
 
                     this.BindCommand(ViewModel, vm => vm.Paste, v => v.PasteButton).DisposeWith(d);
                     Observable.Merge(
                             SearchQueryTextBox.Events()
                                 .KeyDown
-                                .Where(x => x.Key == Key.Enter)
+                                .Where(args => args.Key == Key.Enter)
                                 .Select(_ => ViewModel.SearchQuery),
                             ViewModel
                                 .Paste
                                 .Select(_ => ViewModel.SearchQuery),
                             ViewModel
-                                .WhenAnyValue(x => x.SearchQuery)
-                                .Where(x => x.HasValue(3) && !int.TryParse(x.First().ToString(), out int i))
+                                .WhenAnyValue(vm => vm.SearchQuery)
+                                .Where(searchQuery => searchQuery.HasValue(3) && !int.TryParse(searchQuery.First().ToString(), out int i))
                                 .Throttle(TimeSpan.FromSeconds(1)))
                         .DistinctUntilChanged()
-                        .Where(x => x.HasValue(3))
+                        .Where(searchQuery => searchQuery.HasValue(3))
                         .ToSignal()
                         .ObserveOnDispatcher()
                         .InvokeCommand(ViewModel.Search)

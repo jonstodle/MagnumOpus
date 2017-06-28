@@ -5,6 +5,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace MagnumOpus.Views
 {
@@ -13,25 +14,25 @@ namespace MagnumOpus.Views
 		public DetailsWindow()
 		{
             Observable.Merge(
-                _keyDownEvents.ToSignal(),
-                this.Events().PreviewMouseDown.ToSignal(),
-                Observable.Return(Unit.Default))
-                .Select(_ => Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
+                    _keyDownEvents.ToSignal(),
+                    this.Events().PreviewMouseDown.ToSignal(),
+                    Observable.Return(Unit.Default))
+                        .Select(_ => Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
                 .Switch()
                 .ObserveOnDispatcher()
-                .Subscribe(x => this.Close())
+                .Subscribe(_ => Close())
                 .DisposeWith(_subscriptions);
 
             if (SettingsService.Current.UseEscapeToCloseDetailsWindows)
             {
                 _keyDownEvents
-                    .Where(x => x.Key == System.Windows.Input.Key.Escape)
-                    .Subscribe(_ => this.Close())
+                    .Where(args => args.Key == Key.Escape)
+                    .Subscribe(_ => Close())
                     .DisposeWith(_subscriptions);
             }
 
 			this.Events().Closed
-				.Subscribe(x => _subscriptions.Dispose())
+				.Subscribe(_ => _subscriptions.Dispose())
 				.DisposeWith(_subscriptions);
 		}
 

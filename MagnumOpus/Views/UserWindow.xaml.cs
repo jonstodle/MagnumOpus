@@ -24,7 +24,7 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.Title, name => name ?? "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User, v => v.UserDetails.User).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User, v => v.UserAccountPanel.User).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.User, v => v.UserProfilePanel.User).DisposeWith(d);
@@ -32,11 +32,11 @@ namespace MagnumOpus.Views
 
                 MessageBus.Current.Listen<string>(ApplicationActionRequest.Refresh)
                     .ObserveOnDispatcher()
-                    .Where(x => x == ViewModel.User?.CN)
+                    .Where(userCn => userCn == ViewModel.User?.CN)
                     .InvokeCommand(ViewModel.SetUser).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(vm => vm.User.CN)).DisposeWith(d);
                 this.Events().KeyDown
-                    .Where(x => x.Key == System.Windows.Input.Key.F5)
+                    .Where(args => args.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.User.CN)
                     .InvokeCommand(ViewModel.SetUser).DisposeWith(d);
                 new List<Interaction<MessageInfo, int>>

@@ -28,7 +28,7 @@ namespace MagnumOpus.Controls
 
             ViewModel = new EditMembersDialogViewModel();
 
-            this.OneWayBind(ViewModel, vm => vm.Group, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Principal.Name}'s Members" : "");
+            this.OneWayBind(ViewModel, vm => vm.Group, v => v.TitleTextBlock.Text, group => group != null ? $"Edit {group.Principal.Name}'s Members" : "");
 
             this.WhenActivated(d =>
             {
@@ -40,7 +40,7 @@ namespace MagnumOpus.Controls
 
                 SearchQueryTextBox.Focus();
                 ViewModel
-                    .WhenAnyValue(x => x.Group)
+                    .WhenAnyValue(vm => vm.Group)
                     .WhereNotNull()
                     .SubscribeOnDispatcher()
                     .ToSignal()
@@ -49,12 +49,12 @@ namespace MagnumOpus.Controls
                 Observable.Merge(
                         SearchQueryTextBox.Events()
                             .KeyDown
-                            .Where(x => x.Key == Key.Enter)
+                            .Where(args => args.Key == Key.Enter)
                             .Select(_ => ViewModel.SearchQuery),
                         ViewModel
-                            .WhenAnyValue(x => x.SearchQuery)
+                            .WhenAnyValue(vm => vm.SearchQuery)
                             .Throttle(TimeSpan.FromSeconds(1)))
-                    .Where(x => x.HasValue(3))
+                    .Where(searchQuery => searchQuery.HasValue(3))
                     .DistinctUntilChanged()
                     .SubscribeOnDispatcher()
                     .ToSignal()

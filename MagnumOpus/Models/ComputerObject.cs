@@ -24,12 +24,12 @@ namespace MagnumOpus.Models
 
         public string ServicePack => _directoryEntry.Properties.Get<string>("operatingsystemservicepack");
 
-        public string Company => SettingsService.Current.ComputerCompanyOus.FirstOrDefault(x => _principal.DistinguishedName.Contains(x.Key)).Value ?? "";
+        public string Company => SettingsService.Current.ComputerCompanyOus.FirstOrDefault(companyKVPair => _principal.DistinguishedName.Contains(companyKVPair.Key)).Value ?? "";
 
 
 
         public IObservable<string> GetIPAddress(IScheduler scheduler = null) => Observable.Start(() =>
-            Dns.GetHostEntry(CN).AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString(), scheduler ?? TaskPoolScheduler.Default)
+            Dns.GetHostEntry(CN).AddressList.First(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork).ToString(), scheduler ?? TaskPoolScheduler.Default)
             .CatchAndReturn("");
 
         public IObservable<LoggedOnUserInfo> GetLoggedInUsers(IScheduler scheduler = null) => Observable.Create<LoggedOnUserInfo>(
@@ -59,10 +59,10 @@ namespace MagnumOpus.Models
                     }));
 
         public IObservable<UserObject> GetManagedBy() => Observable.Return(_directoryEntry.Properties.Get<string>("managedby"))
-            .SelectMany(x =>
+            .SelectMany(username =>
             {
-                if (x == null) return Observable.Return<UserObject>(null);
-                else return ActiveDirectoryService.Current.GetUser(x);
+                if (username == null) return Observable.Return<UserObject>(null);
+                else return ActiveDirectoryService.Current.GetUser(username);
             })
             .CatchAndReturn(null)
             .Take(1);

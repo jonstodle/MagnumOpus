@@ -25,26 +25,26 @@ namespace MagnumOpus.ViewModels
             _mostRecentPingResult = Observable.Merge(
 				_pingResults.ItemsAdded,
 				StopPing.Select(_ => ""),
-				this.WhenAnyValue(x => x.HostName).WhereNotNull().Select(_ => ""))
-				.ToProperty(this, x => x.MostRecentPingResult);
+				this.WhenAnyValue(vm => vm.HostName).WhereNotNull().Select(_ => ""))
+				.ToProperty(this, vm => vm.MostRecentPingResult);
 
             this.WhenActivated(disposables =>
             {
                 StartPing
-                    .Do(x => PingResults.Insert(0, x))
+                    .Do(pingMessage => PingResults.Insert(0, pingMessage))
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 this
-                    .WhenAnyValue(x => x.IsPinging)
-                    .Where(x => !x)
+                    .WhenAnyValue(vm => vm.IsPinging)
+                    .Where(false)
                     .Subscribe(_ => IsShowingPingResultDetails = false)
                     .DisposeWith(disposables);
 
-                Observable.Merge(
-                    Observable.Select(StartPing.ThrownExceptions, ex => (("Could not start pinging", ex.Message))),
-                    StopPing.ThrownExceptions.Select(ex => (("Could not stop pinging", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        StartPing.ThrownExceptions.Select(ex => (("Could not start pinging", ex.Message))),
+                        StopPing.ThrownExceptions.Select(ex => (("Could not stop pinging", ex.Message))))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });
@@ -72,7 +72,7 @@ namespace MagnumOpus.ViewModels
                         else throw new Exception("Ping reply status was not 'Success'");
                     }, CurrentThreadScheduler.Instance)
                     .CatchAndReturn($"{hostName} did not respond")
-                    .Select(x => $"{DateTimeOffset.Now.ToString("T")} - {x}"))
+                    .Select(pingMessage => $"{DateTimeOffset.Now.ToString("T")} - {pingMessage}"))
                 .StartWith($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
 
 

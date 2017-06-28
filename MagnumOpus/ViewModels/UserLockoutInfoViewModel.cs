@@ -15,29 +15,29 @@ namespace MagnumOpus.ViewModels
 	{
 		public UserLockoutInfoViewModel()
 		{
-			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(x => ActiveDirectoryService.Current.GetUser(x, TaskPoolScheduler.Default));
+			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(username => ActiveDirectoryService.Current.GetUser(username, TaskPoolScheduler.Default));
 
 			GetLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN, TaskPoolScheduler.Default));
 
 			Close = ReactiveCommand.Create(_closeAction);
 
 			_user = SetUser
-				.ToProperty(this, x => x.User);
+				.ToProperty(this, vm => vm.User);
 
             this.WhenActivated(disposables =>
             {
                 GetLockoutInfo
-                    .Do((IObservable<LockoutInfo> _) => _lockoutInfos.Clear())
+                    .Do(_ => _lockoutInfos.Clear())
                     .Switch()
                     .ObserveOnDispatcher()
-                    .Subscribe(x => _lockoutInfos.Add(x))
+                    .Subscribe(lockoutInfo => _lockoutInfos.Add(lockoutInfo))
                     .DisposeWith(disposables);
 
-                Observable.Merge(
-                        SetUser.ThrownExceptions.Select(ex => (("Could not load user", ex.Message))),
-                        GetLockoutInfo.ThrownExceptions.Select(ex => (("Could not get lockout info", ex.Message))),
-                        Close.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        SetUser.ThrownExceptions.Select(ex => ("Could not load user", ex.Message)),
+                        GetLockoutInfo.ThrownExceptions.Select(ex => ("Could not get lockout info", ex.Message)),
+                        Close.ThrownExceptions.Select(ex => ("Could not close dialog", ex.Message)))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

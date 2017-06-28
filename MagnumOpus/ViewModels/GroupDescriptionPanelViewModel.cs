@@ -18,25 +18,25 @@ namespace MagnumOpus.ViewModels
             Cancel = ReactiveCommand.Create(() => { Description = _group?.Description; });
 
             _hasDescriptionChanged = Observable.CombineLatest(
-                this.WhenAnyValue(x => x.Description),
-                this.WhenAnyValue(y => y.Group).WhereNotNull(),
-                (x, y) => x != y.Description)
-                .ToProperty(this, x => x.HasDescriptionChanged);
+                    this.WhenAnyValue(vm => vm.Description),
+                    this.WhenAnyValue(vm => vm.Group).WhereNotNull(),
+                    (description, group) => description != group.Description)
+                .ToProperty(this, vm => vm.HasDescriptionChanged);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
-                (this).WhenAnyValue(x => x.Group)
-                .WhereNotNull()
-                .Subscribe(x => Description = x.Description)
-                .DisposeWith(disposables);
+                this.WhenAnyValue(vm => vm.Group)
+                    .WhereNotNull()
+                    .Subscribe(group => Description = group.Description)
+                    .DisposeWith(disposables);
 
-                Observable.Merge(
-                    Observable.Select(Save.ThrownExceptions, ex => (("Could not save changes", ex.Message))),
-                    Cancel.ThrownExceptions.Select(ex => (("Could not reverse changes", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        Save.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
+                        Cancel.ThrownExceptions.Select(ex => (("Could not reverse changes", ex.Message))))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
         }
 
 

@@ -26,7 +26,7 @@ namespace MagnumOpus.Controls
                 this.Bind(ViewModel, vm => vm.HostName, v => v.HostName).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.IsChecked).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, x => !x ? "Start" : "Stop").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingToggleButton.Content, isPinging => !isPinging ? "Start" : "Stop").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.MostRecentPingResult, v => v.PingResultTextBlock.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsPinging, v => v.PingResultDetailsToggleButton.IsEnabled).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.IsShowingPingResultDetails, v => v.PingResultDetailsToggleButton.IsChecked).DisposeWith(d);
@@ -34,20 +34,20 @@ namespace MagnumOpus.Controls
                 this.OneWayBind(ViewModel, vm => vm.PingResults, v => v.PingResultDetailsListView.ItemsSource).DisposeWith(d);
 
                 ViewModel
-                    .WhenAnyValue(x => x.IsPinging)
-                    .Where(x => x)
+                    .WhenAnyValue(vm => vm.IsPinging)
+                    .Where(true)
                     .ToSignal()
                     .ObserveOnDispatcher()
                     .InvokeCommand(ViewModel.StartPing).DisposeWith(d);
                 ViewModel
-                    .WhenAnyValue(x => x.IsPinging)
-                    .Where(x => !x)
+                    .WhenAnyValue(vm => vm.IsPinging)
+                    .Where(false)
                     .ToSignal()
                     .ObserveOnDispatcher()
                     .InvokeCommand(ViewModel.StopPing).DisposeWith(d);
                 ViewModel
-                    .WhenAnyValue(x => x.HostName)
-                    .Where(x => x == null)
+                    .WhenAnyValue(vm => vm.HostName)
+                    .WhereNotNull()
                     .ToSignal()
                     .ObserveOnDispatcher()
                     .InvokeCommand(ViewModel.StopPing).DisposeWith(d);

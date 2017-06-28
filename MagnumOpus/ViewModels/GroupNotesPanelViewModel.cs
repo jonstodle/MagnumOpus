@@ -16,7 +16,7 @@ namespace MagnumOpus.ViewModels
 		{
 			EnableEditing = ReactiveCommand.Create<Unit, bool>(_ => { _notesBackup = _notes; return true; });
 
-			Save = ReactiveCommand.CreateFromObservable<Unit, bool>(_ => SaveImpl(_group, _notes).Select(x => false));
+			Save = ReactiveCommand.CreateFromObservable<Unit, bool>(_ => SaveImpl(_group, _notes).Select(__ => false));
 
 			Cancel = ReactiveCommand.Create<Unit, bool>(_ => { Notes = _notesBackup; return false; });
 
@@ -24,24 +24,24 @@ namespace MagnumOpus.ViewModels
 				EnableEditing,
 				Save,
 				Cancel)
-				.ToProperty(this, x => x.IsEditingEnabled);
+				.ToProperty(this, vm => vm.IsEditingEnabled);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
-                (this).WhenAnyValue(x => x.Group)
-                .WhereNotNull()
-                .Select(x => x.Notes?.Replace("\r", ""))
-                .Subscribe(x => Notes = x)
-                .DisposeWith(disposables);
+                this.WhenAnyValue(vm => vm.Group)
+                    .WhereNotNull()
+                    .Select(group => group.Notes?.Replace("\r", ""))
+                    .Subscribe(notes => Notes = notes)
+                    .DisposeWith(disposables);
 
                 Observable.Merge(
-(IObservable<Exception>)this.EnableEditing.ThrownExceptions,
-                    Save.ThrownExceptions,
-                    Cancel.ThrownExceptions)
+                        EnableEditing.ThrownExceptions,
+                        Save.ThrownExceptions,
+                        Cancel.ThrownExceptions)
                     .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
 		}
 
 

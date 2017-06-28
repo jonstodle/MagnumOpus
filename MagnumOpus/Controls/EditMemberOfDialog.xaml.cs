@@ -30,7 +30,7 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, x => x != null ? $"Edit {x.Name}'s MemberOf" : "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Principal, v => v.TitleTextBlock.Text, principal => principal != null ? $"Edit {principal.Name}'s MemberOf" : "").DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.SearchResults, v => v.SearchResultsListView.ItemsSource).DisposeWith(d);
@@ -40,7 +40,7 @@ namespace MagnumOpus.Controls
 
                 SearchQueryTextBox.Focus();
                 ViewModel
-                    .WhenAnyValue(x => x.Principal)
+                    .WhenAnyValue(vm => vm.Principal)
                     .WhereNotNull()
                     .SubscribeOnDispatcher()
                     .ToSignal()
@@ -49,12 +49,12 @@ namespace MagnumOpus.Controls
                 Observable.Merge(
                         SearchQueryTextBox.Events()
                             .KeyDown
-                            .Where(x => x.Key == Key.Enter)
+                            .Where(args => args.Key == Key.Enter)
                             .Select(_ => ViewModel.SearchQuery),
                         ViewModel
-                            .WhenAnyValue(x => x.SearchQuery)
+                            .WhenAnyValue(vm => vm.SearchQuery)
                             .Throttle(TimeSpan.FromSeconds(1)))
-                    .Where(x => x.HasValue(3))
+                    .Where(searchQuery => searchQuery.HasValue(3))
                     .DistinctUntilChanged()
                     .SubscribeOnDispatcher()
                     .ToSignal()

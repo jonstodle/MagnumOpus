@@ -21,7 +21,7 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, ipAddress => ipAddress ?? "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName).DisposeWith(d);
 

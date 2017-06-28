@@ -27,16 +27,16 @@ namespace MagnumOpus.Controls
                 this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.CNTextBlock.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer.Company, v => v.CompanyTextBlock.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer.OperatingSystem, v => v.OperatingSystemTextBlock.Text).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.Computer.ServicePack, v => v.OperatingSystemCSDTextBlock.Text, x => x.HasValue() ? $" {x}" : "").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Architecture, v => v.OperatingSystemArchitectureTextBlock.Text, x => x.HasValue() ? $" {x}" : "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer.ServicePack, v => v.OperatingSystemCSDTextBlock.Text, servicePack => servicePack.HasValue() ? $" {servicePack}" : "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Architecture, v => v.OperatingSystemArchitectureTextBlock.Text, architecture => architecture.HasValue() ? $" {architecture}" : "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingDetails, v => v.DetailsGrid.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer.OperatingSystem, v => v.DetailsOperatingSystemTextBlock.Text).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.Computer.ServicePack, v => v.DetailsOperatingSystemCSDTextBlock.Text, x => x.HasValue() ? $" {x}" : "").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Architecture, v => v.DetailsOperatingSystemArchitectureTextBlock.Text, x => x.HasValue() ? $" {x}" : "").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.LastBootTime, v => v.LastBootTextBlock.Text, x => x != null ? ((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy") : "Could not get last boot").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.InstallDate, v => v.InstallDateTextBlock.Text, x => x != null ? ((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy") : "Could not get last install").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.Computer.WhenCreated, v => v.ADCreateDateTextBlock.Text, x => x != null ? ((DateTime)x).ToString("HH:mm:ss dd.MM.yyyy") : "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer.ServicePack, v => v.DetailsOperatingSystemCSDTextBlock.Text, servicePack => servicePack.HasValue() ? $" {servicePack}" : "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.Architecture, v => v.DetailsOperatingSystemArchitectureTextBlock.Text, architecture => architecture.HasValue() ? $" {architecture}" : "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.LastBootTime, v => v.LastBootTextBlock.Text, bootTime => bootTime != null ? ((DateTime)bootTime).ToString("HH:mm:ss dd.MM.yyyy") : "Could not get last boot").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.OperatingSystemInfo.InstallDate, v => v.InstallDateTextBlock.Text, installDate => installDate != null ? ((DateTime)installDate).ToString("HH:mm:ss dd.MM.yyyy") : "Could not get last install").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer.WhenCreated, v => v.ADCreateDateTextBlock.Text, created => created != null ? ((DateTime)created).ToString("HH:mm:ss dd.MM.yyyy") : "").DisposeWith(d);
 
                 this.BindCommand(ViewModel, vm => vm.ToggleIsShowingDetails, v => v.OperatingSystemHyperlink).DisposeWith(d);
             });

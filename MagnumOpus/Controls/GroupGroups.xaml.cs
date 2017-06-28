@@ -59,11 +59,11 @@ namespace MagnumOpus.Controls
                 this.BindCommand(ViewModel, vm => vm.FindMember, v => v.OpenMembersMenuItem).DisposeWith(d);
 
                 ViewModel
-                .WhenAnyValue(x => x.IsShowingMemberOf)
-                .Where(x => x)
-                .ToSignal()
-                .ObserveOnDispatcher()
-                .InvokeCommand(ViewModel.GetAllGroups).DisposeWith(d);
+                    .WhenAnyValue(vm => vm.IsShowingMemberOf)
+                    .Where(true)
+                    .ToSignal()
+                    .ObserveOnDispatcher()
+                    .InvokeCommand(ViewModel.GetAllGroups).DisposeWith(d);
             });
         }
 

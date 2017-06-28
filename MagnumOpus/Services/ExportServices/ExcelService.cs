@@ -17,7 +17,7 @@ namespace MagnumOpus.Services.ExportServices
 
 		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<string> users, string path, IScheduler scheduler = null) => Observable.Start(() =>
 		{
-			SaveUsersToExcelFile(users.Select(x => ActiveDirectoryService.Current.SearchDirectory(x, ImmediateScheduler.Instance).Take(1).Wait()), path);
+			SaveUsersToExcelFile(users.Select(userIdentity => ActiveDirectoryService.Current.SearchDirectory(userIdentity, ImmediateScheduler.Instance).Take(1).Wait()), path);
 		}, scheduler ?? TaskPoolScheduler.Default);
 
 		public static IObservable<Unit> SaveUsersToExcelFile(IEnumerable<DirectoryEntry> users, string path, IScheduler scheduler = null) => Observable.Start(() =>
@@ -53,7 +53,7 @@ namespace MagnumOpus.Services.ExportServices
 
 		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<string> groups, string path, IScheduler scheduler = null) => Observable.Start(() =>
 		{
-			SaveGroupsToExcelFile(groups.Select(x => ActiveDirectoryService.Current.SearchDirectory(x, ImmediateScheduler.Instance).Take(1).Wait()), path);
+			SaveGroupsToExcelFile(groups.Select(userIdentity => ActiveDirectoryService.Current.SearchDirectory(userIdentity, ImmediateScheduler.Instance).Take(1).Wait()), path);
 		}, scheduler ?? TaskPoolScheduler.Default);
 
 		public static IObservable<Unit> SaveGroupsToExcelFile(IEnumerable<DirectoryEntry> groups, string path, IScheduler scheduler = null) => Observable.Start(() =>

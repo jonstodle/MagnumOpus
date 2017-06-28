@@ -22,16 +22,16 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, cn => cn ?? "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerManagement.Computer).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer).DisposeWith(d);
 
-                this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Computer.CN)).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SetComputer, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(vm => vm.Computer.CN)).DisposeWith(d);
                 this.Events().KeyDown
-                    .Where(x => x.Key == System.Windows.Input.Key.F5)
+                    .Where(args => args.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.Computer.CN)
                     .InvokeCommand(ViewModel.SetComputer).DisposeWith(d);
                 new List<Interaction<MessageInfo, int>>

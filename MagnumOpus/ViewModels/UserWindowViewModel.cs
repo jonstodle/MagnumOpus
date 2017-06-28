@@ -16,7 +16,7 @@ namespace MagnumOpus.ViewModels
 			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
 
             _user = SetUser
-                .ToProperty(this, x => x.User);
+                .ToProperty(this, vm => vm.User);
 
             this.WhenActivated(disposables =>
             {
@@ -50,7 +50,7 @@ namespace MagnumOpus.ViewModels
                 Observable.Return(t.Item2)
                     .Delay(TimeSpan.FromSeconds(1))
                     .ObserveOnDispatcher()
-                    .Subscribe(x => MessageBus.Current.SendMessage(x, ApplicationActionRequest.SetLocalProfileComputerName));
+                    .Subscribe(computerName => MessageBus.Current.SendMessage(computerName, ApplicationActionRequest.SetLocalProfileComputerName));
 			}
 
 			return Task.FromResult<object>(null);

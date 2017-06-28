@@ -5,15 +5,15 @@ namespace System.Reactive.Linq
 {
 	public static class SystemReactiveLinqExtensions
 	{
-		public static IObservable<T> WhereNotNull<T>(this IObservable<T> source) where T : class => source.Where(x => x != null);
+		public static IObservable<T> WhereNotNull<T>(this IObservable<T> source) where T : class => source.Where(value => value != null);
 
         public static IObservable<bool> Where(this IObservable<bool> source, bool desiredBool) => source.Where(value => value == desiredBool);
 
-		public static IObservable<bool> IsNotNull<T>(this IObservable<T> source) where T : class => source.Select(x => x != null);
+		public static IObservable<bool> IsNotNull<T>(this IObservable<T> source) where T : class => source.Select(value => value != null);
 
-		public static IObservable<bool> IsTrue(this IObservable<bool> source) => source.Select(x => x == true);
+		public static IObservable<bool> IsTrue(this IObservable<bool> source) => source.Select(value => value == true);
 
-		public static IObservable<bool> IsFalse(this IObservable<bool> source) => source.Select(x => x == false);
+		public static IObservable<bool> IsFalse(this IObservable<bool> source) => source.Select(value => value == false);
 
 		public static IObservable<Unit> ToSignal<T>(this IObservable<T> source) => source.Select(_ => Unit.Default);
 

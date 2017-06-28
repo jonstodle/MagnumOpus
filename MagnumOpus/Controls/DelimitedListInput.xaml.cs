@@ -23,8 +23,8 @@ namespace MagnumOpus.Controls
             SetValue(Grid.ColumnSpanProperty, _parent.ColumnDefinitions.Count > 0 ? _parent.ColumnDefinitions.Count : 1);
 
             Observable.FromEventPattern<TextChangedEventArgs>(ItemsTextBox, nameof(TextBox.TextChanged))
-                .Select(x => ItemsTextBox.Text.HasValue(3))
-                .Subscribe(x => OkButton.IsEnabled = x)
+                .Select(_ => ItemsTextBox.Text.HasValue(3))
+                .Subscribe(hasValue => OkButton.IsEnabled = hasValue)
                 .AddTo(_subscribtions);
 
             Observable.FromEventPattern(OkButton, nameof(Button.Click))

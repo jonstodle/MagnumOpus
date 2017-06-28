@@ -23,8 +23,8 @@ namespace MagnumOpus.Controls
             {
                 this.Bind(ViewModel, vm => vm.IPAddress, v => v.IPAddress).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, x => $"IP {x}").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, x => $"({x})").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, ipAddress => $"IP {ipAddress}").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, hostName => $"({hostName})").DisposeWith(d);
 
                 this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton).DisposeWith(d);

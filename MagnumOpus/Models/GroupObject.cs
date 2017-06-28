@@ -17,10 +17,10 @@ namespace MagnumOpus.Models
 		public string Notes => _directoryEntry.Properties.Get<string>("info");
 
         public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))
-            .SelectMany(x =>
+            .SelectMany(username =>
             {
-                if (x == null) return Observable.Return<UserObject>(null);
-                else return ActiveDirectoryService.Current.GetUser(x);
+                if (username == null) return Observable.Return<UserObject>(null);
+                else return ActiveDirectoryService.Current.GetUser(username);
             })
             .CatchAndReturn(null)
             .Take(1);

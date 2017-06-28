@@ -26,7 +26,7 @@ namespace MagnumOpus.ViewModels
 
             ResetLocalProfile = ReactiveCommand.CreateFromObservable(
                 () => ResetLocalProfileImpl(_user, _computerName),
-                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue(6)));
+                this.WhenAnyValue(vm => vm.ComputerName, computerName => computerName.HasValue(6)));
 
             SearchForProfiles = ReactiveCommand.CreateFromObservable(
                 () =>
@@ -34,11 +34,11 @@ namespace MagnumOpus.ViewModels
                     _profiles.Clear();
                     return SearchForProfilesImpl(_user, _computerName);
                 },
-                this.WhenAnyValue(x => x.ComputerName, x => x.HasValue()));
+                this.WhenAnyValue(vm => vm.ComputerName, computerName => computerName.HasValue()));
 
             RestoreProfile = ReactiveCommand.CreateFromObservable(
                 () => RestoreProfileImpl(NewProfileDirectory, _profiles[SelectedProfileIndex]),
-                this.WhenAnyValue(x => x.NewProfileDirectory, y => y.SelectedProfileIndex, (x, y) => x != null && y >= 0));
+                this.WhenAnyValue(vm => vm.NewProfileDirectory, vm => vm.SelectedProfileIndex, (profileDirectory, profileIndex) => profileDirectory != null && profileIndex >= 0));
 
             ResetCitrixProfile = ReactiveCommand.CreateFromObservable(() => ResetCitrixProfileImpl(_user));
 
@@ -48,7 +48,7 @@ namespace MagnumOpus.ViewModels
                     var profileDirectory = new DirectoryInfo(_user.ProfilePath);
                     Process.Start(profileDirectory.Parent.GetDirectories($"{profileDirectory.Name}*").LastOrDefault().FullName);
                 },
-                this.WhenAnyValue(x => x.GlobalProfilePath, x => x.HasValue()));
+                this.WhenAnyValue(vm => vm.GlobalProfilePath, profilePath => profilePath.HasValue()));
 
             SaveGlobalProfilePath = ReactiveCommand.CreateFromObservable(
                 () => Observable.Start(() =>
@@ -63,7 +63,7 @@ namespace MagnumOpus.ViewModels
 
             OpenHomeFolder = ReactiveCommand.Create(
                 () => { Process.Start(_user.HomeDirectory); },
-                this.WhenAnyValue(x => x.HomeFolderPath, x => x.HasValue()));
+                this.WhenAnyValue(vm => vm.HomeFolderPath, folderPath => folderPath.HasValue()));
 
             SaveHomeFolderPath = ReactiveCommand.CreateFromObservable(
                 () => Observable.Start(() =>
@@ -77,43 +77,43 @@ namespace MagnumOpus.ViewModels
             CancelHomeFolderPath = ReactiveCommand.Create(() => { HomeFolderPath = _user.HomeDirectory; });
 
             _isExecutingResetGlobalProfile = ResetGlobalProfile.IsExecuting
-                .ToProperty(this, x => x.IsExecutingResetGlobalProfile);
+                .ToProperty(this, vm => vm.IsExecutingResetGlobalProfile);
 
             _isExecutingResetLocalProfile = ResetLocalProfile.IsExecuting
-                .ToProperty(this, x => x.IsExecutingResetLocalProfile);
+                .ToProperty(this, vm => vm.IsExecutingResetLocalProfile);
 
             _isExecutingRestoreProfile = RestoreProfile.IsExecuting
-                .ToProperty(this, x => x.IsExecutingRestoreProfile);
+                .ToProperty(this, vm => vm.IsExecutingRestoreProfile);
 
             _hasGlobalProfilePathChanged = Observable.CombineLatest(
-                this.WhenAnyValue(x => x.GlobalProfilePath),
-                this.WhenAnyValue(y => y.User).WhereNotNull(),
-                (x, y) => x != y.ProfilePath)
-                .ToProperty(this, x => x.HasGlobalProfilePathChanged);
+                this.WhenAnyValue(vm => vm.GlobalProfilePath),
+                this.WhenAnyValue(vm => vm.User).WhereNotNull(),
+                (profilePath, user) => profilePath != user.ProfilePath)
+                .ToProperty(this, vm => vm.HasGlobalProfilePathChanged);
 
             _hasHomeFolderPathChanged = Observable.CombineLatest(
-                this.WhenAnyValue(x => x.HomeFolderPath),
-                this.WhenAnyValue(y => y.User).WhereNotNull(),
-                (x, y) => x != y.HomeDirectory)
-                .ToProperty(this, x => x.HasHomeFolderPathChanged);
+                this.WhenAnyValue(vm => vm.HomeFolderPath),
+                this.WhenAnyValue(vm => vm.User).WhereNotNull(),
+                (folderPath, user) => folderPath != user.HomeDirectory)
+                .ToProperty(this, vm => vm.HasHomeFolderPathChanged);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
-                var userChanged = (this).WhenAnyValue(x => x.User)
+                var userChanged = this.WhenAnyValue(vm => vm.User)
                     .WhereNotNull()
-                    .Subscribe(x =>
+                    .Subscribe(user =>
                     {
-                        GlobalProfilePath = x.ProfilePath;
-                        HomeFolderPath = x.HomeDirectory;
+                        GlobalProfilePath = user.ProfilePath;
+                        HomeFolderPath = user.HomeDirectory;
                     })
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                    Observable.Select<Unit, string>(this.ResetGlobalProfile, (Func<Unit, string>)(_ => (string)"Global profile reset")),
-                    ResetLocalProfile.Select(_ => "Local profile reset"),
-                    RestoreProfile.Select(_ => "Profile restored"),
-                    ResetCitrixProfile.Select(_ => "Citrix profile reset"))
-                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Success, x, "Success")))
+                        ResetGlobalProfile.Select(_ => (string)"Global profile reset"),
+                        ResetLocalProfile.Select(_ => "Local profile reset"),
+                        RestoreProfile.Select(_ => "Profile restored"),
+                        ResetCitrixProfile.Select(_ => "Citrix profile reset"))
+                    .SelectMany(message => _messages.Handle(new MessageInfo(MessageType.Success, message, "Success")))
                     .Subscribe()
                     .DisposeWith(disposables);
 
@@ -126,40 +126,40 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 MessageBus.Current
-                .Listen<string>(ApplicationActionRequest.SetLocalProfileComputerName)
-                .Subscribe(x => ComputerName = x)
-                .DisposeWith(disposables);
+                    .Listen<string>(ApplicationActionRequest.SetLocalProfileComputerName)
+                    .Subscribe(computerName => ComputerName = computerName)
+                    .DisposeWith(disposables);
 
                 Observable.Merge(
-                    (this).WhenAnyValue(x => x.IsShowingResetProfile).Where(x => x).Select(_ => Tuple.Create(true, false, false, false)),
-                    (this).WhenAnyValue(x => x.IsShowingRestoreProfile).Where(x => x).Select(_ => Tuple.Create(false, true, false, false)),
-                    (this).WhenAnyValue(x => x.IsShowingGlobalProfile).Where(x => x).Select(_ => Tuple.Create(false, false, true, false)),
-                    (this).WhenAnyValue(x => x.IsShowingHomeFolder).Where(x => x).Select(_ => Tuple.Create(false, false, false, true)))
-                    .Subscribe((Tuple<bool, bool, bool, bool> x) =>
+                    this.WhenAnyValue(vm => vm.IsShowingResetProfile).Where(true).Select(_ => (true, false, false, false)),
+                    this.WhenAnyValue(vm => vm.IsShowingRestoreProfile).Where(true).Select(_ => (false, true, false, false)),
+                    this.WhenAnyValue(vm => vm.IsShowingGlobalProfile).Where(true).Select(_ => (false, false, true, false)),
+                    this.WhenAnyValue(vm => vm.IsShowingHomeFolder).Where(true).Select(_ => (false, false, false, true)))
+                    .Subscribe(showSubView =>
                     {
-                        IsShowingResetProfile = x.Item1;
-                        IsShowingRestoreProfile = x.Item2;
-                        IsShowingGlobalProfile = x.Item3;
-                        IsShowingHomeFolder = x.Item4;
+                        IsShowingResetProfile = showSubView.Item1;
+                        IsShowingRestoreProfile = showSubView.Item2;
+                        IsShowingGlobalProfile = showSubView.Item3;
+                        IsShowingHomeFolder = showSubView.Item4;
                     })
                     .DisposeWith(disposables);
 
-                Observable.Merge(
-                    Observable.Select<Exception, (string, string)>(this.ResetGlobalProfile.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not reset global profile", (string)ex.Message)))),
-                    ResetLocalProfile.ThrownExceptions.Select(ex => (("Could not reset local profile", ex.Message))),
-                    SearchForProfiles.ThrownExceptions.Select(ex => (("Could not complete search", ex.Message))),
-                    RestoreProfile.ThrownExceptions.Select(ex => (("Could not restore profile", ex.Message))),
-                    ResetCitrixProfile.ThrownExceptions.Select(ex => (("Could not reset Citrix profile", ex.Message))),
-                    OpenGlobalProfile.ThrownExceptions.Select(ex => (("Could not open global profile", ex.Message))),
-                    SaveGlobalProfilePath.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
-                    CancelGlobalProfilePath.ThrownExceptions.Select(ex => (("Could not reverse changes", ex.Message))),
-                    OpenHomeFolder.ThrownExceptions.Select(ex => (("Could not home folder", ex.Message))),
-                    SaveHomeFolderPath.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
-                    CancelHomeFolderPath.ThrownExceptions.Select(ex => (("Could not reverse changes", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        ResetGlobalProfile.ThrownExceptions.Select(ex => ("Could not reset global profile", ex.Message)),
+                        ResetLocalProfile.ThrownExceptions.Select(ex => ("Could not reset local profile", ex.Message)),
+                        SearchForProfiles.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
+                        RestoreProfile.ThrownExceptions.Select(ex => ("Could not restore profile", ex.Message)),
+                        ResetCitrixProfile.ThrownExceptions.Select(ex => ("Could not reset Citrix profile", ex.Message)),
+                        OpenGlobalProfile.ThrownExceptions.Select(ex => ("Could not open global profile", ex.Message)),
+                        SaveGlobalProfilePath.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
+                        CancelGlobalProfilePath.ThrownExceptions.Select(ex => ("Could not reverse changes", ex.Message)),
+                        OpenHomeFolder.ThrownExceptions.Select(ex => ("Could not home folder", ex.Message)),
+                        SaveHomeFolderPath.ThrownExceptions.Select(ex => ("Could not save changes", ex.Message)),
+                        CancelHomeFolderPath.ThrownExceptions.Select(ex => ("Could not reverse changes", ex.Message)))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
         }
 
 
@@ -213,7 +213,7 @@ namespace MagnumOpus.ViewModels
         {
             if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
 
-            if (ActiveDirectoryService.Current.GetComputer(cpr).SelectMany(x => x.GetLoggedInUsers()).ToEnumerable().Select(x => x.Username.ToLowerInvariant()).Contains(usr.Principal.SamAccountName.ToLowerInvariant())) throw new Exception("User is logged in");
+            if (ActiveDirectoryService.Current.GetComputer(cpr).SelectMany(computer => computer.GetLoggedInUsers()).ToEnumerable().Select(userInfo => userInfo.Username.ToLowerInvariant()).Contains(usr.Principal.SamAccountName.ToLowerInvariant())) throw new Exception("User is logged in");
 
             var profileDir = GetProfileDirectory(cpr);
             foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);
@@ -274,7 +274,7 @@ namespace MagnumOpus.ViewModels
             var profilesDirectory = new DirectoryInfo($@"\\{cpr}\C$\Users");
             var profileDirectories = profilesDirectory.GetDirectories($"*{usr.Principal.SamAccountName}*").ToList();
 
-            var profileDir = profileDirectories.FirstOrDefault(x => x.Name.ToLowerInvariant() == usr.Principal.SamAccountName.ToLowerInvariant());
+            var profileDir = profileDirectories.FirstOrDefault(directoryInfo => directoryInfo.Name.ToLowerInvariant() == usr.Principal.SamAccountName.ToLowerInvariant());
             if (profileDir == null) throw new Exception("No local profile folder");
             profileDirectories.Remove(profileDir);
 
@@ -358,12 +358,12 @@ namespace MagnumOpus.ViewModels
 
             Directory.CreateDirectory(destination);
 
-            foreach (var file in Directory.GetFiles(source).Select(x => new FileInfo(x)))
+            foreach (var file in Directory.GetFiles(source).Select(filePath => new FileInfo(filePath)))
             {
                 File.Copy(file.FullName, Path.Combine(destination, file.Name), true);
             }
 
-            foreach (var directory in Directory.GetDirectories(source).Select(x => new DirectoryInfo(x)))
+            foreach (var directory in Directory.GetDirectories(source).Select(directoryPath => new DirectoryInfo(directoryPath)))
             {
                 CopyFilesAndDirectories(directory.FullName, Path.Combine(destination, directory.Name));
             }

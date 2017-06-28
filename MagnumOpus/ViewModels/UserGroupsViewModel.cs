@@ -44,22 +44,22 @@ namespace MagnumOpus.ViewModels
                 {
                     AllGroups.Clear();
                     return User.Principal.GetAllGroups(TaskPoolScheduler.Default)
-                            .TakeUntil(this.WhenAnyValue(x => x.IsShowingAllGroups).Where(x => !x));
+                            .TakeUntil(this.WhenAnyValue(vm => vm.IsShowingAllGroups).Where(false));
                 },
-                this.WhenAnyValue(x => x.IsShowingAllGroups));
+                this.WhenAnyValue(vm => vm.IsShowingAllGroups));
             GetAllGroups
                 .ObserveOnDispatcher()
-                .Select(x =>
+                .Select(group =>
                 {
-                    var cn = x.Properties.Get<string>("cn");
-                    x.Dispose();
+                    var cn = group.Properties.Get<string>("cn");
+                    group.Dispose();
                     return cn;
                 })
-                .Subscribe(x => AllGroups.Add(x));
+                .Subscribe(groupName => AllGroups.Add(groupName));
 
             _isLoadingGroups = GetAllGroups
                 .IsExecuting
-                .ToProperty(this, x => x.IsLoadingGroups);
+                .ToProperty(this, vm => vm.IsLoadingGroups);
 
             FindDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup));
 
@@ -68,8 +68,8 @@ namespace MagnumOpus.ViewModels
             this.WhenActivated(disposables =>
             {
                 this
-                    .WhenAnyValue(x => x.GroupFilter, y => y.UseFuzzy)
-                    .Subscribe((Tuple<string, bool> _) => AllGroupsCollectionView?.Refresh())
+                    .WhenAnyValue(vm => vm.GroupFilter, vm => vm.UseFuzzy)
+                    .Subscribe(_ => AllGroupsCollectionView?.Refresh())
                     .DisposeWith(disposables);
 
                 GetAllGroups
@@ -79,35 +79,35 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                        this.WhenAnyValue(x => x.User).WhereNotNull(),
-                        Observable.Select(OpenEditMemberOf, _ => User))
+                        this.WhenAnyValue(vm => vm.User).WhereNotNull(),
+                        OpenEditMemberOf.Select(_ => User))
                     .Throttle(TimeSpan.FromSeconds(1), RxApp.MainThreadScheduler)
                     .Do(_ => _directGroups.Clear())
-                    .SelectMany(x => GetDirectGroups(x.Principal.SamAccountName, TaskPoolScheduler.Default))
-                    .Select(x => x.Properties.Get<string>("cn"))
+                    .SelectMany(user => GetDirectGroups(user.Principal.SamAccountName, TaskPoolScheduler.Default))
+                    .Select(group => group.Properties.Get<string>("cn"))
                     .ObserveOnDispatcher()
-                    .Subscribe(x => _directGroups.Add(x))
+                    .Subscribe(groupCn => _directGroups.Add(groupCn))
                     .DisposeWith(disposables);
 
                 this
-                    .WhenAnyValue(x => x.IsShowingDirectGroups)
-                    .Where(x => x)
+                    .WhenAnyValue(vm => vm.IsShowingDirectGroups)
+                    .Where(true)
                     .Subscribe(_ => IsShowingAllGroups = false)
                     .DisposeWith(disposables);
 
                 this
-                    .WhenAnyValue(x => x.IsShowingAllGroups)
-                    .Where(x => x)
+                    .WhenAnyValue(vm => vm.IsShowingAllGroups)
+                    .Where(true)
                     .Subscribe(_ => IsShowingDirectGroups = false)
                     .DisposeWith(disposables);
 
-                Observable.Merge(
-                        OpenEditMemberOf.ThrownExceptions.Select(ex => (("Could not open dialog", ex.Message))),
-                        SaveAllGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
-                        SaveDirectGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
-                        FindDirectGroup.ThrownExceptions.Select(ex => (("Could not open group", ex.Message))),
-                        FindAllGroup.ThrownExceptions.Select(ex => (("Could not open group", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        OpenEditMemberOf.ThrownExceptions.Select(ex => ("Could not open dialog", ex.Message)),
+                        SaveAllGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
+                        SaveDirectGroups.ThrownExceptions.Select(ex => ("Could not save groups", ex.Message)),
+                        FindDirectGroup.ThrownExceptions.Select(ex => ("Could not open group", ex.Message)),
+                        FindAllGroup.ThrownExceptions.Select(ex => ("Could not open group", ex.Message)))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });
@@ -122,7 +122,7 @@ namespace MagnumOpus.ViewModels
         public ReactiveCommand<Unit, Unit> FindDirectGroup { get; private set; }
         public ReactiveCommand<Unit, Unit> FindAllGroup { get; private set; }
         public ReactiveList<string> AllGroups => _allGroups;
-        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
         public ListCollectionView AllGroupsCollectionView => _allGroupsCollectionView;
         public bool IsLoadingGroups => _isLoadingGroups.Value;
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
@@ -136,8 +136,8 @@ namespace MagnumOpus.ViewModels
 
 
         private IObservable<DirectoryEntry> GetDirectGroups(string identity, IScheduler scheduler = null) => ActiveDirectoryService.Current.GetUser(identity, scheduler)
-            .SelectMany(x => x.Principal.GetGroups().ToObservable())
-            .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
+            .SelectMany(user => user.Principal.GetGroups().ToObservable())
+            .Select(group => group.GetUnderlyingObject() as DirectoryEntry);
 
         bool TextFilter(object item)
         {
@@ -164,7 +164,7 @@ namespace MagnumOpus.ViewModels
             }
             else
             {
-                return GroupFilter.Split(' ').All(x => itm.Contains(x.ToLowerInvariant()));
+                return GroupFilter.Split(' ').All(word => itm.Contains(word.ToLowerInvariant()));
             }
         }
 

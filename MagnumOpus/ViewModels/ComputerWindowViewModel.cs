@@ -16,7 +16,7 @@ namespace MagnumOpus.ViewModels
 			SetComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
 
             _computer = SetComputer
-				.ToProperty(this, x => x.Computer);
+				.ToProperty(this, vm => vm.Computer);
 
             this.WhenActivated(disposables =>
             {

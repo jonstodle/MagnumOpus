@@ -24,12 +24,12 @@ namespace MagnumOpus.ViewModels
 
             Search = ReactiveCommand.Create(() => _searchQuery.IsIPAddress()
                 ? Observable.FromAsync(() => NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
-                : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(x => new Models.DirectoryEntryInfo(x)));
+                : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(directoryEntry => new DirectoryEntryInfo(directoryEntry)));
             Search
                 .Do(_ => _searchResults.Clear())
                 .Switch()
                 .ObserveOnDispatcher()
-                .Subscribe(x => _searchResults.Add(x));
+                .Subscribe(directoryEntryInfo => _searchResults.Add(directoryEntryInfo));
 
             Paste = ReactiveCommand.Create(() => { SearchQuery = Clipboard.GetText().Trim().ToUpperInvariant(); });
 
@@ -42,30 +42,30 @@ namespace MagnumOpus.ViewModels
 
                     if (!_history.Contains(_selectedSearchResult.CN)) _history.Insert(0, _selectedSearchResult.CN);
                 },
-                this.WhenAnyValue(x => x.SelectedSearchResult).Select(x => x != null));
+                this.WhenAnyValue(vm => vm.SelectedSearchResult).IsNotNull());
 
             OpenSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
 
             _isNoResults = Search
-                .Select(x => Observable.Concat(
+                .Select(searchResults => Observable.Concat(
                     Observable.Return(false),
-                    x.Aggregate(0, (acc, curr) => acc + 1).Select(y => y == 0)))
+                    searchResults.Aggregate(0, (acc, curr) => acc + 1).Select(resultCount => resultCount == 0)))
                 .Switch()
                 .ObserveOnDispatcher()
-                .ToProperty(this, x => x.IsNoResults);
+                .ToProperty(this, vm => vm.IsNoResults);
 
-            Observable.Merge(
-                Search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
-                Paste.ThrownExceptions.Select(ex => ("Could not not paste text", ex.Message)),
-                Open.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
-                OpenSettings.ThrownExceptions.Select(ex => ("Could not open settings", ex.Message)))
-                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+            Observable.Merge<(string Title, string Message)>(
+                    Search.ThrownExceptions.Select(ex => ("Could not complete search", ex.Message)),
+                    Paste.ThrownExceptions.Select(ex => ("Could not not paste text", ex.Message)),
+                    Open.ThrownExceptions.Select(ex => ("Could not open AD object", ex.Message)),
+                    OpenSettings.ThrownExceptions.Select(ex => ("Could not open settings", ex.Message)))
+                .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                 .Subscribe();
 
             StateService.Get(nameof(_history), Enumerable.Empty<string>())
                 .SubscribeOn(TaskPoolScheduler.Default)
                 .ObserveOnDispatcher()
-                .Subscribe(x => { using (_history.SuppressChangeNotifications()) _history.AddRange(x); });
+                .Subscribe(historyList => { using (_history.SuppressChangeNotifications()) _history.AddRange(historyList); });
 
             _history.CountChanged
                 .Throttle(TimeSpan.FromSeconds(1))
@@ -81,7 +81,7 @@ namespace MagnumOpus.ViewModels
         public ReactiveCommand<Unit, Unit> Paste { get; private set; }
         public ReactiveCommand<Unit, Unit> Open { get; private set; }
         public ReactiveCommand<Unit, Unit> OpenSettings { get; private set; }
-        public IReactiveDerivedList<DirectoryEntryInfo> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
+        public IReactiveDerivedList<DirectoryEntryInfo> SearchResults => _searchResults.CreateDerivedCollection(directoryEntryInfo => directoryEntryInfo, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public ReactiveList<string> History => _history;
         public bool IsNoResults => _isNoResults.Value;
         public string Domain => ActiveDirectoryService.Current.CurrentDomain;

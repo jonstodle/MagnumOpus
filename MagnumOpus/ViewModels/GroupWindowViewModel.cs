@@ -16,16 +16,15 @@ namespace MagnumOpus.ViewModels
 			SetGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
 
             _group = SetGroup
-                .ToProperty(this, x => x.Group);
+                .ToProperty(this, vm => vm.Group);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
-                Observable.SelectMany<Exception, int>(this.SetGroup
-                    .ThrownExceptions
-, (Func<Exception, IObservable<int>>)(ex => (IObservable<int>)_messages.Handle((MessageInfo)new MessageInfo((MessageType)MessageType.Error, (string)ex.Message, (string)"Could not load group"))))
+                SetGroup.ThrownExceptions
+                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not load group")))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
 		}
 
 

@@ -34,8 +34,8 @@ namespace MagnumOpus.Controls
                 this.Bind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileToggleButton.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingResetProfile, v => v.ResetProfileGrid.Visibility).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.ComputerName, v => v.ResetProfileComputerNameTextBox.Text).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsExecutingResetGlobalProfile, v => v.ResetGlobalProfileButton.Content, x => x ? "Resetting global profile..." : "Reset global profile").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsExecutingResetLocalProfile, v => v.ResetLocalProfileButton.Content, x => x ? "Resetting local profile..." : "Reset local profile").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsExecutingResetGlobalProfile, v => v.ResetGlobalProfileButton.Content, isResettingProfile => isResettingProfile ? "Resetting global profile..." : "Reset global profile").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsExecutingResetLocalProfile, v => v.ResetLocalProfileButton.Content, isResettingProfile => isResettingProfile ? "Resetting local profile..." : "Reset local profile").DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileToggleButton.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingRestoreProfile, v => v.RestoreProfileStackPanel.Visibility).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.ComputerName, v => v.RestoreProfileComputerNameTextBox.Text).DisposeWith(d);
@@ -69,12 +69,12 @@ namespace MagnumOpus.Controls
                 this.BindCommand(ViewModel, vm => vm.CancelHomeFolderPath, v => v.HomeFolderPathCancelButton).DisposeWith(d);
                 ResetProfileComputerNameTextBox.Events()
                     .KeyDown
-                    .Where(x => x.Key == Key.Enter)
+                    .Where(args => args.Key == Key.Enter)
                     .ToSignal()
                     .InvokeCommand(ViewModel.ResetLocalProfile).DisposeWith(d);
                 RestoreProfileComputerNameTextBox.Events()
                     .KeyDown
-                    .Where(x => x.Key == Key.Enter)
+                    .Where(args => args.Key == Key.Enter)
                     .ToSignal()
                     .InvokeCommand(ViewModel.SearchForProfiles).DisposeWith(d);
             });

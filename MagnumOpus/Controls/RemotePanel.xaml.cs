@@ -28,8 +28,8 @@ namespace MagnumOpus.Controls
 
                 this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, x => x != null).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, x => x ?? true ? "Disable UAC" : "Enable UAC").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.IsEnabled, isUacOn => isUacOn != null).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, isUacOn => isUacOn ?? true ? "Disable UAC" : "Enable UAC").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem).DisposeWith(d);
 

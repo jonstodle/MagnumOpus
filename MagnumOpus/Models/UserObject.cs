@@ -25,19 +25,19 @@ namespace MagnumOpus.Models
 		public string HomeDirectory => _directoryEntry.Properties.Get<string>("homedirectory") ?? "";
 
         public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))
-            .SelectMany(x =>
+            .SelectMany(username =>
             {
-                if (x == null) return Observable.Empty<UserObject>();
-                else return ActiveDirectoryService.Current.GetUser(x);
+                if (username == null) return Observable.Empty<UserObject>();
+                else return ActiveDirectoryService.Current.GetUser(username);
             })
             .Catch(Observable.Empty<UserObject>())
             .Take(1);
 
         public IObservable<UserObject> GetDirectReports() => _directoryEntry.Properties["directreports"].ToEnumerable<string>().ToObservable()
-            .SelectMany(x =>
+            .SelectMany(username =>
             {
-                if (x == null) return Observable.Empty<UserObject>();
-                else return ActiveDirectoryService.Current.GetUser(x).Catch(Observable.Empty<UserObject>());
+                if (username == null) return Observable.Empty<UserObject>();
+                else return ActiveDirectoryService.Current.GetUser(username).Catch(Observable.Empty<UserObject>());
             });
     }
 }

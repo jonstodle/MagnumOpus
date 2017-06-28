@@ -81,7 +81,7 @@ namespace MagnumOpus.Controls
             var tag = (sender as Button).Tag as Guid?;
             if (tag == null) return;
 
-            var dbi = _buttons.First(x => x.Id == tag);
+            var dbi = _buttons.First(dialogButtonInfo => dialogButtonInfo.Id == tag);
 
             if (_resultSubject != null)
             {

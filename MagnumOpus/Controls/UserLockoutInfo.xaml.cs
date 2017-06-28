@@ -17,7 +17,7 @@ namespace MagnumOpus.Controls
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, x => $"Lockout info for {x}").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Name, v => v.TitleTextBlock.Text, name => $"Lockout info for {name}").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.LockoutInfos, v => v.LockoutInfosListView.ItemsSource).DisposeWith(d);
 
                 this.BindCommand(ViewModel, vm => vm.GetLockoutInfo, v => v.RefreshButton).DisposeWith(d);

@@ -53,11 +53,11 @@ namespace MagnumOpus.Controls
                 this.BindCommand(ViewModel, vm => vm.SaveAllGroups, v => v.SaveAllGroupsButton).DisposeWith(d);
 
                 ViewModel
-                .WhenAnyValue(x => x.IsShowingAllGroups)
-                .Where(x => x)
-                .ToSignal()
-                .ObserveOnDispatcher()
-                .InvokeCommand(ViewModel.GetAllGroups).DisposeWith(d);
+                    .WhenAnyValue(vm => vm.IsShowingAllGroups)
+                    .Where(true)
+                    .ToSignal()
+                    .ObserveOnDispatcher()
+                    .InvokeCommand(ViewModel.GetAllGroups).DisposeWith(d);
             });
         }
 

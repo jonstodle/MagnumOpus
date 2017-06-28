@@ -71,9 +71,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
         {
             GetUser(identity).Wait().Principal.SetPassword(password);
 
-            DoActionOnAllDCs(x =>
+            DoActionOnAllDCs(domainController =>
             {
-                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, domainController.Name), identity);
                 if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
                 if (expirePassword) user.ExpirePasswordNow();
@@ -85,9 +85,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
         public IObservable<Unit> ExpirePassword(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
-            DoActionOnAllDCs(x =>
+            DoActionOnAllDCs(domainController =>
             {
-                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, domainController.Name), identity);
                 if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
                 user.ExpirePasswordNow();
@@ -98,9 +98,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
         public IObservable<Unit> UnlockUser(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
-            DoActionOnAllDCs(x =>
+            DoActionOnAllDCs(domainController =>
             {
-                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+                var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, domainController.Name), identity);
                 if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
                 user.UnlockAccount();
@@ -111,9 +111,9 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 
 		public IObservable<Unit> SetEnabled(string identity, bool enabled, IScheduler scheduler = null) => Observable.Start(() =>
 		{
-			DoActionOnAllDCs(x =>
+			DoActionOnAllDCs(domainController =>
 			{
-				var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+				var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, domainController.Name), identity);
 				if (user == null) throw new ArgumentException(UserNotFoundMessage, nameof(identity));
 
 				user.Enabled = enabled;
@@ -123,15 +123,15 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
 			}).Wait();
 		}, scheduler ?? TaskPoolScheduler.Default);
 
-		public IObservable<LockoutInfo> GetLockoutInfo(string identity, IScheduler scheduler = null) => DoActionOnAllDCs(x =>
+		public IObservable<LockoutInfo> GetLockoutInfo(string identity, IScheduler scheduler = null) => DoActionOnAllDCs(domainController =>
 		{
-			var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, x.Name), identity);
+			var user = UserPrincipal.FindByIdentity(new PrincipalContext(ContextType.Domain, domainController.Name), identity);
 
-			if (user == null) return new LockoutInfo { DomainControllerName = x.Name };
+			if (user == null) return new LockoutInfo { DomainControllerName = domainController.Name };
 
 			return new LockoutInfo
 			{
-				DomainControllerName = x.Name.Split('.').FirstOrDefault(),
+				DomainControllerName = domainController.Name.Split('.').FirstOrDefault(),
 				UserState = user.IsAccountLockedOut(),
 				BadPasswordCount = user.BadLogonCount,
 				LastBadPassword = user.LastBadPasswordAttempt,

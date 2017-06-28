@@ -21,32 +21,32 @@ namespace MagnumOpus.ViewModels
 
             OpenDirectReport = ReactiveCommand.CreateFromTask(
                 () => NavigationService.ShowPrincipalWindow(_selectedDirectReport.Principal),
-                this.WhenAnyValue(x => x.SelectedDirectReport).Select(x => x != null));
+                this.WhenAnyValue(vm => vm.SelectedDirectReport).IsNotNull());
 
-            var newUser = this.WhenAnyValue(x => x.User)
+            var newUser = this.WhenAnyValue(vm => vm.User)
                 .WhereNotNull()
                 .Publish()
                 .RefCount();
 
 			_isAccountLocked = newUser
-                .Select(x => x.Principal.IsAccountLockedOut())
-                .ToProperty(this, x => x.IsAccountLocked);
+                .Select(user => user.Principal.IsAccountLockedOut())
+                .ToProperty(this, vm => vm.IsAccountLocked);
 
             _passwordAge = newUser
-                .Where(x => x.Principal.LastPasswordSet != null)
-                .Select(x => DateTime.Now - x.Principal.LastPasswordSet.Value.ToLocalTime())
-                .ToProperty(this, x => x.PasswordAge);
+                .Where(user => user.Principal.LastPasswordSet != null)
+                .Select(user => DateTime.Now - user.Principal.LastPasswordSet.Value.ToLocalTime())
+                .ToProperty(this, vm => vm.PasswordAge);
 
             _passwordStatus = Observable.CombineLatest(
-                newUser,
-                this.WhenAnyValue(x => x.PasswordAge),
-                (nu, pa) =>
-                {
-                    if (nu.Principal.PasswordNeverExpires) return "Password never expires";
-                    else if ((nu.Principal.LastPasswordSet ?? DateTime.MinValue) == DateTime.MinValue) return "Password must change";
-                    else return $"Password age: {pa.Days}d {pa.Hours}h {pa.Minutes}m";
-                })
-                .ToProperty(this, x => x.PasswordStatus);
+                    newUser,
+                    this.WhenAnyValue(vm => vm.PasswordAge),
+                    (user, passwordAge) =>
+                    {
+                        if (user.Principal.PasswordNeverExpires) return "Password never expires";
+                        else if ((user.Principal.LastPasswordSet ?? DateTime.MinValue) == DateTime.MinValue) return "Password must change";
+                        else return $"Password age: {passwordAge.Days}d {passwordAge.Hours}h {passwordAge.Minutes}m";
+                    })
+                .ToProperty(this, vm => vm.PasswordStatus);
 
             _passwordMaxAge = newUser
                 .SelectMany(user => user.Principal.PasswordNeverExpires || (user.Principal.LastPasswordSet ?? DateTime.MinValue) == DateTime.MinValue
@@ -59,29 +59,29 @@ namespace MagnumOpus.ViewModels
                 .ToProperty(this, x => x.IsShowingOrganizationDetails);
 
             _manager = newUser
-                .SelectMany(x => x.GetManager())
+                .SelectMany(user => user.GetManager())
                 .ObserveOnDispatcher()
-                .ToProperty(this, x => x.Manager);
+                .ToProperty(this, vm => vm.Manager);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
                 Observable.Zip(
-                newUser,
-                (this).WhenAnyValue(x => x.IsShowingOrganizationDetails).Where(x => x),
-                (usr, _) => usr.GetDirectReports())
-                .Do((IObservable<UserObject> _) => _directReports.Clear())
-                .Switch()
-                .ObserveOnDispatcher()
-                .Subscribe(x => _directReports.Add(x))
-                .DisposeWith(disposables);
+                        newUser,
+                        this.WhenAnyValue(vm => vm.IsShowingOrganizationDetails).Where(true),
+                        (user, _) => user.GetDirectReports())
+                    .Do(_ => _directReports.Clear())
+                    .Switch()
+                    .ObserveOnDispatcher()
+                    .Subscribe(user => _directReports.Add(user))
+                    .DisposeWith(disposables);
 
-                Observable.Merge(
-                    Observable.Select<Exception, (string, string)>(this.ToggleOrganizationDetails.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not toggle visibility", (string)ex.Message)))),
-                    OpenManager.ThrownExceptions.Select(ex => (("Could not open manager", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        ToggleOrganizationDetails.ThrownExceptions.Select(ex => (("Could not toggle visibility", ex.Message))),
+                        OpenManager.ThrownExceptions.Select(ex => (("Could not open manager", ex.Message))))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
         }
 
 
@@ -89,7 +89,7 @@ namespace MagnumOpus.ViewModels
         public ReactiveCommand<Unit, bool> ToggleOrganizationDetails { get; private set; }
         public ReactiveCommand<Unit, Unit> OpenManager { get; private set; }
         public ReactiveCommand<Unit, Unit> OpenDirectReport { get; private set; }
-        public IReactiveDerivedList<UserObject> DirectReports => _directReports.CreateDerivedCollection(x => x, orderer: (one, two) => one.Principal.Name.CompareTo(two.Principal.Name));
+        public IReactiveDerivedList<UserObject> DirectReports => _directReports.CreateDerivedCollection(user => user, orderer: (one, two) => one.Principal.Name.CompareTo(two.Principal.Name));
         public bool IsAccountLocked => _isAccountLocked.Value;
         public TimeSpan PasswordAge => _passwordAge.Value;
         public string PasswordStatus => _passwordStatus.Value;

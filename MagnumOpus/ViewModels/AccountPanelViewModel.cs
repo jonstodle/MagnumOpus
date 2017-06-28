@@ -19,7 +19,7 @@ namespace MagnumOpus.ViewModels
         {
             SetNewPassword = ReactiveCommand.CreateFromObservable(
                 () => SetNewPasswordImpl(_newPassword),
-                this.WhenAnyValue(x => x.User, y => y.NewPassword, (x, y) => x != null && y.HasValue()));
+                this.WhenAnyValue(vm => vm.User, vm => vm.NewPassword, (user, password) => user != null && password.HasValue()));
 
             SetNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
 
@@ -89,13 +89,13 @@ namespace MagnumOpus.ViewModels
                     .DisposeWith(disposables);
 
 
-                Observable.Merge(
-                    ExpirePassword.ThrownExceptions.Select(ex => ("Could not expire password", ex.Message)),
-                    UnlockAccount.ThrownExceptions.Select(ex => ("Could not unlock acount", ex.Message)),
-                    RunLockoutStatus.ThrownExceptions.Select(ex => ("Could not open LockOutStatus", ex.Message)),
-                    OpenPermittedWorkstations.ThrownExceptions.Select(ex => ("Could not open Permitted Workstations", ex.Message)),
-                    ToggleEnabled.ThrownExceptions.Select(ex => ("Could not toggle enabled status", ex.Message)))
-                    .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        ExpirePassword.ThrownExceptions.Select(ex => ("Could not expire password", ex.Message)),
+                        UnlockAccount.ThrownExceptions.Select(ex => ("Could not unlock acount", ex.Message)),
+                        RunLockoutStatus.ThrownExceptions.Select(ex => ("Could not open LockOutStatus", ex.Message)),
+                        OpenPermittedWorkstations.ThrownExceptions.Select(ex => ("Could not open Permitted Workstations", ex.Message)),
+                        ToggleEnabled.ThrownExceptions.Select(ex => ("Could not toggle enabled status", ex.Message)))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
             });

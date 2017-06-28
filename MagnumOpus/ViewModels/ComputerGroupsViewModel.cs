@@ -30,20 +30,20 @@ namespace MagnumOpus.ViewModels
             (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
                 Observable.Merge(
-                (this).WhenAnyValue(x => x.Computer).WhereNotNull(),
-               Observable.Select<Unit, ComputerObject>(this.OpenEditMemberOf, (Func<Unit, ComputerObject>)(_ => (ComputerObject)Computer)))
-                .Do(_ => _directGroups.Clear())
-                .SelectMany(x => GetDirectGroups(x, TaskPoolScheduler.Default))
-                .Select(x => x.Properties.Get<string>("cn"))
-                .ObserveOnDispatcher()
-                .Subscribe(x => _directGroups.Add(x))
-                .DisposeWith(disposables);
+                        this.WhenAnyValue(vm => vm.Computer).WhereNotNull(),
+                        OpenEditMemberOf.Select(_ => Computer))
+                    .Do(_ => _directGroups.Clear())
+                    .SelectMany(computerObject => GetDirectGroups(computerObject, TaskPoolScheduler.Default))
+                    .Select(directoryEntry => directoryEntry.Properties.Get<string>("cn"))
+                    .ObserveOnDispatcher()
+                    .Subscribe(cn => _directGroups.Add(cn))
+                    .DisposeWith(disposables);
 
-                Observable.Merge(
-                    Observable.Select<Exception, (string, string)>(this.OpenEditMemberOf.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not open dialog", (string)ex.Message)))),
-                    SaveDirectGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
-                    FindDirectGroup.ThrownExceptions.Select(ex => (("Could not open group", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        Observable.Select(OpenEditMemberOf.ThrownExceptions, ex => (("Could not open dialog", ex.Message))),
+                        SaveDirectGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
+                        FindDirectGroup.ThrownExceptions.Select(ex => (("Could not open group", ex.Message))))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
             }));
@@ -54,7 +54,7 @@ namespace MagnumOpus.ViewModels
         public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; private set; }
         public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; private set; }
         public ReactiveCommand<Unit, Unit> FindDirectGroup { get; private set; }
-        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(x => x, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
         public bool IsShowingDirectGroups { get => _isShowingDirectGroups; set => this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }
         public string SelectedDirectGroup { get => _selectedDirectGroup; set => this.RaiseAndSetIfChanged(ref _selectedDirectGroup, value); }
@@ -63,7 +63,7 @@ namespace MagnumOpus.ViewModels
 
         private IObservable<DirectoryEntry> GetDirectGroups(ComputerObject computer, IScheduler scheduler = null) => computer.Principal.GetGroups()
             .ToObservable(scheduler ?? TaskPoolScheduler.Default)
-            .Select(x => x.GetUnderlyingObject() as DirectoryEntry);
+            .Select(principal => principal.GetUnderlyingObject() as DirectoryEntry);
 
 
 

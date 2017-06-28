@@ -22,15 +22,15 @@ namespace MagnumOpus.Views
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, x => x ?? "").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Group.CN, v => v.Title, cn => cn ?? "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDetails.Group).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupDescription.Group).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupGroups.Group).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Group, v => v.GroupNotes.Group).DisposeWith(d);
 
-                this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(x => x.Group.CN)).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SetGroup, v => v.RefreshHyperlink, ViewModel.WhenAnyValue(vm => vm.Group.CN)).DisposeWith(d);
                 this.Events().KeyDown
-                    .Where(x => x.Key == System.Windows.Input.Key.F5)
+                    .Where(args => args.Key == System.Windows.Input.Key.F5)
                     .Select(_ => ViewModel.Group.CN)
                     .InvokeCommand(ViewModel.SetGroup).DisposeWith(d);
                 new List<Interaction<MessageInfo, int>>

@@ -31,7 +31,7 @@ namespace MagnumOpus.Controls
             {
                 ComputerNameTextBox.Focus();
 
-                this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, x => x != null ? $"Permitted Workstations for {x.Principal.Name}" : "Permitted Workstations").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User, v => v.TitleTextBlock.Text, user => user != null ? $"Permitted Workstations for {user.Principal.Name}" : "Permitted Workstations").DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.ComputerName, v => v.ComputerNameTextBox.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computers, v => v.ComputersListView.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedComputer, v => v.ComputersListView.SelectedItem).DisposeWith(d);

@@ -18,8 +18,8 @@ namespace MagnumOpus.ViewModels
         public ComputerManagementViewModel()
         {
             _rebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_computer.CN}?", "", "Yes", "No"))
-                .Where(x => x == 0)
-                .SelectMany(x => Observable.Start(() =>
+                .Where(result => result == 0)
+                .SelectMany(_ => Observable.Start(() =>
                 {
                     using (var powerShell = PowerShell.Create())
                     {
@@ -40,12 +40,12 @@ namespace MagnumOpus.ViewModels
 
             this.WhenActivated(disposables =>
             {
-                Observable.Merge(
-                _rebootComputer.ThrownExceptions.Select(ex => ("Could not reboot computer", ex.Message)),
-                _runPSExec.ThrownExceptions.Select(ex => ("Could not run PSExec", ex.Message)),
-                _openCDrive.ThrownExceptions.Select(ex => ("Could not open C$ drive", ex.Message)),
-                _openSccm.ThrownExceptions.Select(ex => ("Could not open SCCM", ex.Message)))
-                .SelectMany(x => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                    _rebootComputer.ThrownExceptions.Select(ex => ("Could not reboot computer", ex.Message)),
+                    _runPSExec.ThrownExceptions.Select(ex => ("Could not run PSExec", ex.Message)),
+                    _openCDrive.ThrownExceptions.Select(ex => ("Could not open C$ drive", ex.Message)),
+                    _openSccm.ThrownExceptions.Select(ex => ("Could not open SCCM", ex.Message)))
+                .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                 .Subscribe()
                 .DisposeWith(disposables);
             });

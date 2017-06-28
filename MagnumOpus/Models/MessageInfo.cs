@@ -27,7 +27,7 @@ namespace MagnumOpus.Models
 
 		public MessageInfo(MessageType messageType, string message, string caption, params string[] buttons) : this(messageType, message, caption)
 		{
-			Buttons = buttons.Select(x => new DialogButtonInfo(x)).ToArray();
+			Buttons = buttons.Select(buttonText => new DialogButtonInfo(buttonText)).ToArray();
 		}
 
 

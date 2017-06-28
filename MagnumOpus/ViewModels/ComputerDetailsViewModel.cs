@@ -15,22 +15,22 @@ namespace MagnumOpus.ViewModels
         {
             ToggleIsShowingDetails = ReactiveCommand.Create(() => !_isShowingDetails.Value);
 
-            var newComputer = this.WhenAnyValue(x => x.Computer)
+            var newComputer = this.WhenAnyValue(vm => vm.Computer)
                 .WhereNotNull()
                 .Publish()
                 .RefCount();
 
 			_operatingSystemInfo = newComputer
-				.SelectMany(x => GetOSInfo(x).CatchAndReturn(null))
-				.ToProperty(this, x => x.OperatingSystemInfo, null, scheduler: DispatcherScheduler.Current);
+				.SelectMany(computerObject => GetOSInfo(computerObject).CatchAndReturn(null))
+				.ToProperty(this, vm => vm.OperatingSystemInfo, null, scheduler: DispatcherScheduler.Current);
 
 			_ipAddress = newComputer
-				.SelectMany(x => x.GetIPAddress())
+				.SelectMany(computerObject => computerObject.GetIPAddress())
 				.ObserveOnDispatcher()
-				.ToProperty(this, x => x.IPAddress, null);
+				.ToProperty(this, vm => vm.IPAddress, null);
 
             _isShowingDetails = ToggleIsShowingDetails
-                .ToProperty(this, x => x.IsShowingDetails);
+                .ToProperty(this, vm => vm.IsShowingDetails);
         }
 
 

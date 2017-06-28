@@ -43,36 +43,36 @@ namespace MagnumOpus.ViewModels
 			_loggedOnUsers = new ReactiveList<LoggedOnUserInfo>();
 
 			_isUacOn = Observable.Merge(
-				this.WhenAnyValue(x => x.Computer).WhereNotNull().SelectMany(x => GetIsUacOn(x.CN).Select(y => (bool?)y).CatchAndReturn(null)),
-				ToggleUac.Select(x => (bool?)x))
+				    this.WhenAnyValue(vm => vm.Computer).WhereNotNull().SelectMany(computer => GetIsUacOn(computer.CN).Select(isUacOn => (bool?)isUacOn).CatchAndReturn(null)),
+				    ToggleUac.Select(isUacOn => (bool?)isUacOn))
 				.ObserveOnDispatcher()
-				.ToProperty(this, x => x.IsUacOn);
+				.ToProperty(this, vm => vm.IsUacOn);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
-                (this).WhenAnyValue(x => x.Computer)
-                .WhereNotNull()
-                .Select(x => x.GetLoggedInUsers(TaskPoolScheduler.Default).CatchAndReturn(null).WhereNotNull())
-                .Do((IObservable<LoggedOnUserInfo> _) => _loggedOnUsers.Clear())
-                .Switch()
-                .ObserveOnDispatcher()
-                .Subscribe(x => _loggedOnUsers.Add(x))
-                .DisposeWith(disposables);
+                this.WhenAnyValue(vm => vm.Computer)
+                    .WhereNotNull()
+                    .Select(computer => computer.GetLoggedInUsers(TaskPoolScheduler.Default).Catch(Observable.Empty<LoggedOnUserInfo>()))
+                    .Do(_ => _loggedOnUsers.Clear())
+                    .Switch()
+                    .ObserveOnDispatcher()
+                    .Subscribe(userInfo => _loggedOnUsers.Add(userInfo))
+                    .DisposeWith(disposables);
 
-                Observable.Merge(
-                    Observable.Select<Exception, (string, string)>(this.OpenUser.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not open user", (string)ex.Message)))),
-                    StartRemoteControl.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
-                    StartRemoteControlClassic.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
-                    StartRemoteControl2012.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
-                    KillRemoteTools.ThrownExceptions.Select(ex => (("Could not kill remote tools", ex.Message))),
-                    ToggleUac.ThrownExceptions.Select(ex => (("Could not disable UAC", ex.Message))),
-                    StartRemoteAssistance.ThrownExceptions.Select(ex => (("Could not start remote assistance", ex.Message))),
-                    StartRdp.ThrownExceptions.Select(ex => (("Could not start RDP", ex.Message))),
-                    _isUacOn.ThrownExceptions.Select(ex => (("Could not get UAC status", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                Observable.Merge<(string Title, string Message)>(
+                        OpenUser.ThrownExceptions.Select(ex => (("Could not open user", ex.Message))),
+                        StartRemoteControl.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
+                        StartRemoteControlClassic.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
+                        StartRemoteControl2012.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
+                        KillRemoteTools.ThrownExceptions.Select(ex => (("Could not kill remote tools", ex.Message))),
+                        ToggleUac.ThrownExceptions.Select(ex => (("Could not disable UAC", ex.Message))),
+                        StartRemoteAssistance.ThrownExceptions.Select(ex => (("Could not start remote assistance", ex.Message))),
+                        StartRdp.ThrownExceptions.Select(ex => (("Could not start RDP", ex.Message))),
+                        _isUacOn.ThrownExceptions.Select(ex => (("Could not get UAC status", ex.Message))))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
 		}
 
 

@@ -34,8 +34,8 @@ namespace MagnumOpus.Controls
                 this.Bind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordToggleButton.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingNewPasswordOptions, v => v.NewPasswordGrid.Visibility).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.NewPassword, v => v.NewPasswordTextBox.Text).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, x => x != null ? (bool)x ? "Disable" : "Enable" : "Unavailable").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, x => x != null ? true : false).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.Content, isEnabled => isEnabled != null ? (bool)isEnabled ? "Disable" : "Enable" : "Unavailable").DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.User.Principal.Enabled, v => v.ToggleEnabledButton.IsEnabled, isEnabled => isEnabled != null ? true : false).DisposeWith(d);
 
                 this.BindCommand(ViewModel, vm => vm.SetNewPassword, v => v.SetNewPasswordButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.SetNewSimplePassword, v => v.SetNewSimplePasswordButton).DisposeWith(d);
@@ -48,7 +48,7 @@ namespace MagnumOpus.Controls
                 this.BindCommand(ViewModel, vm => vm.OpenSplunk, v => v.SplunkButton).DisposeWith(d);
                 NewPasswordTextBox.Events()
                     .KeyDown
-                    .Where(x => x.Key == Key.Enter)
+                    .Where(args => args.Key == Key.Enter)
                     .ToSignal()
                     .InvokeCommand(ViewModel.SetNewPassword).DisposeWith(d);
             });

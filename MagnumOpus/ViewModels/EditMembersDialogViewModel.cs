@@ -39,7 +39,7 @@ namespace MagnumOpus.ViewModels
                     _groupMembers.Add(_selectedSearchResult);
                     _membersToAdd.Add(_selectedSearchResult);
                 },
-                this.WhenAnyValue(x => x.SelectedSearchResult).IsNotNull());
+                this.WhenAnyValue(vm => vm.SelectedSearchResult).IsNotNull());
 
             RemoveFromGroup = ReactiveCommand.Create(
                 () =>
@@ -48,7 +48,7 @@ namespace MagnumOpus.ViewModels
                     else _membersToRemove.Add(_selectedGroupMember);
                     _groupMembers.Remove(_selectedGroupMember);
                 },
-                this.WhenAnyValue(x => x.SelectedGroupMember).IsNotNull());
+                this.WhenAnyValue(vm => vm.SelectedGroupMember).IsNotNull());
 
             Save = ReactiveCommand.CreateFromTask(
                 async () => await SaveImpl(_group.Value, _membersToAdd, _membersToRemove),
@@ -57,31 +57,31 @@ namespace MagnumOpus.ViewModels
             Cancel = ReactiveCommand.Create(() => _close());
 
             _group = SetGroup
-                .ToProperty(this, x => x.Group);
+                .ToProperty(this, vm => vm.Group);
 
             (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
                 GetGroupMembers
                     .ObserveOnDispatcher()
-                .Subscribe(x => _groupMembers.Add(x))
-                .DisposeWith(disposables);
+                    .Subscribe(directoryEntry => _groupMembers.Add(directoryEntry))
+                    .DisposeWith(disposables);
 
-                    Search
-                    .Do((IObservable<DirectoryEntry> _) => _searchResults.Clear())
-                .Switch()
-                .ObserveOnDispatcher()
-                .Subscribe(x => _searchResults.Add(x))
-                .DisposeWith(disposables);
+                Search
+                    .Do(_ => _searchResults.Clear())
+                    .Switch()
+                    .ObserveOnDispatcher()
+                    .Subscribe(directoryEntry => _searchResults.Add(directoryEntry))
+                    .DisposeWith(disposables);
 
-                    Save
+                Save
                     .SelectMany((IEnumerable<string> x) => x.Count() > 0 ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(0))
                     .ObserveOnDispatcher()
                     .Do(_ => _close())
                     .Subscribe()
                     .DisposeWith(disposables);
 
-                Observable.Merge(
-                        Observable.Select<Exception, (string, string)>(this.SetGroup.ThrownExceptions, (Func<Exception, (string, string)>)(ex => ((string, string))(((string)"Could not load group", (string)ex.Message)))),
+                Observable.Merge<(string Title, string Message)>(
+                        SetGroup.ThrownExceptions.Select(ex => (("Could not load group", ex.Message))),
                         GetGroupMembers.ThrownExceptions.Select(ex => (("Could not get members", ex.Message))),
                         Search.ThrownExceptions.Select(ex => (("Could not complete search", ex.Message))),
                         OpenSearchResult.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
@@ -90,7 +90,7 @@ namespace MagnumOpus.ViewModels
                         RemoveFromGroup.ThrownExceptions.Select(ex => (("Could not remove member", ex.Message))),
                         Save.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
                         Cancel.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
-                    .SelectMany(((string, string) x) => _messages.Handle(new MessageInfo(MessageType.Error, x.Item2, x.Item1)))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
             }));
@@ -107,8 +107,8 @@ namespace MagnumOpus.ViewModels
         public ReactiveCommand<Unit, Unit> RemoveFromGroup { get; private set; }
         public ReactiveCommand<Unit, IEnumerable<string>> Save { get; private set; }
         public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
-        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
-        public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(x => x, orderer: (one, two) => one.Path.CompareTo(two.Path));
+        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
+        public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;
         public ReactiveList<DirectoryEntry> MembersToRemove => _membersToRemove;
         public GroupObject Group => _group.Value;

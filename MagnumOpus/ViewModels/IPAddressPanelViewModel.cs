@@ -39,7 +39,7 @@ namespace MagnumOpus.ViewModels
 			OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_ipAddress}\C$"); });
 
 			RebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No"))
-                .Where(x => x == 0)
+                .Where(result => result == 0)
                 .Do(_ => ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0"))
                 .ToSignal()
 			);
@@ -54,11 +54,11 @@ namespace MagnumOpus.ViewModels
 
 			StartRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "mstsc.exe"), $"/v {_ipAddress}"));
 
-			_hostName = this.WhenAnyValue(x => x.IPAddress)
-				.Where(x => x.HasValue())
-				.Select(x => Dns.GetHostEntry(x).HostName)
+			_hostName = this.WhenAnyValue(vm => vm.IPAddress)
+				.Where(ipAddress => ipAddress.HasValue())
+				.Select(ipAddress => Dns.GetHostEntry(ipAddress).HostName)
 				.CatchAndReturn("")
-				.ToProperty(this, x => x.HostName, null);
+				.ToProperty(this, vm => vm.HostName, null);
 
             (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {
