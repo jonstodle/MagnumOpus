@@ -44,7 +44,7 @@ namespace MagnumOpus.Controls
                 ComputersListView.Events()
                     .MouseDoubleClick
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.RemoveComputer).DisposeWith(d);
+                    .InvokeCommand(ViewModel.RemoveComputer).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.RemoveComputer, v => v.RemoveComputerMenuItem).DisposeWith(d);
                 ViewModel
                     .Messages

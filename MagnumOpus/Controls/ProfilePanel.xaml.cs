@@ -71,12 +71,12 @@ namespace MagnumOpus.Controls
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.ResetLocalProfile).DisposeWith(d);
+                    .InvokeCommand(ViewModel.ResetLocalProfile).DisposeWith(d);
                 RestoreProfileComputerNameTextBox.Events()
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.SearchForProfiles).DisposeWith(d);
+                    .InvokeCommand(ViewModel.SearchForProfiles).DisposeWith(d);
             });
         }
 

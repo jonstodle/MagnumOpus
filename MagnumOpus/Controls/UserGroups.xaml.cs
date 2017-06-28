@@ -57,7 +57,7 @@ namespace MagnumOpus.Controls
                 .Where(x => x)
                 .ToSignal()
                 .ObserveOnDispatcher()
-                .InvokeCommand(ViewModel, x => x.GetAllGroups).DisposeWith(d);
+                .InvokeCommand(ViewModel.GetAllGroups).DisposeWith(d);
             });
         }
 

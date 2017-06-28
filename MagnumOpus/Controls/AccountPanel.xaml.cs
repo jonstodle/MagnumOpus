@@ -50,7 +50,7 @@ namespace MagnumOpus.Controls
                     .KeyDown
                     .Where(x => x.Key == Key.Enter)
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.SetNewPassword).DisposeWith(d);
+                    .InvokeCommand(ViewModel.SetNewPassword).DisposeWith(d);
             });
         }
 

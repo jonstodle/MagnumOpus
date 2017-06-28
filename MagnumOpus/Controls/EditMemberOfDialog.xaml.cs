@@ -44,7 +44,7 @@ namespace MagnumOpus.Controls
                     .WhereNotNull()
                     .SubscribeOnDispatcher()
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.GetPrincipalMembers)
+                    .InvokeCommand(ViewModel.GetPrincipalMembers)
                     .DisposeWith(d);
                 Observable.Merge(
                         SearchQueryTextBox.Events()
@@ -58,7 +58,7 @@ namespace MagnumOpus.Controls
                     .DistinctUntilChanged()
                     .SubscribeOnDispatcher()
                     .ToSignal()
-                    .InvokeCommand(ViewModel, x => x.Search)
+                    .InvokeCommand(ViewModel.Search)
                     .DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.AddToPrincipal, v => v.AddMenuItem).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.OpenSearchResultPrincipal, v => v.OpenSearchResultMenuItem).DisposeWith(d);

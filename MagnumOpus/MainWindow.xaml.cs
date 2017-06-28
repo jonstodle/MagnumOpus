@@ -67,12 +67,12 @@ namespace MagnumOpus
                         .Where(x => x.HasValue(3))
                         .ToSignal()
                         .ObserveOnDispatcher()
-                        .InvokeCommand(ViewModel, x => x.Search)
+                        .InvokeCommand(ViewModel.Search)
                         .DisposeWith(d);
                     SearchResultsListView.Events()
                         .MouseDoubleClick
                         .ToSignal()
-                        .InvokeCommand(ViewModel, x => x.Open)
+                        .InvokeCommand(ViewModel.Open)
                         .DisposeWith(d);
                     this.BindCommand(ViewModel, vm => vm.Open, v => v.OpenSearchResultsMenuItem).DisposeWith(d);
                     Observable.FromEventPattern(HistoryButton, nameof(Button.Click))

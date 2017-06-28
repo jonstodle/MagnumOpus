@@ -33,7 +33,7 @@ namespace MagnumOpus.Views
                 MessageBus.Current.Listen<string>(ApplicationActionRequest.Refresh)
                     .ObserveOnDispatcher()
                     .Where(x => x == ViewModel.User?.CN)
-                    .InvokeCommand(ViewModel, x => x.SetUser).DisposeWith(d);
+                    .InvokeCommand(ViewModel.SetUser).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.SetUser, v => v.RefreshHyperLink, ViewModel.WhenAnyValue(x => x.User.CN)).DisposeWith(d);
                 this.Events().KeyDown
                     .Where(x => x.Key == System.Windows.Input.Key.F5)

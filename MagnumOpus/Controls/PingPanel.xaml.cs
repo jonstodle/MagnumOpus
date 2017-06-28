@@ -38,19 +38,19 @@ namespace MagnumOpus.Controls
                     .Where(x => x)
                     .ToSignal()
                     .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.StartPing).DisposeWith(d);
+                    .InvokeCommand(ViewModel.StartPing).DisposeWith(d);
                 ViewModel
                     .WhenAnyValue(x => x.IsPinging)
                     .Where(x => !x)
                     .ToSignal()
                     .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.StopPing).DisposeWith(d);
+                    .InvokeCommand(ViewModel.StopPing).DisposeWith(d);
                 ViewModel
                     .WhenAnyValue(x => x.HostName)
                     .Where(x => x == null)
                     .ToSignal()
                     .ObserveOnDispatcher()
-                    .InvokeCommand(ViewModel, x => x.StopPing).DisposeWith(d);
+                    .InvokeCommand(ViewModel.StopPing).DisposeWith(d);
             });
         }
 
