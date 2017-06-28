@@ -24,5 +24,13 @@ namespace System.Reactive.Linq
         public static IObservable<EventPattern<TEventArgs>> Events<TEventArgs>(this object source, string eventName) => Observable.FromEventPattern<TEventArgs>(source, eventName);
 
         public static IObservable<T> CatchAndReturn<T>(this IObservable<T> source, T returnValue) => source.Catch(Observable.Return(returnValue));
-	}
+
+        public static IObservable<T> Debug<T>(this IObservable<T> source, string identifier = null) => source.Debug(value => value, identifier);
+
+        public static IObservable<T> Debug<T>(this IObservable<T> source, Func<T, object> selector, string identifier = null)
+        {
+            var prefix = identifier != null ? identifier + " " : "";
+            return source.Do(value => System.Diagnostics.Debug.WriteLine($"{prefix}Next: {selector(value)}"), ex => System.Diagnostics.Debug.WriteLine($"{prefix}Error: {ex}"), () => System.Diagnostics.Debug.WriteLine($"{prefix}Completed"));
+        }
+    }
 }
