@@ -90,7 +90,24 @@ namespace MagnumOpus
                     this.Events()
                         .Closed
                         .Subscribe(_ => Application.Current.Shutdown())
-                        .DisposeWith(d); 
+                        .DisposeWith(d);
+                    SearchQueryTextBox.Events().KeyUp
+                        .Where(args => args.Key == Key.Down && SearchResultsListView.Items.Count > 0)
+                        .Subscribe(_ => { SearchResultsListView.SelectedIndex = 0; Keyboard.Focus(SearchResultsListView.ItemContainerGenerator.ContainerFromIndex(0) as IInputElement); })
+                        .DisposeWith(d);
+                    SearchResultsListView.Events().KeyDown
+                        .Where(args => args.Key == Key.Up && SearchResultsListView.SelectedIndex == 0)
+                        .Subscribe(_ => Keyboard.Focus(SearchQueryTextBox))
+                        .DisposeWith(d);
+                    SearchResultsListView.Events().KeyDown
+                        .Where(args => args.Key == Key.Enter)
+                        .ToSignal()
+                        .InvokeCommand(ViewModel.Open)
+                        .DisposeWith(d);
+                    this.Events().KeyDown
+                        .Where(args => args.Key == Key.F3)
+                        .Subscribe(_ => Keyboard.Focus(SearchQueryTextBox))
+                        .DisposeWith(d);
                 }
             });
         }
