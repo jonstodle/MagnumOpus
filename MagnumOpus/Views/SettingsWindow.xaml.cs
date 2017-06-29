@@ -28,7 +28,7 @@ namespace MagnumOpus.Views
                 this.Bind(ViewModel, vm => vm.OpenDuplicateWindows, v => v.OpenDuplicateWindowsCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.DetailWindowTimeoutLength, v => v.DetailWindowTimeoutLengthTextBox.Text).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.UseEscapeToCloseDetailsWindows, v => v.UseEscapeToCloseDetailsWindowsCheckBox.IsChecked).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBlock.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBox.Text).DisposeWith(d);
 
                 Observable.Merge(
                         Observable.FromEventPattern<RequestNavigateEventArgs>(SupportIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),

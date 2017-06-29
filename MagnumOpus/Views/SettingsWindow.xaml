@@ -75,7 +75,7 @@
 				</Grid>
 
 				<TextBlock Text="Version" Style="{StaticResource SettingsHeaderStyle}"/>
-				<TextBlock x:Name="VersionTextBlock" Margin="2"/>
+				<TextBox x:Name="VersionTextBox" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>
