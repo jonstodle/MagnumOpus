@@ -44,11 +44,11 @@ namespace MagnumOpus.ViewModels
                 .ToSignal()
 			);
 
-			//StartRemoteControl = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
+            StartRemoteControl = ReactiveCommand.Create(() => { });// ExecuteFile(SettingsService.Current.RemoteControlClassicPath, $"1 {_ipAddress}"));
 
-			//StartRemoteControl2012 = ReactiveCommand.Create(() => ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
+            StartRemoteControl2012 = ReactiveCommand.Create(() => { });// ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
 
-			KillRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
+            KillRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
 
 			StartRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "msra.exe"), $"/offerra {_ipAddress}"));
 
