@@ -13,6 +13,12 @@
         Icon="/Assets/Icon.ico"
         Title="Magnum Opus" MinHeight="200" MinWidth="200" Height="400" Width="900">
 
+	<Window.Resources>
+		<ContextMenu x:Key="SearchResultRowContextMenu">
+			<MenuItem Header="Open" Style="{StaticResource PrimaryActionStyle}" Click="OpenSearchResultsMenuItem_Click"/>
+		</ContextMenu>
+	</Window.Resources>
+
 	<Grid Margin="2">
 		<Grid x:Name="MainGrid">
 			<Grid.RowDefinitions>
@@ -51,24 +57,27 @@
 				</Button>
 			</Grid>
 
-			<ListView x:Name="SearchResultsListView" Grid.Row="1" Margin="2">
-				<ListView.View>
-					<GridView>
-						<GridView.Columns>
-							<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="{StaticResource NameColumnWidth}"/>
-							<GridViewColumn Header="ID" DisplayMemberBinding="{Binding SamAccountName}" Width="{StaticResource IDColumnWidth}"/>
-							<GridViewColumn Header="Type" DisplayMemberBinding="{Binding ObjectType}" Width="{StaticResource IDColumnWidth}"/>
-							<GridViewColumn Header="Company" DisplayMemberBinding="{Binding Company}" Width="200"/>
-						</GridView.Columns>
-					</GridView>
-				</ListView.View>
-
-				<ListView.ContextMenu>
-					<ContextMenu>
-						<MenuItem x:Name="OpenSearchResultsMenuItem" Header="Open" Style="{StaticResource PrimaryActionStyle}"/>
-					</ContextMenu>
-				</ListView.ContextMenu>
-			</ListView>
+			<DataGrid x:Name="SearchResultsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="None" AlternatingRowBackground="AliceBlue" Grid.Row="1" Margin="2">
+				<DataGrid.Columns>
+					<DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="300"/>
+					<DataGridTextColumn Header="ID" Binding="{Binding SamAccountName}" Width="200"/>
+					<DataGridTextColumn Header="Type" Binding="{Binding ObjectType}" Width="100"/>
+					<DataGridTextColumn Header="Company" Binding="{Binding Company}" Width="200"/>
+				</DataGrid.Columns>
+				<DataGrid.CellStyle>
+					<Style TargetType="DataGridCell">
+						<Setter Property="BorderThickness" Value="0"/>
+					</Style>
+				</DataGrid.CellStyle>
+				<DataGrid.RowStyle>
+					<Style TargetType="DataGridRow">
+						<Setter Property="Height" Value="20"/>
+						<EventSetter Event="MouseDoubleClick" Handler="SearchResultsDataGridRow_MouseDoubleClick"/>
+						<EventSetter Event="PreviewKeyDown" Handler="DataGridRow_KeyDown"/>
+						<Setter Property="ContextMenu" Value="{StaticResource SearchResultRowContextMenu}"/>
+					</Style>
+				</DataGrid.RowStyle>
+			</DataGrid>
 
 			<TextBlock x:Name="NoResultsTextBlock" Text="NO RESULTS" FontSize="17" TextAlignment="Center" VerticalAlignment="Center" Opacity=".5" IsHitTestVisible="False" Visibility="Collapsed" Grid.Row="1" Margin="2"/>
 
