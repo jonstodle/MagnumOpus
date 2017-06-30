@@ -107,17 +107,13 @@ namespace MagnumOpus.ViewModels
 			else StartRemoteControl2012Impl(computer);
 		}, TaskPoolScheduler.Default);
 
-        private IObservable<Unit> StartRemoteControlClassicImpl(ComputerObject computer) => Observable.Start(() =>
-        {
-            Executables.Helpers.WriteApplicationFilesToDisk("RemoteControl");
-            RunFile(Path.Combine(FileService.LocalAppData, "RemoteControl", "rc.exe"), $"1 {computer.CN}");
-        }, TaskPoolScheduler.Default);
+        private IObservable<Unit> StartRemoteControlClassicImpl(ComputerObject computer) => Observable.Start(
+            () => RunFileFromCache( "RemoteControl", "rc.exe", $"1 {computer.CN}"),
+            TaskPoolScheduler.Default);
 
-        private IObservable<Unit> StartRemoteControl2012Impl(ComputerObject computer) => Observable.Start(() =>
-        {
-            Executables.Helpers.WriteApplicationFilesToDisk("RemoteControl2012");
-            RunFile(Path.Combine(FileService.LocalAppData, "RemoteControl2012", "CmRcViewer.exe"), computer.CN);
-        }, TaskPoolScheduler.Default);
+        private IObservable<Unit> StartRemoteControl2012Impl(ComputerObject computer) => Observable.Start(
+            () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", computer.CN),
+            TaskPoolScheduler.Default);
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{

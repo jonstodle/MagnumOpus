@@ -65,10 +65,10 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="fileName">Name of the file</param>
         /// <param name="arguments">Arguments to be passed</param>
         /// <param name="showWindow">Set to false to hide window</param>
-        public static void RunInCmdFromCache(string fileName, string arguments = "", bool showWindow = true)
+        public static void RunInCmdFromCache(string folderName, string fileName, string arguments = "", bool showWindow = true)
         {
-            WriteApplicationFilesToDisk(fileName);
-            RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K ""{Path.Combine(FileService.LocalAppData, fileName)}"" {arguments}", showWindow);
+            WriteApplicationFilesToDisk(folderName);
+            RunFile(Path.Combine(System32Path, "cmd.exe"), $@"/K ""{Path.Combine(FileService.LocalAppData, folderName, fileName)}"" {arguments}", showWindow);
         }
 
         /// <summary>
@@ -77,10 +77,10 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="fileName">Name of the file</param>
         /// <param name="arguments">Arguments to be passed</param>
         /// <param name="showWindow">Set to false to hide window</param>
-		public static void RunFileFromCache(string fileName, string arguments = "", bool showWindow = true)
+		public static void RunFileFromCache(string folderName, string fileName, string arguments = "", bool showWindow = true)
 		{
-			WriteApplicationFilesToDisk(fileName);
-			RunFile(Path.Combine(FileService.LocalAppData, fileName), arguments, showWindow);
+			WriteApplicationFilesToDisk(folderName);
+			RunFile(Path.Combine(FileService.LocalAppData, folderName, fileName), arguments, showWindow);
 		}
 	}
 }
