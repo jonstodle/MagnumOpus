@@ -68,10 +68,11 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
             }
         }
 
-        public IObservable<TimeSpan> GetMaxPasswordAge(string identity, IScheduler scheduler = null) => GetUsers(identity, scheduler, "msDS-ResultantPSO")
+        public IObservable<TimeSpan> GetMaxPasswordAge(string identity, IScheduler scheduler = null) => GetUsers($"samaccountname={identity}", scheduler, "msDS-ResultantPSO")
             .Take(1)
             .Select(userDe => userDe.Properties.Get<long>("msDS-ResultantPSO"))
             .Select(maxAge => TimeSpan.FromTicks(Math.Abs(maxAge)))
+            .Select(maxAge => maxAge != TimeSpan.Zero ? maxAge : throw new Exception($"{identity} has unvalid max password age"))
             .CatchAndReturn(DomainMaxPasswordAge);
 
         public IObservable<Unit> SetPassword(string identity, string password, bool expirePassword = true, IScheduler scheduler = null) => Observable.Start(() =>
