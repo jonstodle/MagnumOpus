@@ -51,10 +51,17 @@ namespace MagnumOpus.Services.ActiveDirectoryServices
             {
                 if (_domainMaxPasswordAge == null)
                 {
-                    using(var directoryEntry = GetDomainDirectoryEntry())
-                    using (var searcher = new DirectorySearcher(directoryEntry, "(objectCategory=domainDNS)"))
+                    try
                     {
-                        _domainMaxPasswordAge = TimeSpan.FromTicks(searcher.FindOne().Properties.Get<long>("maxPwdAge")).Duration();
+                        using (var directoryEntry = GetDomainDirectoryEntry())
+                        using (var searcher = new DirectorySearcher(directoryEntry, "(objectCategory=domainDNS)"))
+                        {
+                            _domainMaxPasswordAge = TimeSpan.FromTicks(searcher.FindOne().Properties.Get<long>("maxPwdAge")).Duration();
+                        }
+                    }
+                    catch
+                    {
+                        _domainMaxPasswordAge = TimeSpan.Zero;
                     }
                 }
                 return (TimeSpan)_domainMaxPasswordAge;
