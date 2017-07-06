@@ -53,7 +53,7 @@ namespace MagnumOpus.Services.FileServices
         /// <param name="showWindow">Set to false to hide window</param>
         public static void RunFile(string filePath, string arguments = "", bool showWindow = true)
 		{
-			if (File.Exists(filePath)) Process.Start(new ProcessStartInfo(filePath, arguments) { CreateNoWindow = !showWindow });
+			if (File.Exists(filePath)) Process.Start(new ProcessStartInfo(filePath, arguments) { CreateNoWindow = !showWindow, UseShellExecute = showWindow });
 			else throw new ArgumentException($"Could not find {filePath}");
 		}
 
