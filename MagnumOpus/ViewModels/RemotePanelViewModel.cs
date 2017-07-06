@@ -32,7 +32,7 @@ namespace MagnumOpus.ViewModels
 
 			StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_computer));
 
-			KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer));
+			KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer.CN));
 
 			ToggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer));
 
@@ -115,11 +115,11 @@ namespace MagnumOpus.ViewModels
             () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", computer.CN),
             TaskPoolScheduler.Default);
 
-		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
+		private IObservable<Unit> KillRemoteToolsImpl(string computerCn) => Observable.Start(() =>
 		{
-			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rc.exe /f", false);
-			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcViewer.exe /f", false);
-			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im rc.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im CmRcViewer.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im msra.exe /f", false);
 		}, TaskPoolScheduler.Default);
 
 		private IObservable<bool> ToggleUacImpl(ComputerObject computer) => Observable.Start(() =>
