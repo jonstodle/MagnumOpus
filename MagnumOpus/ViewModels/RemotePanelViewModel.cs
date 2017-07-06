@@ -117,8 +117,8 @@ namespace MagnumOpus.ViewModels
 
 		private IObservable<Unit> KillRemoteToolsImpl(ComputerObject computer) => Observable.Start(() =>
 		{
-			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rcagent.exe /f", false);
-			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcService.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im rc.exe /f", false);
+			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im CmRcViewer.exe /f", false);
 			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_computer.CN} /im msra.exe /f", false);
 		}, TaskPoolScheduler.Default);
 
