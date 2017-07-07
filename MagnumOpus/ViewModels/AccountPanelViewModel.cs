@@ -25,7 +25,9 @@ namespace MagnumOpus.ViewModels
 
             SetNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
 
-            ExpirePassword = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName));
+            ExpirePassword = ReactiveCommand.CreateFromObservable(() => Messages.Handle(new MessageInfo(MessageType.Question, "Are you sure you want to expire the password?", "Expire password?", "Yes", "No"))
+                .Where(result => result == 0)
+                .SelectMany(_ => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName)));
 
             UnlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
 
