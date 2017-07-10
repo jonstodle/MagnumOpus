@@ -68,7 +68,6 @@ namespace MagnumOpus
                                 .Where(searchQuery => searchQuery.HasValue(3) && !int.TryParse(searchQuery.First().ToString(), out int i))
                                 .Throttle(TimeSpan.FromSeconds(1)))
                         .DistinctUntilChanged()
-                        .Where(searchQuery => searchQuery.HasValue(3))
                         .ToSignal()
                         .ObserveOnDispatcher()
                         .InvokeCommand(ViewModel.Search)

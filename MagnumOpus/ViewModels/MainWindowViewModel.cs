@@ -22,9 +22,11 @@ namespace MagnumOpus.ViewModels
             _searchResults = new ReactiveList<DirectoryEntryInfo>();
             _history = new ReactiveList<string>();
 
-            Search = ReactiveCommand.Create(() => _searchQuery.IsIPAddress()
-                ? Observable.FromAsync(() => NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
-                : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(directoryEntry => new DirectoryEntryInfo(directoryEntry)));
+            Search = ReactiveCommand.Create(
+                () => _searchQuery.IsIPAddress()
+                    ? Observable.FromAsync(() => NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
+                    : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(directoryEntry => new DirectoryEntryInfo(directoryEntry)),
+                this.WhenAnyValue(vm => vm.SearchQuery).Select(query => query.HasValue(3)));
             Search
                 .Do(_ => _searchResults.Clear())
                 .Switch()
