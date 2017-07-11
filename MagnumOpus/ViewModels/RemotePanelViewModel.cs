@@ -25,15 +25,15 @@ namespace MagnumOpus.ViewModels
 
 			LogOffUser = ReactiveCommand.CreateFromObservable(() => LogOffUserImpl(_selectedLoggedOnUser.SessionID, Computer.CN));
 
-			StartRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
+			StartRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer.CN));
 
-			StartRemoteControlClassic = ReactiveCommand.CreateFromObservable(() => StartRemoteControlClassicImpl(_computer));
+			StartRemoteControlClassic = ReactiveCommand.CreateFromObservable(() => StartRemoteControlClassicImpl(_computer.CN));
 
-			StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_computer));
+			StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_computer.CN));
 
 			KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer.CN));
 
-			ToggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer));
+			ToggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer.CN));
 
 			StartRemoteAssistance = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"));
 
@@ -107,24 +107,24 @@ namespace MagnumOpus.ViewModels
             }
         }, TaskPoolScheduler.Default);
 
-        private IObservable<Unit> StartRemoteControlImpl(ComputerObject computer) => Observable.Start(() =>
+        private IObservable<Unit> StartRemoteControlImpl(string computerCn) => Observable.Start(() =>
 		{
-			EnsureComputerIsReachable(computer.CN);
+			EnsureComputerIsReachable(computerCn);
 
-			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computer.CN}", RegistryView.Registry64);
+			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computerCn}", RegistryView.Registry64);
 			var regKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\SMS\Mobile Client", false);
 			var sccmMajorVersion = int.Parse(regKey.GetValue("ProductVersion").ToString().Substring(0, 1));
 
-			if (sccmMajorVersion == 4) StartRemoteControlClassicImpl(computer);
-			else StartRemoteControl2012Impl(computer);
+			if (sccmMajorVersion == 4) StartRemoteControlClassicImpl(computerCn);
+			else StartRemoteControl2012Impl(computerCn);
 		}, TaskPoolScheduler.Default);
 
-        private IObservable<Unit> StartRemoteControlClassicImpl(ComputerObject computer) => Observable.Start(
-            () => RunFileFromCache( "RemoteControl", "rc.exe", $"1 {computer.CN}"),
+        private IObservable<Unit> StartRemoteControlClassicImpl(string computerCn) => Observable.Start(
+            () => RunFileFromCache( "RemoteControl", "rc.exe", $"1 {computerCn}"),
             TaskPoolScheduler.Default);
 
-        private IObservable<Unit> StartRemoteControl2012Impl(ComputerObject computer) => Observable.Start(
-            () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", computer.CN),
+        private IObservable<Unit> StartRemoteControl2012Impl(string computerCn) => Observable.Start(
+            () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", computerCn),
             TaskPoolScheduler.Default);
 
 		private IObservable<Unit> KillRemoteToolsImpl(string computerCn) => Observable.Start(() =>
@@ -134,13 +134,13 @@ namespace MagnumOpus.ViewModels
 			RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im msra.exe /f", false);
 		}, TaskPoolScheduler.Default);
 
-		private IObservable<bool> ToggleUacImpl(ComputerObject computer) => Observable.Start(() =>
+		private IObservable<bool> ToggleUacImpl(string computerCn) => Observable.Start(() =>
 		{
 			var regValueName = "EnableLUA";
-			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, computer.CN, RegistryView.Registry64);
+			var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, computerCn, RegistryView.Registry64);
 			var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
 
-			if (GetIsUacOn(computer.CN).Wait())
+			if (GetIsUacOn(computerCn).Wait())
 			{
 				key.SetValue(regValueName, 0);
 				return false;
@@ -150,7 +150,7 @@ namespace MagnumOpus.ViewModels
 				key.SetValue(regValueName, 1);
 				return true;
 			}
-		}, TaskPoolScheduler.Default).Concat(GetIsUacOn(computer.CN));
+		}, TaskPoolScheduler.Default).Concat(GetIsUacOn(computerCn));
 
 
 
