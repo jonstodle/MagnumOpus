@@ -296,20 +296,18 @@ namespace MagnumOpus.ViewModels
             .Where(result => result == 0)
             .SelectMany(_ => Observable.Start(() =>
                 {
-                    if (!Directory.Exists(Path.Combine(user.HomeDirectory, "windows"))) throw new ArgumentException("Could not find Citrix profile directory");
+                    var source = new DirectoryInfo(Path.Combine(user.HomeDirectory, "windows"));
+                    if (!source.Exists) throw new ArgumentException("Could not find Citrix profile directory");
 
-                    foreach (var folderName in new[] { "xa_profile", "App-V" })
+                    var destination = source.FullName;
+
+                    while (Directory.Exists(destination))
                     {
-                        var destination = Path.Combine(user.HomeDirectory, "windows", folderName);
-                        if (!Directory.Exists(destination)) continue;
-
-                        while (Directory.Exists(destination))
-                        {
-                            destination = destination.Insert(destination.ToLowerInvariant().IndexOf(folderName), "!");
-                        }
-
-                        Directory.Move(Path.Combine(user.HomeDirectory, "windows", folderName), destination);
+                        destination = destination.Insert(destination.IndexOf("windows", StringComparison.OrdinalIgnoreCase), "!");
                     }
+
+                    Directory.Move(Path.Combine(user.HomeDirectory, "windows"), destination);
+                    new DirectoryInfo(destination).Attributes |= FileAttributes.Hidden;
                 }, TaskPoolScheduler.Default));
 
 
