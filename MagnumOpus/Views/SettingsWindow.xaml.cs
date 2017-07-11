@@ -29,13 +29,7 @@ namespace MagnumOpus.Views
                 this.Bind(ViewModel, vm => vm.UseEscapeToCloseDetailsWindows, v => v.UseEscapeToCloseDetailsWindowsCheckBox.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Version, v => v.VersionTextBox.Text).DisposeWith(d);
 
-                Observable.Merge(
-                        Observable.FromEventPattern<RequestNavigateEventArgs>(SupportIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                        Observable.FromEventPattern<RequestNavigateEventArgs>(InfoIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                        Observable.FromEventPattern<RequestNavigateEventArgs>(QuestionIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                        Observable.FromEventPattern<RequestNavigateEventArgs>(SuccessIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                        Observable.FromEventPattern<RequestNavigateEventArgs>(WarningIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)),
-                        Observable.FromEventPattern<RequestNavigateEventArgs>(ErrorIconAttributionHyperlink, nameof(Hyperlink.RequestNavigate)))
+                Observable.FromEventPattern<RequestNavigateEventArgs>(Icons8IconAttributionHyperlink, nameof(Hyperlink.RequestNavigate))
                     .Select(args => args.EventArgs.Uri.AbsoluteUri)
                     .Subscribe(uri => Process.Start(uri))
                     .DisposeWith(d);

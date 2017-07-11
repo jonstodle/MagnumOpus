@@ -38,5 +38,5 @@ Some variables are specific to your environment. These are set by adding a file 
 
 ### Icon
 
-[![Wrench icon](./MagnumOpus/Assets/Icon-128.png)  
-Support by Icons8](https://icons8.com/web-app/21107/support)
+[![Icons8 icon](./MagnumOpus/Assets/Icons8.png)  
+Icons by Icons8](https://icons8.com/c/auM6/Magnum%20Opus)
