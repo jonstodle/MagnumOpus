@@ -31,11 +31,11 @@ namespace MagnumOpus.ViewModels
 
 			StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_computer.CN));
 
-			KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer.CN));
+            StartRemoteAssistance = ReactiveCommand.CreateFromObservable(() => StartRemoteAssistanceImpl(_computer.CN));
+
+            KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer.CN));
 
 			ToggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer.CN));
-
-			StartRemoteAssistance = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"));
 
 			StartRdp = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
 
@@ -117,7 +117,8 @@ namespace MagnumOpus.ViewModels
 
 			if (sccmMajorVersion == 4) StartRemoteControlClassicImpl(computerCn);
 			else StartRemoteControl2012Impl(computerCn);
-		}, TaskPoolScheduler.Default);
+		}, TaskPoolScheduler.Default)
+        .Catch(StartRemoteAssistanceImpl(computerCn));
 
         private IObservable<Unit> StartRemoteControlClassicImpl(string computerCn) => Observable.Start(
             () => RunFileFromCache( "RemoteControl", "rc.exe", $"1 {computerCn}"),
@@ -125,6 +126,10 @@ namespace MagnumOpus.ViewModels
 
         private IObservable<Unit> StartRemoteControl2012Impl(string computerCn) => Observable.Start(
             () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", computerCn),
+            TaskPoolScheduler.Default);
+
+        private IObservable<Unit> StartRemoteAssistanceImpl(string computerCn) => Observable.Start(
+            () => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"),
             TaskPoolScheduler.Default);
 
 		private IObservable<Unit> KillRemoteToolsImpl(string computerCn) => Observable.Start(() =>
