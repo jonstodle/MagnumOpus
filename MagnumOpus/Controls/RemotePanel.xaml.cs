@@ -36,7 +36,7 @@ namespace MagnumOpus.Controls
                 _loggedOnUsersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenUser).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.CopyUserName, v => v.CopyUsernameMenuItem).DisposeWith(d);
-                //this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.LogOffUser, v => v.LogOffUserMenuItem).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.StartRemoteControlClassic, v => v.RemoteControlClassicButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button).DisposeWith(d);

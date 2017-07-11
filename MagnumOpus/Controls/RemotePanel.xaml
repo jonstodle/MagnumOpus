@@ -56,7 +56,7 @@
 					<ContextMenu>
 						<MenuItem x:Name="OpenUserMenuItem" Header="Open user" Style="{StaticResource PrimaryActionStyle}"/>
 						<MenuItem x:Name="CopyUsernameMenuItem" Header="Copy username"/>
-						<!--<MenuItem x:Name="LogOffUserMenuItem" Header="Log off user"/>-->
+						<MenuItem x:Name="LogOffUserMenuItem" Header="Log off user"/>
 					</ContextMenu>
 				</ListView.ContextMenu>
 			</ListView>

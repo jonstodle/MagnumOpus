@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Windows;
 using static MagnumOpus.Services.FileServices.ExecutionService;
 using MagnumOpus.Services.FileServices;
+using System.Management.Automation;
 
 namespace MagnumOpus.ViewModels
 {
@@ -24,7 +25,7 @@ namespace MagnumOpus.ViewModels
 
 			CopyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser.Username));
 
-			LogOffUser = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "logoff.exe"), $"{_selectedLoggedOnUser.SessionID} /server:{_computer.CN}", false));
+			LogOffUser = ReactiveCommand.CreateFromObservable(() => LogOffUserImpl(_selectedLoggedOnUser.SessionID, Computer.CN));
 
 			StartRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer));
 
@@ -61,6 +62,7 @@ namespace MagnumOpus.ViewModels
 
                 Observable.Merge<(string Title, string Message)>(
                         OpenUser.ThrownExceptions.Select(ex => (("Could not open user", ex.Message))),
+                        LogOffUser.ThrownExceptions.Select(ex => ("Could not log off user", ex.Message)),
                         StartRemoteControl.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
                         StartRemoteControlClassic.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
                         StartRemoteControl2012.ThrownExceptions.Select(ex => (("Could not start remote control", ex.Message))),
@@ -94,6 +96,18 @@ namespace MagnumOpus.ViewModels
         public LoggedOnUserInfo SelectedLoggedOnUser { get => _selectedLoggedOnUser; set => this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }
 
 
+
+        private IObservable<Unit> LogOffUserImpl(int sessionId, string computerCn) => Observable.Start(() =>
+        {
+            using (var powerShell = PowerShell.Create())
+            {
+                powerShell
+                    .AddCommand("Invoke-Command")
+                    .AddParameter("ScriptBlock", ScriptBlock.Create($"logoff {sessionId}"))
+                    .AddParameter("ComputerName", computerCn)
+                .Invoke();
+            }
+        }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> StartRemoteControlImpl(ComputerObject computer) => Observable.Start(() =>
 		{
