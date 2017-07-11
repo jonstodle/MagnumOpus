@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MagnumOpus.Controls"
-			 xmlns:ext="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     
@@ -14,16 +13,13 @@
         <WrapPanel>
 			<ToggleButton x:Name="LoggedOnUsersToggleButton" Content="Logged on" Style="{StaticResource SubSectionToggleButton}" Margin="2"/>
 
-			<ext:SplitButton x:Name="RemoteControlButton" Content="Remote control" Margin="2">
-				<ext:SplitButton.DropDownContent>
-					<StackPanel>
-						<Button x:Name="RemoteControlClassicButton" Content="Remote Control Classic" Margin="2"/>
-						<Button x:Name="RemoteControl2012Button" Content="Remote Control 2012" Margin="2"/>
-					</StackPanel>
-				</ext:SplitButton.DropDownContent>
-			</ext:SplitButton>
+			<StackPanel Orientation="Horizontal" Margin="2">
+				<Button x:Name="RemoteControlButton" Content="Remote control"/>
 
-			<Button x:Name="RemoteAssistanceButton" Content="Remote assistance" Margin="2"/>
+				<ToggleButton x:Name="RemoteControlOptionsToggleButton" Padding="2,0">
+					<Polygon HorizontalAlignment="Center" Height="8" Width="8" Fill="Black" Points="0,0 .5,1 1,0" Stretch="Fill" Margin="0,0,0,-2"/>
+				</ToggleButton>
+			</StackPanel>
 
 			<Button x:Name="KillRemoteToolsButton" Content="Kill remote tools" Margin="2"/>
 
@@ -61,5 +57,18 @@
 				</ListView.ContextMenu>
 			</ListView>
 		</StackPanel>
+
+		<Grid x:Name="RemoteControlOptionsGrid" Background="{StaticResource SubSectionBackgroundBrush}" Visibility="Collapsed">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Button x:Name="RemoteControlClassicButton" Content="Remote Control Classic" Margin="2"/>
+
+			<Button x:Name="RemoteControl2012Button" Content="Remote Control 2012" Grid.Column="1" Margin="2"/>
+
+			<Button x:Name="RemoteAssistanceButton" Content="Remote assistance" Grid.Column="2" Margin="2"/>
+		</Grid>
     </StackPanel>
 </UserControl>

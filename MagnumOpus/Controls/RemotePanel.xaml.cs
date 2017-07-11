@@ -31,6 +31,8 @@ namespace MagnumOpus.Controls
                 this.OneWayBind(ViewModel, vm => vm.IsUacOn, v => v.ToggleUACButton.Content, isUacOn => isUacOn ?? true ? "Disable UAC" : "Enable UAC").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.LoggedOnUsers, v => v.LoggedOnUsersListView.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedLoggedOnUser, v => v.LoggedOnUsersListView.SelectedItem).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsShowingRemoteControlOptions, v => v.RemoteControlOptionsToggleButton.IsChecked).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsShowingRemoteControlOptions, v => v.RemoteControlOptionsGrid.Visibility).DisposeWith(d);
 
                 _loggedOnUsersListViewItemDoubleClick.ToEventCommandSignal().InvokeCommand(ViewModel.OpenUser).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.OpenUser, v => v.OpenUserMenuItem).DisposeWith(d);

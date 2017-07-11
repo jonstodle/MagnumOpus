@@ -47,7 +47,7 @@ namespace MagnumOpus.ViewModels
 				.ObserveOnDispatcher()
 				.ToProperty(this, vm => vm.IsUacOn);
 
-            this.WhenActivated(disposables =>
+            this.WhenActivated(d =>
             {
                 this.WhenAnyValue(vm => vm.Computer)
                     .WhereNotNull()
@@ -56,7 +56,17 @@ namespace MagnumOpus.ViewModels
                     .Switch()
                     .ObserveOnDispatcher()
                     .Subscribe(userInfo => _loggedOnUsers.Add(userInfo))
-                    .DisposeWith(disposables);
+                    .DisposeWith(d);
+
+                Observable.Merge<(bool ShowLoggedOnUsers, bool ShowRemoteControlOptions)>(
+                        this.WhenAnyValue(vm => vm.IsShowingLoggedOnUsers).Where(true).Select(_ => (true, false)),
+                        this.WhenAnyValue(vm => vm.IsShowingRemoteControlOptions).Where(true).Select(_ => (false, true)))
+                    .Subscribe(showSubView =>
+                    {
+                        IsShowingLoggedOnUsers = showSubView.ShowLoggedOnUsers;
+                        IsShowingRemoteControlOptions = showSubView.ShowRemoteControlOptions;
+                    })
+                    .DisposeWith(d);
 
                 Observable.Merge<(string Title, string Message)>(
                         OpenUser.ThrownExceptions.Select(ex => (("Could not open user", ex.Message))),
@@ -71,7 +81,7 @@ namespace MagnumOpus.ViewModels
                         _isUacOn.ThrownExceptions.Select(ex => (("Could not get UAC status", ex.Message))))
                     .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
-                    .DisposeWith(disposables);
+                    .DisposeWith(d);
             });
 		}
 
@@ -92,6 +102,7 @@ namespace MagnumOpus.ViewModels
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
         public bool IsShowingLoggedOnUsers { get => _isShowingLoggedOnUsers; set => this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
         public LoggedOnUserInfo SelectedLoggedOnUser { get => _selectedLoggedOnUser; set => this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }
+        public bool IsShowingRemoteControlOptions { get => _isShowingRemoteControlOptions; set => this.RaiseAndSetIfChanged(ref _isShowingRemoteControlOptions, value); }
 
 
 
@@ -185,5 +196,6 @@ namespace MagnumOpus.ViewModels
         private ComputerObject _computer;
         private bool _isShowingLoggedOnUsers;
         private LoggedOnUserInfo _selectedLoggedOnUser;
+        private bool _isShowingRemoteControlOptions;
     }
 }
