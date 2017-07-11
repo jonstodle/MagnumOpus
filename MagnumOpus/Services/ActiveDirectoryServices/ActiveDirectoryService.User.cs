@@ -1,7 +1,5 @@
 ﻿using MagnumOpus.Models;
-using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.ActiveDirectory;
@@ -9,11 +7,10 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 
 namespace MagnumOpus.Services.ActiveDirectoryServices
 {
-	public partial class ActiveDirectoryService
+    public partial class ActiveDirectoryService
     {
         public IObservable<UserObject> GetUser(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {

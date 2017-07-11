@@ -3,14 +3,13 @@ using MagnumOpus.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Controls;
 
 namespace MagnumOpus.Models
 {
-	public struct MessageInfo
+    public struct MessageInfo
 	{
 		public MessageInfo(MessageType messageType, string message, string caption = "")
 		{

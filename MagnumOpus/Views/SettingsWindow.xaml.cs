@@ -2,7 +2,6 @@
 using MagnumOpus.Models;
 using MagnumOpus.ViewModels;
 using System;
-using System.Windows;
 using System.Windows.Documents;
 using System.Reactive.Linq;
 using System.Windows.Navigation;

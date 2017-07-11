@@ -3,7 +3,6 @@ using MagnumOpus.Models;
 using MagnumOpus.Services.SettingsServices;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Management.Automation;
 using System.Reactive;
 using System.Reactive.Disposables;

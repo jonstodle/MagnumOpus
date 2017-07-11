@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using MagnumOpus.Models;
 using MagnumOpus.Services.FileServices;
-using MagnumOpus.Services.SettingsServices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,11 +9,9 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
-using static MagnumOpus.Executables.Helpers;
-
 namespace MagnumOpus.ViewModels
 {
-	public class IPAddressPanelViewModel : ViewModelBase
+    public class IPAddressPanelViewModel : ViewModelBase
 	{
 		public IPAddressPanelViewModel()
 		{

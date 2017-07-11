@@ -1,10 +1,8 @@
 ﻿using ReactiveUI;
 using MagnumOpus.Models;
 using MagnumOpus.ViewModels;
-using System;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows;

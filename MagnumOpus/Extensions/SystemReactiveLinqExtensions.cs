@@ -1,9 +1,8 @@
 ﻿using System.Reactive.Concurrency;
-using System.Reactive.Subjects;
 
 namespace System.Reactive.Linq
 {
-	public static class SystemReactiveLinqExtensions
+    public static class SystemReactiveLinqExtensions
 	{
 		public static IObservable<T> WhereNotNull<T>(this IObservable<T> source) where T : class => source.Where(value => value != null);
 

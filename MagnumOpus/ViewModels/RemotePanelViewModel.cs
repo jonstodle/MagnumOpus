@@ -2,7 +2,6 @@
 using ReactiveUI;
 using MagnumOpus.Models;
 using MagnumOpus.Services.NavigationServices;
-using MagnumOpus.Services.SettingsServices;
 using System;
 using System.IO;
 using System.Net.NetworkInformation;
@@ -12,12 +11,11 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using static MagnumOpus.Services.FileServices.ExecutionService;
-using MagnumOpus.Services.FileServices;
 using System.Management.Automation;
 
 namespace MagnumOpus.ViewModels
 {
-	public class RemotePanelViewModel : ViewModelBase
+    public class RemotePanelViewModel : ViewModelBase
 	{
 		public RemotePanelViewModel()
 		{

@@ -8,12 +8,10 @@ using System.Diagnostics;
 using System.DirectoryServices;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Reactive.Concurrency;
 
 namespace MagnumOpus.ViewModels

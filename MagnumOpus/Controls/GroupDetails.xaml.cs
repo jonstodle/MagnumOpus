@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using MagnumOpus.Models;
 using MagnumOpus.ViewModels;
-using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
 using System.Reactive.Disposables;

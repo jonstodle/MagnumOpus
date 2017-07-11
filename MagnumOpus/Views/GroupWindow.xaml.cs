@@ -2,7 +2,6 @@
 using MagnumOpus.Models;
 using MagnumOpus.ViewModels;
 using System.Collections.Generic;
-using System.Reactive;
 using System.Windows;
 using System.Reactive.Linq;
 using System.Reactive.Disposables;
