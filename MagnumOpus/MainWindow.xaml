@@ -57,7 +57,7 @@
 				</Button>
 			</Grid>
 
-			<DataGrid x:Name="SearchResultsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="None" AlternatingRowBackground="AliceBlue" Grid.Row="1" Margin="2">
+			<DataGrid x:Name="SearchResultsDataGrid" IsReadOnly="True" AutoGenerateColumns="False" GridLinesVisibility="None" AlternatingRowBackground="AliceBlue" Background="Transparent" Grid.Row="1" Margin="2">
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="300"/>
 					<DataGridTextColumn Header="ID" Binding="{Binding SamAccountName}" Width="200"/>
