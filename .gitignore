@@ -250,3 +250,5 @@ SupportTool/Services/SettingsServices/SettingsService\.Environment\.cs
 MagnumOpus/EnvironmentDefaults\.json
 
 MagnumOpus/Executables/Files/
+
+\.idea/
