@@ -98,15 +98,15 @@ namespace MagnumOpus.EditMembers
 
 
 
-        public ReactiveCommand<string, GroupObject> SetGroup { get; private set; }
-        public ReactiveCommand<Unit, DirectoryEntry> GetGroupMembers { get; private set; }
-        public ReactiveCommand<Unit, IObservable<DirectoryEntry>> Search { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenSearchResult { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenGroupMember { get; private set; }
-        public ReactiveCommand<Unit, Unit> AddToGroup { get; private set; }
-        public ReactiveCommand<Unit, Unit> RemoveFromGroup { get; private set; }
-        public ReactiveCommand<Unit, IEnumerable<string>> Save { get; private set; }
-        public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
+        public ReactiveCommand<string, GroupObject> SetGroup { get; }
+        public ReactiveCommand<Unit, DirectoryEntry> GetGroupMembers { get; }
+        public ReactiveCommand<Unit, IObservable<DirectoryEntry>> Search { get; }
+        public ReactiveCommand<Unit, Unit> OpenSearchResult { get; }
+        public ReactiveCommand<Unit, Unit> OpenGroupMember { get; }
+        public ReactiveCommand<Unit, Unit> AddToGroup { get; }
+        public ReactiveCommand<Unit, Unit> RemoveFromGroup { get; }
+        public ReactiveCommand<Unit, IEnumerable<string>> Save { get; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
         public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;

@@ -83,16 +83,16 @@ namespace MagnumOpus.IPAddress
 
 
 
-		public ReactiveCommand<Unit, Unit> OpenLoggedOn { get; private set; }
-		public ReactiveCommand<Unit, Unit> OpenLoggedOnPlus { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenRemoteExecution { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenCDrive { get; private set; }
-        public ReactiveCommand<Unit, Unit> RebootComputer { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteControl { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteControl2012 { get; private set; }
-        public ReactiveCommand<Unit, Unit> KillRemoteControl { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteAssistance { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRdp { get; private set; }
+		public ReactiveCommand<Unit, Unit> OpenLoggedOn { get; }
+		public ReactiveCommand<Unit, Unit> OpenLoggedOnPlus { get; }
+        public ReactiveCommand<Unit, Unit> OpenRemoteExecution { get; }
+        public ReactiveCommand<Unit, Unit> OpenCDrive { get; }
+        public ReactiveCommand<Unit, Unit> RebootComputer { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControl { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControl2012 { get; }
+        public ReactiveCommand<Unit, Unit> KillRemoteControl { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteAssistance { get; }
+        public ReactiveCommand<Unit, Unit> StartRdp { get; }
         public string HostName => _hostName.Value;
         public string IPAddress { get => _ipAddress; set => this.RaiseAndSetIfChanged(ref _ipAddress, value); }
 

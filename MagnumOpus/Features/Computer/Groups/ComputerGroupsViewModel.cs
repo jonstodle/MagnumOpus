@@ -52,9 +52,9 @@ namespace MagnumOpus.Computer
 
 
 
-        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; private set; }
-        public ReactiveCommand<Unit, Unit> FindDirectGroup { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; }
+        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; }
+        public ReactiveCommand<Unit, Unit> FindDirectGroup { get; }
         public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
         public bool IsShowingDirectGroups { get => _isShowingDirectGroups; set => this.RaiseAndSetIfChanged(ref _isShowingDirectGroups, value); }

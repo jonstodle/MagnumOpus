@@ -147,15 +147,15 @@ namespace MagnumOpus.Group
 
 
 
-        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; private set; }
-        public ReactiveCommand<Unit, Unit> FindDirectMemberOfGroup { get; private set; }
-        public ReactiveCommand<Unit, string> GetAllGroups { get; private set; }
-        public ReactiveCommand<Unit, Unit> FindAllMemberOfGroup { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveAllGroups { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenEditMembers { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveMembers { get; private set; }
-        public ReactiveCommand<Unit, Unit> FindMember { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; }
+        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; }
+        public ReactiveCommand<Unit, Unit> FindDirectMemberOfGroup { get; }
+        public ReactiveCommand<Unit, string> GetAllGroups { get; }
+        public ReactiveCommand<Unit, Unit> FindAllMemberOfGroup { get; }
+        public ReactiveCommand<Unit, Unit> SaveAllGroups { get; }
+        public ReactiveCommand<Unit, Unit> OpenEditMembers { get; }
+        public ReactiveCommand<Unit, Unit> SaveMembers { get; }
+        public ReactiveCommand<Unit, Unit> FindMember { get; }
         public IReactiveDerivedList<string> DirectMemberOfGroups => _directMemberOfGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
         public ReactiveList<string> AllMemberOfGroups => _allMemberOfGroups;
         public IReactiveDerivedList<string> Members => _members.CreateDerivedCollection(memberName => memberName, orderer: (one, two) => one.CompareTo(two));

@@ -44,9 +44,9 @@ namespace MagnumOpus.User
 
 
 
-		public ReactiveCommand<string, UserObject> SetUser { get; private set; }
-        public ReactiveCommand<Unit, IObservable<LockoutInfo>> GetLockoutInfo { get; private set; }
-        public ReactiveCommand<Unit, Unit> Close { get; private set; }
+		public ReactiveCommand<string, UserObject> SetUser { get; }
+        public ReactiveCommand<Unit, IObservable<LockoutInfo>> GetLockoutInfo { get; }
+        public ReactiveCommand<Unit, Unit> Close { get; }
         public ReactiveList<LockoutInfo> LockoutInfos => _lockoutInfos;
 		public UserObject User => _user.Value;
 

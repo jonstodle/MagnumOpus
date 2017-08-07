@@ -30,10 +30,10 @@ namespace MagnumOpus.Dialog
 
 
 
-        public MessageType Type { get; private set; }
-        public string Caption { get; private set; }
-        public string Message { get; private set; }
-        public DialogButtonInfo[] Buttons { get; private set; }
+        public MessageType Type { get; }
+        public string Caption { get; }
+        public string Message { get; }
+        public DialogButtonInfo[] Buttons { get; }
 
         public static MessageInfo PasswordSetMessageInfo(string password) => new MessageInfo(MessageType.Success, $"New password is: {password}\nMust be changed at next logon", "Password set");
 

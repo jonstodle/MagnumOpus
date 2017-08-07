@@ -53,9 +53,9 @@ namespace MagnumOpus.Settings
 
 
 
-        public string SplunkUrl { get; private set; }
-        public string SCCMPath { get; private set; }
-        public string LogDirectoryPath { get; private set; }
-        public IEnumerable<KeyValuePair<string,string>> ComputerCompanyOus { get; private set; }
+        public string SplunkUrl { get; }
+        public string SCCMPath { get; }
+        public string LogDirectoryPath { get; }
+        public IEnumerable<KeyValuePair<string,string>> ComputerCompanyOus { get; }
     }
 }

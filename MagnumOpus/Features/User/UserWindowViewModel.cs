@@ -30,7 +30,7 @@ namespace MagnumOpus.User
 
 
 
-		public ReactiveCommand<string, UserObject> SetUser { get; private set; }
+		public ReactiveCommand<string, UserObject> SetUser { get; }
         public UserObject User => _user.Value;
 
 

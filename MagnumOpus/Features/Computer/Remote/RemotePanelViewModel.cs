@@ -89,16 +89,16 @@ namespace MagnumOpus.Computer
 
 
 
-        public ReactiveCommand<Unit, Unit> OpenUser { get; private set; }
-        public ReactiveCommand<Unit, Unit> CopyUserName { get; private set; }
-        public ReactiveCommand<Unit, Unit> LogOffUser { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteControl { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteControlClassic { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteControl2012 { get; private set; }
-        public ReactiveCommand<Unit, Unit> KillRemoteTools { get; private set; }
-        public ReactiveCommand<Unit, bool> ToggleUac { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRemoteAssistance { get; private set; }
-        public ReactiveCommand<Unit, Unit> StartRdp { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenUser { get; }
+        public ReactiveCommand<Unit, Unit> CopyUserName { get; }
+        public ReactiveCommand<Unit, Unit> LogOffUser { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControl { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControlClassic { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteControl2012 { get; }
+        public ReactiveCommand<Unit, Unit> KillRemoteTools { get; }
+        public ReactiveCommand<Unit, bool> ToggleUac { get; }
+        public ReactiveCommand<Unit, Unit> StartRemoteAssistance { get; }
+        public ReactiveCommand<Unit, Unit> StartRdp { get; }
         public ReactiveList<LoggedOnUserInfo> LoggedOnUsers => _loggedOnUsers;
         public bool? IsUacOn => _isUacOn.Value;
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }

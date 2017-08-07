@@ -85,9 +85,9 @@ namespace MagnumOpus.User
 
 
 
-        public ReactiveCommand<Unit, bool> ToggleOrganizationDetails { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenManager { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenDirectReport { get; private set; }
+        public ReactiveCommand<Unit, bool> ToggleOrganizationDetails { get; }
+        public ReactiveCommand<Unit, Unit> OpenManager { get; }
+        public ReactiveCommand<Unit, Unit> OpenDirectReport { get; }
         public IReactiveDerivedList<UserObject> DirectReports => _directReports.CreateDerivedCollection(user => user, orderer: (one, two) => one.Principal.Name.CompareTo(two.Principal.Name));
         public bool IsAccountLocked => _isAccountLocked.Value;
         public TimeSpan PasswordAge => _passwordAge.Value;

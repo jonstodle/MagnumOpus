@@ -106,15 +106,15 @@ namespace MagnumOpus.User
 
 
 
-        public ReactiveCommand<Unit, string> SetNewPassword { get; private set; }
-        public ReactiveCommand<Unit, string> SetNewSimplePassword { get; private set; }
-        public ReactiveCommand<Unit, string> SetNewComplexPassword { get; private set; }
-        public ReactiveCommand<Unit, Unit> ExpirePassword { get; private set; }
-        public ReactiveCommand<Unit, Unit> UnlockAccount { get; private set; }
-        public ReactiveCommand<Unit, Unit> RunLockoutStatus { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenPermittedWorkstations { get; private set; }
-        public ReactiveCommand<Unit, Unit> ToggleEnabled { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenSplunk { get; private set; }
+        public ReactiveCommand<Unit, string> SetNewPassword { get; }
+        public ReactiveCommand<Unit, string> SetNewSimplePassword { get; }
+        public ReactiveCommand<Unit, string> SetNewComplexPassword { get; }
+        public ReactiveCommand<Unit, Unit> ExpirePassword { get; }
+        public ReactiveCommand<Unit, Unit> UnlockAccount { get; }
+        public ReactiveCommand<Unit, Unit> RunLockoutStatus { get; }
+        public ReactiveCommand<Unit, Unit> OpenPermittedWorkstations { get; }
+        public ReactiveCommand<Unit, Unit> ToggleEnabled { get; }
+        public ReactiveCommand<Unit, Unit> OpenSplunk { get; }
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
         public bool IsShowingNewPasswordOptions { get => _isShowingNewPasswordOptions; set => this.RaiseAndSetIfChanged(ref _isShowingNewPasswordOptions, value); }
         public string NewPassword { get => _newPassword; set => this.RaiseAndSetIfChanged(ref _newPassword, value); }

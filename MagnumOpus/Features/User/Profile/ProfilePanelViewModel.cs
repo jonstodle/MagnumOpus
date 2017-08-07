@@ -162,17 +162,17 @@ namespace MagnumOpus.User
 
 
 
-        public ReactiveCommand<Unit, Unit> ResetGlobalProfile { get; private set; }
-        public ReactiveCommand<Unit, Unit> ResetLocalProfile { get; private set; }
-        public ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfiles { get; private set; }
-        public ReactiveCommand<Unit, Unit> RestoreProfile { get; private set; }
-        public ReactiveCommand<Unit, Unit> ResetCitrixProfile { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenGlobalProfile { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveGlobalProfilePath { get; private set; }
-        public ReactiveCommand<Unit, Unit> CancelGlobalProfilePath { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenHomeFolder { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveHomeFolderPath { get; private set; }
-        public ReactiveCommand<Unit, Unit> CancelHomeFolderPath { get; private set; }
+        public ReactiveCommand<Unit, Unit> ResetGlobalProfile { get; }
+        public ReactiveCommand<Unit, Unit> ResetLocalProfile { get; }
+        public ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfiles { get; }
+        public ReactiveCommand<Unit, Unit> RestoreProfile { get; }
+        public ReactiveCommand<Unit, Unit> ResetCitrixProfile { get; }
+        public ReactiveCommand<Unit, Unit> OpenGlobalProfile { get; }
+        public ReactiveCommand<Unit, Unit> SaveGlobalProfilePath { get; }
+        public ReactiveCommand<Unit, Unit> CancelGlobalProfilePath { get; }
+        public ReactiveCommand<Unit, Unit> OpenHomeFolder { get; }
+        public ReactiveCommand<Unit, Unit> SaveHomeFolderPath { get; }
+        public ReactiveCommand<Unit, Unit> CancelHomeFolderPath { get; }
         public ReactiveList<DirectoryInfo> Profiles => _profiles;
         public bool IsExecutingResetGlobalProfile => _isExecutingResetGlobalProfile.Value;
         public bool IsExecutingResetLocalProfile => _isExecutingResetLocalProfile.Value;

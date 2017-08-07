@@ -30,7 +30,7 @@ namespace MagnumOpus.Computer
 
 
 
-		public ReactiveCommand<string, ComputerObject> SetComputer { get; private set; }
+		public ReactiveCommand<string, ComputerObject> SetComputer { get; }
 
 		public ComputerObject Computer => _computer.Value;
 

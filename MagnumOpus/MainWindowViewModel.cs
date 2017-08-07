@@ -79,10 +79,10 @@ namespace MagnumOpus
 
 
 
-        public ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> Search { get; private set; }
-        public ReactiveCommand<Unit, Unit> Paste { get; private set; }
-        public ReactiveCommand<Unit, Unit> Open { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenSettings { get; private set; }
+        public ReactiveCommand<Unit, IObservable<DirectoryEntryInfo>> Search { get; }
+        public ReactiveCommand<Unit, Unit> Paste { get; }
+        public ReactiveCommand<Unit, Unit> Open { get; }
+        public ReactiveCommand<Unit, Unit> OpenSettings { get; }
         public IReactiveDerivedList<DirectoryEntryInfo> SearchResults => _searchResults.CreateDerivedCollection(directoryEntryInfo => directoryEntryInfo, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public ReactiveList<string> History => _history;
         public bool IsNoResults => _isNoResults.Value;

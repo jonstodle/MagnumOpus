@@ -117,12 +117,12 @@ namespace MagnumOpus.User
 
 
 
-        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; private set; }
-        public ReactiveCommand<Unit, Unit> SaveAllGroups { get; private set; }
-        public ReactiveCommand<Unit, DirectoryEntry> GetAllGroups { get; private set; }
-        public ReactiveCommand<Unit, Unit> FindDirectGroup { get; private set; }
-        public ReactiveCommand<Unit, Unit> FindAllGroup { get; private set; }
+        public ReactiveCommand<Unit, Unit> OpenEditMemberOf { get; }
+        public ReactiveCommand<Unit, Unit> SaveDirectGroups { get; }
+        public ReactiveCommand<Unit, Unit> SaveAllGroups { get; }
+        public ReactiveCommand<Unit, DirectoryEntry> GetAllGroups { get; }
+        public ReactiveCommand<Unit, Unit> FindDirectGroup { get; }
+        public ReactiveCommand<Unit, Unit> FindAllGroup { get; }
         public ReactiveList<string> AllGroups => _allGroups;
         public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
         public ListCollectionView AllGroupsCollectionView => _allGroupsCollectionView;

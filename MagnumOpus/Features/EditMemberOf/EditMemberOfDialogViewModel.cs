@@ -97,15 +97,15 @@ namespace MagnumOpus.EditMemberOf
 
 
 
-        public ReactiveCommand<string, Principal> SetPrincipal { get; private set; }
-        public ReactiveCommand<Unit, DirectoryEntry> GetPrincipalMembers { get; private set; }
-        public ReactiveCommand<Unit, IObservable<DirectoryEntry>> Search { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenSearchResultPrincipal { get; private set; }
-        public ReactiveCommand<Unit, Unit> OpenMembersPrincipal { get; private set; }
-        public ReactiveCommand<Unit, Unit> AddToPrincipal { get; private set; }
-        public ReactiveCommand<Unit, Unit> RemoveFromPrincipal { get; private set; }
-        public ReactiveCommand<Unit, IEnumerable<string>> Save { get; private set; }
-        public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
+        public ReactiveCommand<string, Principal> SetPrincipal { get; }
+        public ReactiveCommand<Unit, DirectoryEntry> GetPrincipalMembers { get; }
+        public ReactiveCommand<Unit, IObservable<DirectoryEntry>> Search { get; }
+        public ReactiveCommand<Unit, Unit> OpenSearchResultPrincipal { get; }
+        public ReactiveCommand<Unit, Unit> OpenMembersPrincipal { get; }
+        public ReactiveCommand<Unit, Unit> AddToPrincipal { get; }
+        public ReactiveCommand<Unit, Unit> RemoveFromPrincipal { get; }
+        public ReactiveCommand<Unit, IEnumerable<string>> Save { get; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
         public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public IReactiveDerivedList<DirectoryEntry> PrincipalMembers => _principalMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public Principal Principal => _principal.Value;

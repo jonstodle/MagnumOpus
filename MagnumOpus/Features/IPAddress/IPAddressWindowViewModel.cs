@@ -28,7 +28,7 @@ namespace MagnumOpus.IPAddress
 
 
 
-        public ReactiveCommand<string, string> SetIPAddress { get; private set; }
+        public ReactiveCommand<string, string> SetIPAddress { get; }
         public string IPAddress => _ipAddress.Value;
 
 

@@ -51,8 +51,8 @@ namespace MagnumOpus.Computer
 
 
 
-		public ReactiveCommand<Unit, string> StartPing { get; private set; }
-		public ReactiveCommand<Unit, Unit> StopPing { get; private set; }
+		public ReactiveCommand<Unit, string> StartPing { get; }
+		public ReactiveCommand<Unit, Unit> StopPing { get; }
         public ReactiveList<string> PingResults => _pingResults;
 		public string MostRecentPingResult => _mostRecentPingResult.Value;
         public string HostName { get => _hostName; set => this.RaiseAndSetIfChanged(ref _hostName, value); }

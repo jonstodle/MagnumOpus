@@ -21,13 +21,13 @@ namespace MagnumOpus.ActiveDirectory
 
 
 
-        public string Path { get; private set; }
-        public string CN { get; private set; }
-        public string DistinguishedName { get; private set; }
-        public string SamAccountName { get; private set; }
-        public string Name { get; private set; }
-        public string Company { get; private set; }
-        public string ObjectType { get; private set; }
+        public string Path { get; }
+        public string CN { get; }
+        public string DistinguishedName { get; }
+        public string SamAccountName { get; }
+        public string Name { get; }
+        public string Company { get; }
+        public string ObjectType { get; }
 
 
 

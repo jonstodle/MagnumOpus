@@ -20,8 +20,8 @@ namespace MagnumOpus.Dialog
 
 
 
-        public Control Control { get; private set; }
-        public object Parameter { get; private set; }
+        public Control Control { get; }
+        public object Parameter { get; }
     }
 
 

@@ -67,11 +67,11 @@ namespace MagnumOpus.Computer
 
 
 
-        public ReactiveCommand<Unit, string> AddComputer { get; private set; }
-        public ReactiveCommand<Unit, bool> RemoveComputer { get; private set; }
-        public ReactiveCommand<Unit, Unit> RemoveAllComputers { get; private set; }
-        public ReactiveCommand<Unit, Unit> Save { get; private set; }
-        public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
+        public ReactiveCommand<Unit, string> AddComputer { get; }
+        public ReactiveCommand<Unit, bool> RemoveComputer { get; }
+        public ReactiveCommand<Unit, Unit> RemoveAllComputers { get; }
+        public ReactiveCommand<Unit, Unit> Save { get; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
         public IReactiveDerivedList<string> Computers => _computers.CreateDerivedCollection(computerName => computerName, orderer: (one, two) => one.CompareTo(two));
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
         public string ComputerName { get => _computerName; set => this.RaiseAndSetIfChanged(ref _computerName, value); }

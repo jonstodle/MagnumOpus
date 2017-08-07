@@ -29,7 +29,7 @@ namespace MagnumOpus.Group
 
 
 
-		public ReactiveCommand<string, GroupObject> SetGroup { get; private set; }
+		public ReactiveCommand<string, GroupObject> SetGroup { get; }
         public GroupObject Group => _group.Value;
 
 

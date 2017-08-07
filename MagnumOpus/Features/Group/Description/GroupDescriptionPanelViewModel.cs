@@ -40,8 +40,8 @@ namespace MagnumOpus.Group
 
 
 
-        public ReactiveCommand<Unit, Unit> Save { get; private set; }
-        public ReactiveCommand<Unit, Unit> Cancel { get; private set; }
+        public ReactiveCommand<Unit, Unit> Save { get; }
+        public ReactiveCommand<Unit, Unit> Cancel { get; }
         public bool HasDescriptionChanged => _hasDescriptionChanged.Value;
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
         public string Description { get => _description; set => this.RaiseAndSetIfChanged(ref _description, value); }

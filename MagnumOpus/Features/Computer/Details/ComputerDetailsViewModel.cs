@@ -33,7 +33,7 @@ namespace MagnumOpus.Computer
 
 
 
-        public ReactiveCommand<Unit, bool> ToggleIsShowingDetails { get; private set; }
+        public ReactiveCommand<Unit, bool> ToggleIsShowingDetails { get; }
         public OperatingSystemInfo OperatingSystemInfo => _operatingSystemInfo.Value;
 		public string IPAddress => _ipAddress.Value;
         public bool IsShowingDetails => _isShowingDetails.Value;

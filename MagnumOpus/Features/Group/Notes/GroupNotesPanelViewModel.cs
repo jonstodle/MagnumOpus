@@ -45,9 +45,9 @@ namespace MagnumOpus.Group
 
 
 
-		public ReactiveCommand<Unit, bool> EnableEditing { get; private set; }
-		public ReactiveCommand<Unit, bool> Save { get; private set; }
-        public ReactiveCommand<Unit, bool> Cancel { get; private set; }
+		public ReactiveCommand<Unit, bool> EnableEditing { get; }
+		public ReactiveCommand<Unit, bool> Save { get; }
+        public ReactiveCommand<Unit, bool> Cancel { get; }
         public bool IsEditingEnabled => _isEditingEnabled.Value;
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
         public string Notes { get => _notes; set => this.RaiseAndSetIfChanged(ref _notes, value); }

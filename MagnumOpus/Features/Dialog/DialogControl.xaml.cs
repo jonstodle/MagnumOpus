@@ -124,9 +124,9 @@ namespace MagnumOpus.Dialog
 
 
 
-        public Guid Id { get; private set; }
-        public string Text { get; private set; }
-        public bool CloseDialog { get; private set; }
-        public bool IsDefault { get; private set; }
+        public Guid Id { get; }
+        public string Text { get; }
+        public bool CloseDialog { get; }
+        public bool IsDefault { get; }
     }
 }
