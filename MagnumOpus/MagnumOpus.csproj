@@ -157,262 +157,262 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActiveDirectoryObject.cs" />
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
-    <Compile Include="Controls\ComputerDetails.xaml.cs">
-      <DependentUpon>ComputerDetails.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ComputerGroups.xaml.cs">
-      <DependentUpon>ComputerGroups.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AccountPanel.xaml.cs">
-      <DependentUpon>AccountPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ComputerManagement.xaml.cs">
-      <DependentUpon>ComputerManagement.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DelimitedListInput.xaml.cs">
+    <Compile Include="ApplicationActionRequest.cs" />
+    <Compile Include="DelimitedListInput.xaml.cs">
       <DependentUpon>DelimitedListInput.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DialogControl.xaml.cs">
-      <DependentUpon>DialogControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\EditMemberOfDialog.xaml.cs">
-      <DependentUpon>EditMemberOfDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\EditMembersDialog.xaml.cs">
-      <DependentUpon>EditMembersDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GroupDescriptionPanel.xaml.cs">
-      <DependentUpon>GroupDescriptionPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GroupDetails.xaml.cs">
-      <DependentUpon>GroupDetails.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GroupGroups.xaml.cs">
-      <DependentUpon>GroupGroups.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GroupNotesPanel.xaml.cs">
-      <DependentUpon>GroupNotesPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\IPAddressPanel.xaml.cs">
-      <DependentUpon>IPAddressPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ModalControl.xaml.cs">
-      <DependentUpon>ModalControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PermittedWorkstationsDialog.xaml.cs">
-      <DependentUpon>PermittedWorkstationsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\PingPanel.xaml.cs">
-      <DependentUpon>PingPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ProfilePanel.xaml.cs">
-      <DependentUpon>ProfilePanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\RemotePanel.xaml.cs">
-      <DependentUpon>RemotePanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserDetails.xaml.cs">
-      <DependentUpon>UserDetails.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserGroups.xaml.cs">
-      <DependentUpon>UserGroups.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\UserLockoutInfo.xaml.cs">
-      <DependentUpon>UserLockoutInfo.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="ExcelService.cs" />
     <Compile Include="Executables\Helpers.cs" />
-    <Compile Include="Extensions\SystemDirectoryServicesAccountManagement.cs" />
-    <Compile Include="Extensions\SystemLinqExtensions.cs" />
-    <Compile Include="Extensions\SystemReflectionExtensions.cs" />
-    <Compile Include="Extensions\SystemDirectoryServicesExtensions.cs" />
-    <Compile Include="Extensions\SystemExtensions.cs" />
-    <Compile Include="Extensions\SystemReactiveDisposablesExtensions.cs" />
-    <Compile Include="Extensions\SystemReactiveLinqExtensions.cs" />
-    <Compile Include="Models\ActiveDirectoryObject.cs" />
-    <Compile Include="Models\ApplicationActionRequest.cs" />
-    <Compile Include="Models\DialogInfo.cs" />
-    <Compile Include="Models\LockoutInfo.cs" />
-    <Compile Include="Models\LoggedOnUserInfo.cs" />
-    <Compile Include="Models\MessageInfo.cs" />
-    <Compile Include="Models\OperatingSystemInfo.cs" />
-    <Compile Include="Models\ComputerObject.cs" />
-    <Compile Include="Models\DirectoryEntryInfo.cs" />
-    <Compile Include="Models\GroupObject.cs" />
-    <Compile Include="Models\UserObject.cs" />
-    <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Computer.cs" />
-    <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Constants.cs" />
-    <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.cs" />
-    <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.Group.cs" />
-    <Compile Include="Services\ActiveDirectoryServices\ActiveDirectoryService.User.cs" />
-    <Compile Include="Services\ExportServices\ExcelService.cs" />
-    <Compile Include="Services\FileServices\ExecutionService.cs" />
-    <Compile Include="Services\FileServices\FileService.cs" />
-    <Compile Include="Services\LogServices\FileLoggerService.cs" />
-    <Compile Include="Services\LogServices\LogService.cs" />
-    <Compile Include="Services\LogServices\LogType.cs" />
-    <Compile Include="Services\NavigationServices\IDialog.cs" />
-    <Compile Include="Services\NavigationServices\INavigable.cs" />
-    <Compile Include="Services\NavigationServices\NavigationService.cs" />
-    <Compile Include="Services\SettingsServices\SettingsService.cs" />
-    <Compile Include="Services\SettingsServices\SettingsService.Environment.cs" />
-    <Compile Include="Services\SettingsServices\SettingsService.User.cs" />
-    <Compile Include="Services\StateServices\StateService.cs" />
-    <Compile Include="ViewModels\ComputerDetailsViewModel.cs" />
-    <Compile Include="ViewModels\ComputerGroupsViewModel.cs" />
-    <Compile Include="ViewModels\ComputerManagementViewModel.cs" />
-    <Compile Include="ViewModels\ComputerWindowViewModel.cs" />
-    <Compile Include="ViewModels\EditMemberOfDialogViewModel.cs" />
-    <Compile Include="ViewModels\EditMembersDialogViewModel.cs" />
-    <Compile Include="ViewModels\GroupDescriptionPanelViewModel.cs" />
-    <Compile Include="ViewModels\GroupDetailsViewModel.cs" />
-    <Compile Include="ViewModels\GroupGroupsViewModel.cs" />
-    <Compile Include="ViewModels\GroupNotesPanelViewModel.cs" />
-    <Compile Include="ViewModels\GroupWindowViewModel.cs" />
-    <Compile Include="ViewModels\IPAddressPanelViewModel.cs" />
-    <Compile Include="ViewModels\IPAddressWindowViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\AccountPanelViewModel.cs" />
-    <Compile Include="ViewModels\PermittedWorkstationsDialogViewModel.cs" />
-    <Compile Include="ViewModels\PingPanelViewModel.cs" />
-    <Compile Include="ViewModels\ProfilePanelViewModel.cs" />
-    <Compile Include="ViewModels\RemotePanelViewModel.cs" />
-    <Compile Include="ViewModels\SettingsWindowViewModel.cs" />
-    <Compile Include="ViewModels\UserDetailsViewModel.cs" />
-    <Compile Include="ViewModels\UserGroupsViewModel.cs" />
-    <Compile Include="ViewModels\UserLockoutInfoViewModel.cs" />
-    <Compile Include="ViewModels\UserWindowViewModel.cs" />
-    <Compile Include="ViewModels\ViewModelBase.cs" />
-    <Compile Include="Views\ComputerWindow.xaml.cs">
+    <Compile Include="FileHelpers\ExecutionService.cs" />
+    <Compile Include="FileHelpers\FileService.cs" />
+    <Compile Include="Mixins\SystemDirectoryServicesAccountManagement.cs" />
+    <Compile Include="Mixins\SystemLinqExtensions.cs" />
+    <Compile Include="Mixins\SystemReflectionExtensions.cs" />
+    <Compile Include="Mixins\SystemDirectoryServicesExtensions.cs" />
+    <Compile Include="Mixins\SystemExtensions.cs" />
+    <Compile Include="Mixins\SystemReactiveDisposablesExtensions.cs" />
+    <Compile Include="Mixins\SystemReactiveLinqExtensions.cs" />
+    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Computer.cs" />
+    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Constants.cs" />
+    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.cs" />
+    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Group.cs" />
+    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.User.cs" />
+    <Compile Include="Features\ActiveDirectory\DirectoryEntryInfo.cs" />
+    <Compile Include="Features\Computer\ComputerObject.cs" />
+    <Compile Include="Features\Computer\ComputerWindow.xaml.cs">
       <DependentUpon>ComputerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\DetailsWindow.cs" />
-    <Compile Include="Views\GroupWindow.xaml.cs">
+    <Compile Include="Features\Computer\ComputerWindowViewModel.cs" />
+    <Compile Include="Features\Computer\Details\ComputerDetails.xaml.cs">
+      <DependentUpon>ComputerDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Computer\Details\ComputerDetailsViewModel.cs" />
+    <Compile Include="Features\Computer\Details\OperatingSystemInfo.cs" />
+    <Compile Include="Features\Computer\Groups\ComputerGroups.xaml.cs">
+      <DependentUpon>ComputerGroups.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Computer\Groups\ComputerGroupsViewModel.cs" />
+    <Compile Include="Features\Computer\Management\ComputerManagement.xaml.cs">
+      <DependentUpon>ComputerManagement.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Computer\Management\ComputerManagementViewModel.cs" />
+    <Compile Include="Features\Computer\PermittedWorkstations\PermittedWorkstationsDialog.xaml.cs">
+      <DependentUpon>PermittedWorkstationsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Computer\PermittedWorkstations\PermittedWorkstationsDialogViewModel.cs" />
+    <Compile Include="Features\Computer\Ping\PingPanel.xaml.cs">
+      <DependentUpon>PingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Computer\Ping\PingPanelViewModel.cs" />
+    <Compile Include="Features\Computer\Remote\RemotePanel.xaml.cs">
+      <DependentUpon>RemotePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Computer\Remote\RemotePanelViewModel.cs" />
+    <Compile Include="Features\DetailsWindow\DetailsWindow.cs" />
+    <Compile Include="Features\Dialog\DialogControl.xaml.cs">
+      <DependentUpon>DialogControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Dialog\DialogInfo.cs" />
+    <Compile Include="Features\Dialog\IDialog.cs" />
+    <Compile Include="Features\Dialog\MessageInfo.cs" />
+    <Compile Include="Features\EditMemberOf\EditMemberOfDialog.xaml.cs">
+      <DependentUpon>EditMemberOfDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\EditMemberOf\EditMemberOfDialogViewModel.cs" />
+    <Compile Include="Features\EditMembers\EditMembersDialog.xaml.cs">
+      <DependentUpon>EditMembersDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\EditMembers\EditMembersDialogViewModel.cs" />
+    <Compile Include="Features\Group\Description\GroupDescriptionPanel.xaml.cs">
+      <DependentUpon>GroupDescriptionPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Group\Description\GroupDescriptionPanelViewModel.cs" />
+    <Compile Include="Features\Group\Details\GroupDetails.xaml.cs">
+      <DependentUpon>GroupDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Group\Details\GroupDetailsViewModel.cs" />
+    <Compile Include="Features\Group\GroupObject.cs" />
+    <Compile Include="Features\Group\Groups\GroupGroups.xaml.cs">
+      <DependentUpon>GroupGroups.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Group\Groups\GroupGroupsViewModel.cs" />
+    <Compile Include="Features\Group\GroupWindow.xaml.cs">
       <DependentUpon>GroupWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\IPAddressWindow.xaml.cs">
+    <Compile Include="Features\Group\GroupWindowViewModel.cs" />
+    <Compile Include="Features\Group\Notes\GroupNotesPanel.xaml.cs">
+      <DependentUpon>GroupNotesPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Group\Notes\GroupNotesPanelViewModel.cs" />
+    <Compile Include="Features\IPAddress\IPAddressPanel.xaml.cs">
+      <DependentUpon>IPAddressPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\IPAddress\IPAddressPanelViewModel.cs" />
+    <Compile Include="Features\IPAddress\IPAddressWindow.xaml.cs">
       <DependentUpon>IPAddressWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SettingsWindow.xaml.cs">
+    <Compile Include="Features\IPAddress\IPAddressWindowViewModel.cs" />
+    <Compile Include="Features\Logging\FileLoggerService.cs" />
+    <Compile Include="Features\Logging\LogService.cs" />
+    <Compile Include="Features\Logging\LogType.cs" />
+    <Compile Include="Features\MainWindow\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Features\MainWindow\MainWindowViewModel.cs" />
+    <Compile Include="Features\Modal\ModalControl.xaml.cs">
+      <DependentUpon>ModalControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Settings\SettingsService.cs" />
+    <Compile Include="Features\Settings\SettingsService.Environment.cs" />
+    <Compile Include="Features\Settings\SettingsService.User.cs" />
+    <Compile Include="Features\Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\UserWindow.xaml.cs">
+    <Compile Include="Features\Settings\SettingsWindowViewModel.cs" />
+    <Compile Include="Features\State\StateService.cs" />
+    <Compile Include="Features\User\Account\AccountPanel.xaml.cs">
+      <DependentUpon>AccountPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\User\Account\AccountPanelViewModel.cs" />
+    <Compile Include="Features\User\Account\LoggedOnUserInfo.cs" />
+    <Compile Include="Features\User\Details\UserDetails.xaml.cs">
+      <DependentUpon>UserDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\User\Details\UserDetailsViewModel.cs" />
+    <Compile Include="Features\User\Groups\UserGroups.xaml.cs">
+      <DependentUpon>UserGroups.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\User\Groups\UserGroupsViewModel.cs" />
+    <Compile Include="Features\User\LockoutInfo\LockoutInfo.cs" />
+    <Compile Include="Features\User\LockoutInfo\UserLockoutInfo.xaml.cs">
+      <DependentUpon>UserLockoutInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\User\LockoutInfo\UserLockoutInfoViewModel.cs" />
+    <Compile Include="Features\User\Profile\ProfilePanel.xaml.cs">
+      <DependentUpon>ProfilePanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\User\Profile\ProfilePanelViewModel.cs" />
+    <Compile Include="Features\User\UserObject.cs" />
+    <Compile Include="Features\User\UserWindow.xaml.cs">
       <DependentUpon>UserWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\WindowBase.cs" />
-    <Page Include="Controls\ComputerDetails.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ComputerGroups.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\AccountPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ComputerManagement.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\DelimitedListInput.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\DialogControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\EditMemberOfDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\EditMembersDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GroupDescriptionPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GroupDetails.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GroupGroups.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\GroupNotesPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\IPAddressPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ModalControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PermittedWorkstationsDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\PingPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ProfilePanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\RemotePanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\UserDetails.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\UserGroups.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\UserLockoutInfo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    <Compile Include="Features\User\UserWindowViewModel.cs" />
+    <Compile Include="Navigation\INavigable.cs" />
+    <Compile Include="Navigation\NavigationService.cs" />
+    <Compile Include="ViewModelBase.cs" />
+    <Compile Include="WindowBase.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Views\ComputerWindow.xaml">
+    <Page Include="DelimitedListInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\GroupWindow.xaml">
+    <Page Include="Features\Computer\ComputerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\IPAddressWindow.xaml">
+    <Page Include="Features\Computer\Details\ComputerDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SettingsWindow.xaml">
+    <Page Include="Features\Computer\Groups\ComputerGroups.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\UserWindow.xaml">
+    <Page Include="Features\Computer\Management\ComputerManagement.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Computer\PermittedWorkstations\PermittedWorkstationsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Computer\Ping\PingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Computer\Remote\RemotePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Dialog\DialogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\EditMemberOf\EditMemberOfDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\EditMembers\EditMembersDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Group\Description\GroupDescriptionPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Group\Details\GroupDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Group\Groups\GroupGroups.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Group\GroupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Group\Notes\GroupNotesPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\IPAddress\IPAddressPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\IPAddress\IPAddressWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\MainWindow\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Features\Modal\ModalControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Settings\SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\User\Account\AccountPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\User\Details\UserDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\User\Groups\UserGroups.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\User\LockoutInfo\UserLockoutInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\User\Profile\ProfilePanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\User\UserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
