@@ -5,7 +5,7 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-namespace MagnumOpus.Services.ActiveDirectoryServices
+namespace MagnumOpus.ActiveDirectory
 {
     public partial class ActiveDirectoryService
     {

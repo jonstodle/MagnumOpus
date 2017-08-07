@@ -1,14 +1,13 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
 using System;
-using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Computer
 {
 	public class PingPanelViewModel : ViewModelBase
 	{

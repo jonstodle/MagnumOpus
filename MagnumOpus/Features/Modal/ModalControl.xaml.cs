@@ -1,11 +1,11 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Windows.Controls;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.Controls
+namespace MagnumOpus.Modal
 {
 	/// <summary>
 	/// Interaction logic for ModalControl.xaml

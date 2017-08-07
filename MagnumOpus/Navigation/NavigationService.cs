@@ -1,13 +1,17 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Services.ActiveDirectoryServices;
 using System.Collections.Generic;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using MagnumOpus.Services.SettingsServices;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Computer;
+using MagnumOpus.Dialog;
+using MagnumOpus.Group;
+using MagnumOpus.Settings;
+using MagnumOpus.User;
 
-namespace MagnumOpus.Services.NavigationServices
+namespace MagnumOpus.Navigation
 {
     public class NavigationService
     {
@@ -79,9 +83,9 @@ namespace MagnumOpus.Services.NavigationServices
         {
             switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
             {
-                case PrincipalType.User: return ShowWindow<Views.UserWindow>(principal.Name);
-                case PrincipalType.Computer: return ShowWindow<Views.ComputerWindow>(principal.Name);
-                case PrincipalType.Group: return ShowWindow<Views.GroupWindow>(principal.Name);
+                case PrincipalType.User: return ShowWindow<UserWindow>(principal.Name);
+                case PrincipalType.Computer: return ShowWindow<ComputerWindow>(principal.Name);
+                case PrincipalType.Group: return ShowWindow<GroupWindow>(principal.Name);
                 case PrincipalType.Generic:
                 default: return Task.FromResult<object>(null);
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MagnumOpus.Services.NavigationServices
+namespace MagnumOpus.Dialog
 {
 	public interface IDialog
 	{

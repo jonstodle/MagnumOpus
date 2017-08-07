@@ -1,12 +1,11 @@
-﻿using MagnumOpus.Services.SettingsServices;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Security.Principal;
+using MagnumOpus.Settings;
 
-namespace MagnumOpus.Services.LogServices
+namespace MagnumOpus.Logging
 {
 	public static class LogService
 	{

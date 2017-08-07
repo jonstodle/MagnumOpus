@@ -1,10 +1,9 @@
 ﻿using ReactiveUI;
-using MagnumOpus.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 using System.Reactive.Disposables;
 
-namespace MagnumOpus.Controls
+namespace MagnumOpus.User
 {
     /// <summary>
     /// Interaction logic for UserLockoutInfo.xaml

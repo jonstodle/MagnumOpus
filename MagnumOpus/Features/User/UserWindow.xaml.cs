@@ -1,15 +1,12 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Controls;
-using MagnumOpus.Models;
-using MagnumOpus.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Windows;
 using System.Reactive.Disposables;
+using System.Windows.Controls;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.Views
+namespace MagnumOpus.User
 {
     /// <summary>
     /// Interaction logic for UserWindow.xaml

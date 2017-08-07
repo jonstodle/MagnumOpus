@@ -1,20 +1,19 @@
-﻿using MagnumOpus.Services.NavigationServices;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
-using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MagnumOpus.Navigation;
 
-namespace MagnumOpus.Views
+namespace MagnumOpus
 {
     public class WindowBase<TViewModel> : Window, IViewFor<TViewModel> where TViewModel : class
     {
         public WindowBase()
         {
-            _keyDownEvents = this.Events<KeyEventArgs>(nameof(KeyDown)).Select(ep => ep.EventArgs).Publish().RefCount();
-            _keyUpEvents = this.Events<KeyEventArgs>(nameof(KeyUp)).Select(ep => ep.EventArgs).Publish().RefCount();
+            _keyDownEvents = this.GetEvents<KeyEventArgs>(nameof(KeyDown)).Select(ep => ep.EventArgs).Publish().RefCount();
+            _keyUpEvents = this.GetEvents<KeyEventArgs>(nameof(KeyUp)).Select(ep => ep.EventArgs).Publish().RefCount();
 
             this.WhenActivated(d =>
             {

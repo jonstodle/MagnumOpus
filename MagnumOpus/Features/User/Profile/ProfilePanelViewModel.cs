@@ -1,7 +1,5 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,8 +11,10 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.User
 {
     public class ProfilePanelViewModel : ViewModelBase
     {

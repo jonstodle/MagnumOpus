@@ -1,10 +1,11 @@
-﻿using MagnumOpus.Services.ActiveDirectoryServices;
-using System;
+﻿using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Reactive.Linq;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.User;
 
-namespace MagnumOpus.Models
+namespace MagnumOpus.Group
 {
 	public class GroupObject : ActiveDirectoryObject<GroupPrincipal>
     {

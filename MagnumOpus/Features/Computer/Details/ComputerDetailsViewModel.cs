@@ -1,13 +1,11 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
 using System;
-using System.Linq;
 using System.Management;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Computer
 {
 	public class ComputerDetailsViewModel : ViewModelBase
     {

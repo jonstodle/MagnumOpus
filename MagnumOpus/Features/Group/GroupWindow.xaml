@@ -1,12 +1,11 @@
-﻿<local:DetailsWindow x:Class="MagnumOpus.Views.GroupWindow"
+﻿<mo:DetailsWindow x:Class="MagnumOpus.Group.GroupWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MagnumOpus.Views"
-		xmlns:controls="clr-namespace:MagnumOpus.Controls"
-		xmlns:vms="clr-namespace:MagnumOpus.ViewModels"
-		x:TypeArguments="vms:GroupWindowViewModel"
+        xmlns:local="clr-namespace:MagnumOpus.Group"
+		xmlns:mo="clr-namespace:MagnumOpus"
+		x:TypeArguments="local:GroupWindowViewModel"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
         Height="600" Width="600">
@@ -15,13 +14,13 @@
 		<ScrollViewer>
 			<Grid Margin="2">
 				<StackPanel>
-					<controls:GroupDetails x:Name="GroupDetails"/>
+					<local:GroupDetails x:Name="GroupDetails"/>
 
-					<controls:GroupDescriptionPanel x:Name="GroupDescription"/>
+					<local:GroupDescriptionPanel x:Name="GroupDescription"/>
 
-					<controls:GroupGroups x:Name="GroupGroups"/>
+					<local:GroupGroups x:Name="GroupGroups"/>
 
-					<controls:GroupNotesPanel x:Name="GroupNotes"/>
+					<local:GroupNotesPanel x:Name="GroupNotes"/>
 				</StackPanel>
 
 				<TextBlock HorizontalAlignment="Right" VerticalAlignment="Top" Margin="2">
@@ -30,4 +29,4 @@
 			</Grid>
 		</ScrollViewer>
 	</Grid>
-</local:DetailsWindow>
+</mo:DetailsWindow>

@@ -1,16 +1,17 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.SettingsServices;
 using System;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using static MagnumOpus.Services.FileServices.ExecutionService;
 using System.Reactive.Concurrency;
+using MagnumOpus.Dialog;
+using MagnumOpus.Settings;
 
-namespace MagnumOpus.ViewModels
+using static MagnumOpus.FileHelpers.ExecutionService;
+
+namespace MagnumOpus.Computer
 {
     public class ComputerManagementViewModel : ViewModelBase
     {

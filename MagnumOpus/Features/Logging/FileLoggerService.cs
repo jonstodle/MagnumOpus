@@ -6,9 +6,9 @@ using System.Reactive.Subjects;
 using System.IO;
 using System.Security.Principal;
 using System.Reactive.Linq;
-using MagnumOpus.Services.SettingsServices;
+using MagnumOpus.Settings;
 
-namespace MagnumOpus.Services.LogServices
+namespace MagnumOpus.Logging
 {
 	public class FileLoggerService : ILogger
 	{

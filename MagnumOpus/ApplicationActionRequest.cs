@@ -1,4 +1,4 @@
-﻿namespace MagnumOpus.Models
+﻿namespace MagnumOpus
 {
 	public struct ApplicationActionRequest
     {

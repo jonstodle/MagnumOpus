@@ -5,7 +5,7 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-namespace MagnumOpus.Services.FileServices
+namespace MagnumOpus.FileHelpers
 {
 	public class FileService
 	{

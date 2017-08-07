@@ -1,21 +1,14 @@
 ﻿using ReactiveUI;
-using MagnumOpus.ViewModels;
 using System;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Views;
 using System.Reactive.Disposables;
 using System.Reactive.Subjects;
+using MagnumOpus.ActiveDirectory;
 
 namespace MagnumOpus
 {
@@ -26,7 +19,7 @@ namespace MagnumOpus
     {
         public MainWindow()
         {
-            MagnumOpus.Services.NavigationServices.NavigationService.Init(this);
+            Navigation.NavigationService.Init(this);
 
             InitializeComponent();
 

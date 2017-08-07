@@ -1,12 +1,12 @@
-﻿<local:DetailsWindow x:Class="MagnumOpus.Views.IPAddressWindow"
+﻿<mo:DetailsWindow x:Class="MagnumOpus.IPAddress.IPAddressWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MagnumOpus.Views"
-		xmlns:controls="clr-namespace:MagnumOpus.Controls"
-		xmlns:vms="clr-namespace:MagnumOpus.ViewModels"
-		x:TypeArguments="vms:IPAddressWindowViewModel"
+        xmlns:local="clr-namespace:MagnumOpus.IPAddress"
+		xmlns:computer="clr-namespace:MagnumOpus.Computer" 
+		xmlns:mo="clr-namespace:MagnumOpus"
+		x:TypeArguments="local:IPAddressWindowViewModel"
         mc:Ignorable="d"
 		Icon="/Assets/Icon.ico"
         Height="600" Width="600">
@@ -14,10 +14,10 @@
 	<Grid x:Name="ContainerGrid">
 		<ScrollViewer>
 			<StackPanel Margin="2">
-				<controls:IPAddressPanel x:Name="IPAddressPanel"/>
+				<local:IPAddressPanel x:Name="IPAddressPanel"/>
 
-				<controls:PingPanel x:Name="PingPanel"/>
+				<computer:PingPanel x:Name="PingPanel"/>
 			</StackPanel>
 		</ScrollViewer>
 	</Grid>
-</local:DetailsWindow>
+</mo:DetailsWindow>

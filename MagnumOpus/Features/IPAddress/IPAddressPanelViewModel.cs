@@ -1,6 +1,4 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.FileServices;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,8 +6,10 @@ using System.Net;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using MagnumOpus.Dialog;
+using MagnumOpus.FileHelpers;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.IPAddress
 {
     public class IPAddressPanelViewModel : ViewModelBase
 	{

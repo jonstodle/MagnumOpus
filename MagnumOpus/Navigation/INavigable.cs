@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace MagnumOpus.Services.NavigationServices
+namespace MagnumOpus.Navigation
 {
 	public interface INavigable
     {

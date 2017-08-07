@@ -1,10 +1,9 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.ViewModels;
 using System.Collections.Generic;
 using System.Reactive.Disposables;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.Views
+namespace MagnumOpus.IPAddress
 {
     /// <summary>
     /// Interaction logic for IPAddressWindow.xaml

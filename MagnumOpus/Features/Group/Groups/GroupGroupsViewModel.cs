@@ -1,21 +1,24 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.ExportServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.ComponentModel;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 using System.Reactive.Concurrency;
+using DocumentFormat.OpenXml.Spreadsheet;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Computer;
+using MagnumOpus.Dialog;
+using MagnumOpus.EditMemberOf;
+using MagnumOpus.EditMembers;
+using MagnumOpus.Navigation;
+using MagnumOpus.User;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Group
 {
     public class GroupGroupsViewModel : ViewModelBase
     {
@@ -27,7 +30,7 @@ namespace MagnumOpus.ViewModels
                 SortDescriptions = { new SortDescription() }
             };
 
-            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _group.CN)));
+            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new EditMemberOfDialog(), _group.CN)));
 
             SaveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -35,7 +38,7 @@ namespace MagnumOpus.ViewModels
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directMemberOfGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            FindDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectMemberOfGroup));
+            FindDirectMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<GroupWindow>(_selectedDirectMemberOfGroup));
 
             GetAllGroups = ReactiveCommand.CreateFromObservable(
                 () =>
@@ -47,7 +50,7 @@ namespace MagnumOpus.ViewModels
                 },
                 this.WhenAnyValue(vm => vm.IsShowingMemberOf));
 
-            FindAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllMemberOfGroup));
+            FindAllMemberOfGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<GroupWindow>(_selectedAllMemberOfGroup));
 
             SaveAllGroups = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -55,7 +58,7 @@ namespace MagnumOpus.ViewModels
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_allMemberOfGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            OpenEditMembers = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMembersDialog(), _group.CN)));
+            OpenEditMembers = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new EditMembersDialog(), _group.CN)));
 
             SaveMembers = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -66,9 +69,9 @@ namespace MagnumOpus.ViewModels
             FindMember = ReactiveCommand.CreateFromTask(() => 
             {
                 var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(_selectedMember);
-                if (principalType == PrincipalType.Group) return NavigationService.ShowWindow<Views.GroupWindow>(_selectedMember);
-                else if (principalType == PrincipalType.Computer) return NavigationService.ShowWindow<Views.ComputerWindow>(_selectedMember);
-                else return NavigationService.ShowWindow<Views.UserWindow>(_selectedMember);
+                if (principalType == PrincipalType.Group) return NavigationService.ShowWindow<GroupWindow>(_selectedMember);
+                else if (principalType == PrincipalType.Computer) return NavigationService.ShowWindow<ComputerWindow>(_selectedMember);
+                else return NavigationService.ShowWindow<UserWindow>(_selectedMember);
             });
 
             this.WhenActivated(disposables =>

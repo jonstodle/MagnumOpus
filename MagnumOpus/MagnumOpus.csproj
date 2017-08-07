@@ -157,16 +157,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ActiveDirectoryObject.cs" />
     <Compile Include="AkavacheSqliteLinkerOverride.cs" />
     <Compile Include="ApplicationActionRequest.cs" />
     <Compile Include="DelimitedListInput.xaml.cs">
       <DependentUpon>DelimitedListInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DetailsWindow.cs" />
     <Compile Include="ExcelService.cs" />
     <Compile Include="Executables\Helpers.cs" />
+    <Compile Include="Features\ActiveDirectory\ActiveDirectoryObject.cs" />
     <Compile Include="FileHelpers\ExecutionService.cs" />
     <Compile Include="FileHelpers\FileService.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindowViewModel.cs" />
     <Compile Include="Mixins\SystemDirectoryServicesAccountManagement.cs" />
     <Compile Include="Mixins\SystemLinqExtensions.cs" />
     <Compile Include="Mixins\SystemReflectionExtensions.cs" />
@@ -210,7 +216,6 @@
       <DependentUpon>RemotePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Features\Computer\Remote\RemotePanelViewModel.cs" />
-    <Compile Include="Features\DetailsWindow\DetailsWindow.cs" />
     <Compile Include="Features\Dialog\DialogControl.xaml.cs">
       <DependentUpon>DialogControl.xaml</DependentUpon>
     </Compile>
@@ -257,11 +262,6 @@
     <Compile Include="Features\Logging\FileLoggerService.cs" />
     <Compile Include="Features\Logging\LogService.cs" />
     <Compile Include="Features\Logging\LogType.cs" />
-    <Compile Include="Features\MainWindow\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Features\MainWindow\MainWindowViewModel.cs" />
     <Compile Include="Features\Modal\ModalControl.xaml.cs">
       <DependentUpon>ModalControl.xaml</DependentUpon>
     </Compile>
@@ -380,10 +380,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Features\MainWindow\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Features\Modal\ModalControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -415,6 +411,10 @@
     <Page Include="Features\User\UserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

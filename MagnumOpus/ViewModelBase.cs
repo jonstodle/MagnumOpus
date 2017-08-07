@@ -1,8 +1,8 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
 using System.Reactive;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus
 {
     public class ViewModelBase : ReactiveObject, ISupportsActivation
 	{

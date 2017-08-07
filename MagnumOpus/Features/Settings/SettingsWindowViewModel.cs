@@ -1,10 +1,9 @@
-﻿using MagnumOpus.Services.NavigationServices;
-using MagnumOpus.Services.SettingsServices;
-using System;
+﻿using System;
 using System.Reflection;
 using System.Threading.Tasks;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Settings
 {
 	public class SettingsWindowViewModel : ViewModelBase, IDialog
 	{

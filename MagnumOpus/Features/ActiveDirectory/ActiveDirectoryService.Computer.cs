@@ -1,10 +1,10 @@
-﻿using MagnumOpus.Models;
-using System;
+﻿using System;
 using System.DirectoryServices.AccountManagement;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using MagnumOpus.Computer;
 
-namespace MagnumOpus.Services.ActiveDirectoryServices
+namespace MagnumOpus.ActiveDirectory
 {
 	public partial class ActiveDirectoryService
     {

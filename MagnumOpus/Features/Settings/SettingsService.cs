@@ -1,13 +1,12 @@
 ﻿using Akavache;
 using Newtonsoft.Json;
-using ReactiveUI;
 using Splat;
 using System.IO;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace MagnumOpus.Services.SettingsServices
+namespace MagnumOpus.Settings
 {
 	public partial class SettingsService : IEnableLogger
 	{

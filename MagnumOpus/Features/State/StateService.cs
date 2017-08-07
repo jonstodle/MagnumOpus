@@ -2,7 +2,7 @@
 using System;
 using System.Reactive.Linq;
 
-namespace MagnumOpus.Services.StateServices
+namespace MagnumOpus.State
 {
 	public class StateService
 	{

@@ -1,4 +1,4 @@
-﻿namespace MagnumOpus.Services.ActiveDirectoryServices
+﻿namespace MagnumOpus.ActiveDirectory
 {
 	public partial class ActiveDirectoryService
     {

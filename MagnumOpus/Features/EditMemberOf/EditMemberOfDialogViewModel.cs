@@ -1,8 +1,5 @@
 ﻿using ReactiveUI;
 using Splat;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
@@ -13,8 +10,11 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Reactive.Concurrency;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
+using MagnumOpus.Navigation;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.EditMemberOf
 {
     public class EditMemberOfDialogViewModel : ViewModelBase, IDialog, IEnableLogger
     {

@@ -1,9 +1,5 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.ExportServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.ComponentModel;
 using System.DirectoryServices;
@@ -14,8 +10,14 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 using System.Reactive.Concurrency;
+using DocumentFormat.OpenXml.Spreadsheet;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
+using MagnumOpus.EditMemberOf;
+using MagnumOpus.Group;
+using MagnumOpus.Navigation;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.User
 {
     public class UserGroupsViewModel : ViewModelBase
     {
@@ -25,7 +27,7 @@ namespace MagnumOpus.ViewModels
             _allGroupsCollectionView.SortDescriptions.Add(new SortDescription());
             _allGroupsCollectionView.Filter = TextFilter;
 
-            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.EditMemberOfDialog(), _user.Principal.SamAccountName)));
+            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new EditMemberOfDialog(), _user.Principal.SamAccountName)));
 
             SaveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -61,9 +63,9 @@ namespace MagnumOpus.ViewModels
                 .IsExecuting
                 .ToProperty(this, vm => vm.IsLoadingGroups);
 
-            FindDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup));
+            FindDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<GroupWindow>(_selectedDirectGroup));
 
-            FindAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedAllGroup));
+            FindAllGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<GroupWindow>(_selectedAllGroup));
 
             this.WhenActivated(disposables =>
             {

@@ -1,14 +1,13 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.ViewModels;
 using System;
 using System.Windows.Documents;
 using System.Reactive.Linq;
 using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Reactive.Disposables;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.Views
+namespace MagnumOpus.Settings
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml

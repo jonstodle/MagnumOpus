@@ -1,13 +1,13 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
+using MagnumOpus.Navigation;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Group
 {
 	public class GroupWindowViewModel : ViewModelBase, INavigable
 	{

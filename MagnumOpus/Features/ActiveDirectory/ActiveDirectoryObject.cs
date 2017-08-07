@@ -2,7 +2,7 @@
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 
-namespace MagnumOpus.Models
+namespace MagnumOpus.ActiveDirectory
 {
 	public class ActiveDirectoryObject<T> where T : Principal
     {

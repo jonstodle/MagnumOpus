@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using MagnumOpus.Services.ActiveDirectoryServices;
 using System.Reactive.Concurrency;
+using MagnumOpus.ActiveDirectory;
 
 namespace System.DirectoryServices.AccountManagement
 {

@@ -1,15 +1,14 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.NavigationServices;
 using System;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using MagnumOpus.Services.ActiveDirectoryServices;
 using System.Reactive.Concurrency;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
+using MagnumOpus.Navigation;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.User
 {
 	public class UserDetailsViewModel : ViewModelBase
 	{

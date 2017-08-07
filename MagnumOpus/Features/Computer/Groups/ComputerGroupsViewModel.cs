@@ -1,23 +1,24 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ExportServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.DirectoryServices;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
+using DocumentFormat.OpenXml.Spreadsheet;
+using MagnumOpus.Dialog;
+using MagnumOpus.EditMemberOf;
+using MagnumOpus.Group;
+using MagnumOpus.Navigation;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Computer
 {
     public class ComputerGroupsViewModel : ViewModelBase
     {
         public ComputerGroupsViewModel()
         {
-            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new Models.DialogInfo(new Controls.EditMemberOfDialog(), _computer.Principal.SamAccountName)));
+            OpenEditMemberOf = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new EditMemberOfDialog(), _computer.Principal.SamAccountName)));
 
             SaveDirectGroups = ReactiveCommand.CreateFromObservable(() =>
             {
@@ -25,7 +26,7 @@ namespace MagnumOpus.ViewModels
                 return saveFileDialog.ShowDialog() ?? false ? ExcelService.SaveGroupsToExcelFile(_directGroups, saveFileDialog.FileName) : Observable.Return(Unit.Default);
             });
 
-            FindDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<Views.GroupWindow>(_selectedDirectGroup));
+            FindDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<GroupWindow>(_selectedDirectGroup));
 
             (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
             {

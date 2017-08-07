@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using MagnumOpus.Services.ActiveDirectoryServices;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -8,8 +7,9 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using MagnumOpus.ActiveDirectory;
 
-namespace MagnumOpus.Services.ExportServices
+namespace MagnumOpus
 {
 	public class ExcelService
 	{

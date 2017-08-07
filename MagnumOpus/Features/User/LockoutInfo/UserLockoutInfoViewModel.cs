@@ -1,15 +1,14 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.User
 {
     public class UserLockoutInfoViewModel : ViewModelBase, IDialog
 	{

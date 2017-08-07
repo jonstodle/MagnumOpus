@@ -1,17 +1,18 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.FileServices;
-using MagnumOpus.Services.SettingsServices;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
+using DocumentFormat.OpenXml.Spreadsheet;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Computer;
+using MagnumOpus.Dialog;
+using MagnumOpus.FileHelpers;
+using MagnumOpus.Settings;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.User
 {
     public class AccountPanelViewModel : ViewModelBase
     {
@@ -33,7 +34,7 @@ namespace MagnumOpus.ViewModels
 
             RunLockoutStatus = ReactiveCommand.Create(() => ExecutionService.RunFileFromCache("LockoutStatus", "LockoutStatus.exe", $"-u:{ActiveDirectoryService.Current.CurrentDomain}\\{User.Principal.SamAccountName}"));
 
-            OpenPermittedWorkstations = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new Controls.PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
+            OpenPermittedWorkstations = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
             ToggleEnabled = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.SetEnabled(User.Principal.SamAccountName, !User.Principal.Enabled ?? true));
 

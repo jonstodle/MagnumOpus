@@ -1,4 +1,4 @@
-﻿namespace MagnumOpus.Services.LogServices
+﻿namespace MagnumOpus.Logging
 {
 	public enum LogType
 	{

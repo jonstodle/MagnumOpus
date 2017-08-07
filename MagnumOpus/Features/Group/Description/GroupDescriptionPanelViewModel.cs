@@ -1,13 +1,12 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
 using System;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Group
 {
     public class GroupDescriptionPanelViewModel : ViewModelBase
     {

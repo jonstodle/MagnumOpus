@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Management;
 
-namespace MagnumOpus.Models
+namespace MagnumOpus.Computer
 {
 	public class OperatingSystemInfo
 	{

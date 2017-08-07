@@ -1,6 +1,4 @@
-﻿using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.SettingsServices;
-using System;
+﻿using System;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
@@ -9,8 +7,11 @@ using System.Net;
 using System.Net.Sockets;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Settings;
+using MagnumOpus.User;
 
-namespace MagnumOpus.Models
+namespace MagnumOpus.Computer
 {
     public class ComputerObject : ActiveDirectoryObject<ComputerPrincipal>
     {

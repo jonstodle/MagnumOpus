@@ -1,13 +1,13 @@
-﻿using MagnumOpus.Services.SettingsServices;
-using System;
+﻿using System;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Input;
+using MagnumOpus.Settings;
 
-namespace MagnumOpus.Views
+namespace MagnumOpus
 {
 	public class DetailsWindow<TViewModel> : WindowBase<TViewModel> where TViewModel : class
 	{

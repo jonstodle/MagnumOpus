@@ -1,12 +1,11 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.ViewModels;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Reactive.Disposables;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.Controls
+namespace MagnumOpus.Computer
 {
     /// <summary>
     /// Interaction logic for ComputerDetails.xaml

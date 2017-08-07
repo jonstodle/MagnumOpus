@@ -1,17 +1,16 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Reactive.Concurrency;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
+using MagnumOpus.User;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Computer
 {
     public class PermittedWorkstationsDialogViewModel : ViewModelBase, IDialog
     {

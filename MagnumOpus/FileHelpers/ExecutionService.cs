@@ -4,7 +4,7 @@ using System.IO;
 
 using static MagnumOpus.Executables.Helpers;
 
-namespace MagnumOpus.Services.FileServices
+namespace MagnumOpus.FileHelpers
 {
 	public static class ExecutionService
 	{

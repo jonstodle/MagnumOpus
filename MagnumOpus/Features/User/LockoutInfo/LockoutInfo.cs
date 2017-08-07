@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MagnumOpus.Models
+namespace MagnumOpus.User
 {
     public class LockoutInfo
 	{

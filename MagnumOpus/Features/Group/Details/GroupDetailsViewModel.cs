@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus.Group
 {
 	public class GroupDetailsViewModel : ViewModelBase
 	{

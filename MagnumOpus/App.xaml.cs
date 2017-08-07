@@ -1,10 +1,10 @@
 ﻿using Splat;
-using MagnumOpus.Services.LogServices;
-using MagnumOpus.Services.SettingsServices;
 using System.Windows;
 using System;
 using ReactiveUI;
 using System.Reactive;
+using MagnumOpus.Logging;
+using MagnumOpus.Settings;
 
 namespace MagnumOpus
 {

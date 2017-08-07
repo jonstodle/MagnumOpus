@@ -1,9 +1,4 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.ActiveDirectoryServices;
-using MagnumOpus.Services.NavigationServices;
-using MagnumOpus.Services.SettingsServices;
-using MagnumOpus.Services.StateServices;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -11,8 +6,14 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Windows;
+using MagnumOpus.ActiveDirectory;
+using MagnumOpus.Dialog;
+using MagnumOpus.IPAddress;
+using MagnumOpus.Navigation;
+using MagnumOpus.Settings;
+using MagnumOpus.State;
 
-namespace MagnumOpus.ViewModels
+namespace MagnumOpus
 {
     public partial class MainWindowViewModel : ViewModelBase
     {
@@ -23,7 +24,7 @@ namespace MagnumOpus.ViewModels
 
             Search = ReactiveCommand.Create(
                 () => _searchQuery.IsIPAddress()
-                    ? Observable.FromAsync(() => NavigationService.ShowWindow<Views.IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
+                    ? Observable.FromAsync(() => NavigationService.ShowWindow<IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
                     : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(directoryEntry => new DirectoryEntryInfo(directoryEntry)),
                 this.WhenAnyValue(vm => vm.SearchQuery).Select(query => query.HasValue(3)));
             Search
@@ -45,7 +46,7 @@ namespace MagnumOpus.ViewModels
                 },
                 this.WhenAnyValue(vm => vm.SelectedSearchResult).IsNotNull());
 
-            OpenSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<Views.SettingsWindow>());
+            OpenSettings = ReactiveCommand.CreateFromTask(() => NavigationService.ShowDialog<SettingsWindow>());
 
             _isNoResults = Search
                 .Select(searchResults => Observable.Concat(

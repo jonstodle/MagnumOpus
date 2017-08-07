@@ -2,7 +2,7 @@
 using System.Linq;
 using System.DirectoryServices;
 
-namespace MagnumOpus.Models
+namespace MagnumOpus.ActiveDirectory
 {
 	public class DirectoryEntryInfo : IComparable, IComparable<DirectoryEntryInfo>
 	{

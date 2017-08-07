@@ -1,14 +1,13 @@
 ﻿using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.ViewModels;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Reactive.Disposables;
+using MagnumOpus.Dialog;
 
-namespace MagnumOpus.Controls
+namespace MagnumOpus.Computer
 {
     /// <summary>
     /// Interaction logic for RemotePanel.xaml

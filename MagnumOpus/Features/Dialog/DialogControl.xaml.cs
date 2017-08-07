@@ -1,5 +1,4 @@
-﻿using MagnumOpus.Models;
-using ReactiveUI;
+﻿using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace MagnumOpus.Controls
+namespace MagnumOpus.Dialog
 {
     /// <summary>
     /// Interaction logic for DialogControl.xaml

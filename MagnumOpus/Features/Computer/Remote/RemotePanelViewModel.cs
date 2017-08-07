@@ -1,7 +1,5 @@
 ﻿using Microsoft.Win32;
 using ReactiveUI;
-using MagnumOpus.Models;
-using MagnumOpus.Services.NavigationServices;
 using System;
 using System.IO;
 using System.Net.NetworkInformation;
@@ -10,16 +8,20 @@ using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows;
-using static MagnumOpus.Services.FileServices.ExecutionService;
 using System.Management.Automation;
+using MagnumOpus.Dialog;
+using MagnumOpus.Navigation;
+using MagnumOpus.User;
 
-namespace MagnumOpus.ViewModels
+using static MagnumOpus.FileHelpers.ExecutionService;
+
+namespace MagnumOpus.Computer
 {
     public class RemotePanelViewModel : ViewModelBase
     {
         public RemotePanelViewModel()
         {
-            OpenUser = ReactiveCommand.CreateFromObservable(() => Observable.FromAsync(() => NavigationService.ShowWindow<Views.UserWindow>(Tuple.Create(_selectedLoggedOnUser.Username, _computer.CN))));
+            OpenUser = ReactiveCommand.CreateFromObservable(() => Observable.FromAsync(() => NavigationService.ShowWindow<UserWindow>(Tuple.Create(_selectedLoggedOnUser.Username, _computer.CN))));
 
             CopyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser.Username));
 

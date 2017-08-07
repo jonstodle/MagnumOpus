@@ -1,4 +1,4 @@
-﻿namespace MagnumOpus.Services.SettingsServices
+﻿namespace MagnumOpus.Settings
 {
 	public partial class SettingsService
 	{
