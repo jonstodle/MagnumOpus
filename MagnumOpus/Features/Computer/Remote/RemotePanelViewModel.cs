@@ -173,7 +173,7 @@ namespace MagnumOpus.Computer
 
 
 
-        private void EnsureComputerIsReachable(string hostName) { if (new Ping().Send(hostName, 1000).Status != IPStatus.Success) throw new Exception($"Could not reach {hostName}"); }
+        private void EnsureComputerIsReachable(string hostName) { if (new Ping().Send(hostName, 1000)?.Status != IPStatus.Success) throw new Exception($"Could not reach {hostName}"); }
 
         private IObservable<bool> GetIsUacOn(string hostName) => Observable.Start(() =>
         {
