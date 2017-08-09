@@ -2,7 +2,7 @@
 
 namespace System
 {
-	public static class SystemExtensions
+	public static class SystemMixins
 	{
 		public static string ToNorwegianString(this DayOfWeek dow)
 		{

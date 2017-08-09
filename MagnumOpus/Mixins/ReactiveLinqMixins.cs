@@ -2,7 +2,7 @@
 
 namespace System.Reactive.Linq
 {
-    public static class SystemReactiveLinqExtensions
+    public static class ReactiveLinqMixins
 	{
 		public static IObservable<T> WhereNotNull<T>(this IObservable<T> source) where T : class => source.Where(value => value != null);
 

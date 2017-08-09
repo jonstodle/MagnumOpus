@@ -2,7 +2,7 @@
 
 namespace System.Reflection
 {
-	public static class SystemReflectionExtensions
+	public static class ReflectionMixins
 	{
 		public static DateTime GetLinkerTime(this Assembly assembly, TimeZoneInfo target = null)
 		{

@@ -173,13 +173,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="Mixins\SystemDirectoryServicesAccountManagement.cs" />
-    <Compile Include="Mixins\SystemLinqExtensions.cs" />
-    <Compile Include="Mixins\SystemReflectionExtensions.cs" />
-    <Compile Include="Mixins\SystemDirectoryServicesExtensions.cs" />
-    <Compile Include="Mixins\SystemExtensions.cs" />
-    <Compile Include="Mixins\SystemReactiveDisposablesExtensions.cs" />
-    <Compile Include="Mixins\SystemReactiveLinqExtensions.cs" />
+    <Compile Include="Mixins\AccountManagementMixins.cs" />
+    <Compile Include="Mixins\LinqMixins.cs" />
+    <Compile Include="Mixins\ReflectionMixins.cs" />
+    <Compile Include="Mixins\DirectoryServicesMixins.cs" />
+    <Compile Include="Mixins\SystemMixins.cs" />
+    <Compile Include="Mixins\DisposablesMixins.cs" />
+    <Compile Include="Mixins\ReactiveLinqMixins.cs" />
     <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Computer.cs" />
     <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Constants.cs" />
     <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.cs" />

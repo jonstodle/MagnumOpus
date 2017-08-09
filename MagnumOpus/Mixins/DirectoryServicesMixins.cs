@@ -2,7 +2,7 @@
 
 namespace System.DirectoryServices
 {
-	public static class SystemDirectoryServicesExtensions
+	public static class DirectoryServicesMixins
     {
 		public static T Get<T>(this PropertyCollection rpc, string propertyName, int index = 0)
 		{
