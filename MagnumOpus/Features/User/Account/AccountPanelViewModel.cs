@@ -5,7 +5,6 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
-using DocumentFormat.OpenXml.Spreadsheet;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Computer;
 using MagnumOpus.Dialog;
@@ -22,9 +21,9 @@ namespace MagnumOpus.User
                 () => SetNewPasswordImpl(_newPassword),
                 this.WhenAnyValue(vm => vm.User, vm => vm.NewPassword, (user, password) => user != null && password.HasValue()));
 
-            SetNewSimplePassword = ReactiveCommand.CreateFromObservable(() => SetNewSimplePasswordImpl());
+            SetNewSimplePassword = ReactiveCommand.CreateFromObservable(SetNewSimplePasswordImpl);
 
-            SetNewComplexPassword = ReactiveCommand.CreateFromObservable(() => SetNewComplexPasswordImpl());
+            SetNewComplexPassword = ReactiveCommand.CreateFromObservable(SetNewComplexPasswordImpl);
 
             ExpirePassword = ReactiveCommand.CreateFromObservable(() => Messages.Handle(new MessageInfo(MessageType.Question, "Are you sure you want to expire the password?", "Expire password?", "Yes", "No"))
                 .Where(result => result == 0)
@@ -124,7 +123,7 @@ namespace MagnumOpus.User
         private IObservable<string> SetNewPasswordImpl(string newPassword) => Observable.Return(newPassword)
             .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false, TaskPoolScheduler.Default).Select(_ => password));
 
-        private IObservable<string> SetNewSimplePasswordImpl() => Observable.Return($"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute.ToString("00")}")
+        private IObservable<string> SetNewSimplePasswordImpl() => Observable.Return($"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute:00}")
             .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Select(_ => password));
 
         private IObservable<string> SetNewComplexPasswordImpl() => Observable.Start(() =>
@@ -132,7 +131,7 @@ namespace MagnumOpus.User
             var possibleChars = "abcdefgijkmnopqrstwxyzABCDEFGHJKLMNPQRSTWXYZ23456789*$-+?_&=!%{}/";
             var randGen = new Random(DateTime.Now.Second);
             var password = "";
-            for (int i = 0; i < 16; i++) password += possibleChars[randGen.Next(possibleChars.Length)];
+            for (var i = 0; i < 16; i++) password += possibleChars[randGen.Next(possibleChars.Length)];
             return password;
         }, TaskPoolScheduler.Default)
         .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, scheduler: CurrentThreadScheduler.Instance).Select(_ => password));

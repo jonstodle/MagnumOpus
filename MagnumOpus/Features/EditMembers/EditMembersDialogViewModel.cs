@@ -59,7 +59,7 @@ namespace MagnumOpus.EditMembers
             _group = SetGroup
                 .ToProperty(this, vm => vm.Group);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
                 GetGroupMembers
                     .ObserveOnDispatcher()
@@ -74,7 +74,7 @@ namespace MagnumOpus.EditMembers
                     .DisposeWith(disposables);
 
                 Save
-                    .SelectMany((IEnumerable<string> x) => x.Count() > 0 ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(0))
+                    .SelectMany(groups => groups.Any() ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, groups)}")) : Observable.Return(0))
                     .ObserveOnDispatcher()
                     .Do(_ => _close())
                     .Subscribe()
@@ -93,7 +93,7 @@ namespace MagnumOpus.EditMembers
                     .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
         }
 
 
@@ -107,8 +107,8 @@ namespace MagnumOpus.EditMembers
         public ReactiveCommand<Unit, Unit> RemoveFromGroup { get; }
         public ReactiveCommand<Unit, IEnumerable<string>> Save { get; }
         public ReactiveCommand<Unit, Unit> Cancel { get; }
-        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
-        public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
+        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => string.Compare(one.Path, two.Path, StringComparison.OrdinalIgnoreCase));
+        public IReactiveDerivedList<DirectoryEntry> GroupMembers => _groupMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => string.Compare(one.Path, two.Path, StringComparison.OrdinalIgnoreCase));
         public ReactiveList<DirectoryEntry> MembersToAdd => _membersToAdd;
         public ReactiveList<DirectoryEntry> MembersToRemove => _membersToRemove;
         public GroupObject Group => _group.Value;

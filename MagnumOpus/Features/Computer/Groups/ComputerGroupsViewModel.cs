@@ -6,7 +6,6 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Concurrency;
-using DocumentFormat.OpenXml.Spreadsheet;
 using MagnumOpus.Dialog;
 using MagnumOpus.EditMemberOf;
 using MagnumOpus.Group;
@@ -28,7 +27,7 @@ namespace MagnumOpus.Computer
 
             FindDirectGroup = ReactiveCommand.CreateFromTask(() => NavigationService.ShowWindow<GroupWindow>(_selectedDirectGroup));
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
                 Observable.Merge(
                         this.WhenAnyValue(vm => vm.Computer).WhereNotNull(),
@@ -41,13 +40,13 @@ namespace MagnumOpus.Computer
                     .DisposeWith(disposables);
 
                 Observable.Merge<(string Title, string Message)>(
-                        Observable.Select(OpenEditMemberOf.ThrownExceptions, ex => (("Could not open dialog", ex.Message))),
+                        OpenEditMemberOf.ThrownExceptions.Select(ex => (("Could not open dialog", ex.Message))),
                         SaveDirectGroups.ThrownExceptions.Select(ex => (("Could not save groups", ex.Message))),
                         FindDirectGroup.ThrownExceptions.Select(ex => (("Could not open group", ex.Message))))
                     .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                     .Subscribe()
                     .DisposeWith(disposables);
-            }));
+            });
         }
 
 

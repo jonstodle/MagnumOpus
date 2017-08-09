@@ -41,7 +41,7 @@ namespace MagnumOpus.Computer
 
 
 
-        private IObservable<OperatingSystemInfo> GetOSInfo(ComputerObject computer) => Observable.Start(() =>
+        private static IObservable<OperatingSystemInfo> GetOSInfo(ComputerObject computer) => Observable.Start(() =>
 		{
 			var scope = new ManagementScope($@"\\{computer.CN}\root\cimv2");
 			scope.Connect();

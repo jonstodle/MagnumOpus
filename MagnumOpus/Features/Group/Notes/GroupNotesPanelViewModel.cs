@@ -57,6 +57,8 @@ namespace MagnumOpus.Group
         private IObservable<Unit> SaveImpl(GroupObject group, string newNotes) => Observable.Start(() =>
 		{
 			var directoryEntry = group.Principal.GetUnderlyingObject() as DirectoryEntry;
+			if (directoryEntry == null) return;
+			
 			directoryEntry.Properties["info"].Value = newNotes.Replace("\n", "\r\n");
 			directoryEntry.CommitChanges();
 		}, TaskPoolScheduler.Default);

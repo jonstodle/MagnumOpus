@@ -126,7 +126,7 @@ namespace MagnumOpus.Computer
 
             var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computerCn}", RegistryView.Registry64);
             var regKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\SMS\Mobile Client", false);
-            var sccmMajorVersion = int.Parse(regKey.GetValue("ProductVersion").ToString().Substring(0, 1));
+            var sccmMajorVersion = int.Parse(regKey?.GetValue("ProductVersion").ToString().Substring(0, 1) ?? "0");
 
             if (sccmMajorVersion == 4) return StartRemoteControlClassicImpl(computerCn);
             else return StartRemoteControl2012Impl(computerCn);
@@ -143,7 +143,7 @@ namespace MagnumOpus.Computer
             TaskPoolScheduler.Default));
 
         private IObservable<Unit> StartRemoteAssistanceImpl(string computerCn) => Observable.Defer(() => Observable.Start(
-            () => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_computer.CN}"),
+            () => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {computerCn}"),
             TaskPoolScheduler.Default));
 
         private IObservable<Unit> KillRemoteToolsImpl(string computerCn) => Observable.Start(() =>
@@ -157,16 +157,16 @@ namespace MagnumOpus.Computer
         {
             var regValueName = "EnableLUA";
             var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, computerCn, RegistryView.Registry64);
-            var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
+            var key = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
 
             if (GetIsUacOn(computerCn).Wait())
             {
-                key.SetValue(regValueName, 0);
+                key?.SetValue(regValueName, 0);
                 return false;
             }
             else
             {
-                key.SetValue(regValueName, 1);
+                key?.SetValue(regValueName, 1);
                 return true;
             }
         }, TaskPoolScheduler.Default).Concat(GetIsUacOn(computerCn));
@@ -181,7 +181,7 @@ namespace MagnumOpus.Computer
 
             var regValueName = "EnableLUA";
             var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, hostName, RegistryView.Registry64);
-            var key = keyHive?.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
+            var key = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System");
             if (int.TryParse(key?.GetValue(regValueName).ToString(), out int i))
             {
                 return i == 1;

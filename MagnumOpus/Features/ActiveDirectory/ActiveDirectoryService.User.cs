@@ -41,27 +41,26 @@ namespace MagnumOpus.ActiveDirectory
 			            }
 		            }));
 
-        private TimeSpan? _domainMaxPasswordAge = null;
+        private TimeSpan? _domainMaxPasswordAge;
         public TimeSpan DomainMaxPasswordAge
         {
             get
             {
-                if (_domainMaxPasswordAge == null)
-                {
-                    try
-                    {
-                        using (var directoryEntry = GetDomainDirectoryEntry())
-                        using (var searcher = new DirectorySearcher(directoryEntry, "(objectCategory=domainDNS)"))
-                        {
-                            _domainMaxPasswordAge = TimeSpan.FromTicks(searcher.FindOne().Properties.Get<long>("maxPwdAge")).Duration();
-                        }
-                    }
-                    catch
-                    {
-                        _domainMaxPasswordAge = TimeSpan.Zero;
-                    }
-                }
-                return (TimeSpan)_domainMaxPasswordAge;
+	            if (_domainMaxPasswordAge.HasValue) return _domainMaxPasswordAge.Value;
+	            
+	            try
+	            {
+		            using (var directoryEntry = GetDomainDirectoryEntry())
+		            using (var searcher = new DirectorySearcher(directoryEntry, "(objectCategory=domainDNS)"))
+		            {
+			            _domainMaxPasswordAge = TimeSpan.FromTicks(searcher.FindOne().Properties.Get<long>("maxPwdAge")).Duration();
+		            }
+	            }
+	            catch
+	            {
+		            _domainMaxPasswordAge = TimeSpan.Zero;
+	            }
+	            return _domainMaxPasswordAge.Value;
             }
         }
 

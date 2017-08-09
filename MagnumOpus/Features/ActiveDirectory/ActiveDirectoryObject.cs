@@ -8,21 +8,19 @@ namespace MagnumOpus.ActiveDirectory
     {
         public ActiveDirectoryObject(T principal)
         {
-			_principal = principal;
-            _directoryEntry = principal.GetUnderlyingObject() as DirectoryEntry;
+			Principal = principal;
+            DirectoryEntry = principal.GetUnderlyingObject() as DirectoryEntry;
         }
 
 
 
-        public T Principal => _principal;
+        public T Principal { get; }
 
-        public string CN => _directoryEntry.Properties.Get<string>("cn");
+        public string CN => DirectoryEntry.Properties.Get<string>("cn");
 
-		public DateTime? WhenCreated => _directoryEntry.Properties.Get<DateTime?>("whencreated");
+		public DateTime? WhenCreated => DirectoryEntry.Properties.Get<DateTime?>("whencreated");
 
 
-
-        protected T _principal;
-        protected DirectoryEntry _directoryEntry;
+        protected DirectoryEntry DirectoryEntry;
     }
 }

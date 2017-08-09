@@ -10,14 +10,7 @@ namespace MagnumOpus.ActiveDirectory
     public partial class ActiveDirectoryService
     {
         private static ActiveDirectoryService _current;
-        public static ActiveDirectoryService Current
-        {
-            get
-            {
-                if (_current == null) _current = new ActiveDirectoryService();
-                return _current;
-            }
-        }
+        public static ActiveDirectoryService Current => _current ?? (_current = new ActiveDirectoryService());
 
         public static bool IsInDomain()
         {

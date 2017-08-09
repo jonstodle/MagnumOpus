@@ -12,19 +12,19 @@ namespace MagnumOpus.User
 
 
 
-        public string Name => _principal.DisplayName ?? _principal.Name;
+        public string Name => Principal.DisplayName ?? Principal.Name;
 
-        public string JobTitle => _directoryEntry.Properties.Get<string>("title");
+        public string JobTitle => DirectoryEntry.Properties.Get<string>("title");
 
-        public string Department => _directoryEntry.Properties.Get<string>("department");
+        public string Department => DirectoryEntry.Properties.Get<string>("department");
 
-        public string Company => _directoryEntry.Properties.Get<string>("company");
+        public string Company => DirectoryEntry.Properties.Get<string>("company");
 
-        public string ProfilePath => _directoryEntry.Properties.Get<string>("profilepath") ?? "";
+        public string ProfilePath => DirectoryEntry.Properties.Get<string>("profilepath") ?? "";
 
-		public string HomeDirectory => _directoryEntry.Properties.Get<string>("homedirectory") ?? "";
+		public string HomeDirectory => DirectoryEntry.Properties.Get<string>("homedirectory") ?? "";
 
-        public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))
+        public IObservable<UserObject> GetManager() => Observable.Return(DirectoryEntry.Properties.Get<string>("manager"))
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Empty<UserObject>();
@@ -33,7 +33,7 @@ namespace MagnumOpus.User
             .Catch(Observable.Empty<UserObject>())
             .Take(1);
 
-        public IObservable<UserObject> GetDirectReports() => _directoryEntry.Properties["directreports"].ToEnumerable<string>().ToObservable()
+        public IObservable<UserObject> GetDirectReports() => DirectoryEntry.Properties["directreports"].ToEnumerable<string>().ToObservable()
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Empty<UserObject>();

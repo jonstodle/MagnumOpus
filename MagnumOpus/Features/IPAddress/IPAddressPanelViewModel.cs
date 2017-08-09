@@ -7,7 +7,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using MagnumOpus.Dialog;
-using MagnumOpus.FileHelpers;
+using static MagnumOpus.FileHelpers.ExecutionService;
 
 namespace MagnumOpus.IPAddress
 {
@@ -37,7 +37,7 @@ namespace MagnumOpus.IPAddress
 
 			RebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_ipAddress}?", "", "Yes", "No"))
                 .Where(result => result == 0)
-                .Do(_ => ExecuteFile(Path.Combine(ExecutionService.System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0"))
+                .Do(_ => RunFile(Path.Combine(System32Path, "shutdown.exe"), $@"-r -f -m \\{_ipAddress} -t 0"))
                 .ToSignal()
 			);
 
@@ -45,40 +45,40 @@ namespace MagnumOpus.IPAddress
 
             StartRemoteControl2012 = ReactiveCommand.Create(() => { });// ExecuteFile(SettingsService.Current.RemoteControl2012Path, _ipAddress));
 
-            KillRemoteControl = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
+            KillRemoteControl = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {_ipAddress} /im rcagent.exe /f"));
 
-			StartRemoteAssistance = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "msra.exe"), $"/offerra {_ipAddress}"));
+			StartRemoteAssistance = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {_ipAddress}"));
 
-			StartRdp = ReactiveCommand.Create(() => ExecuteFile(Path.Combine(ExecutionService.System32Path, "mstsc.exe"), $"/v {_ipAddress}"));
+			StartRdp = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_ipAddress}"));
 
 			_hostName = this.WhenAnyValue(vm => vm.IPAddress)
 				.Where(ipAddress => ipAddress.HasValue())
 				.Select(ipAddress => Dns.GetHostEntry(ipAddress).HostName)
 				.CatchAndReturn("")
-				.ToProperty(this, vm => vm.HostName, null);
+				.ToProperty(this, vm => vm.HostName);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
-                OpenCDrive
-                    .ThrownExceptions
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open location")))
-                    .Subscribe()
-                    .DisposeWith(disposables);
+	            OpenCDrive
+		            .ThrownExceptions
+		            .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not open location")))
+		            .Subscribe()
+		            .DisposeWith(disposables);
 
-                Observable.Merge(
-                        OpenLoggedOn.ThrownExceptions,
-                        OpenLoggedOnPlus.ThrownExceptions,
-                        OpenRemoteExecution.ThrownExceptions,
-                        RebootComputer.ThrownExceptions,
-                        StartRemoteControl.ThrownExceptions,
-                        StartRemoteControl2012.ThrownExceptions,
-                        KillRemoteControl.ThrownExceptions,
-                        StartRemoteAssistance.ThrownExceptions,
-                        StartRdp.ThrownExceptions)
-                    .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
-                    .Subscribe()
-                    .DisposeWith(disposables);
-            }));
+	            Observable.Merge(
+			            OpenLoggedOn.ThrownExceptions,
+			            OpenLoggedOnPlus.ThrownExceptions,
+			            OpenRemoteExecution.ThrownExceptions,
+			            RebootComputer.ThrownExceptions,
+			            StartRemoteControl.ThrownExceptions,
+			            StartRemoteControl2012.ThrownExceptions,
+			            KillRemoteControl.ThrownExceptions,
+			            StartRemoteAssistance.ThrownExceptions,
+			            StartRdp.ThrownExceptions)
+		            .SelectMany(ex => _messages.Handle(new MessageInfo(MessageType.Error, ex.Message, "Could not launch external program")))
+		            .Subscribe()
+		            .DisposeWith(disposables);
+            });
 		}
 
 
@@ -95,16 +95,6 @@ namespace MagnumOpus.IPAddress
         public ReactiveCommand<Unit, Unit> StartRdp { get; }
         public string HostName => _hostName.Value;
         public string IPAddress { get => _ipAddress; set => this.RaiseAndSetIfChanged(ref _ipAddress, value); }
-
-
-
-        private void ExecuteCmd(string fileName, string arguments = "") => ExecuteFile(Path.Combine(ExecutionService.System32Path, "cmd.exe"), $@"/K {fileName} {arguments}");
-
-		private void ExecuteFile(string fileName, string arguments = "")
-		{
-			if (File.Exists(fileName)) Process.Start(fileName, arguments);
-			else throw new ArgumentException($"Could not find {fileName}");
-		}
 
 
 

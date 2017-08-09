@@ -31,7 +31,7 @@ namespace MagnumOpus.ActiveDirectory
 
 
 
-        public int CompareTo(DirectoryEntryInfo other) => CN.CompareTo(other.CN);
+        public int CompareTo(DirectoryEntryInfo other) => string.Compare(CN, other.CN, StringComparison.OrdinalIgnoreCase);
 
 		public int CompareTo(object obj)
 		{

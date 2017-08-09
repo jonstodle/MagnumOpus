@@ -21,7 +21,7 @@ namespace MagnumOpus.Computer
                 this.WhenAnyValue(vm => vm.ComputerName, computerName => computerName.HasValue(6)));
 
             RemoveComputer = ReactiveCommand.Create(
-                () => _computers.Remove(SelectedComputer as string),
+                () => _computers.Remove(SelectedComputer),
                 this.WhenAnyValue(vm => vm.SelectedComputer).IsNotNull());
 
             RemoveAllComputers = ReactiveCommand.Create(
@@ -47,9 +47,9 @@ namespace MagnumOpus.Computer
                     .WhenAnyValue(vm => vm.User)
                     .WhereNotNull()
                     .Select(user => user.Principal.PermittedWorkstations)
-                    .Subscribe((System.DirectoryServices.AccountManagement.PrincipalValueCollection<string> x) =>
+                    .Subscribe(workStation =>
                     {
-                        using (_computers.SuppressChangeNotifications()) _computers.AddRange(x);
+                        using (_computers.SuppressChangeNotifications()) _computers.AddRange(workStation);
                     })
                     .DisposeWith(disposables);
 
@@ -72,7 +72,7 @@ namespace MagnumOpus.Computer
         public ReactiveCommand<Unit, Unit> RemoveAllComputers { get; }
         public ReactiveCommand<Unit, Unit> Save { get; }
         public ReactiveCommand<Unit, Unit> Cancel { get; }
-        public IReactiveDerivedList<string> Computers => _computers.CreateDerivedCollection(computerName => computerName, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> Computers => _computers.CreateDerivedCollection(computerName => computerName, orderer: (one, two) => String.Compare(one, two, StringComparison.OrdinalIgnoreCase));
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }
         public string ComputerName { get => _computerName; set => this.RaiseAndSetIfChanged(ref _computerName, value); }
         public string SelectedComputer { get => _selectedComputer; set => this.RaiseAndSetIfChanged(ref _selectedComputer, value); }
@@ -100,7 +100,7 @@ namespace MagnumOpus.Computer
 
             if (parameter is string s)
             {
-                User = await ActiveDirectoryService.Current.GetUser(parameter as string);
+                User = await ActiveDirectoryService.Current.GetUser(s);
             }
         }
 

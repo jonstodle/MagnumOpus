@@ -97,7 +97,7 @@ namespace MagnumOpus.User
 
             this.WhenActivated(disposables =>
             {
-                var userChanged = this.WhenAnyValue(vm => vm.User)
+                _ = this.WhenAnyValue(vm => vm.User)
                     .WhereNotNull()
                     .Subscribe(user =>
                     {
@@ -107,7 +107,7 @@ namespace MagnumOpus.User
                     .DisposeWith(disposables);
 
                 Observable.Merge(
-                        ResetGlobalProfile.Select(_ => (string)"Global profile reset"),
+                        ResetGlobalProfile.Select(_ => "Global profile reset"),
                         ResetLocalProfile.Select(_ => "Local profile reset"),
                         RestoreProfile.Select(_ => "Profile restored"),
                         ResetCitrixProfile.Select(_ => "Citrix profile reset"))
@@ -116,10 +116,10 @@ namespace MagnumOpus.User
                     .DisposeWith(disposables);
 
                 SearchForProfiles
-                    .Subscribe((Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>> x) =>
+                    .Subscribe(x =>
                     {
-                        NewProfileDirectory = x.Item1;
-                        using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.Item2);
+                        NewProfileDirectory = x.NewProfile;
+                        using (_profiles.SuppressChangeNotifications()) _profiles.AddRange(x.OldProfiles);
                     })
                     .DisposeWith(disposables);
 
@@ -164,7 +164,7 @@ namespace MagnumOpus.User
 
         public ReactiveCommand<Unit, Unit> ResetGlobalProfile { get; }
         public ReactiveCommand<Unit, Unit> ResetLocalProfile { get; }
-        public ReactiveCommand<Unit, Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfiles { get; }
+        public ReactiveCommand<Unit, (DirectoryInfo NewProfile, IEnumerable<DirectoryInfo> OldProfiles)> SearchForProfiles { get; }
         public ReactiveCommand<Unit, Unit> RestoreProfile { get; }
         public ReactiveCommand<Unit, Unit> ResetCitrixProfile { get; }
         public ReactiveCommand<Unit, Unit> OpenGlobalProfile { get; }
@@ -265,18 +265,18 @@ namespace MagnumOpus.User
             }
         }, TaskPoolScheduler.Default);
 
-        private IObservable<Tuple<DirectoryInfo, IEnumerable<DirectoryInfo>>> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
+        private IObservable<(DirectoryInfo, IEnumerable<DirectoryInfo>)> SearchForProfilesImpl(UserObject usr, string cpr) => Observable.Start(() =>
         {
             if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
 
             var profilesDirectory = new DirectoryInfo($@"\\{cpr}\C$\Users");
             var profileDirectories = profilesDirectory.GetDirectories($"*{usr.Principal.SamAccountName}*").ToList();
 
-            var profileDir = profileDirectories.FirstOrDefault(directoryInfo => directoryInfo.Name.ToLowerInvariant() == usr.Principal.SamAccountName.ToLowerInvariant());
+            var profileDir = profileDirectories.FirstOrDefault(directoryInfo => directoryInfo.Name.Equals(usr.Principal.SamAccountName, StringComparison.OrdinalIgnoreCase));
             if (profileDir == null) throw new Exception("No local profile folder");
             profileDirectories.Remove(profileDir);
 
-            return Tuple.Create(profileDir, profileDirectories.AsEnumerable());
+            return (profileDir, profileDirectories.AsEnumerable());
         }, TaskPoolScheduler.Default);
 
         private IObservable<Unit> RestoreProfileImpl(DirectoryInfo newProfileDir, DirectoryInfo oldProfileDir) => Observable.Start(() =>
@@ -322,7 +322,7 @@ namespace MagnumOpus.User
 
             while (Directory.Exists(destination))
             {
-                destination = destination.Insert(destination.ToLowerInvariant().IndexOf(userName.ToLowerInvariant()), "!");
+                destination = destination.Insert(destination.IndexOf(userName, StringComparison.OrdinalIgnoreCase), "!");
             }
 
             Directory.Move(directory.FullName, destination);

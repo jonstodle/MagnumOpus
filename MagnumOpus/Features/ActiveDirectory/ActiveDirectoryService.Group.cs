@@ -43,17 +43,7 @@ namespace MagnumOpus.ActiveDirectory
 
 		public IObservable<DirectoryEntry> GetParents(IEnumerable<string> initialElements, IScheduler scheduler = null) => new ParentGroupsState(initialElements, scheduler).Results;
 
-		//public IObservable<DirectoryEntry> GetParents(params string[] initialElements) => GetParents(initialElements);
-
         public string GetNameFromPath(string path) => path.Split(',')[0].Split('=')[1];
-
-        string EscapeString(string str) => str
-            .Replace(@"*", @"\2a")
-            .Replace(@"(", @"\28")
-            .Replace(@")", @"\29")
-            .Replace(@"\", @"\5c")
-            .Replace(@"NUL", @"\00")
-            .Replace(@"/", @"\2f");
     }
 
 	public class ParentGroupsState
@@ -84,24 +74,19 @@ namespace MagnumOpus.ActiveDirectory
 			if (group == null) return;
 
 			var groupName = group.Name;
-			var groups = group.GetGroups();
+			if (_history.Contains(groupName)) return;
+			
+			_history.Add(groupName);
+			_resultsSubject.OnNext(group.GetUnderlyingObject() as DirectoryEntry);
 
-			if (!_history.Contains(groupName))
-			{
-				_history.Add(groupName);
-				_resultsSubject.OnNext(group.GetUnderlyingObject() as DirectoryEntry);
-
-				try { foreach (var memberGroup in groups) GetAllGroups(memberGroup.Name); }
-				catch { }
-			}
-
-
+			try { foreach (var memberGroup in group.GetGroups()) GetAllGroups(memberGroup.Name); }
+			catch { /* Ignored */ }
 		}
 
 
 
-		private CompositeDisposable _disposables = new CompositeDisposable();
-		private List<string> _history = new List<string>();
-		private ReplaySubject<DirectoryEntry> _resultsSubject = new ReplaySubject<DirectoryEntry>();
+		private readonly CompositeDisposable _disposables = new CompositeDisposable();
+		private readonly List<string> _history = new List<string>();
+		private readonly ReplaySubject<DirectoryEntry> _resultsSubject = new ReplaySubject<DirectoryEntry>();
 	}
 }

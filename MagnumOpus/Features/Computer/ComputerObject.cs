@@ -19,11 +19,11 @@ namespace MagnumOpus.Computer
 
 
 
-        public string OperatingSystem => _directoryEntry.Properties.Get<string>("operatingsystem");
+        public string OperatingSystem => DirectoryEntry.Properties.Get<string>("operatingsystem");
 
-        public string ServicePack => _directoryEntry.Properties.Get<string>("operatingsystemservicepack");
+        public string ServicePack => DirectoryEntry.Properties.Get<string>("operatingsystemservicepack");
 
-        public string Company => SettingsService.Current.ComputerCompanyOus.FirstOrDefault(companyKVPair => _principal.DistinguishedName.Contains(companyKVPair.Key)).Value ?? "";
+        public string Company => SettingsService.Current.ComputerCompanyOus.FirstOrDefault(companyKVPair => Principal.DistinguishedName.Contains(companyKVPair.Key)).Value ?? "";
 
 
 
@@ -57,7 +57,7 @@ namespace MagnumOpus.Computer
                         observer.OnCompleted();
                     }));
 
-        public IObservable<UserObject> GetManagedBy() => Observable.Return(_directoryEntry.Properties.Get<string>("managedby"))
+        public IObservable<UserObject> GetManagedBy() => Observable.Return(DirectoryEntry.Properties.Get<string>("managedby"))
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Return<UserObject>(null);

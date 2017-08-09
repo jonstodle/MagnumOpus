@@ -124,7 +124,7 @@ namespace MagnumOpus.User
         public ReactiveCommand<Unit, Unit> FindDirectGroup { get; }
         public ReactiveCommand<Unit, Unit> FindAllGroup { get; }
         public ReactiveList<string> AllGroups => _allGroups;
-        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> DirectGroups => _directGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => string.Compare(one, two, StringComparison.OrdinalIgnoreCase));
         public ListCollectionView AllGroupsCollectionView => _allGroupsCollectionView;
         public bool IsLoadingGroups => _isLoadingGroups.Value;
         public UserObject User { get => _user; set => this.RaiseAndSetIfChanged(ref _user, value); }

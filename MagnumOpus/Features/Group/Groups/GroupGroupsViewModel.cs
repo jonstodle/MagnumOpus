@@ -9,7 +9,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Windows.Data;
 using System.Reactive.Concurrency;
-using DocumentFormat.OpenXml.Spreadsheet;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Computer;
 using MagnumOpus.Dialog;
@@ -156,9 +155,9 @@ namespace MagnumOpus.Group
         public ReactiveCommand<Unit, Unit> OpenEditMembers { get; }
         public ReactiveCommand<Unit, Unit> SaveMembers { get; }
         public ReactiveCommand<Unit, Unit> FindMember { get; }
-        public IReactiveDerivedList<string> DirectMemberOfGroups => _directMemberOfGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> DirectMemberOfGroups => _directMemberOfGroups.CreateDerivedCollection(groupName => groupName, orderer: (one, two) => string.Compare(one, two, StringComparison.OrdinalIgnoreCase));
         public ReactiveList<string> AllMemberOfGroups => _allMemberOfGroups;
-        public IReactiveDerivedList<string> Members => _members.CreateDerivedCollection(memberName => memberName, orderer: (one, two) => one.CompareTo(two));
+        public IReactiveDerivedList<string> Members => _members.CreateDerivedCollection(memberName => memberName, orderer: (one, two) => string.Compare(one, two, StringComparison.OrdinalIgnoreCase));
         public ListCollectionView AllMemberOfGroupsView => _allMemberOfGroupsView;
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
         public bool IsShowingDirectMemberOf { get => _isShowingDirectMemberOf; set => this.RaiseAndSetIfChanged(ref _isShowingDirectMemberOf, value); }

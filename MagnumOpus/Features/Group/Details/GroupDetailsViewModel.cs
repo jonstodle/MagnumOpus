@@ -4,13 +4,6 @@ namespace MagnumOpus.Group
 {
 	public class GroupDetailsViewModel : ViewModelBase
 	{
-        public GroupDetailsViewModel()
-        {
-
-        }
-
-
-
         public GroupObject Group { get => _group; set => this.RaiseAndSetIfChanged(ref _group, value); }
 
 

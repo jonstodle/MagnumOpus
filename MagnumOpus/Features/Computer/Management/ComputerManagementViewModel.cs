@@ -17,7 +17,7 @@ namespace MagnumOpus.Computer
     {
         public ComputerManagementViewModel()
         {
-            _rebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_computer.CN}?", "", "Yes", "No"))
+            RebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_computer.CN}?", "", "Yes", "No"))
                 .Where(result => result == 0)
                 .SelectMany(_ => Observable.Start(() =>
                 {
@@ -32,19 +32,19 @@ namespace MagnumOpus.Computer
                 }, TaskPoolScheduler.Default))
             );
 
-            _runPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
+            RunPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
 
-            _openCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
+            OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
 
-            _openSccm = ReactiveCommand.Create(() => { RunFile(SettingsService.Current.SCCMPath, _computer.CN); });
+            OpenSccm = ReactiveCommand.Create(() => { RunFile(SettingsService.Current.SCCMPath, _computer.CN); });
 
             this.WhenActivated(disposables =>
             {
                 Observable.Merge<(string Title, string Message)>(
-                    _rebootComputer.ThrownExceptions.Select(ex => ("Could not reboot computer", ex.Message)),
-                    _runPSExec.ThrownExceptions.Select(ex => ("Could not run PSExec", ex.Message)),
-                    _openCDrive.ThrownExceptions.Select(ex => ("Could not open C$ drive", ex.Message)),
-                    _openSccm.ThrownExceptions.Select(ex => ("Could not open SCCM", ex.Message)))
+                    RebootComputer.ThrownExceptions.Select(ex => ("Could not reboot computer", ex.Message)),
+                    RunPSExec.ThrownExceptions.Select(ex => ("Could not run PSExec", ex.Message)),
+                    OpenCDrive.ThrownExceptions.Select(ex => ("Could not open C$ drive", ex.Message)),
+                    OpenSccm.ThrownExceptions.Select(ex => ("Could not open SCCM", ex.Message)))
                 .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
                 .Subscribe()
                 .DisposeWith(disposables);
@@ -53,18 +53,14 @@ namespace MagnumOpus.Computer
 
 
 
-        public ReactiveCommand<Unit, Unit> RebootComputer => _rebootComputer;
-        public ReactiveCommand<Unit, Unit> RunPSExec => _runPSExec;
-        public ReactiveCommand<Unit, Unit> OpenCDrive => _openCDrive;
-        public ReactiveCommand<Unit, Unit> OpenSccm => _openSccm;
+        public ReactiveCommand<Unit, Unit> RebootComputer { get; }
+        public ReactiveCommand<Unit, Unit> RunPSExec { get; }
+        public ReactiveCommand<Unit, Unit> OpenCDrive { get; }
+        public ReactiveCommand<Unit, Unit> OpenSccm { get; }
         public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
 
+        
 
-
-        private ReactiveCommand<Unit, Unit> _rebootComputer;
-        private ReactiveCommand<Unit, Unit> _runPSExec;
-        private ReactiveCommand<Unit, Unit> _openCDrive;
-        private ReactiveCommand<Unit, Unit> _openSccm;
         private ComputerObject _computer;
     }
 }

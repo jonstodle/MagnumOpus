@@ -10,7 +10,7 @@ namespace MagnumOpus.Settings
 		public SettingsWindowViewModel() {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var assemblyTime = Assembly.GetExecutingAssembly().GetLinkerTime();
-            _version = $"{version.Major}.{version.Minor}.{assemblyTime.Day.ToString("00")}{assemblyTime.Month.ToString("00")}{assemblyTime.Year.ToString().Substring(2, 2)}.{assemblyTime.Hour.ToString("00")}{assemblyTime.Minute.ToString("00")}{assemblyTime.Second.ToString("00")}";
+            Version = $"{version.Major}.{version.Minor}.{assemblyTime.Day:00}{assemblyTime.Month:00}{assemblyTime.Year.ToString().Substring(2, 2)}.{assemblyTime.Hour:00}{assemblyTime.Minute:00}{assemblyTime.Second:00}";
         }
 
 
@@ -39,19 +39,9 @@ namespace MagnumOpus.Settings
             set => SettingsService.Current.UseEscapeToCloseDetailsWindows = value;
         }
 
-        public string Version => _version;
+        public string Version { get; }
 
 
-
-		public Task Opening(Action close, object parameter)
-		{
-			_close = close;
-			return Task.FromResult<object>(null);
-		}
-
-
-
-        private readonly string _version;
-        private Action _close;
-    }
+		public Task Opening(Action close, object parameter) => Task.FromResult<object>(null);
+	}
 }

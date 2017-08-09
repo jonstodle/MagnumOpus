@@ -13,11 +13,11 @@ namespace MagnumOpus.Group
 
 
 
-        public string Description { get => _principal.Description.HasValue() ? _principal.Description : ""; set => _principal.Description = value.HasValue() ? value : null; }
+        public string Description { get => Principal.Description.HasValue() ? Principal.Description : ""; set => Principal.Description = value.HasValue() ? value : null; }
 
-		public string Notes => _directoryEntry.Properties.Get<string>("info");
+		public string Notes => DirectoryEntry.Properties.Get<string>("info");
 
-        public IObservable<UserObject> GetManager() => Observable.Return(_directoryEntry.Properties.Get<string>("manager"))
+        public IObservable<UserObject> GetManager() => Observable.Return(DirectoryEntry.Properties.Get<string>("manager"))
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Return<UserObject>(null);

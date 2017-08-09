@@ -16,7 +16,7 @@ using MagnumOpus.Navigation;
 
 namespace MagnumOpus.EditMemberOf
 {
-    public class EditMemberOfDialogViewModel : ViewModelBase, IDialog, IEnableLogger
+    public class EditMemberOfDialogViewModel : ViewModelBase, IDialog
     {
         public EditMemberOfDialogViewModel()
         {
@@ -58,7 +58,7 @@ namespace MagnumOpus.EditMemberOf
             _principal = SetPrincipal
                 .ToProperty(this, vm => vm.Principal);
 
-            (this).WhenActivated((Action<CompositeDisposable>)(disposables =>
+            this.WhenActivated(disposables =>
             {
                 GetPrincipalMembers
                     .ObserveOnDispatcher()
@@ -66,33 +66,33 @@ namespace MagnumOpus.EditMemberOf
                     .DisposeWith(disposables);
 
                 Search
-                    .Do((IObservable<DirectoryEntry> _) => _searchResults.Clear())
+                    .Do(_ => _searchResults.Clear())
                     .Switch()
                     .ObserveOnDispatcher()
                     .Subscribe(directoryEntry => _searchResults.Add(directoryEntry))
                     .DisposeWith(disposables);
 
                 Save
-                    .SelectMany((IEnumerable<string> x) => x.Count() > 0 ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, x)}")) : Observable.Return(0))
+                    .SelectMany(groups => groups.Any() ? _messages.Handle(new MessageInfo(MessageType.Warning, $"The following messages were generated:\n{string.Join(Environment.NewLine, groups)}")) : Observable.Return(0))
                     .ObserveOnDispatcher()
                     .Do(_ => _close())
                     .Subscribe()
                     .DisposeWith(disposables);
 
                 Observable.Merge<(string Title, string Message)>(
-                       SetPrincipal.ThrownExceptions.Select(ex => (("Could not load AD object", ex.Message))),
-                       GetPrincipalMembers.ThrownExceptions.Select(ex => (("Could not get members", ex.Message))),
-                       Search.ThrownExceptions.Select(ex => (("Could not complete search", ex.Message))),
-                       OpenSearchResultPrincipal.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
-                       OpenMembersPrincipal.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
-                       AddToPrincipal.ThrownExceptions.Select(ex => (("Could not add member", ex.Message))),
-                       RemoveFromPrincipal.ThrownExceptions.Select(ex => (("Could not remove member", ex.Message))),
-                       Save.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
-                       Cancel.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
-                   .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
-                   .Subscribe()
-                   .DisposeWith(disposables);
-            }));
+                        SetPrincipal.ThrownExceptions.Select(ex => (("Could not load AD object", ex.Message))),
+                        GetPrincipalMembers.ThrownExceptions.Select(ex => (("Could not get members", ex.Message))),
+                        Search.ThrownExceptions.Select(ex => (("Could not complete search", ex.Message))),
+                        OpenSearchResultPrincipal.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
+                        OpenMembersPrincipal.ThrownExceptions.Select(ex => (("Could not open AD object", ex.Message))),
+                        AddToPrincipal.ThrownExceptions.Select(ex => (("Could not add member", ex.Message))),
+                        RemoveFromPrincipal.ThrownExceptions.Select(ex => (("Could not remove member", ex.Message))),
+                        Save.ThrownExceptions.Select(ex => (("Could not save changes", ex.Message))),
+                        Cancel.ThrownExceptions.Select(ex => (("Could not close dialog", ex.Message))))
+                    .SelectMany(dialogContent => _messages.Handle(new MessageInfo(MessageType.Error, dialogContent.Message, dialogContent.Title)))
+                    .Subscribe()
+                    .DisposeWith(disposables);
+            });
         }
 
 
@@ -106,8 +106,8 @@ namespace MagnumOpus.EditMemberOf
         public ReactiveCommand<Unit, Unit> RemoveFromPrincipal { get; }
         public ReactiveCommand<Unit, IEnumerable<string>> Save { get; }
         public ReactiveCommand<Unit, Unit> Cancel { get; }
-        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
-        public IReactiveDerivedList<DirectoryEntry> PrincipalMembers => _principalMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => one.Path.CompareTo(two.Path));
+        public IReactiveDerivedList<DirectoryEntry> SearchResults => _searchResults.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => string.Compare(one.Path, two.Path, StringComparison.OrdinalIgnoreCase));
+        public IReactiveDerivedList<DirectoryEntry> PrincipalMembers => _principalMembers.CreateDerivedCollection(directoryEntry => directoryEntry, orderer: (one, two) => string.Compare(one.Path, two.Path, StringComparison.OrdinalIgnoreCase));
         public Principal Principal => _principal.Value;
         public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
         public DirectoryEntry SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }

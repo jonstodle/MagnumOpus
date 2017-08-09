@@ -63,16 +63,15 @@ namespace MagnumOpus.Computer
 
         private IObservable<string> PingHost(string hostName) => Observable.Interval(TimeSpan.FromSeconds(2d), TaskPoolScheduler.Default)
                 .SelectMany(_ => Observable.Start(() =>
-                    {
-                        PingReply reply = null;
-                        reply = new Ping().Send(hostName, 1000);
+		        {
+			        var reply = new Ping().Send(hostName, 1000);
 
-                        if (reply?.Status == IPStatus.Success) return $"{hostName} responded after {reply.RoundtripTime}ms";
+			        if (reply?.Status == IPStatus.Success) return $"{hostName} responded after {reply.RoundtripTime}ms";
                         else throw new Exception("Ping reply status was not 'Success'");
-                    }, CurrentThreadScheduler.Instance)
+		        }, CurrentThreadScheduler.Instance)
                     .CatchAndReturn($"{hostName} did not respond")
-                    .Select(pingMessage => $"{DateTimeOffset.Now.ToString("T")} - {pingMessage}"))
-                .StartWith($"{DateTimeOffset.Now.ToString("T")} - Waiting for {hostName} to respond...");
+                    .Select(pingMessage => $"{DateTimeOffset.Now:T} - {pingMessage}"))
+                .StartWith($"{DateTimeOffset.Now:T} - Waiting for {hostName} to respond...");
 
 
 
