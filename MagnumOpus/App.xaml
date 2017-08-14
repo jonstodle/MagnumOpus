@@ -23,6 +23,7 @@
 			<Setter Property="IsReadOnly" Value="True"/>
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="TextWrapping" Value="Wrap"/>
+			<Setter Property="Padding" Value="-2"/>
 		</Style>
 
 		<Style x:Key="PrimaryActionStyle" TargetType="MenuItem">
