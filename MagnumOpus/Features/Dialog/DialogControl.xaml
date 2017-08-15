@@ -16,8 +16,17 @@
 	
 	<Border x:Name="OverlayGrid">
 		<Border.Background>
-			<SolidColorBrush Color="Black" Opacity=".7"/>
+			<SolidColorBrush x:Name="BackgroundColor" Color="Black"/>
 		</Border.Background>
+		<Border.Triggers>
+			<EventTrigger RoutedEvent="Border.Loaded">
+				<BeginStoryboard>
+					<Storyboard>
+						<DoubleAnimation Storyboard.TargetName="BackgroundColor" Storyboard.TargetProperty="Opacity" From="0" To=".7" Duration="0:0:0.150"></DoubleAnimation>
+					</Storyboard>
+				</BeginStoryboard>
+			</EventTrigger>
+		</Border.Triggers>
 
 		<Grid x:Name="ContainerGrid" Background="White" MinWidth="200" MinHeight="100" MaxHeight="400" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="50,0">
 			<Grid.RowDefinitions>
