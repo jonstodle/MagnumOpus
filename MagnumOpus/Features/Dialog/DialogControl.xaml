@@ -36,7 +36,7 @@
 				<StackPanel VerticalAlignment="Center" Grid.Column="1" Margin="5,0,0,0">
 					<TextBlock x:Name="CaptionTextBlock" FontSize="14" FontWeight="SemiBold" Margin="2" Visibility="Collapsed"/>
 
-					<TextBox x:Name="MessageTextBlock" Style="{StaticResource TextBlockTextBoxStyle}" Margin="2"/>
+					<TextBox x:Name="MessageTextBlock" Style="{StaticResource TextBlockTextBoxStyle}" Padding="-2,2" Margin="2"/>
 				</StackPanel>
 			</Grid>
 
