@@ -20,11 +20,13 @@ namespace MagnumOpus.IPAddress
             {
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.Title, ipAddress => ipAddress ?? "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressPanel.IPAddress).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.RemotePanel.HostName).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.PingPanel.HostName).DisposeWith(d);
 
                 new List<Interaction<MessageInfo, int>>
                 {
                     IPAddressPanel.Messages,
+                    RemotePanel.Messages,
                     PingPanel.Messages
                 }.RegisterMessageHandler(ContainerGrid).DisposeWith(d);
             });

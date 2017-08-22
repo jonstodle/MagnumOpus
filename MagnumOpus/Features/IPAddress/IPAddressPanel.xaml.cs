@@ -22,18 +22,7 @@ namespace MagnumOpus.IPAddress
                 this.Bind(ViewModel, vm => vm.IPAddress, v => v.IPAddress).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.IPAddress, v => v.IPAddressTextBlock.Text, ipAddress => $"IP {ipAddress}").DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.HostName, v => v.HostNameTextBlock.Text, hostName => $"({hostName})").DisposeWith(d);
-
-                this.BindCommand(ViewModel, vm => vm.OpenLoggedOn, v => v.LoggedOnButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.OpenLoggedOnPlus, v => v.LoggedOnPlusButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.OpenRemoteExecution, v => v.RemoteExecutionButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.OpenCDrive, v => v.OpenCButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.StartRemoteControl, v => v.RemoteControlButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.StartRemoteControl2012, v => v.RemoteControl2012Button).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.KillRemoteControl, v => v.KillRemoteConrolButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.StartRemoteAssistance, v => v.RemoteAssistanceButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.StartRdp, v => v.RdpButton).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.ComputerName, v => v.HostNameTextBlock.Text, hostName => $"({hostName})").DisposeWith(d);
             });
         }
 

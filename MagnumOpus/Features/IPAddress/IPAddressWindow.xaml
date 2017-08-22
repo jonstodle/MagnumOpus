@@ -16,6 +16,8 @@
 			<StackPanel Margin="2">
 				<local:IPAddressPanel x:Name="IPAddressPanel"/>
 
+				<computer:RemotePanel x:Name="RemotePanel"/>
+
 				<computer:PingPanel x:Name="PingPanel"/>
 			</StackPanel>
 		</ScrollViewer>

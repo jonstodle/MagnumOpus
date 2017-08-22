@@ -22,7 +22,7 @@ namespace MagnumOpus.Computer
             {
                 this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.Title, cn => cn ?? "").DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerDetails.Computer).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.Computer, v => v.RemotePanel.Computer).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.RemotePanel.HostName).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerManagement.Computer).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer.CN, v => v.PingPanel.HostName).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Computer, v => v.ComputerGroups.Computer).DisposeWith(d);
