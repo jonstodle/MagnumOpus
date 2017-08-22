@@ -17,7 +17,7 @@ namespace MagnumOpus.Computer
     {
         public ComputerManagementViewModel()
         {
-            RebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_computer.CN}?", "", "Yes", "No"))
+            RebootComputer = ReactiveCommand.CreateFromObservable(() => _messages.Handle(new MessageInfo(MessageType.Question, $"Reboot {_hostName}?", "", "Yes", "No"))
                 .Where(result => result == 0)
                 .SelectMany(_ => Observable.Start(() =>
                 {
@@ -25,7 +25,7 @@ namespace MagnumOpus.Computer
                     {
                         powerShell
                             .AddCommand("Restart-Computer")
-                                .AddParameter("ComputerName", _computer.CN)
+                                .AddParameter("ComputerName", _hostName)
                                 .AddParameter("Force")
                             .Invoke();
                     }
@@ -34,9 +34,9 @@ namespace MagnumOpus.Computer
 
             RunPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec", "PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
 
-            OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
+            OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_hostName}\C$"); });
 
-            OpenSccm = ReactiveCommand.Create(() => { RunFile(SettingsService.Current.SCCMPath, _computer.CN); });
+            OpenSccm = ReactiveCommand.Create(() => { RunFile(SettingsService.Current.SCCMPath, _hostName); });
 
             this.WhenActivated(disposables =>
             {
@@ -57,10 +57,10 @@ namespace MagnumOpus.Computer
         public ReactiveCommand<Unit, Unit> RunPSExec { get; }
         public ReactiveCommand<Unit, Unit> OpenCDrive { get; }
         public ReactiveCommand<Unit, Unit> OpenSccm { get; }
-        public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
+        public string HostName { get => _hostName; set => this.RaiseAndSetIfChanged(ref _hostName, value); }
 
         
 
-        private ComputerObject _computer;
+        private string _hostName;
     }
 }

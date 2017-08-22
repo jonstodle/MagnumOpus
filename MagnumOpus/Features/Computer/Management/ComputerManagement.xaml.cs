@@ -19,7 +19,7 @@ namespace MagnumOpus.Computer
 
             this.WhenActivated(d =>
             {
-                this.Bind(ViewModel, vm => vm.Computer, v => v.Computer).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.HostName, v => v.HostName).DisposeWith(d);
 
                 this.BindCommand(ViewModel, vm => vm.RebootComputer, v => v.RebootButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.RunPSExec, v => v.RunPSExecButton).DisposeWith(d);
@@ -30,8 +30,8 @@ namespace MagnumOpus.Computer
 
         public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
-        public ComputerObject Computer { get => (ComputerObject)GetValue(ComputerProperty); set => SetValue(ComputerProperty, value); }
-        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(ComputerManagement), new PropertyMetadata(null));
+        public string HostName { get => (string)GetValue(HostNameProperty); set => SetValue(HostNameProperty, value); }
+        public static readonly DependencyProperty HostNameProperty = DependencyProperty.Register(nameof(HostName), typeof(string), typeof(ComputerManagement), new PropertyMetadata(null));
 
         public ComputerManagementViewModel ViewModel { get => (ComputerManagementViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(ComputerManagementViewModel), typeof(ComputerManagement), new PropertyMetadata(null));
