@@ -22,7 +22,7 @@ namespace MagnumOpus.Computer
 
             this.WhenActivated(d =>
             {
-                this.Bind(ViewModel, vm => vm.Computer, v => v.Computer).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.HostName, v => v.HostName).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersToggleButton.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsShowingLoggedOnUsers, v => v.LoggedOnUsersStackPanel.Visibility).DisposeWith(d);
@@ -49,8 +49,8 @@ namespace MagnumOpus.Computer
 
         public Interaction<MessageInfo, int> Messages => ViewModel.Messages;
 
-        public ComputerObject Computer { get => (ComputerObject)GetValue(ComputerProperty); set => SetValue(ComputerProperty, value); }
-        public static readonly DependencyProperty ComputerProperty = DependencyProperty.Register(nameof(Computer), typeof(ComputerObject), typeof(RemotePanel), new PropertyMetadata(null));
+        public string HostName { get => (string)GetValue(HostNameProperty); set => SetValue(HostNameProperty, value); }
+        public static readonly DependencyProperty HostNameProperty = DependencyProperty.Register(nameof(HostName), typeof(string), typeof(RemotePanel), new PropertyMetadata(null));
 
         public RemotePanelViewModel ViewModel { get => (RemotePanelViewModel)GetValue(ViewModelProperty); set => SetValue(ViewModelProperty, value); }
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(nameof(ViewModel), typeof(RemotePanelViewModel), typeof(RemotePanel), new PropertyMetadata(null));

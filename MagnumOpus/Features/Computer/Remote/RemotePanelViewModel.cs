@@ -21,39 +21,39 @@ namespace MagnumOpus.Computer
     {
         public RemotePanelViewModel()
         {
-            OpenUser = ReactiveCommand.CreateFromObservable(() => Observable.FromAsync(() => NavigationService.ShowWindow<UserWindow>(Tuple.Create(_selectedLoggedOnUser.Username, _computer.CN))));
+            OpenUser = ReactiveCommand.CreateFromObservable(() => Observable.FromAsync(() => NavigationService.ShowWindow<UserWindow>(Tuple.Create(_selectedLoggedOnUser.Username, _hostName))));
 
             CopyUserName = ReactiveCommand.Create(() => Clipboard.SetText(_selectedLoggedOnUser.Username));
 
-            LogOffUser = ReactiveCommand.CreateFromObservable(() => LogOffUserImpl(_selectedLoggedOnUser.SessionID, Computer.CN));
+            LogOffUser = ReactiveCommand.CreateFromObservable(() => LogOffUserImpl(_selectedLoggedOnUser.SessionID, HostName));
 
-            StartRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_computer.CN));
+            StartRemoteControl = ReactiveCommand.CreateFromObservable(() => StartRemoteControlImpl(_hostName));
 
-            StartRemoteControlClassic = ReactiveCommand.CreateFromObservable(() => StartRemoteControlClassicImpl(_computer.CN));
+            StartRemoteControlClassic = ReactiveCommand.CreateFromObservable(() => StartRemoteControlClassicImpl(_hostName));
 
-            StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_computer.CN));
+            StartRemoteControl2012 = ReactiveCommand.CreateFromObservable(() => StartRemoteControl2012Impl(_hostName));
 
-            StartRemoteAssistance = ReactiveCommand.CreateFromObservable(() => StartRemoteAssistanceImpl(_computer.CN));
+            StartRemoteAssistance = ReactiveCommand.CreateFromObservable(() => StartRemoteAssistanceImpl(_hostName));
 
-            KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_computer.CN));
+            KillRemoteTools = ReactiveCommand.CreateFromObservable(() => KillRemoteToolsImpl(_hostName));
 
-            ToggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_computer.CN));
+            ToggleUac = ReactiveCommand.CreateFromObservable(() => ToggleUacImpl(_hostName));
 
-            StartRdp = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_computer.CN}"));
+            StartRdp = ReactiveCommand.Create(() => RunFile(Path.Combine(System32Path, "mstsc.exe"), $"/v {_hostName}"));
 
             _loggedOnUsers = new ReactiveList<LoggedOnUserInfo>();
 
             _isUacOn = Observable.Merge(
-                    this.WhenAnyValue(vm => vm.Computer).WhereNotNull().SelectMany(computer => GetIsUacOn(computer.CN).Select(isUacOn => (bool?)isUacOn).CatchAndReturn(null)),
+                    this.WhenAnyValue(vm => vm.HostName).WhereNotNull().SelectMany(hostName => GetIsUacOn(hostName).Select(isUacOn => (bool?)isUacOn).CatchAndReturn(null)),
                     ToggleUac.Select(isUacOn => (bool?)isUacOn))
                 .ObserveOnDispatcher()
                 .ToProperty(this, vm => vm.IsUacOn);
 
             this.WhenActivated(d =>
             {
-                this.WhenAnyValue(vm => vm.Computer)
+                this.WhenAnyValue(vm => vm.HostName)
                     .WhereNotNull()
-                    .Select(computer => computer.GetLoggedInUsers(TaskPoolScheduler.Default).Catch(Observable.Empty<LoggedOnUserInfo>()))
+                    .Select(hostName => ComputerObject.GetLoggedInUsers(hostName, TaskPoolScheduler.Default).Catch(Observable.Empty<LoggedOnUserInfo>()))
                     .Do(_ => _loggedOnUsers.Clear())
                     .Switch()
                     .ObserveOnDispatcher()
@@ -101,65 +101,65 @@ namespace MagnumOpus.Computer
         public ReactiveCommand<Unit, Unit> StartRdp { get; }
         public ReactiveList<LoggedOnUserInfo> LoggedOnUsers => _loggedOnUsers;
         public bool? IsUacOn => _isUacOn.Value;
-        public ComputerObject Computer { get => _computer; set => this.RaiseAndSetIfChanged(ref _computer, value); }
+        public string HostName { get => _hostName; set => this.RaiseAndSetIfChanged(ref _hostName, value); }
         public bool IsShowingLoggedOnUsers { get => _isShowingLoggedOnUsers; set => this.RaiseAndSetIfChanged(ref _isShowingLoggedOnUsers, value); }
         public LoggedOnUserInfo SelectedLoggedOnUser { get => _selectedLoggedOnUser; set => this.RaiseAndSetIfChanged(ref _selectedLoggedOnUser, value); }
         public bool IsShowingRemoteControlOptions { get => _isShowingRemoteControlOptions; set => this.RaiseAndSetIfChanged(ref _isShowingRemoteControlOptions, value); }
 
 
 
-        private IObservable<Unit> LogOffUserImpl(int sessionId, string computerCn) => Observable.Start(() =>
+        private IObservable<Unit> LogOffUserImpl(int sessionId, string hostName) => Observable.Start(() =>
         {
             using (var powerShell = PowerShell.Create())
             {
                 powerShell
                     .AddCommand("Invoke-Command")
                     .AddParameter("ScriptBlock", ScriptBlock.Create($"logoff {sessionId}"))
-                    .AddParameter("ComputerName", computerCn)
+                    .AddParameter("ComputerName", hostName)
                 .Invoke();
             }
         }, TaskPoolScheduler.Default);
 
-        private IObservable<Unit> StartRemoteControlImpl(string computerCn) => Observable.Start(() =>
+        private IObservable<Unit> StartRemoteControlImpl(string hostName) => Observable.Start(() =>
         {
-            EnsureComputerIsReachable(computerCn);
+            EnsureComputerIsReachable(hostName);
 
-            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{computerCn}", RegistryView.Registry64);
+            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, $"{hostName}", RegistryView.Registry64);
             var regKey = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\SMS\Mobile Client", false);
             var sccmMajorVersion = int.Parse(regKey?.GetValue("ProductVersion").ToString().Substring(0, 1) ?? "0");
 
-            if (sccmMajorVersion == 4) return StartRemoteControlClassicImpl(computerCn);
-            else return StartRemoteControl2012Impl(computerCn);
+            if (sccmMajorVersion == 4) return StartRemoteControlClassicImpl(hostName);
+            else return StartRemoteControl2012Impl(hostName);
         }, TaskPoolScheduler.Default)
         .SelectMany(action => action)
-        .Catch(StartRemoteAssistanceImpl(computerCn));
+        .Catch(StartRemoteAssistanceImpl(hostName));
 
-        private IObservable<Unit> StartRemoteControlClassicImpl(string computerCn) => Observable.Defer(() => Observable.Start(
-            () => RunFileFromCache("RemoteControl", "rc.exe", $"1 {computerCn}"),
+        private IObservable<Unit> StartRemoteControlClassicImpl(string hostName) => Observable.Defer(() => Observable.Start(
+            () => RunFileFromCache("RemoteControl", "rc.exe", $"1 {hostName}"),
             TaskPoolScheduler.Default));
 
-        private IObservable<Unit> StartRemoteControl2012Impl(string computerCn) => Observable.Defer(() => Observable.Start(
-            () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", computerCn),
+        private IObservable<Unit> StartRemoteControl2012Impl(string hostName) => Observable.Defer(() => Observable.Start(
+            () => RunFileFromCache("RemoteControl2012", "CmRcViewer.exe", hostName),
             TaskPoolScheduler.Default));
 
-        private IObservable<Unit> StartRemoteAssistanceImpl(string computerCn) => Observable.Defer(() => Observable.Start(
-            () => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {computerCn}"),
+        private IObservable<Unit> StartRemoteAssistanceImpl(string hostName) => Observable.Defer(() => Observable.Start(
+            () => RunFile(Path.Combine(System32Path, "msra.exe"), $"/offerra {hostName}"),
             TaskPoolScheduler.Default));
 
-        private IObservable<Unit> KillRemoteToolsImpl(string computerCn) => Observable.Start(() =>
+        private IObservable<Unit> KillRemoteToolsImpl(string hostName) => Observable.Start(() =>
         {
-            RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im rc.exe /f", false);
-            RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im CmRcViewer.exe /f", false);
-            RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {computerCn} /im msra.exe /f", false);
+            RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {hostName} /im rc.exe /f", false);
+            RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {hostName} /im CmRcViewer.exe /f", false);
+            RunFile(Path.Combine(System32Path, "taskkill.exe"), $"/s {hostName} /im msra.exe /f", false);
         }, TaskPoolScheduler.Default);
 
-        private IObservable<bool> ToggleUacImpl(string computerCn) => Observable.Start(() =>
+        private IObservable<bool> ToggleUacImpl(string hostName) => Observable.Start(() =>
         {
             var regValueName = "EnableLUA";
-            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, computerCn, RegistryView.Registry64);
+            var keyHive = RegistryKey.OpenRemoteBaseKey(RegistryHive.LocalMachine, hostName, RegistryView.Registry64);
             var key = keyHive.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System", true);
 
-            if (GetIsUacOn(computerCn).Wait())
+            if (GetIsUacOn(hostName).Wait())
             {
                 key?.SetValue(regValueName, 0);
                 return false;
@@ -169,7 +169,7 @@ namespace MagnumOpus.Computer
                 key?.SetValue(regValueName, 1);
                 return true;
             }
-        }, TaskPoolScheduler.Default).Concat(GetIsUacOn(computerCn));
+        }, TaskPoolScheduler.Default).Concat(GetIsUacOn(hostName));
 
 
 
@@ -196,7 +196,7 @@ namespace MagnumOpus.Computer
 
         private readonly ReactiveList<LoggedOnUserInfo> _loggedOnUsers;
         private readonly ObservableAsPropertyHelper<bool?> _isUacOn;
-        private ComputerObject _computer;
+        private string _hostName;
         private bool _isShowingLoggedOnUsers;
         private LoggedOnUserInfo _selectedLoggedOnUser;
         private bool _isShowingRemoteControlOptions;
