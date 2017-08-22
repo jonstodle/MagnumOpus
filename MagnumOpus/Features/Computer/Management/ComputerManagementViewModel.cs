@@ -32,7 +32,7 @@ namespace MagnumOpus.Computer
                 }, TaskPoolScheduler.Default))
             );
 
-            RunPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
+            RunPSExec = ReactiveCommand.Create(() => RunInCmdFromCache("PsExec", "PsExec.exe", $@"\\{_computer.CN} C:\Windows\System32\cmd.exe"));
 
             OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_computer.CN}\C$"); });
 
