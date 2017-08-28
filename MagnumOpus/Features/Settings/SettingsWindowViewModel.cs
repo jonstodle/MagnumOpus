@@ -8,9 +8,7 @@ namespace MagnumOpus.Settings
 	public class SettingsWindowViewModel : ViewModelBase, IDialog
 	{
 		public SettingsWindowViewModel() {
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            var assemblyTime = Assembly.GetExecutingAssembly().GetLinkerTime();
-            Version = $"{version.Major}.{version.Minor}.{assemblyTime.Day:00}{assemblyTime.Month:00}{assemblyTime.Year.ToString().Substring(2, 2)}.{assemblyTime.Hour:00}{assemblyTime.Minute:00}{assemblyTime.Second:00}";
+            Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
 
