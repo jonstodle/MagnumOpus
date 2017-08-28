@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 
 namespace MagnumOpus.Dialog
@@ -99,7 +100,12 @@ namespace MagnumOpus.Dialog
                 _resultSubject.OnNext(-1);
                 _resultSubject.OnCompleted();
             }
-            _parent.Children.Remove(this);
+
+            var closeAnimation = Resources["CloseAnimationStoryboard"] as Storyboard;
+            closeAnimation.Events().Completed
+                .Take(1)
+                .Subscribe(_ => _parent.Children.Remove(this));
+            closeAnimation?.Begin();
         }
 
 

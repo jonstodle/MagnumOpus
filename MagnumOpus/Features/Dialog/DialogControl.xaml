@@ -5,13 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MagnumOpus.Dialog"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="300">
+             d:DesignHeight="200" d:DesignWidth="300"
+             x:Name="ContainerControl">
 
 	<UserControl.Resources>
 		<Style TargetType="Button">
 			<Setter Property="Margin" Value="2,4"/>
 			<Setter Property="Padding" Value="20,5"/>
 		</Style>
+		
+		<Storyboard x:Key="CloseAnimationStoryboard">
+			<DoubleAnimation Storyboard.TargetName="ContainerControl" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.100"></DoubleAnimation>
+		</Storyboard>
 	</UserControl.Resources>
 	
 	<Border x:Name="OverlayGrid">
