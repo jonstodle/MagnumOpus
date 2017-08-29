@@ -63,18 +63,20 @@ namespace MagnumOpus.ActiveDirectory
         public IObservable<DirectoryEntry> SearchDirectory(string searchTerm, IScheduler scheduler = null) => 
             Observable.Create<DirectoryEntry>(observer =>
                 (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
+                {
+                    if (!searchTerm.EndsWith("*")) searchTerm = searchTerm + "*"; 
+                        
+                    using (var directoryEntry = GetDomainDirectoryEntry())
+                    using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm})(distinguishedName={searchTerm})(name={searchTerm})))"))
                     {
-                        using (var directoryEntry = GetDomainDirectoryEntry())
-                        using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm}*)(distinguishedName={searchTerm}*)(name={searchTerm}*)))"))
+                        foreach (SearchResult result in searcher.FindAll())
                         {
-                            foreach (SearchResult result in searcher.FindAll())
-                            {
-                                observer.OnNext(result.GetDirectoryEntry());
-                            }
+                            observer.OnNext(result.GetDirectoryEntry());
                         }
+                    }
 
-                        observer.OnCompleted();
-                    }));
+                    observer.OnCompleted();
+                }));
 
         private DirectoryEntry GetDomainDirectoryEntry() => new DirectoryEntry($"LDAP://{CurrentDomain}");
 
