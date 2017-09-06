@@ -64,7 +64,8 @@ namespace MagnumOpus.ActiveDirectory
             Observable.Create<DirectoryEntry>(observer =>
                 (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
                 {
-                    if (!searchTerm.EndsWith("*")) searchTerm = searchTerm + "*"; 
+                    searchTerm = searchTerm.Trim().Replace(" ", "*");
+                    if (!searchTerm.EndsWith("*")) searchTerm = $"{searchTerm}*";
                         
                     using (var directoryEntry = GetDomainDirectoryEntry())
                     using (var searcher = new DirectorySearcher(directoryEntry, $"(&(|(objectClass=user)(objectClass=group))(|(userPrincipalName={searchTerm})(distinguishedName={searchTerm})(name={searchTerm})))"))
