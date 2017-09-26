@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
 using MagnumOpus.Navigation;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -13,7 +14,7 @@ namespace MagnumOpus.User
 	{
 		public UserWindowViewModel()
 		{
-			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => ActiveDirectoryService.Current.GetUser(identity));
+			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(identity => Locator.Current.GetService<ADFacade>().GetUser(identity));
 
             _user = SetUser
                 .ToProperty(this, vm => vm.User);

@@ -3,6 +3,7 @@ using System.Windows;
 using System;
 using ReactiveUI;
 using System.Reactive;
+using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Logging;
 using MagnumOpus.Settings;
 
@@ -16,6 +17,7 @@ namespace MagnumOpus
 		public App()
 		{
 			SettingsService.Init();
+			Locator.CurrentMutable.RegisterLazySingleton(() => new ADFacade(), typeof(ADFacade));
 			Locator.CurrentMutable.RegisterConstant(new FileLoggerService(), typeof(ILogger));
 			this.Log().Info("Application start");
 

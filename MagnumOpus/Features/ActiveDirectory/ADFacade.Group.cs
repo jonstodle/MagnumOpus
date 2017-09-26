@@ -7,10 +7,11 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using MagnumOpus.Group;
+using Splat;
 
 namespace MagnumOpus.ActiveDirectory
 {
-	public partial class ActiveDirectoryService
+	public partial class ADFacade
     {
         public IObservable<GroupObject> GetGroup(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {
@@ -70,7 +71,7 @@ namespace MagnumOpus.ActiveDirectory
 
 		private void GetAllGroups(string name)
 		{
-			var group = ActiveDirectoryService.Current.GetGroup(name).Wait().Principal;
+			var group = Locator.Current.GetService<ADFacade>().GetGroup(name).Wait().Principal;
 			if (group == null) return;
 
 			var groupName = group.Name;

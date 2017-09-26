@@ -10,6 +10,7 @@ using MagnumOpus.Computer;
 using MagnumOpus.Dialog;
 using MagnumOpus.FileHelpers;
 using MagnumOpus.Settings;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -27,19 +28,19 @@ namespace MagnumOpus.User
 
             ExpirePassword = ReactiveCommand.CreateFromObservable(() => Messages.Handle(new MessageInfo(MessageType.Question, "Are you sure you want to expire the password?", "Expire password?", "Yes", "No"))
                 .Where(result => result == 0)
-                .SelectMany(_ => ActiveDirectoryService.Current.ExpirePassword(User.Principal.SamAccountName)));
+                .SelectMany(_ => _adFacade.ExpirePassword(User.Principal.SamAccountName)));
 
-            UnlockAccount = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.UnlockUser(User.Principal.SamAccountName));
+            UnlockAccount = ReactiveCommand.CreateFromObservable(() => _adFacade.UnlockUser(User.Principal.SamAccountName));
 
-            RunLockoutStatus = ReactiveCommand.Create(() => ExecutionService.RunFileFromCache("LockoutStatus", "LockoutStatus.exe", $"-u:{ActiveDirectoryService.Current.CurrentDomain}\\{User.Principal.SamAccountName}"));
+            RunLockoutStatus = ReactiveCommand.Create(() => ExecutionService.RunFileFromCache("LockoutStatus", "LockoutStatus.exe", $"-u:{_adFacade.CurrentDomain}\\{User.Principal.SamAccountName}"));
 
             OpenPermittedWorkstations = ReactiveCommand.CreateFromObservable(() => _dialogRequests.Handle(new DialogInfo(new PermittedWorkstationsDialog(), _user.Principal.SamAccountName)));
 
-            ToggleEnabled = ReactiveCommand.CreateFromObservable(() => ActiveDirectoryService.Current.SetEnabled(User.Principal.SamAccountName, !User.Principal.Enabled ?? true));
+            ToggleEnabled = ReactiveCommand.CreateFromObservable(() => _adFacade.SetEnabled(User.Principal.SamAccountName, !User.Principal.Enabled ?? true));
 
             OpenSplunk = ReactiveCommand.Create(() =>
             {
-                Process.Start(string.Format(SettingsService.Current.SplunkUrl, ActiveDirectoryService.Current.CurrentDomainShortName, User.Principal.SamAccountName));
+                Process.Start(string.Format(SettingsService.Current.SplunkUrl, _adFacade.CurrentDomainShortName, User.Principal.SamAccountName));
             });
 
             this.WhenActivated(disposables =>
@@ -121,10 +122,10 @@ namespace MagnumOpus.User
 
 
         private IObservable<string> SetNewPasswordImpl(string newPassword) => Observable.Return(newPassword)
-            .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, false, TaskPoolScheduler.Default).Select(_ => password));
+            .SelectMany(password => _adFacade.SetPassword(User.Principal.SamAccountName, password, false, TaskPoolScheduler.Default).Select(_ => password));
 
         private IObservable<string> SetNewSimplePasswordImpl() => Observable.Return($"{DateTimeOffset.Now.DayOfWeek.ToNorwegianString()}{DateTimeOffset.Now.Minute:00}")
-            .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password).Select(_ => password));
+            .SelectMany(password => _adFacade.SetPassword(User.Principal.SamAccountName, password).Select(_ => password));
 
         private IObservable<string> SetNewComplexPasswordImpl() => Observable.Start(() =>
         {
@@ -134,10 +135,11 @@ namespace MagnumOpus.User
             for (var i = 0; i < 16; i++) password += possibleChars[randGen.Next(possibleChars.Length)];
             return password;
         }, TaskPoolScheduler.Default)
-        .SelectMany(password => ActiveDirectoryService.Current.SetPassword(User.Principal.SamAccountName, password, scheduler: CurrentThreadScheduler.Instance).Select(_ => password));
+        .SelectMany(password => _adFacade.SetPassword(User.Principal.SamAccountName, password, scheduler: CurrentThreadScheduler.Instance).Select(_ => password));
 
 
 
+        private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
         private UserObject _user;
         private bool _isShowingNewPasswordOptions;
         private string _newPassword;

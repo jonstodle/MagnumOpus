@@ -7,6 +7,7 @@ using System.Reactive.Concurrency;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
 using MagnumOpus.Navigation;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -50,7 +51,7 @@ namespace MagnumOpus.User
             _passwordMaxAge = newUser
                 .SelectMany(user => user.Principal.PasswordNeverExpires || (user.Principal.LastPasswordSet ?? DateTime.MinValue) == DateTime.MinValue
                     ? Observable.Return(TimeSpan.Zero)
-                    : ActiveDirectoryService.Current.GetMaxPasswordAge(user.Principal.SamAccountName, TaskPoolScheduler.Default))
+                    : Locator.Current.GetService<ADFacade>().GetMaxPasswordAge(user.Principal.SamAccountName, TaskPoolScheduler.Default))
                 .ObserveOnDispatcher()
                 .ToProperty(this, vm => vm.PasswordMaxAge);
 

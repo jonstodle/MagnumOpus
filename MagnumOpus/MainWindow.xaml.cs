@@ -31,10 +31,10 @@ namespace MagnumOpus
 
             this.WhenActivated(d =>
             {
-                MainGrid.IsEnabled = ActiveDirectoryService.IsInDomain();
-                NoDomainStackPanel.Visibility = ActiveDirectoryService.IsInDomain() ? Visibility.Collapsed : Visibility.Visible;
+                MainGrid.IsEnabled = ADFacade.IsInDomain();
+                NoDomainStackPanel.Visibility = ADFacade.IsInDomain() ? Visibility.Collapsed : Visibility.Visible;
 
-                if (ActiveDirectoryService.IsInDomain())
+                if (ADFacade.IsInDomain())
                 {
                     this.Bind(ViewModel, vm => vm.SearchQuery, v => v.SearchQueryTextBox.Text).DisposeWith(d);
                     this.OneWayBind(ViewModel, vm => vm.History, v => v.HistoryButtonContextMenu.ItemsSource).DisposeWith(d);

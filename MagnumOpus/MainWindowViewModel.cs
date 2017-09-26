@@ -12,6 +12,7 @@ using MagnumOpus.IPAddress;
 using MagnumOpus.Navigation;
 using MagnumOpus.Settings;
 using MagnumOpus.State;
+using Splat;
 
 namespace MagnumOpus
 {
@@ -25,7 +26,7 @@ namespace MagnumOpus
             Search = ReactiveCommand.Create(
                 () => _searchQuery.IsIPAddress()
                     ? Observable.FromAsync(() => NavigationService.ShowWindow<IPAddressWindow>(_searchQuery)).SelectMany(_ => Observable.Empty<DirectoryEntryInfo>())
-                    : ActiveDirectoryService.Current.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(directoryEntry => new DirectoryEntryInfo(directoryEntry)),
+                    : _adFacade.SearchDirectory(_searchQuery.Trim(), TaskPoolScheduler.Default).Take(1000).Select(directoryEntry => new DirectoryEntryInfo(directoryEntry)),
                 this.WhenAnyValue(vm => vm.SearchQuery).Select(query => query.HasValue(3)));
             Search
                 .Do(_ => _searchResults.Clear())
@@ -38,7 +39,7 @@ namespace MagnumOpus
             Open = ReactiveCommand.CreateFromTask(
                 async () =>
                 {
-                    var principal = await ActiveDirectoryService.Current.GetPrincipal(_selectedSearchResult.CN);
+                    var principal = await _adFacade.GetPrincipal(_selectedSearchResult.CN);
 
                     await NavigationService.ShowPrincipalWindow(principal);
 
@@ -86,13 +87,14 @@ namespace MagnumOpus
         public IReactiveDerivedList<DirectoryEntryInfo> SearchResults => _searchResults.CreateDerivedCollection(directoryEntryInfo => directoryEntryInfo, orderer: (one, two) => one.Path.CompareTo(two.Path));
         public ReactiveList<string> History => _history;
         public bool IsNoResults => _isNoResults.Value;
-        public string Domain => ActiveDirectoryService.Current.CurrentDomain;
+        public string Domain => _adFacade.CurrentDomain;
         public SortDescription ListSortDescription { get => _listSortDescription; set => this.RaiseAndSetIfChanged(ref _listSortDescription, value); }
         public string SearchQuery { get => _searchQuery; set => this.RaiseAndSetIfChanged(ref _searchQuery, value); }
         public DirectoryEntryInfo SelectedSearchResult { get => _selectedSearchResult; set => this.RaiseAndSetIfChanged(ref _selectedSearchResult, value); }
 
 
 
+        private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
         private readonly ReactiveList<DirectoryEntryInfo> _searchResults;
         private readonly ReactiveList<string> _history;
         private readonly ObservableAsPropertyHelper<bool> _isNoResults;

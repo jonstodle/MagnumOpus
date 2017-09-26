@@ -16,6 +16,7 @@ using MagnumOpus.EditMemberOf;
 using MagnumOpus.EditMembers;
 using MagnumOpus.Navigation;
 using MagnumOpus.User;
+using Splat;
 
 namespace MagnumOpus.Group
 {
@@ -67,7 +68,7 @@ namespace MagnumOpus.Group
 
             FindMember = ReactiveCommand.CreateFromTask(() => 
             {
-                var principalType = ActiveDirectoryService.Current.DeterminePrincipalType(_selectedMember);
+                var principalType = _adFacade.DeterminePrincipalType(_selectedMember);
                 if (principalType == PrincipalType.Group) return NavigationService.ShowWindow<GroupWindow>(_selectedMember);
                 else if (principalType == PrincipalType.Computer) return NavigationService.ShowWindow<ComputerWindow>(_selectedMember);
                 else return NavigationService.ShowWindow<UserWindow>(_selectedMember);
@@ -171,7 +172,7 @@ namespace MagnumOpus.Group
 
 
 
-        private IObservable<string> GetDirectGroups(string identity, IScheduler scheduler = null) => ActiveDirectoryService.Current.GetGroup(identity, scheduler)
+        private IObservable<string> GetDirectGroups(string identity, IScheduler scheduler = null) => _adFacade.GetGroup(identity, scheduler)
             .SelectMany(group => group.Principal.GetGroups().ToObservable())
             .Select(principal => principal.Name);
 
@@ -179,7 +180,7 @@ namespace MagnumOpus.Group
             observer =>
                 (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
                     {
-                        var group = ActiveDirectoryService.Current.GetGroup(identity).Wait();
+                        var group = _adFacade.GetGroup(identity).Wait();
 
                         foreach (Principal item in group.Principal.Members)
                         {
@@ -223,6 +224,7 @@ namespace MagnumOpus.Group
 
 
 
+        private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
         private readonly ReactiveList<string> _directMemberOfGroups = new ReactiveList<string>();
         private readonly ReactiveList<string> _allMemberOfGroups = new ReactiveList<string>();
         private readonly ReactiveList<string> _members = new ReactiveList<string>();

@@ -10,6 +10,7 @@ using MagnumOpus.Dialog;
 using MagnumOpus.Group;
 using MagnumOpus.Settings;
 using MagnumOpus.User;
+using Splat;
 
 namespace MagnumOpus.Navigation
 {
@@ -81,7 +82,7 @@ namespace MagnumOpus.Navigation
         /// <returns></returns>
         public static Task ShowPrincipalWindow(Principal principal)
         {
-            switch (ActiveDirectoryService.Current.DeterminePrincipalType(principal))
+            switch (Locator.Current.GetService<ADFacade>().DeterminePrincipalType(principal))
             {
                 case PrincipalType.User: return ShowWindow<UserWindow>(principal.Name);
                 case PrincipalType.Computer: return ShowWindow<ComputerWindow>(principal.Name);

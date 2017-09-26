@@ -10,6 +10,7 @@ using System.Reactive.Linq;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Settings;
 using MagnumOpus.User;
+using Splat;
 
 namespace MagnumOpus.Computer
 {
@@ -64,7 +65,7 @@ namespace MagnumOpus.Computer
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Return<UserObject>(null);
-                else return ActiveDirectoryService.Current.GetUser(username);
+                else return Locator.Current.GetService<ADFacade>().GetUser(username);
             })
             .CatchAndReturn(null)
             .Take(1);

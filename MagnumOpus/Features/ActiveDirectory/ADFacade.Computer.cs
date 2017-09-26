@@ -6,7 +6,7 @@ using MagnumOpus.Computer;
 
 namespace MagnumOpus.ActiveDirectory
 {
-	public partial class ActiveDirectoryService
+	public partial class ADFacade
     {
         public IObservable<ComputerObject> GetComputer(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {

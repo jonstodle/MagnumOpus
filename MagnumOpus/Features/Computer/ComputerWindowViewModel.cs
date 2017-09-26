@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
 using MagnumOpus.Navigation;
+using Splat;
 
 namespace MagnumOpus.Computer
 {
@@ -13,7 +14,7 @@ namespace MagnumOpus.Computer
 	{
 		public ComputerWindowViewModel()
 		{
-			SetComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => ActiveDirectoryService.Current.GetComputer(identity));
+			SetComputer = ReactiveCommand.CreateFromObservable<string, ComputerObject>(identity => Locator.Current.GetService<ADFacade>().GetComputer(identity));
 
             _computer = SetComputer
 				.ToProperty(this, vm => vm.Computer);

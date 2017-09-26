@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
 using MagnumOpus.Navigation;
+using Splat;
 
 namespace MagnumOpus.Group
 {
@@ -13,7 +14,7 @@ namespace MagnumOpus.Group
 	{
 		public GroupWindowViewModel()
 		{
-			SetGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => ActiveDirectoryService.Current.GetGroup(identity));
+			SetGroup = ReactiveCommand.CreateFromObservable<string, GroupObject>(identity => Locator.Current.GetService<ADFacade>().GetGroup(identity));
 
             _group = SetGroup
                 .ToProperty(this, vm => vm.Group);

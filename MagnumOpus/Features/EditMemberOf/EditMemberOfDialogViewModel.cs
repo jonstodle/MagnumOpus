@@ -20,11 +20,11 @@ namespace MagnumOpus.EditMemberOf
     {
         public EditMemberOfDialogViewModel()
         {
-            SetPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => ActiveDirectoryService.Current.GetPrincipal(identity));
+            SetPrincipal = ReactiveCommand.CreateFromObservable<string, Principal>(identity => _adFacade.GetPrincipal(identity));
 
             GetPrincipalMembers = ReactiveCommand.CreateFromObservable(() => GetPrincipalMembersImpl(_principal.Value, TaskPoolScheduler.Default));
 
-            Search = ReactiveCommand.Create(() => ActiveDirectoryService.Current.SearchDirectory(_searchQuery, TaskPoolScheduler.Default).Take(1000));
+            Search = ReactiveCommand.Create(() => _adFacade.SearchDirectory(_searchQuery, TaskPoolScheduler.Default).Take(1000));
 
             OpenSearchResultPrincipal = ReactiveCommand.CreateFromTask(() => NavigateToPrincipal(_selectedSearchResult.Properties.Get<string>("name")));
 
@@ -126,7 +126,7 @@ namespace MagnumOpus.EditMemberOf
             foreach (var groupDe in membersToAdd)
             {
                 var groupCN = groupDe.Properties.Get<string>("cn");
-                var group = ActiveDirectoryService.Current.GetGroup(groupCN).Wait();
+                var group = _adFacade.GetGroup(groupCN).Wait();
 
                 try
                 {
@@ -145,7 +145,7 @@ namespace MagnumOpus.EditMemberOf
             foreach (var groupDe in membersToRemove)
             {
                 var groupCN = groupDe.Properties.Get<string>("cn");
-                var group = ActiveDirectoryService.Current.GetGroup(groupCN).Wait();
+                var group = _adFacade.GetGroup(groupCN).Wait();
 
                 try
                 {
@@ -164,7 +164,7 @@ namespace MagnumOpus.EditMemberOf
             return result;
         }, TaskPoolScheduler.Default);
 
-        private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await ActiveDirectoryService.Current.GetPrincipal(identity));
+        private async Task NavigateToPrincipal(string identity) => await NavigationService.ShowPrincipalWindow(await _adFacade.GetPrincipal(identity));
 
 
 
@@ -183,6 +183,7 @@ namespace MagnumOpus.EditMemberOf
 
 
 
+        private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
         private readonly ReactiveList<DirectoryEntry> _searchResults = new ReactiveList<DirectoryEntry>();
         private readonly ReactiveList<DirectoryEntry> _principalMembers = new ReactiveList<DirectoryEntry>();
         private readonly ReactiveList<DirectoryEntry> _membersToAdd = new ReactiveList<DirectoryEntry>();

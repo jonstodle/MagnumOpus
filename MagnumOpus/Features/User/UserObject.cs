@@ -3,6 +3,7 @@ using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Reactive.Linq;
 using MagnumOpus.ActiveDirectory;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -28,7 +29,7 @@ namespace MagnumOpus.User
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Empty<UserObject>();
-                else return ActiveDirectoryService.Current.GetUser(username);
+                else return _adFacade.GetUser(username);
             })
             .Catch(Observable.Empty<UserObject>())
             .Take(1);
@@ -37,7 +38,11 @@ namespace MagnumOpus.User
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Empty<UserObject>();
-                else return ActiveDirectoryService.Current.GetUser(username).Catch(Observable.Empty<UserObject>());
+                else return _adFacade.GetUser(username).Catch(Observable.Empty<UserObject>());
             });
+
+
+
+        private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
     }
 }

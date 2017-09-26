@@ -10,7 +10,7 @@ using MagnumOpus.User;
 
 namespace MagnumOpus.ActiveDirectory
 {
-    public partial class ActiveDirectoryService
+    public partial class ADFacade
     {
         public IObservable<UserObject> GetUser(string identity, IScheduler scheduler = null) => Observable.Start(() =>
         {

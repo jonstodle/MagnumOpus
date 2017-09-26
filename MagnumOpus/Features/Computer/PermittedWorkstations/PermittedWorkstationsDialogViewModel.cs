@@ -9,6 +9,7 @@ using System.Reactive.Concurrency;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
 using MagnumOpus.User;
+using Splat;
 
 namespace MagnumOpus.Computer
 {
@@ -81,7 +82,7 @@ namespace MagnumOpus.Computer
 
         private IObservable<string> AddComputerImpl(string computerName) => Observable.Start(() =>
         {
-            if (ActiveDirectoryService.Current.GetComputer(computerName).Wait() == null) throw new Exception("Could not find computer");
+            if (_adFacade.GetComputer(computerName).Wait() == null) throw new Exception("Could not find computer");
             return computerName;
         }, TaskPoolScheduler.Default);
 
@@ -100,12 +101,13 @@ namespace MagnumOpus.Computer
 
             if (parameter is string s)
             {
-                User = await ActiveDirectoryService.Current.GetUser(s);
+                User = await _adFacade.GetUser(s);
             }
         }
 
 
 
+        private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
         private readonly ReactiveList<string> _computers = new ReactiveList<string>();
         private UserObject _user;
         private string _computerName;

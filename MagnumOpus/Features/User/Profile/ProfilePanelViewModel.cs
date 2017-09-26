@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Reactive.Concurrency;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -211,7 +212,7 @@ namespace MagnumOpus.User
         {
             if (PingNameOrAddressAsync(cpr) < 0) throw new Exception($"Could not connect to {cpr}");
 
-            if (ActiveDirectoryService.Current.GetComputer(cpr).SelectMany(computer => computer.GetLoggedInUsers()).ToEnumerable().Select(userInfo => userInfo.Username.ToLowerInvariant()).Contains(usr.Principal.SamAccountName.ToLowerInvariant())) throw new Exception("User is logged in");
+            if (Locator.Current.GetService<ADFacade>().GetComputer(cpr).SelectMany(computer => computer.GetLoggedInUsers()).ToEnumerable().Select(userInfo => userInfo.Username.ToLowerInvariant()).Contains(usr.Principal.SamAccountName.ToLowerInvariant())) throw new Exception("User is logged in");
 
             var profileDir = GetProfileDirectory(cpr);
             foreach (var dir in profileDir.GetDirectories($"{usr.Principal.SamAccountName}*")) BangRenameDirectory(dir, usr.Principal.SamAccountName);

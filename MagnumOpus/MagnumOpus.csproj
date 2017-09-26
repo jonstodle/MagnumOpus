@@ -180,11 +180,11 @@
     <Compile Include="Mixins\SystemMixins.cs" />
     <Compile Include="Mixins\DisposablesMixins.cs" />
     <Compile Include="Mixins\ReactiveLinqMixins.cs" />
-    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Computer.cs" />
-    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Constants.cs" />
-    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.cs" />
-    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.Group.cs" />
-    <Compile Include="Features\ActiveDirectory\ActiveDirectoryService.User.cs" />
+    <Compile Include="Features\ActiveDirectory\ADFacade.Computer.cs" />
+    <Compile Include="Features\ActiveDirectory\ADFacade.Constants.cs" />
+    <Compile Include="Features\ActiveDirectory\ADFacade.cs" />
+    <Compile Include="Features\ActiveDirectory\ADFacade.Group.cs" />
+    <Compile Include="Features\ActiveDirectory\ADFacade.User.cs" />
     <Compile Include="Features\ActiveDirectory\DirectoryEntryInfo.cs" />
     <Compile Include="Features\Computer\ComputerObject.cs" />
     <Compile Include="Features\Computer\ComputerWindow.xaml.cs">

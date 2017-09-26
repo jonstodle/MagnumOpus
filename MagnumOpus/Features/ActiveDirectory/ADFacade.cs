@@ -7,11 +7,8 @@ using System.Reactive.Linq;
 
 namespace MagnumOpus.ActiveDirectory
 {
-    public partial class ActiveDirectoryService
+    public partial class ADFacade
     {
-        private static ActiveDirectoryService _current;
-        public static ActiveDirectoryService Current => _current ?? (_current = new ActiveDirectoryService());
-
         public static bool IsInDomain()
         {
             try { return Domain.GetComputerDomain()?.Name != null; }
@@ -39,9 +36,6 @@ namespace MagnumOpus.ActiveDirectory
                 return _currentDomainShortName;
             }
         }
-
-
-        private ActiveDirectoryService() { }
 
 
 

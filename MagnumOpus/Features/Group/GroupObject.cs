@@ -4,6 +4,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Reactive.Linq;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.User;
+using Splat;
 
 namespace MagnumOpus.Group
 {
@@ -21,7 +22,7 @@ namespace MagnumOpus.Group
             .SelectMany(username =>
             {
                 if (username == null) return Observable.Return<UserObject>(null);
-                else return ActiveDirectoryService.Current.GetUser(username);
+                else return Locator.Current.GetService<ADFacade>().GetUser(username);
             })
             .CatchAndReturn(null)
             .Take(1);

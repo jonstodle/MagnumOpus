@@ -16,6 +16,7 @@ using MagnumOpus.Dialog;
 using MagnumOpus.EditMemberOf;
 using MagnumOpus.Group;
 using MagnumOpus.Navigation;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -132,7 +133,7 @@ namespace MagnumOpus.User
 
 
 
-        private IObservable<DirectoryEntry> GetDirectGroups(string identity, IScheduler scheduler = null) => ActiveDirectoryService.Current.GetUser(identity, scheduler)
+        private IObservable<DirectoryEntry> GetDirectGroups(string identity, IScheduler scheduler = null) => Locator.Current.GetService<ADFacade>().GetUser(identity, scheduler)
             .SelectMany(user => user.Principal.GetGroups().ToObservable())
             .Select(group => group.GetUnderlyingObject() as DirectoryEntry);
 

@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using MagnumOpus.ActiveDirectory;
 using MagnumOpus.Dialog;
+using Splat;
 
 namespace MagnumOpus.User
 {
@@ -14,9 +15,9 @@ namespace MagnumOpus.User
 	{
 		public UserLockoutInfoViewModel()
 		{
-			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(username => ActiveDirectoryService.Current.GetUser(username, TaskPoolScheduler.Default));
+			SetUser = ReactiveCommand.CreateFromObservable<string, UserObject>(username => _adFacade.GetUser(username, TaskPoolScheduler.Default));
 
-			GetLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => ActiveDirectoryService.Current.GetLockoutInfo(_user.Value.CN, TaskPoolScheduler.Default));
+			GetLockoutInfo = ReactiveCommand.Create<Unit, IObservable<LockoutInfo>>(_ => _adFacade.GetLockoutInfo(_user.Value.CN, TaskPoolScheduler.Default));
 
 			Close = ReactiveCommand.Create(_closeAction);
 
@@ -67,6 +68,7 @@ namespace MagnumOpus.User
 
 
 
+		private readonly ADFacade _adFacade = Locator.Current.GetService<ADFacade>();
 		private readonly ReactiveList<LockoutInfo> _lockoutInfos = new ReactiveList<LockoutInfo>();
 		private readonly ObservableAsPropertyHelper<UserObject> _user;
 		private Action _closeAction;
