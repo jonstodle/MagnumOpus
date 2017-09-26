@@ -50,13 +50,8 @@ namespace MagnumOpus.User
                 },
                 this.WhenAnyValue(vm => vm.IsShowingAllGroups));
             GetAllGroups
+                .Select(group => group.Properties.Get<string>("cn"))
                 .ObserveOnDispatcher()
-                .Select(group =>
-                {
-                    var cn = group.Properties.Get<string>("cn");
-                    group.Dispose();
-                    return cn;
-                })
                 .Subscribe(groupName => AllGroups.Add(groupName));
 
             _isLoadingGroups = GetAllGroups
