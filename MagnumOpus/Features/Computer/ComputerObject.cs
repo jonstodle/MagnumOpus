@@ -24,7 +24,7 @@ namespace MagnumOpus.Computer
 
         public string ServicePack => DirectoryEntry.Properties.Get<string>("operatingsystemservicepack");
 
-        public string Company => SettingsService.Current.ComputerCompanyOus.FirstOrDefault(companyKVPair => Principal.DistinguishedName.Contains(companyKVPair.Key)).Value ?? "";
+        public string Company => Locator.Current.GetService<SettingsFacade>().ComputerCompanyOus.FirstOrDefault(companyKVPair => Principal.DistinguishedName.Contains(companyKVPair.Key)).Value ?? "";
 
 
         

@@ -2,7 +2,7 @@
 
 namespace MagnumOpus.Settings
 {
-    public partial class SettingsService
+    public partial class SettingsFacade
     {
         // Variables specific to the current environment
 

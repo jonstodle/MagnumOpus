@@ -40,7 +40,7 @@ namespace MagnumOpus.User
 
             OpenSplunk = ReactiveCommand.Create(() =>
             {
-                Process.Start(string.Format(SettingsService.Current.SplunkUrl, _adFacade.CurrentDomainShortName, User.Principal.SamAccountName));
+                Process.Start(string.Format(Locator.Current.GetService<SettingsFacade>().SplunkUrl, _adFacade.CurrentDomainShortName, User.Principal.SamAccountName));
             });
 
             this.WhenActivated(disposables =>

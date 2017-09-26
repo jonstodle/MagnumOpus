@@ -13,7 +13,7 @@ namespace MagnumOpus.Logging
 	public class FileLoggerService : ILogger
 	{
 		private const string ApplicationName = "Magnum Opus";
-		private static string LogDirectoryPath = SettingsService.Current.LogDirectoryPath;
+		private static string LogDirectoryPath = Locator.Current.GetService<SettingsFacade>().LogDirectoryPath;
 		private readonly string _logFileName;
 		private static Subject<string> _logWriter;
 

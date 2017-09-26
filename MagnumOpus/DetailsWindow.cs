@@ -6,6 +6,7 @@ using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Input;
 using MagnumOpus.Settings;
+using Splat;
 
 namespace MagnumOpus
 {
@@ -17,13 +18,13 @@ namespace MagnumOpus
                     _keyDownEvents.ToSignal(),
                     this.Events().PreviewMouseDown.ToSignal(),
                     Observable.Return(Unit.Default))
-                        .Select(_ => Observable.Interval(TimeSpan.FromHours(SettingsService.Current.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
+                        .Select(_ => Observable.Interval(TimeSpan.FromHours(_settings.DetailsWindowTimeoutLength), TaskPoolScheduler.Default))
                 .Switch()
                 .ObserveOnDispatcher()
                 .Subscribe(_ => Close())
                 .DisposeWith(_subscriptions);
 
-            if (SettingsService.Current.UseEscapeToCloseDetailsWindows)
+            if (_settings.UseEscapeToCloseDetailsWindows)
             {
                 _keyDownEvents
                     .Where(args => args.Key == Key.Escape)
@@ -38,6 +39,7 @@ namespace MagnumOpus
 
 
 
+		private readonly SettingsFacade _settings = Locator.Current.GetService<SettingsFacade>();
         private CompositeDisposable _subscriptions = new CompositeDisposable();
     }
 }

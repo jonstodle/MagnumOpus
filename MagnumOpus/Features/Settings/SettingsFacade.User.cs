@@ -1,6 +1,6 @@
 ﻿namespace MagnumOpus.Settings
 {
-	public partial class SettingsService
+	public partial class SettingsFacade
 	{
 		public int HistoryCountLimit
 		{

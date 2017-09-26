@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using MagnumOpus.Dialog;
+using Splat;
 
 namespace MagnumOpus.Settings
 {
@@ -15,31 +16,35 @@ namespace MagnumOpus.Settings
 
 		public string HistoryCountLimit
 		{
-			get => SettingsService.Current.HistoryCountLimit.ToString();
-			set { if(int.TryParse(value, out int i)) SettingsService.Current.HistoryCountLimit = i; }
+			get => _settings.HistoryCountLimit.ToString();
+			set { if(int.TryParse(value, out int i)) _settings.HistoryCountLimit = i; }
         }
 
         public bool OpenDuplicateWindows
         {
-            get => SettingsService.Current.OpenDuplicateWindows;
-            set => SettingsService.Current.OpenDuplicateWindows = value;
+            get => _settings.OpenDuplicateWindows;
+            set => _settings.OpenDuplicateWindows = value;
         }
 
         public string DetailWindowTimeoutLength
 		{
-			get => SettingsService.Current.DetailsWindowTimeoutLength.ToString();
-			set { if (double.TryParse(value, out double i)) SettingsService.Current.DetailsWindowTimeoutLength = i > 0 ? i : 1; }
+			get => _settings.DetailsWindowTimeoutLength.ToString();
+			set { if (double.TryParse(value, out double i)) _settings.DetailsWindowTimeoutLength = i > 0 ? i : 1; }
 		}
 
         public bool UseEscapeToCloseDetailsWindows
         {
-            get => SettingsService.Current.UseEscapeToCloseDetailsWindows;
-            set => SettingsService.Current.UseEscapeToCloseDetailsWindows = value;
+            get => _settings.UseEscapeToCloseDetailsWindows;
+            set => _settings.UseEscapeToCloseDetailsWindows = value;
         }
 
         public string Version { get; }
 
 
 		public Task Opening(Action close, object parameter) => Task.FromResult<object>(null);
+
+
+
+		private readonly SettingsFacade _settings = Locator.Current.GetService<SettingsFacade>();
 	}
 }

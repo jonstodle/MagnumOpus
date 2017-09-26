@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 using System.Reactive.Concurrency;
 using MagnumOpus.Dialog;
 using MagnumOpus.Settings;
-
+using Splat;
 using static MagnumOpus.FileHelpers.ExecutionService;
 
 namespace MagnumOpus.Computer
@@ -36,7 +36,7 @@ namespace MagnumOpus.Computer
 
             OpenCDrive = ReactiveCommand.Create(() => { Process.Start($@"\\{_hostName}\C$"); });
 
-            OpenSccm = ReactiveCommand.Create(() => { RunFile(SettingsService.Current.SCCMPath, _hostName); });
+            OpenSccm = ReactiveCommand.Create(() => { RunFile(Locator.Current.GetService<SettingsFacade>().SCCMPath, _hostName); });
 
             this.WhenActivated(disposables =>
             {

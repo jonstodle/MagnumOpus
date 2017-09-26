@@ -265,9 +265,9 @@
     <Compile Include="Features\Modal\ModalControl.xaml.cs">
       <DependentUpon>ModalControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Features\Settings\SettingsService.cs" />
-    <Compile Include="Features\Settings\SettingsService.Environment.cs" />
-    <Compile Include="Features\Settings\SettingsService.User.cs" />
+    <Compile Include="Features\Settings\SettingsFacade.cs" />
+    <Compile Include="Features\Settings\SettingsFacade.Environment.cs" />
+    <Compile Include="Features\Settings\SettingsFacade.User.cs" />
     <Compile Include="Features\Settings\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

@@ -59,7 +59,7 @@ namespace MagnumOpus.Navigation
         /// <returns></returns>
         public async static Task ShowWindow<TWindow>(object parameter = null) where TWindow : Window, IViewFor, new()
         {
-            var existingWindow = !SettingsService.Current.OpenDuplicateWindows ? App.Current.Windows.ToGeneric<Window>().Where(window => window is IViewFor).FirstOrDefault(window => window.Tag?.Equals(parameter) ?? false) : null;
+            var existingWindow = !Locator.Current.GetService<SettingsFacade>().OpenDuplicateWindows ? App.Current.Windows.ToGeneric<Window>().Where(window => window is IViewFor).FirstOrDefault(window => window.Tag?.Equals(parameter) ?? false) : null;
 
             if (existingWindow != null) existingWindow.Activate();
             else

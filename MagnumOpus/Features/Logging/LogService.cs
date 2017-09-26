@@ -4,13 +4,14 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Security.Principal;
 using MagnumOpus.Settings;
+using Splat;
 
 namespace MagnumOpus.Logging
 {
 	public static class LogService
 	{
 		private const string ApplicationName = "Magnum Opus";
-        private static string LogDirectoryPath = SettingsService.Current.LogDirectoryPath;
+        private static string LogDirectoryPath = Locator.Current.GetService<SettingsFacade>().LogDirectoryPath;
 		private static readonly string _logFileName;
 		private static Subject<string> _logger;
 
