@@ -58,7 +58,7 @@ namespace MagnumOpus.ActiveDirectory
             Observable.Create<DirectoryEntry>(observer =>
                 (scheduler ?? TaskPoolScheduler.Default).Schedule(() =>
                 {
-                    searchTerm = searchTerm.Trim().Replace(" ", "*");
+                    searchTerm = searchTerm.Trim();
                     if (!searchTerm.EndsWith("*")) searchTerm = $"{searchTerm}*";
                     if (searchTerm.StartsWith("*")) searchTerm = searchTerm.Substring(1);
                         
